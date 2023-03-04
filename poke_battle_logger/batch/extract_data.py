@@ -20,7 +20,7 @@ logger = logging.getLogger("rich")
 
 
 def main():
-    video_id = "R_0I1irsi0k"
+    video_id = "V3-szMt-Dmk"
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector()

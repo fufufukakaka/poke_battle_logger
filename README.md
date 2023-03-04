@@ -35,3 +35,9 @@ VIDEO_ID={your_pokemon_sv_rank_match_stream_id} make extract-data
 ```
 make run-dashboard
 ```
+
+### API
+
+```
+poetry run uvicorn poke_battle_logger.api.app:app
+```

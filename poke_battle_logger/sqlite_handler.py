@@ -1,13 +1,7 @@
-import datetime
+import random
+from typing import List
 
-from peewee import (
-    DateTimeField,
-    ForeignKeyField,
-    IntegerField,
-    Model,
-    SqliteDatabase,
-    TextField,
-)
+from peewee import ForeignKeyField, IntegerField, Model, SqliteDatabase, TextField
 
 db = SqliteDatabase("poke_battle_logger.db")
 
@@ -48,6 +42,13 @@ class BattlePokemonTeam(BaseModel):
     battle_id = ForeignKeyField(Battle, backref="inBattlePokemonLogs")
     team = TextField()
     pokemon_name = TextField()
+
+
+class Season(BaseModel):
+    id = IntegerField(unique=True)
+    season = IntegerField()
+    start_datetime = TextField()
+    end_datetime = TextField()
 
 
 class SQLiteHandler:
@@ -109,3 +110,140 @@ class SQLiteHandler:
                         "opponent_pokemon_name"
                     ],
                 )
+
+    def get_latest_season_win_rate(self) -> float:
+        sql = """
+        with latest_season_start_end as (
+            select
+                start_datetime,
+                end_datetime
+            from
+                season
+            order by season desc
+            limit 1
+        )
+        select
+            CAST(sum(
+                    case when win_or_lose = "win" then
+                        1
+                    else
+                        0
+                    end) as float) / count(1) as win_rate
+        from
+            battlesummary
+        where
+            created_at between(
+                select
+                    start_datetime from latest_season_start_end)
+            and(
+                select
+                    end_datetime from latest_season_start_end)
+        order by
+            created_at
+        """
+        with self.db:
+            win_rate = self.db.execute_sql(sql).fetchone()[0]
+        return win_rate
+
+    def get_latest_season_rank(self) -> int:
+        sql = """
+        with latest_season_start_end as (
+            select
+                start_datetime,
+                end_datetime
+            from
+                season
+            order by season desc
+            limit 1
+        )
+        select
+            next_rank
+        from
+            battlesummary
+        where
+            created_at between(
+                select
+                    start_datetime from latest_season_start_end)
+            and(
+                select
+                    end_datetime from latest_season_start_end)
+        order by
+            created_at desc
+        limit 1
+        """
+        with self.db:
+            latest_season_rank = self.db.execute_sql(sql).fetchone()[0]
+        return latest_season_rank
+
+    def get_latest_win_pokemon(self) -> str:
+        sql = """
+        select
+            opponent_pokemon_1, opponent_pokemon_2, opponent_pokemon_3
+        from
+            battlesummary
+        where
+            win_or_lose = "win"
+        order by
+            created_at desc
+        limit 1
+        """
+        with self.db:
+            latest_win_pokemons = self.db.execute_sql(sql).fetchone()
+            # ランダムに1匹選ぶ
+            latest_win_pokemon = random.choice(latest_win_pokemons)
+        return latest_win_pokemon
+
+    def get_latest_lose_pokemon(self) -> str:
+        sql = """
+        select
+            opponent_pokemon_1, opponent_pokemon_2, opponent_pokemon_3
+        from
+            battlesummary
+        where
+            win_or_lose = "lose"
+        order by
+            created_at desc
+        limit 1
+        """
+        with self.db:
+            latest_lose_pokemons = self.db.execute_sql(sql).fetchone()
+            print(latest_lose_pokemons)
+            # ランダムに1匹選ぶ
+            latest_lose_pokemon = random.choice(latest_lose_pokemons)
+        return latest_lose_pokemon
+
+    def get_win_rate_transitions(self, season: int) -> List[float]:
+        sql = f"""
+        with season_start_end as (
+            select
+                start_datetime,
+                end_datetime
+            from
+                season
+            where
+                season = {season}
+        )
+        select
+            (
+                select
+                    COUNT(*)
+                from
+                    battlesummary t2
+                where
+                    t2.id <= t1.id
+                    and t2.win_or_lose = 'win') * 1.0 / id as win_rate
+            from
+                battlesummary t1
+            where
+                created_at between(
+                    select
+                        start_datetime from season_start_end)
+                and(
+                    select
+                        end_datetime from season_start_end)
+            order by
+                created_at
+        """
+        with self.db:
+            win_rate_transitions = self.db.execute_sql(sql).fetchall()
+        return win_rate_transitions
