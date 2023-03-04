@@ -63,7 +63,7 @@ class DataBuilder:
             self._publish_date(yt.watch_html)
             + timedelta(seconds=second_from_frame_number, hours=9)
         )
-        return start_datetime.strftime("%Y%m%d %H:%M:%S")
+        return start_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
     def _get_battle_id(self, start_datetime):
         return str(uuid.uuid5(uuid.uuid1(), start_datetime))
