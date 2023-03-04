@@ -48,3 +48,10 @@ async def get_recent_battle_summary() -> Dict[str, Union[float, int, str]]:
         "latest_win_pokemon": latest_win_pokemon,
         "latest_lose_pokemon": latest_lose_pokemon,
     }
+
+
+@app.get("/api/v1/win_rate_transition")
+async def get_win_rate_transition(season: int) -> List[float]:
+    win_rate_transition = sqlite_handler.get_win_rate_transitions(season)
+    print(win_rate_transition)
+    return win_rate_transition

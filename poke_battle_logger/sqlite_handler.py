@@ -207,7 +207,6 @@ class SQLiteHandler:
         """
         with self.db:
             latest_lose_pokemons = self.db.execute_sql(sql).fetchone()
-            print(latest_lose_pokemons)
             # ランダムに1匹選ぶ
             latest_lose_pokemon = random.choice(latest_lose_pokemons)
         return latest_lose_pokemon
@@ -246,4 +245,5 @@ class SQLiteHandler:
         """
         with self.db:
             win_rate_transitions = self.db.execute_sql(sql).fetchall()
+        win_rate_transitions = [win_rate_transition[0] for win_rate_transition in win_rate_transitions]
         return win_rate_transitions
