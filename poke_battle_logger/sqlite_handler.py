@@ -9,7 +9,7 @@ from peewee import (
     TextField,
 )
 
-db = SqliteDatabase("my_database.db")
+db = SqliteDatabase("poke_battle_logger.db")
 
 
 class BaseModel(Model):
@@ -23,7 +23,7 @@ class Battle(BaseModel):
 
 class BattleSummary(BaseModel):
     battle_id = ForeignKeyField(Battle, backref="battleSummarys")
-    created_at = DateTimeField(default=datetime.datetime.now)
+    created_at = TextField()
     win_or_lose = TextField()
     next_rank = IntegerField()
     your_team = TextField()
@@ -75,6 +75,7 @@ class SQLiteHandler:
             for _battle_summary in battle_summary:
                 BattleSummary.create(
                     battle_id=_battle_summary["battle_id"],
+                    created_at=_battle_summary["created_at"],
                     win_or_lose=_battle_summary["win_or_lose"],
                     next_rank=_battle_summary["next_rank"],
                     your_team=_battle_summary["your_team"],

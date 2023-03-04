@@ -61,7 +61,6 @@ class DataBuilder:
         # +9h は UTC to JST
         start_datetime = (
             self._publish_date(yt.watch_html)
-            + timedelta(hours=9)
             + timedelta(seconds=second_from_frame_number, hours=9)
         )
         return start_datetime.strftime("%Y%m%d %H:%M:%S")
