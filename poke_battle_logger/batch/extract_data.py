@@ -20,7 +20,7 @@ logger = logging.getLogger("rich")
 
 
 def main():
-    video_id = "O8GmphpBbco"
+    video_id = "AP4OGEcrg2I"
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector()
@@ -69,15 +69,39 @@ def main():
     compressed_ranking_frames = frame_compress(ranking_frames)
     compressed_win_or_lost_frames = frame_compress(win_or_lost_frames)
 
+    # ランクを検出(OCR)
+    logger.info("Extracting ranking...")
+    rank_numbers = {}
+    for ranking_frame_numbers in compressed_ranking_frames:
+        ranking_frame_number = ranking_frame_numbers[-1]
+        video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
+        _, _ranking_frame = video.read()
+        rank_numbers[ranking_frame_number] = pokemon_extractor.extract_rank_number(
+            _ranking_frame
+        )
+
+    # 順位が変動しなかった場合、その値を rank_numbers から削除する
+    logger.info("Removing unchanged ranking from rank_numbers...")
+    rank_frames = list(rank_numbers.keys())
+    for i in range(len(rank_numbers) - 1):
+        _ranking_frame_number = rank_frames[i]
+        _next_ranking_frame_number = rank_frames[i + 1]
+
+        if (
+            rank_numbers[_ranking_frame_number]
+            == rank_numbers[_next_ranking_frame_number]
+        ):
+            del rank_numbers[_ranking_frame_number]
+
     # 対戦の始点と終点を定義する
     logger.info("Defining battle start and end frame numbers...")
     battle_start_end_frame_numbers = []
+    rank_frames = list(rank_numbers.keys())
     for i in range(len(compressed_standing_by_frames)):
         _standing_by_frames = compressed_standing_by_frames[i]
         _standing_by_frame = _standing_by_frames[-10]
 
-        _ranking_frames = compressed_ranking_frames[i + 1]
-        _ranking_frame = _ranking_frames[-10]
+        _ranking_frame = rank_frames[i + 1]
 
         if _standing_by_frame < _ranking_frame:
             battle_start_end_frame_numbers.append([_standing_by_frame, _ranking_frame])
@@ -140,7 +164,9 @@ def main():
 
     # unknown が存在していたらここで処理を止める
     if is_exist_unknown_pokemon:
-        logger.warning("Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.")
+        logger.warning(
+            "Unknown pokemon exists. Stop processing. Please annotate unknown pokemons."
+        )
         return
 
     # 勝ち負けを検出
@@ -152,17 +178,6 @@ def main():
         _, _win_or_lost_frame = video.read()
         win_or_lost[win_or_lost_frame_number] = pokemon_extractor.extract_win_or_lost(
             _win_or_lost_frame
-        )
-
-    # ランクを検出(OCR)
-    logger.info("Extracting ranking...")
-    rank_numbers = {}
-    for ranking_frame_numbers in compressed_ranking_frames:
-        ranking_frame_number = ranking_frame_numbers[-1]
-        video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
-        _, _ranking_frame = video.read()
-        rank_numbers[ranking_frame_number] = pokemon_extractor.extract_rank_number(
-            _ranking_frame
         )
 
     # build formatted data
@@ -181,7 +196,9 @@ def main():
         modified_pre_battle_pokemons,
         modified_in_battle_pokemons,
     ) = data_builder.build()
+    import pdb
 
+    pdb.set_trace()
     # insert data to database
     logger.info("Insert Data to Database...")
     sqlite_handler.create_tables()
