@@ -132,3 +132,4 @@ dmypy.json
 video/*.mp4
 raw
 .DS_Store
+.credentials

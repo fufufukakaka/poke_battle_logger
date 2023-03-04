@@ -1,10 +1,16 @@
 import glob
+import time
 
 import cv2
 
-from config.config import (OPPONENT_PRE_POKEMON_POSITION, POKEMON_POSITIONS,
-                           TEMPLATE_MATCHING_THRESHOLD, WIN_LOST_WINDOW,
-                           YOUR_PRE_POKEMON_POSITION)
+from config.config import (
+    OPPONENT_PRE_POKEMON_POSITION,
+    POKEMON_POSITIONS,
+    TEMPLATE_MATCHING_THRESHOLD,
+    WIN_LOST_WINDOW,
+    WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
+    YOUR_PRE_POKEMON_POSITION,
+)
 
 
 class PokemonExtractor:
@@ -24,12 +30,9 @@ class PokemonExtractor:
         ) = self._setup_win_lost_window_templates()
 
     def _setup_win_lost_window_templates(self):
-        win_window_template = (
-            cv2.imread("template_images/general_templates/win.png", 0),
-        )
-
-        lost_window_template = (
-            cv2.imread("template_images/general_templates/lost.png", 0),
+        win_window_template = cv2.imread("template_images/general_templates/win.png", 0)
+        lost_window_template = cv2.imread(
+            "template_images/general_templates/lost.png", 0
         )
 
         return win_window_template, lost_window_template
@@ -42,7 +45,7 @@ class PokemonExtractor:
         for path in pre_battle_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
             pre_battle_pokemon_templates[
-                path.split("/")[-1].split(".")[0].split("_")[0]
+                path.split("/")[-1].split(".")[0]
             ] = _gray_image
         return pre_battle_pokemon_templates
 
@@ -54,7 +57,7 @@ class PokemonExtractor:
         for path in battle_pokemon_name_window_template_paths:
             _gray_image = cv2.imread(path, 0)
             battle_pokemon_name_window_templates[
-                path.split("/")[-1].split(".")[0].split("_")[0]
+                path.split("/")[-1].split(".")[0]
             ] = _gray_image
         return battle_pokemon_name_window_templates
 
@@ -71,6 +74,13 @@ class PokemonExtractor:
             if score >= TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
+            # save image for annotation(name is timestamp)
+            cv2.imwrite(
+                "template_images/unknown_pokemon_templates/"
+                + str(time.time())
+                + ".png",
+                pokemon_image,
+            )
             return "unknown_pokemon"
         return max(score_results, key=score_results.get)
 
@@ -86,6 +96,13 @@ class PokemonExtractor:
             if score >= TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
+            # save image for annotation(name is timestamp)
+            cv2.imwrite(
+                "template_images/unknown_pokemon_name_window_templates/"
+                + str(time.time())
+                + ".png",
+                pokemon_image,
+            )
             return "unknown_pokemon"
         return max(score_results, key=score_results.get)
 
@@ -110,9 +127,9 @@ class PokemonExtractor:
         )
         lost_score = cv2.minMaxLoc(lost_res)[1]
 
-        if win_score >= TEMPLATE_MATCHING_THRESHOLD:
+        if win_score >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD:
             return "win"
-        elif lost_score >= TEMPLATE_MATCHING_THRESHOLD:
+        elif lost_score >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD:
             return "lost"
         else:
             return "unknown"
@@ -240,9 +257,5 @@ class PokemonExtractor:
         勝敗をパターンマッチングで抽出する
         """
 
-        win_or_lost_window = frame[
-            WIN_LOST_WINDOW[0] : WIN_LOST_WINDOW[1],
-            WIN_LOST_WINDOW[2] : WIN_LOST_WINDOW[3],
-        ]
-        result = self._search_win_or_lost_by_template_matching(win_or_lost_window)
+        result = self._search_win_or_lost_by_template_matching(frame)
         return result

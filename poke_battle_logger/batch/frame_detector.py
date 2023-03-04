@@ -9,6 +9,7 @@ from config.config import (
     STANDING_BY_TEMPLATE_PATH,
     STANDING_BY_WINDOW,
     TEMPLATE_MATCHING_THRESHOLD,
+    WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     WIN_TEMPLATE_PATH,
     WIN_LOST_WINDOW
 )
@@ -104,6 +105,6 @@ class FrameDetector:
             gray_win_lost_area, self.gray_lost_template, cv2.TM_CCOEFF_NORMED
         )
         return (
-            cv2.minMaxLoc(result_win)[1] >= TEMPLATE_MATCHING_THRESHOLD
-            or cv2.minMaxLoc(result_lost)[1] >= TEMPLATE_MATCHING_THRESHOLD
+            cv2.minMaxLoc(result_win)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
+            or cv2.minMaxLoc(result_lost)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
         )
