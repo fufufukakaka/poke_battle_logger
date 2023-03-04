@@ -196,9 +196,7 @@ def main():
         modified_pre_battle_pokemons,
         modified_in_battle_pokemons,
     ) = data_builder.build()
-    import pdb
 
-    pdb.set_trace()
     # insert data to database
     logger.info("Insert Data to Database...")
     sqlite_handler.create_tables()
