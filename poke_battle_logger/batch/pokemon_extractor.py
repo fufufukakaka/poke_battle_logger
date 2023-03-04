@@ -1,6 +1,6 @@
-from typing import List
 import glob
 import time
+from typing import List
 
 import cv2
 from google.cloud import vision
@@ -144,8 +144,19 @@ class PokemonExtractor:
         """
 
         pokemon_select_order_score = []
-        for i, template in enumerate([self.first_template, self.second_template, self.third_template]):
-            for k, window in enumerate([select1_window, select2_window, select3_window, select4_window, select5_window, select6_window]):
+        for i, template in enumerate(
+            [self.first_template, self.second_template, self.third_template]
+        ):
+            for k, window in enumerate(
+                [
+                    select1_window,
+                    select2_window,
+                    select3_window,
+                    select4_window,
+                    select5_window,
+                    select6_window,
+                ]
+            ):
                 res = cv2.matchTemplate(window, template, cv2.TM_CCOEFF_NORMED)
                 score = cv2.minMaxLoc(res)[1]
                 if score >= TEMPLATE_MATCHING_THRESHOLD:
@@ -296,30 +307,48 @@ class PokemonExtractor:
 
         # search by template matching
 
-        select1_window = frame[
-            POKEMON_SELECT_NUMBER_WINDOW1[0] : POKEMON_SELECT_NUMBER_WINDOW1[1],
-            POKEMON_SELECT_NUMBER_WINDOW1[2] : POKEMON_SELECT_NUMBER_WINDOW1[3],
-        ]
-        select2_window = frame[
-            POKEMON_SELECT_NUMBER_WINDOW2[0] : POKEMON_SELECT_NUMBER_WINDOW2[1],
-            POKEMON_SELECT_NUMBER_WINDOW2[2] : POKEMON_SELECT_NUMBER_WINDOW2[3],
-        ]
-        select3_window = frame[
-            POKEMON_SELECT_NUMBER_WINDOW3[0] : POKEMON_SELECT_NUMBER_WINDOW3[1],
-            POKEMON_SELECT_NUMBER_WINDOW3[2] : POKEMON_SELECT_NUMBER_WINDOW3[3],
-        ]
-        select4_window = frame[
-            POKEMON_SELECT_NUMBER_WINDOW4[0] : POKEMON_SELECT_NUMBER_WINDOW4[1],
-            POKEMON_SELECT_NUMBER_WINDOW4[2] : POKEMON_SELECT_NUMBER_WINDOW4[3],
-        ]
-        select5_window = frame[
-            POKEMON_SELECT_NUMBER_WINDOW5[0] : POKEMON_SELECT_NUMBER_WINDOW5[1],
-            POKEMON_SELECT_NUMBER_WINDOW5[2] : POKEMON_SELECT_NUMBER_WINDOW5[3],
-        ]
-        select6_window = frame[
-            POKEMON_SELECT_NUMBER_WINDOW6[0] : POKEMON_SELECT_NUMBER_WINDOW6[1],
-            POKEMON_SELECT_NUMBER_WINDOW6[2] : POKEMON_SELECT_NUMBER_WINDOW6[3],
-        ]
+        select1_window = cv2.cvtColor(
+            frame[
+                POKEMON_SELECT_NUMBER_WINDOW1[0] : POKEMON_SELECT_NUMBER_WINDOW1[1],
+                POKEMON_SELECT_NUMBER_WINDOW1[2] : POKEMON_SELECT_NUMBER_WINDOW1[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        select2_window = cv2.cvtColor(
+            frame[
+                POKEMON_SELECT_NUMBER_WINDOW2[0] : POKEMON_SELECT_NUMBER_WINDOW2[1],
+                POKEMON_SELECT_NUMBER_WINDOW2[2] : POKEMON_SELECT_NUMBER_WINDOW2[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        select3_window = cv2.cvtColor(
+            frame[
+                POKEMON_SELECT_NUMBER_WINDOW3[0] : POKEMON_SELECT_NUMBER_WINDOW3[1],
+                POKEMON_SELECT_NUMBER_WINDOW3[2] : POKEMON_SELECT_NUMBER_WINDOW3[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        select4_window = cv2.cvtColor(
+            frame[
+                POKEMON_SELECT_NUMBER_WINDOW4[0] : POKEMON_SELECT_NUMBER_WINDOW4[1],
+                POKEMON_SELECT_NUMBER_WINDOW4[2] : POKEMON_SELECT_NUMBER_WINDOW4[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        select5_window = cv2.cvtColor(
+            frame[
+                POKEMON_SELECT_NUMBER_WINDOW5[0] : POKEMON_SELECT_NUMBER_WINDOW5[1],
+                POKEMON_SELECT_NUMBER_WINDOW5[2] : POKEMON_SELECT_NUMBER_WINDOW5[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        select6_window = cv2.cvtColor(
+            frame[
+                POKEMON_SELECT_NUMBER_WINDOW6[0] : POKEMON_SELECT_NUMBER_WINDOW6[1],
+                POKEMON_SELECT_NUMBER_WINDOW6[2] : POKEMON_SELECT_NUMBER_WINDOW6[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
         pokemon_select_number = self._search_pokemon_select_window_by_template_matching(
             select1_window,
             select2_window,
