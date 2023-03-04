@@ -126,6 +126,11 @@ class DataBuilder:
                 ):
                     _battle_pokemon_opponent_combinations.append(_opponent)
 
+            if len(_battle_pokemon_opponent_combinations) < 3:
+                # 3 になるように Unseen で埋める
+                for _ in range(3 - len(_battle_pokemon_opponent_combinations)):
+                    _battle_pokemon_opponent_combinations.append("Unseen")
+
             battle_pokemon_combinations.append(
                 {
                     "you": _battle_pokemon_your_combinations,
