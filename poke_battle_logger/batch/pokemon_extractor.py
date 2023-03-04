@@ -82,7 +82,7 @@ class PokemonExtractor:
             ] = _gray_image
         return battle_pokemon_name_window_templates
 
-    def _search_by_template_matching(self, pokemon_image) -> str:
+    def _search_by_template_matching(self, pokemon_image):
         """
         テンプレートマッチングでポケモンを検出する
         """
@@ -102,10 +102,10 @@ class PokemonExtractor:
                 + ".png",
                 pokemon_image,
             )
-            return "unknown_pokemon"
-        return max(score_results, key=score_results.get)
+            return "unknown_pokemon", True
+        return max(score_results, key=score_results.get), False
 
-    def _search_name_window_by_template_matching(self, pokemon_image) -> str:
+    def _search_name_window_by_template_matching(self, pokemon_image):
         """
         テンプレートマッチングでポケモン名ウィンドウを検出する
         """
@@ -124,8 +124,8 @@ class PokemonExtractor:
                 + ".png",
                 pokemon_image,
             )
-            return "unknown_pokemon"
-        return max(score_results, key=score_results.get)
+            return "unknown_pokemon", True
+        return max(score_results, key=score_results.get), False
 
     def _search_pokemon_select_window_by_template_matching(
         self,
@@ -284,20 +284,25 @@ class PokemonExtractor:
         対戦前のポケモンをパターンマッチングで抽出する
         """
 
+        is_exist_unknown_pokemon = False
         your_pokemons, opponent_pokemons = self._get_pokemons(frame)
 
         # search by template matching
         your_pokemon_names = []
         for pokemon_image in your_pokemons:
-            pokemon_name = self._search_by_template_matching(pokemon_image)
+            pokemon_name, is_exist_unknown_pokemon = self._search_by_template_matching(
+                pokemon_image
+            )
             your_pokemon_names.append(pokemon_name)
 
         opponent_pokemon_names = []
         for pokemon_image in opponent_pokemons:
-            pokemon_name = self._search_by_template_matching(pokemon_image)
+            pokemon_name, is_exist_unknown_pokemon = self._search_by_template_matching(
+                pokemon_image
+            )
             opponent_pokemon_names.append(pokemon_name)
 
-        return your_pokemon_names, opponent_pokemon_names
+        return your_pokemon_names, opponent_pokemon_names, is_exist_unknown_pokemon
 
     def extract_pokemon_select_numbers(self, frame):
         """
@@ -366,18 +371,21 @@ class PokemonExtractor:
 
         frames: 対戦中の名前が表示されているフレーム画像
         """
+        is_exist_unknown_pokemon = False
 
         (
             your_pokemon_name_window,
             opponent_pokemon_name_window,
         ) = self._get_pokemon_name_window(frame)
-        your_pokemon_name = self._search_name_window_by_template_matching(
-            your_pokemon_name_window
-        )
-        opponent_pokemon_name = self._search_name_window_by_template_matching(
-            opponent_pokemon_name_window
-        )
-        return your_pokemon_name, opponent_pokemon_name
+        (
+            your_pokemon_name,
+            is_exist_unknown_pokemon,
+        ) = self._search_name_window_by_template_matching(your_pokemon_name_window)
+        (
+            opponent_pokemon_name,
+            is_exist_unknown_pokemon,
+        ) = self._search_name_window_by_template_matching(opponent_pokemon_name_window)
+        return your_pokemon_name, opponent_pokemon_name, is_exist_unknown_pokemon
 
     def extract_win_or_lost(self, frame):
         """

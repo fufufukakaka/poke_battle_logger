@@ -4,9 +4,11 @@ import cv2
 from rich.logging import RichHandler
 from tqdm.auto import tqdm
 
+from poke_battle_logger.batch.data_builder import DataBuilder
 from poke_battle_logger.batch.frame_compressor import frame_compress
 from poke_battle_logger.batch.frame_detector import FrameDetector
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
+from poke_battle_logger.sqlite_handler import SQLiteHandler
 
 logging.basicConfig(
     level=logging.INFO,
@@ -18,17 +20,20 @@ logger = logging.getLogger("rich")
 
 
 def main():
-    movie_id = "O8GmphpBbco"
-    video = cv2.VideoCapture(f"video/{movie_id}.mp4")
+    video_id = "O8GmphpBbco"
+    video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector()
     pokemon_extractor = PokemonExtractor()
+    sqlite_handler = SQLiteHandler()
 
     select_done_frames = []
     standing_by_frames = []
     level_50_frames = []
     ranking_frames = []
     win_or_lost_frames = []
+
+    is_exist_unknown_pokemon = False
 
     logger.info("Detecting frames...")
     for i in tqdm(range(int(video.get(cv2.CAP_PROP_FRAME_COUNT)))):
@@ -105,6 +110,7 @@ def main():
         (
             your_pokemon_names,
             opponent_pokemon_names,
+            is_exist_unknown_pokemon,
         ) = pokemon_extractor.extract_pre_battle_pokemons(_standing_by_frame)
         pre_battle_pokemons[_standing_by_frame_number] = {
             "your_pokemon_names": your_pokemon_names,
@@ -122,6 +128,7 @@ def main():
         (
             your_pokemon_name,
             opponent_pokemon_name,
+            is_exist_unknown_pokemon,
         ) = pokemon_extractor.extract_pokemon_name_in_battle(_level_50_frame)
         battle_pokemons.append(
             {
@@ -130,6 +137,11 @@ def main():
                 "opponent_pokemon_name": opponent_pokemon_name,
             }
         )
+
+    # unknown が存在していたらここで処理を止める
+    if is_exist_unknown_pokemon:
+        logger.warning("Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.")
+        return
 
     # 勝ち負けを検出
     logger.info("Extracting win or lost...")
@@ -142,8 +154,6 @@ def main():
             _win_or_lost_frame
         )
 
-    import pdb;pdb.set_trace()
-
     # ランクを検出(OCR)
     logger.info("Extracting ranking...")
     rank_numbers = {}
@@ -154,7 +164,33 @@ def main():
         rank_numbers[ranking_frame_number] = pokemon_extractor.extract_rank_number(
             _ranking_frame
         )
-    import pdb;pdb.set_trace()
+
+    # build formatted data
+    logger.info("Build Formatted Data...")
+    data_builder = DataBuilder(
+        video_id=video_id,
+        battle_start_end_frame_numbers=battle_start_end_frame_numbers,
+        battle_pokemons=battle_pokemons,
+        pre_battle_pokemons=pre_battle_pokemons,
+        pokemon_select_order=pokemon_select_order,
+        rank_numbers=rank_numbers,
+    )
+    (
+        battle_ids,
+        battle_logs,
+        modified_pre_battle_pokemons,
+        modified_in_battle_pokemons,
+    ) = data_builder.build()
+
+    # insert data to database
+    logger.info("Insert Data to Database...")
+    sqlite_handler.create_tables()
+    sqlite_handler.insert_battle_id(battle_ids)
+    sqlite_handler.insert_battle_summary(battle_logs)
+    sqlite_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
+    sqlite_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
+
+    logger.info("Finish Processing!!!")
 
 
 if __name__ == "__main__":
