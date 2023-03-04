@@ -1,11 +1,20 @@
+from typing import List
 import glob
 import time
 
 import cv2
+from google.cloud import vision
 
 from config.config import (
     OPPONENT_PRE_POKEMON_POSITION,
     POKEMON_POSITIONS,
+    POKEMON_SELECT_NUMBER_WINDOW1,
+    POKEMON_SELECT_NUMBER_WINDOW2,
+    POKEMON_SELECT_NUMBER_WINDOW3,
+    POKEMON_SELECT_NUMBER_WINDOW4,
+    POKEMON_SELECT_NUMBER_WINDOW5,
+    POKEMON_SELECT_NUMBER_WINDOW6,
+    RANKING_NUMBER_WINDOW,
     TEMPLATE_MATCHING_THRESHOLD,
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
@@ -28,6 +37,18 @@ class PokemonExtractor:
             self.win_window_template,
             self.lost_window_template,
         ) = self._setup_win_lost_window_templates()
+        (
+            self.first_template,
+            self.second_template,
+            self.third_template,
+        ) = self._setup_pokemon_select_window_templates()
+
+    def _setup_pokemon_select_window_templates(self):
+        first_template = cv2.imread("template_images/general_templates/first.png", 0)
+        second_template = cv2.imread("template_images/general_templates/second.png", 0)
+        third_template = cv2.imread("template_images/general_templates/third.png", 0)
+
+        return first_template, second_template, third_template
 
     def _setup_win_lost_window_templates(self):
         win_window_template = cv2.imread("template_images/general_templates/win.png", 0)
@@ -105,6 +126,40 @@ class PokemonExtractor:
             )
             return "unknown_pokemon"
         return max(score_results, key=score_results.get)
+
+    def _search_pokemon_select_window_by_template_matching(
+        self,
+        select1_window,
+        select2_window,
+        select3_window,
+        select4_window,
+        select5_window,
+        select6_window,
+    ) -> List[int]:
+        """
+        テンプレートマッチングで、ポケモンの選出順を検出する
+
+        select{i}_window に対して、 first_template・second_template・third_template との
+        テンプレートマッチングを行い、最もスコアが高いものを選出順として返す
+        """
+
+        pokemon_select_order_score = []
+        for i, template in enumerate([self.first_template, self.second_template, self.third_template]):
+            for k, window in enumerate([select1_window, select2_window, select3_window, select4_window, select5_window, select6_window]):
+                res = cv2.matchTemplate(window, template, cv2.TM_CCOEFF_NORMED)
+                score = cv2.minMaxLoc(res)[1]
+                if score >= TEMPLATE_MATCHING_THRESHOLD:
+                    pokemon_select_order_score.append([k, i, score])
+
+        pokemon_select_order: List[int] = []
+        for i in range(3):
+            pokemon_select_order.append(
+                max(
+                    [score for score in pokemon_select_order_score if score[1] == i],
+                    key=lambda x: x[2],
+                )[0]
+            )
+        return pokemon_select_order
 
     def _search_win_or_lost_by_template_matching(self, frame) -> str:
         """
@@ -233,6 +288,49 @@ class PokemonExtractor:
 
         return your_pokemon_names, opponent_pokemon_names
 
+    def extract_pokemon_select_numbers(self, frame):
+        """
+        ポケモンの選択順をパターンマッチングで抽出する
+        順番を返す e.g. -> [5,6,4]
+        """
+
+        # search by template matching
+
+        select1_window = frame[
+            POKEMON_SELECT_NUMBER_WINDOW1[0] : POKEMON_SELECT_NUMBER_WINDOW1[1],
+            POKEMON_SELECT_NUMBER_WINDOW1[2] : POKEMON_SELECT_NUMBER_WINDOW1[3],
+        ]
+        select2_window = frame[
+            POKEMON_SELECT_NUMBER_WINDOW2[0] : POKEMON_SELECT_NUMBER_WINDOW2[1],
+            POKEMON_SELECT_NUMBER_WINDOW2[2] : POKEMON_SELECT_NUMBER_WINDOW2[3],
+        ]
+        select3_window = frame[
+            POKEMON_SELECT_NUMBER_WINDOW3[0] : POKEMON_SELECT_NUMBER_WINDOW3[1],
+            POKEMON_SELECT_NUMBER_WINDOW3[2] : POKEMON_SELECT_NUMBER_WINDOW3[3],
+        ]
+        select4_window = frame[
+            POKEMON_SELECT_NUMBER_WINDOW4[0] : POKEMON_SELECT_NUMBER_WINDOW4[1],
+            POKEMON_SELECT_NUMBER_WINDOW4[2] : POKEMON_SELECT_NUMBER_WINDOW4[3],
+        ]
+        select5_window = frame[
+            POKEMON_SELECT_NUMBER_WINDOW5[0] : POKEMON_SELECT_NUMBER_WINDOW5[1],
+            POKEMON_SELECT_NUMBER_WINDOW5[2] : POKEMON_SELECT_NUMBER_WINDOW5[3],
+        ]
+        select6_window = frame[
+            POKEMON_SELECT_NUMBER_WINDOW6[0] : POKEMON_SELECT_NUMBER_WINDOW6[1],
+            POKEMON_SELECT_NUMBER_WINDOW6[2] : POKEMON_SELECT_NUMBER_WINDOW6[3],
+        ]
+        pokemon_select_number = self._search_pokemon_select_window_by_template_matching(
+            select1_window,
+            select2_window,
+            select3_window,
+            select4_window,
+            select5_window,
+            select6_window,
+        )
+
+        return pokemon_select_number
+
     def extract_pokemon_name_in_battle(self, frame):
         """
         対戦中のポケモン名をパターンマッチングで抽出する
@@ -259,3 +357,32 @@ class PokemonExtractor:
 
         result = self._search_win_or_lost_by_template_matching(frame)
         return result
+
+    def _detect_rank_number(self, image):
+        """Detects text in the file."""
+        client = vision.ImageAnnotatorClient()
+        _, encoded_image = cv2.imencode(".jpg", image)
+        content2 = encoded_image.tobytes()
+        vision_image = vision.Image(content=content2)
+
+        response = client.text_detection(image=vision_image)
+        texts = response.text_annotations
+
+        if response.error.message:
+            return -1
+
+        # . が入ることがある
+        return int(texts[0].description.replace(".", ""))
+
+    def extract_rank_number(self, frame):
+        """
+        ランクをOCRで抽出する
+        -1 はエラー
+        """
+
+        rank_frame_window = frame[
+            RANKING_NUMBER_WINDOW[0] : RANKING_NUMBER_WINDOW[1],
+            RANKING_NUMBER_WINDOW[2] : RANKING_NUMBER_WINDOW[3],
+        ]
+        rank_number = self._detect_rank_number(rank_frame_window)
+        return rank_number

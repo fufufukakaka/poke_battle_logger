@@ -4,14 +4,16 @@ from config.config import (
     LEVEL_50_TEMPLATE_PATH,
     LEVEL_50_WINDOW,
     LOST_TEMPLATE_PATH,
+    POKEMON_SELECT_DONE_WINDOW,
     RANKING_TEMPLATE_PATH,
     RANKING_WINDOW,
+    SELECT_DONE_TEMPLATE_PATH,
     STANDING_BY_TEMPLATE_PATH,
     STANDING_BY_WINDOW,
     TEMPLATE_MATCHING_THRESHOLD,
+    WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     WIN_TEMPLATE_PATH,
-    WIN_LOST_WINDOW
 )
 
 
@@ -23,6 +25,7 @@ class FrameDetector:
             self.gray_ranking_template,
             self.gray_win_template,
             self.gray_lost_template,
+            self.gray_done_template,
         ) = self.setup_templates()
 
     def setup_templates(self):
@@ -43,12 +46,18 @@ class FrameDetector:
         lost_template = cv2.imread(LOST_TEMPLATE_PATH)
         gray_lost_template = cv2.cvtColor(lost_template, cv2.COLOR_RGB2GRAY)
 
+        select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH)
+        gray_select_done_template = cv2.cvtColor(
+            select_done_template, cv2.COLOR_RGB2GRAY
+        )
+
         return (
             gray_standing_by_template,
             gray_level_50_template,
             gray_ranking_template,
             gray_win_template,
             gray_lost_template,
+            gray_select_done_template,
         )
 
     def is_standing_by_frame(self, frame):
@@ -108,3 +117,16 @@ class FrameDetector:
             cv2.minMaxLoc(result_win)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
             or cv2.minMaxLoc(result_lost)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
         )
+
+    def is_select_done_frame(self, frame):
+        gray_select_done_area = cv2.cvtColor(
+            frame[
+                POKEMON_SELECT_DONE_WINDOW[0] : POKEMON_SELECT_DONE_WINDOW[1],
+                POKEMON_SELECT_DONE_WINDOW[2] : POKEMON_SELECT_DONE_WINDOW[3],
+            ],
+            cv2.COLOR_RGB2GRAY,
+        )
+        result = cv2.matchTemplate(
+            gray_select_done_area, self.gray_done_template, cv2.TM_CCOEFF_NORMED
+        )
+        return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD

@@ -24,6 +24,7 @@ def main():
     frame_detector = FrameDetector()
     pokemon_extractor = PokemonExtractor()
 
+    select_done_frames = []
     standing_by_frames = []
     level_50_frames = []
     ranking_frames = []
@@ -33,6 +34,10 @@ def main():
     for i in tqdm(range(int(video.get(cv2.CAP_PROP_FRAME_COUNT)))):
         ret, frame = video.read()
         if ret:
+            # select done
+            if frame_detector.is_select_done_frame(frame):
+                select_done_frames.append(i)
+
             # standing_by
             if frame_detector.is_standing_by_frame(frame):
                 standing_by_frames.append(i)
@@ -53,6 +58,7 @@ def main():
 
     # compress
     logger.info("Compressing frame array...")
+    compressed_select_done_frames = frame_compress(select_done_frames)
     compressed_standing_by_frames = frame_compress(standing_by_frames)
     compressed_level_50_frames = frame_compress(level_50_frames)
     compressed_ranking_frames = frame_compress(ranking_frames)
@@ -70,6 +76,21 @@ def main():
 
         if _standing_by_frame < _ranking_frame:
             battle_start_end_frame_numbers.append([_standing_by_frame, _ranking_frame])
+
+    # ポケモンの選出順を抽出する
+    logger.info("Extracting pokemon select order...")
+    pokemon_select_order = {}
+    for i in range(len(compressed_select_done_frames)):
+        _select_done_frames = compressed_select_done_frames[i]
+        _select_done_frame_number = _select_done_frames[-1]
+
+        video.set(cv2.CAP_PROP_POS_FRAMES, _select_done_frame_number - 1)
+        _, _select_done_frame = video.read()
+
+        _pokemon_select_order = pokemon_extractor.extract_pokemon_select_numbers(
+            _select_done_frame
+        )
+        pokemon_select_order[_select_done_frame_number] = _pokemon_select_order
 
     # 6vs6のポケモンを抽出する
     logger.info("Extracting pre-battle pokemons...")
@@ -121,8 +142,18 @@ def main():
             _win_or_lost_frame
         )
 
+    import pdb;pdb.set_trace()
+
     # ランクを検出(OCR)
     logger.info("Extracting ranking...")
+    rank_numbers = {}
+    for ranking_frame_numbers in compressed_ranking_frames:
+        ranking_frame_number = ranking_frame_numbers[-1]
+        video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
+        _, _ranking_frame = video.read()
+        rank_numbers[ranking_frame_number] = pokemon_extractor.extract_rank_number(
+            _ranking_frame
+        )
     import pdb;pdb.set_trace()
 
 
