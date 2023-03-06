@@ -20,12 +20,20 @@ ChartJS.register(
   Legend
 );
 
-interface WinRateChartProps {
-  win_rates: number[];
+interface TransitionChartProps {
+  data: number[];
+  chartTitle?: string;
+  dataLabel?: string;
+  dataColor?: string;
+  dataBackGroundColor?: string;
 }
 
-const WinRateChart: React.FunctionComponent<WinRateChartProps> = ({
-  win_rates,
+const TransitionChart: React.FunctionComponent<TransitionChartProps> = ({
+  data,
+  chartTitle,
+  dataLabel,
+  dataColor,
+  dataBackGroundColor,
 }) => {
   const options = {
     responsive: true,
@@ -35,7 +43,7 @@ const WinRateChart: React.FunctionComponent<WinRateChartProps> = ({
       },
       title: {
         display: true,
-        text: '勝率推移(シーズン3)',
+        text: chartTitle,
       },
     },
     maintainAspectRatio: true,
@@ -43,24 +51,24 @@ const WinRateChart: React.FunctionComponent<WinRateChartProps> = ({
   };
 
   // label is index of win_rates(0,1,2,...)
-  const labels = win_rates.map((_, index) => index);
-  const data = {
+  const labels = data.map((_, index) => index);
+  const chartData = {
     labels,
     datasets: [
       {
-        label: '勝率',
-        data: win_rates,
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        label: dataLabel,
+        data: data,
+        borderColor: dataColor,
+        backgroundColor: dataBackGroundColor,
       },
     ],
   };
 
   return (
     <div style={{ position: "relative", height: "auto", width: "35vw" }}>
-      <Line options={options} data={data} />
+      <Line options={options} data={chartData} />
     </div>
   );
 };
 
-export default WinRateChart;
+export default TransitionChart;

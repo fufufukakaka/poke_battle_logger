@@ -80,6 +80,15 @@ async def get_win_rate_transition(season: int) -> List[float]:
     return win_rate_transition
 
 
+@app.get("/api/v1/next_rank_transition")
+async def get_next_rank_transition(season: int) -> List[int]:
+    """
+    season 0 のときは全期間を返す
+    """
+    next_rank_transition = sqlite_handler.get_next_rank_transitions_season(season)
+    return next_rank_transition
+
+
 @app.get("/api/v1/your_pokemon_stats_summary")
 async def get_your_pokemon_stats_summary(
     season: int,

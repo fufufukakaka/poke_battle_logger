@@ -9,6 +9,8 @@ import {
   Th,
   Thead,
   Tr,
+  Divider,
+  Badge,
 } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import getRecentSummaryHandler from './api/get_recent_summary';
@@ -78,7 +80,7 @@ const Dashboard: React.FC<DashBoardProps> = ({
   latest_win_pokemon,
   latest_win_pokemon_image,
   win_rate,
-  recent_battle_history
+  recent_battle_history,
 }) => {
   return (
     <Box bg="gray.50" minH="100vh">
@@ -94,6 +96,10 @@ const Dashboard: React.FC<DashBoardProps> = ({
               latest_win_pokemon_image={latest_win_pokemon_image}
               win_rate={Number(win_rate.toFixed(4))}
             />
+            <Divider />
+            <Heading size="md" padding={'5px'}>
+              最近の対戦履歴
+            </Heading>
             <Table>
               <Thead>
                 <Tr>
@@ -110,7 +116,13 @@ const Dashboard: React.FC<DashBoardProps> = ({
                   <Tr key={battle.battle_id}>
                     <Td>{battle.battle_id}</Td>
                     <Td>{battle.created_at}</Td>
-                    <Td>{battle.win_or_lose}</Td>
+                    <Td>
+                      {battle.win_or_lose === 'win' ? (
+                        <Badge colorScheme="green">勝利！</Badge>
+                      ) : (
+                        <Badge colorScheme="red">負け</Badge>
+                      )}
+                    </Td>
                     <Td>{battle.next_rank}</Td>
                     <Td>{battle.your_pokemon_1}</Td>
                     <Td>{battle.opponent_pokemon_1}</Td>

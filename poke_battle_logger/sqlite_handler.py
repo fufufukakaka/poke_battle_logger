@@ -251,6 +251,38 @@ class SQLiteHandler:
         ]
         return win_rate_transitions
 
+    def get_next_rank_transitions_season(self, season: int) -> List[int]:
+        sql = f"""
+        with season_start_end as (
+            select
+                start_datetime,
+                end_datetime
+            from
+                season
+            where
+                season = {season}
+        )
+        select
+            next_rank
+        from
+            battlesummary
+        where
+            created_at between(
+                select
+                    start_datetime from season_start_end)
+            and(
+                select
+                    end_datetime from season_start_end)
+        order by
+            created_at
+        """
+        with self.db:
+            next_rank_transitions = self.db.execute_sql(sql).fetchall()
+        next_rank_transitions = [
+            next_rank_transition[0] for next_rank_transition in next_rank_transitions
+        ]
+        return next_rank_transitions
+
     def get_recent_battle_history(self) -> List[Dict[str, Union[str, int]]]:
         sql = """
         select
@@ -462,6 +494,28 @@ class SQLiteHandler:
         return list(merge_df.to_dict(orient="index").values())
 
     def get_your_pokemon_stats_summary_season(self, season: int) -> List[Dict[str, Union[str, int, float]]]:
+        sql_battle_num = f"""
+        with season_start_end as (
+            select
+                start_datetime,
+                end_datetime
+            from
+                season
+            where
+                season = {season}
+        )
+        select
+            count(1)
+        from
+            battlesummary
+        where
+            created_at between(
+                select
+                    start_datetime from season_start_end)
+            and(
+                select
+                    end_datetime from season_start_end)
+        """
         sql_in_team_count = f"""
         with season_start_end as (
             select
@@ -497,7 +551,6 @@ class SQLiteHandler:
         group by
             pokemon_name
         """
-
         sql_in_battle_count = f"""
         -- 選出回数
         with season_start_end as (
@@ -690,6 +743,7 @@ class SQLiteHandler:
         """
 
         with self.db:
+            battle_num = self.db.execute_sql(sql_battle_num).fetchone()[0]
             in_team_count = self.db.execute_sql(sql_in_team_count).fetchall()
             in_battle_count = self.db.execute_sql(sql_in_battle_count).fetchall()
             in_battle_win_count = self.db.execute_sql(
@@ -725,6 +779,9 @@ class SQLiteHandler:
             merge_df = merge_df.fillna(0)
 
         # 割合にする
+        merge_df["in_team_rate"] = (
+            merge_df["in_team_count"] / battle_num
+        )
         merge_df["in_battle_rate"] = (
             merge_df["in_battle_count"] / merge_df["in_team_count"]
         )
