@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { RiDatabaseFill } from 'react-icons/ri'
 import NavItem from '../atoms/NavItem'
 import { MdCatchingPokemon } from 'react-icons/md'
+import { TbAnalyzeFilled } from 'react-icons/tb'
 
 interface SidebarProps extends BoxProps {
   onClose: () => void
@@ -26,10 +27,13 @@ const SideBar = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      <NavItem key={'dashboard'} icon={MdCatchingPokemon} href={'/redshiftml'} marginBottom="5px">
+      <NavItem key={'dashboard'} icon={MdCatchingPokemon} href={'/'} marginBottom="5px">
         ダッシュボード
       </NavItem>
-      <NavItem key={'all_log'} icon={RiDatabaseFill} href={'/projects'} marginTop="5px">
+      <NavItem key={'analytics'} icon={TbAnalyzeFilled} href={'/analytics'} marginTop="5px">
+        ログ分析
+      </NavItem>
+      <NavItem key={'all_log'} icon={RiDatabaseFill} href={'/all_battle_log'} marginTop="5px">
         対戦ログ一覧
       </NavItem>
     </Box>

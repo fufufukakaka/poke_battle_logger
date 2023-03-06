@@ -74,7 +74,7 @@ async def get_recent_battle_summary() -> Dict[
 @app.get("/api/v1/win_rate_transition")
 async def get_win_rate_transition(season: int) -> List[float]:
     """
-    season -1 のときは全期間を返す
+    season 0 のときは全期間を返す
     """
     win_rate_transition = sqlite_handler.get_win_rate_transitions_season(season)
     return win_rate_transition
