@@ -1,7 +1,7 @@
-import { Box, Container } from '@chakra-ui/react';
+import { Box, Container, SimpleGrid, Text } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
-import getWinRateTransitionHandler from './api/get_win_rate_transition';
-import WinRateChart from './components/data-display/win-rate-chart';
+import getWinRateTransitionHandler from '../api/get_win_rate_transition';
+import WinRateChart from '../../components/data-display/win-rate-chart';
 
 interface AnalyticsProps {
   win_rates: any;
@@ -27,7 +27,10 @@ const Analytics: React.FC<AnalyticsProps> = ({ win_rates }) => {
     <Box bg="gray.50" minH="100vh">
       <Container maxW="container.xl" py="8">
         <Box flex="1" p="4" bg="white">
-          <WinRateChart win_rates={win_rates} />
+          <SimpleGrid columns={2} spacing={10}>
+            <WinRateChart win_rates={win_rates} />
+            <WinRateChart win_rates={win_rates} />
+          </SimpleGrid>
         </Box>
       </Container>
     </Box>

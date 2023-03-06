@@ -1,6 +1,7 @@
 import {
   Box,
   Container,
+  Heading,
   Stack,
   Table,
   Tbody,
@@ -11,7 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { GetServerSideProps } from 'next';
 import getRecentSummaryHandler from './api/get_recent_summary';
-import PokeStatGroup from './components/data-display/poke-stat-group';
+import PokeStatGroup from '../components/data-display/poke-stat-group';
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
@@ -82,6 +83,7 @@ const Dashboard: React.FC<DashBoardProps> = ({
   return (
     <Box bg="gray.50" minH="100vh">
       <Container maxW="container.xl" py="8">
+        <Heading padding={'5px'}>ダッシュボード</Heading>
         <Box flex="1" p="4" bg="white">
           <Stack spacing={4}>
             <PokeStatGroup

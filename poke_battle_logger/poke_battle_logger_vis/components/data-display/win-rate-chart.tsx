@@ -38,6 +38,8 @@ const WinRateChart: React.FunctionComponent<WinRateChartProps> = ({
         text: '勝率推移(シーズン3)',
       },
     },
+    maintainAspectRatio: true,
+    aspectRatio: 2
   };
 
   // label is index of win_rates(0,1,2,...)
@@ -55,9 +57,9 @@ const WinRateChart: React.FunctionComponent<WinRateChartProps> = ({
   };
 
   return (
-    <>
+    <div style={{ position: "relative", height: "auto", width: "35vw" }}>
       <Line options={options} data={data} />
-    </>
+    </div>
   );
 };
 
