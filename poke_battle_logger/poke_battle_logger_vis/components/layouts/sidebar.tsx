@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, CloseButton, Flex, useColorModeValue, Text, BoxProps, Divider, Spacer } from '@chakra-ui/react'
+import { Select, Box, CloseButton, Flex, useColorModeValue, Text, BoxProps } from '@chakra-ui/react'
 import Link from 'next/link'
 import { RiDatabaseFill } from 'react-icons/ri'
 import NavItem from '../atoms/NavItem'
@@ -27,6 +27,11 @@ const SideBar = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
+      <Select defaultValue='0' color='white'>
+        <option value='0'>全シーズン</option>
+        <option value='3'>シーズン3</option>
+        <option value='4'>シーズン4</option>
+      </Select>
       <NavItem key={'dashboard'} icon={MdCatchingPokemon} href={'/'} marginBottom="5px">
         ダッシュボード
       </NavItem>
