@@ -499,12 +499,11 @@ class PokemonExtractor:
 
         message = self._search_message_by_template_matching(thresh)
         if message is None:
-            import pdb;pdb.set_trace()
             message = self._recognize_message(thresh)
-            # save message image as template
             if message is None:
                 return None
-            processed_message = message.replace(" ", "_").replace(".", ">")
-            cv2.imwrite(f"template_images/unknown_message_templates/{processed_message}.png", thresh)
+            # save message image as template
+            # processed_message = message.replace(" ", "_").replace(".", ">")
+            # cv2.imwrite(f"template_images/unknown_message_templates/{processed_message}.png", thresh)
 
         return message

@@ -5,7 +5,10 @@ from rich.logging import RichHandler
 from tqdm.auto import tqdm
 
 from poke_battle_logger.batch.data_builder import DataBuilder
-from poke_battle_logger.batch.frame_compressor import frame_compress
+from poke_battle_logger.batch.frame_compressor import (
+    frame_compress,
+    message_frame_compress,
+)
 from poke_battle_logger.batch.frame_detector import FrameDetector
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.sqlite_handler import SQLiteHandler
@@ -20,7 +23,7 @@ logger = logging.getLogger("rich")
 
 
 def main():
-    video_id = "UnnNWVjuIWU"
+    video_id = "eWkhCLhQ2Kk"
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector()
@@ -73,20 +76,20 @@ def main():
     compressed_level_50_frames = frame_compress(level_50_frames)
     compressed_ranking_frames = frame_compress(ranking_frames)
     compressed_win_or_lost_frames = frame_compress(win_or_lost_frames)
-    compressed_message_window_frames = frame_compress(message_window_frames, frame_threshold=3)
+    compressed_message_window_frames = message_frame_compress(
+        message_window_frames, frame_threshold=3
+    )
 
     # メッセージの文字認識(OCR)
-    logger.info("Extracting message...")
-    messages = {}
-    for message_frame_numbers in compressed_message_window_frames:
-        message_frame_number = message_frame_numbers[-1]
-        video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
-        _, _message_frame = video.read()
-        _message = pokemon_extractor.extract_message(_message_frame)
-        if _message is not None:
-            messages[message_frame_number] = _message
-
-    import pdb;pdb.set_trace()
+    # logger.info("Extracting message...")
+    # messages = {}
+    # for message_frame_numbers in compressed_message_window_frames:
+    #     message_frame_number = message_frame_numbers[-1]
+    #     video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
+    #     _, _message_frame = video.read()
+    #     _message = pokemon_extractor.extract_message(_message_frame)
+    #     if _message is not None:
+    #         messages[message_frame_number] = _message
 
     # ランクを検出(OCR)
     logger.info("Extracting ranking...")
@@ -204,19 +207,23 @@ def main():
             _win_or_lost_frame
         )
 
-    # # メッセージの文字認識(OCR)
-    # logger.info("Extracting message...")
-    # messages = {}
-    # for message_frame_numbers in compressed_message_window_frames:
-    #     message_frame_number = message_frame_numbers[-1]
-    #     video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
-    #     _, _message_frame = video.read()
-    #     _message = pokemon_extractor.extract_message(_message_frame)
-    #     if _message is not None:
-    #         messages[message_frame_number] = _message
+    # メッセージの文字認識(OCR)
+    logger.info("Extracting message...")
+    messages = {}
+    # import pdb
 
-    # import pdb;pdb.set_trace()
+    # pdb.set_trace()
+    for message_frame_numbers in compressed_message_window_frames:
+        message_frame_number = message_frame_numbers[-1]
+        video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
+        _, _message_frame = video.read()
+        _message = pokemon_extractor.extract_message(_message_frame)
+        if _message is not None:
+            messages[message_frame_number] = _message
 
+    import pdb
+
+    pdb.set_trace()
     # build formatted data
     logger.info("Build Formatted Data...")
     data_builder = DataBuilder(
@@ -226,7 +233,7 @@ def main():
         pre_battle_pokemons=pre_battle_pokemons,
         pokemon_select_order=pokemon_select_order,
         rank_numbers=rank_numbers,
-        messages=messages
+        messages=messages,
     )
 
     (
