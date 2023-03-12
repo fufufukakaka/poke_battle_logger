@@ -35,8 +35,15 @@ class BattleSummary(BaseModel):
 class InBattlePokemonLog(BaseModel):
     battle_id = ForeignKeyField(Battle, backref="battlePokemonTeams")
     turn = IntegerField()
+    frame_number = IntegerField()
     your_pokemon_name = TextField()
     opponent_pokemon_name = TextField()
+
+
+class MessageLog(BaseModel):
+    battle_id = ForeignKeyField(Battle, backref="battleMessages")
+    frame_number = IntegerField()
+    message = TextField()
 
 
 class BattlePokemonTeam(BaseModel):
@@ -110,6 +117,15 @@ class SQLiteHandler:
                     opponent_pokemon_name=_in_battle_pokemon_log[
                         "opponent_pokemon_name"
                     ],
+                )
+
+    def insert_message_log(self, message_log):
+        with self.db:
+            for _message_log in message_log:
+                MessageLog.create(
+                    battle_id=_message_log["battle_id"],
+                    frame_number=_message_log["frame_number"],
+                    message=_message_log["message"],
                 )
 
     def get_latest_season_win_rate(self) -> float:
@@ -313,7 +329,9 @@ class SQLiteHandler:
             ]
         return recent_battle_history_dict
 
-    def get_your_pokemon_stats_summary_all(self) -> List[Dict[str, Union[str, int, float]]]:
+    def get_your_pokemon_stats_summary_all(
+        self,
+    ) -> List[Dict[str, Union[str, int, float]]]:
         sql_in_team_count = """
         -- 採用回数
         select
@@ -493,7 +511,9 @@ class SQLiteHandler:
         )
         return list(merge_df.to_dict(orient="index").values())
 
-    def get_your_pokemon_stats_summary_season(self, season: int) -> List[Dict[str, Union[str, int, float]]]:
+    def get_your_pokemon_stats_summary_season(
+        self, season: int
+    ) -> List[Dict[str, Union[str, int, float]]]:
         sql_battle_num = f"""
         with season_start_end as (
             select
@@ -779,9 +799,7 @@ class SQLiteHandler:
             merge_df = merge_df.fillna(0)
 
         # 割合にする
-        merge_df["in_team_rate"] = (
-            merge_df["in_team_count"] / battle_num
-        )
+        merge_df["in_team_rate"] = merge_df["in_team_count"] / battle_num
         merge_df["in_battle_rate"] = (
             merge_df["in_battle_count"] / merge_df["in_team_count"]
         )

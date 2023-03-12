@@ -20,6 +20,7 @@ class DataBuilder:
         pokemon_select_order,
         rank_numbers,
         messages,
+        win_or_lost,
     ):
         self.video_id = video_id
         self.battle_start_end_frame_numbers = battle_start_end_frame_numbers
@@ -28,6 +29,7 @@ class DataBuilder:
         self.pokemon_select_order = pokemon_select_order
         self.rank_numbers = rank_numbers
         self.messages = messages
+        self.win_or_lost = win_or_lost
 
     def _publish_date(self, watch_html: str):
         """https://github.com/pytube/pytube/issues/1269
@@ -61,9 +63,8 @@ class DataBuilder:
         second_from_frame_number = int(0.03 * start_frame_number)
 
         # +9h は UTC to JST
-        start_datetime = (
-            self._publish_date(yt.watch_html)
-            + timedelta(seconds=second_from_frame_number, hours=9)
+        start_datetime = self._publish_date(yt.watch_html) + timedelta(
+            seconds=second_from_frame_number, hours=9
         )
         return start_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
@@ -89,6 +90,18 @@ class DataBuilder:
                     _battle_pokemons.append(modified_b_pokemons)
             compressed_battle_pokemons.append(_battle_pokemons)
         self.compressed_battle_pokemons = compressed_battle_pokemons
+
+        self.compressed_messages = []
+        for start_frame, end_frame in self.battle_start_end_frame_numbers:
+            _messages = []
+            for frame, message in self.messages.items():
+                if start_frame < frame and end_frame > frame:
+                    message_dict = {
+                        "frame_number": frame,
+                        "message": message,
+                    }
+                    _messages.append(message_dict)
+            self.compressed_messages.append(_messages)
 
     def _build_battle_pokemon_combinations(self):
         battle_pokemon_combinations = []
@@ -142,21 +155,31 @@ class DataBuilder:
         self.battle_pokemon_combinations = battle_pokemon_combinations
 
     def _build_modified_win_or_lose(self):
-        modified_win_or_lose = []
+        def determine_unknown_outcomes(win_or_lost, modified_win_or_lose_frames):
+            for modified_frame, outcome in modified_win_or_lose_frames.items():
+                closest_frame = min(win_or_lost, key=lambda x: abs(x - modified_frame))
+                win_or_lost[closest_frame] = outcome
+            return win_or_lost
+
+        modified_win_or_lose_frames = {}
+        rank_frames = list(self.rank_numbers.keys())
         for i in range(1, len(self.rank_numbers.values())):
             previous_rank = list(self.rank_numbers.values())[i - 1]
             next_rank = list(self.rank_numbers.values())[i]
             if previous_rank > next_rank:
-                modified_win_or_lose.append("win")
+                modified_win_or_lose_frames[rank_frames[i]] = "win"
             else:
-                modified_win_or_lose.append("lose")
-        self.modified_win_or_lose = modified_win_or_lose
+                modified_win_or_lose_frames[rank_frames[i]] = "lose"
+        self.filled_win_or_lost = determine_unknown_outcomes(
+            self.win_or_lost, modified_win_or_lose_frames
+        )
 
     def build(self):
         battle_ids = []
         battle_logs = []
         modified_pre_battle_pokemons = []
         modified_in_battle_pokemons = []
+        modified_messages = []
 
         # setup
         self._compress_battle_pokemons()
@@ -174,7 +197,7 @@ class DataBuilder:
             _log = {
                 "battle_id": battle_id,
                 "created_at": created_at,
-                "win_or_lose": self.modified_win_or_lose[i],
+                "win_or_lose": list(self.filled_win_or_lost.values())[i],
                 "next_rank": list(self.rank_numbers.values())[i + 1],
                 "your_team": ",".join(
                     [
@@ -239,10 +262,22 @@ class DataBuilder:
                     {
                         "battle_id": battle_id,
                         "turn": i + 1,
+                        "frame_number": _in_battle_log["frame_number"],
                         "your_pokemon_name": _in_battle_log["your_pokemon_name"],
                         "opponent_pokemon_name": _in_battle_log[
                             "opponent_pokemon_name"
                         ],
+                    }
+                )
+
+            # messages
+            message_log = self.compressed_messages[i]
+            for _message_log in message_log:
+                modified_messages.append(
+                    {
+                        "battle_id": battle_id,
+                        "frame": _message_log["frame_number"],
+                        "message": _message_log["message"],
                     }
                 )
 
@@ -251,4 +286,5 @@ class DataBuilder:
             battle_logs,
             modified_pre_battle_pokemons,
             modified_in_battle_pokemons,
+            modified_messages,
         )

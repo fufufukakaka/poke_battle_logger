@@ -503,7 +503,7 @@ class PokemonExtractor:
             if message is None:
                 return None
             # save message image as template
-            # processed_message = message.replace(" ", "_").replace(".", ">")
-            # cv2.imwrite(f"template_images/unknown_message_templates/{processed_message}.png", thresh)
+            processed_message = message.replace(" ", "_").replace(".", ">")
+            cv2.imwrite(f"template_images/unknown_message_templates/{processed_message}.png", thresh)
 
         return message

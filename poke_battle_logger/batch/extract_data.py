@@ -210,9 +210,6 @@ def main():
     # メッセージの文字認識(OCR)
     logger.info("Extracting message...")
     messages = {}
-    # import pdb
-
-    # pdb.set_trace()
     for message_frame_numbers in compressed_message_window_frames:
         message_frame_number = message_frame_numbers[-1]
         video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
@@ -221,9 +218,6 @@ def main():
         if _message is not None:
             messages[message_frame_number] = _message
 
-    import pdb
-
-    pdb.set_trace()
     # build formatted data
     logger.info("Build Formatted Data...")
     data_builder = DataBuilder(
@@ -234,6 +228,7 @@ def main():
         pokemon_select_order=pokemon_select_order,
         rank_numbers=rank_numbers,
         messages=messages,
+        win_or_lost=win_or_lost,
     )
 
     (
@@ -241,6 +236,7 @@ def main():
         battle_logs,
         modified_pre_battle_pokemons,
         modified_in_battle_pokemons,
+        modified_messages,
     ) = data_builder.build()
 
     # insert data to database
@@ -250,6 +246,7 @@ def main():
     sqlite_handler.insert_battle_summary(battle_logs)
     sqlite_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
     sqlite_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
+    sqlite_handler.insert_message_log(modified_messages)
 
     logger.info("Finish Processing!!!")
 
