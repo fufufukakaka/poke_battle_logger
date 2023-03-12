@@ -19,6 +19,7 @@ class DataBuilder:
         pre_battle_pokemons,
         pokemon_select_order,
         rank_numbers,
+        messages,
     ):
         self.video_id = video_id
         self.battle_start_end_frame_numbers = battle_start_end_frame_numbers
@@ -26,6 +27,7 @@ class DataBuilder:
         self.pre_battle_pokemons = pre_battle_pokemons
         self.pokemon_select_order = pokemon_select_order
         self.rank_numbers = rank_numbers
+        self.messages = messages
 
     def _publish_date(self, watch_html: str):
         """https://github.com/pytube/pytube/issues/1269

@@ -6,6 +6,8 @@ import cv2
 from google.cloud import vision
 
 from config.config import (
+    MESSAGE_TEMPLATE_MATCHING_THRESHOLD,
+    MESSAGE_WINDOW,
     OPPONENT_PRE_POKEMON_POSITION,
     POKEMON_POSITIONS,
     POKEMON_SELECT_NUMBER_WINDOW1,
@@ -42,6 +44,7 @@ class PokemonExtractor:
             self.second_template,
             self.third_template,
         ) = self._setup_pokemon_select_window_templates()
+        self.message_window_templates = self._setup_message_window_templates()
 
     def _setup_pokemon_select_window_templates(self):
         first_template = cv2.imread("template_images/general_templates/first.png", 0)
@@ -81,6 +84,19 @@ class PokemonExtractor:
                 path.split("/")[-1].split(".")[0]
             ] = _gray_image
         return battle_pokemon_name_window_templates
+
+    def _setup_message_window_templates(self):
+        message_window_template_paths = glob.glob(
+            "template_images/message_templates/*.png"
+        )
+        message_window_templates = {}
+        for path in message_window_template_paths:
+            _image = cv2.imread(path, 0)
+            threshold_value = 200
+            max_value = 255
+            _, thresh = cv2.threshold(_image, threshold_value, max_value, cv2.THRESH_BINARY)
+            message_window_templates[path.split("/")[-1].split(".")[0]] = thresh
+        return message_window_templates
 
     def _search_by_template_matching(self, pokemon_image):
         """
@@ -411,6 +427,43 @@ class PokemonExtractor:
         # . が入ることがある
         return int(texts[0].description.replace(".", ""))
 
+    def _recognize_message(self, image):
+        """Detects text in the file."""
+        client = vision.ImageAnnotatorClient()
+        _, encoded_image = cv2.imencode(".jpg", image)
+        content2 = encoded_image.tobytes()
+        vision_image = vision.Image(content=content2)
+
+        response = client.text_detection(
+            image=vision_image, image_context={"language_hints": ["ja", "en"]}
+        )
+        texts = response.text_annotations
+
+        if response.error.message:
+            return None
+        if len(texts) == 0:
+            return None
+
+        return texts[0].description
+
+    def _search_message_by_template_matching(self, image):
+        """
+        テンプレートマッチングでメッセージを照合する
+        """
+        score_results = {}
+        for message, template in self.message_window_templates.items():
+            res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
+            score = cv2.minMaxLoc(res)[1]
+            if score >= MESSAGE_TEMPLATE_MATCHING_THRESHOLD:
+                score_results[message] = score
+        if len(score_results) > 0:
+            detected_message = max(score_results, key=score_results.get)
+            # post-process
+            detected_message = detected_message.replace("_", " ").replace(">", ".")
+            return detected_message
+        else:
+            return None
+
     def extract_rank_number(self, frame):
         """
         ランクをOCRで抽出する
@@ -423,3 +476,35 @@ class PokemonExtractor:
         ]
         rank_number = self._detect_rank_number(rank_frame_window)
         return rank_number
+
+    def extract_message(self, frame):
+        """
+        一度読み取ったメッセージの画像についてはテンプレートマッチングで照合し、
+
+        まだ読み取ったことがないメッセージをOCRで認識する
+        """
+
+        message_frame_window = frame[
+            MESSAGE_WINDOW[0] : MESSAGE_WINDOW[1],
+            MESSAGE_WINDOW[2] : MESSAGE_WINDOW[3],
+        ]
+        gray = cv2.cvtColor(message_frame_window, cv2.COLOR_BGR2GRAY)
+        threshold_value = 200
+        max_value = 255
+        _, thresh = cv2.threshold(gray, threshold_value, max_value, cv2.THRESH_BINARY)
+        white_pixels = cv2.countNonZero(thresh)
+        # 誤って検出したメッセージウィンドウでないフレームを除外する
+        if white_pixels > 10000:
+            return None
+
+        message = self._search_message_by_template_matching(thresh)
+        if message is None:
+            import pdb;pdb.set_trace()
+            message = self._recognize_message(thresh)
+            # save message image as template
+            if message is None:
+                return None
+            processed_message = message.replace(" ", "_").replace(".", ">")
+            cv2.imwrite(f"template_images/unknown_message_templates/{processed_message}.png", thresh)
+
+        return message

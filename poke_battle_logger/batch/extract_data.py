@@ -20,7 +20,7 @@ logger = logging.getLogger("rich")
 
 
 def main():
-    video_id = "V3-szMt-Dmk"
+    video_id = "UnnNWVjuIWU"
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector()
@@ -32,6 +32,7 @@ def main():
     level_50_frames = []
     ranking_frames = []
     win_or_lost_frames = []
+    message_window_frames = []
 
     is_exist_unknown_pokemon = False
 
@@ -58,6 +59,10 @@ def main():
             # win_or_lost
             if frame_detector.is_win_or_lost_frame(frame):
                 win_or_lost_frames.append(i)
+
+            # message window
+            if frame_detector.is_message_window_frame(frame):
+                message_window_frames.append(i)
         else:
             continue
 
@@ -68,6 +73,20 @@ def main():
     compressed_level_50_frames = frame_compress(level_50_frames)
     compressed_ranking_frames = frame_compress(ranking_frames)
     compressed_win_or_lost_frames = frame_compress(win_or_lost_frames)
+    compressed_message_window_frames = frame_compress(message_window_frames, frame_threshold=3)
+
+    # メッセージの文字認識(OCR)
+    logger.info("Extracting message...")
+    messages = {}
+    for message_frame_numbers in compressed_message_window_frames:
+        message_frame_number = message_frame_numbers[-1]
+        video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
+        _, _message_frame = video.read()
+        _message = pokemon_extractor.extract_message(_message_frame)
+        if _message is not None:
+            messages[message_frame_number] = _message
+
+    import pdb;pdb.set_trace()
 
     # ランクを検出(OCR)
     logger.info("Extracting ranking...")
@@ -101,7 +120,12 @@ def main():
         _standing_by_frames = compressed_standing_by_frames[i]
         _standing_by_frame = _standing_by_frames[-10]
 
-        _ranking_frame = rank_frames[i + 1]
+        # チーム選択からの場合(最初の順位表示なし)
+        if len(compressed_standing_by_frames) == len(rank_numbers):
+            _ranking_frame = rank_frames[i]
+        else:
+            # バトルスタジアム入場(最初に表示された順位がある)からの場合
+            _ranking_frame = rank_frames[i + 1]
 
         if _standing_by_frame < _ranking_frame:
             battle_start_end_frame_numbers.append([_standing_by_frame, _ranking_frame])
@@ -180,6 +204,19 @@ def main():
             _win_or_lost_frame
         )
 
+    # # メッセージの文字認識(OCR)
+    # logger.info("Extracting message...")
+    # messages = {}
+    # for message_frame_numbers in compressed_message_window_frames:
+    #     message_frame_number = message_frame_numbers[-1]
+    #     video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
+    #     _, _message_frame = video.read()
+    #     _message = pokemon_extractor.extract_message(_message_frame)
+    #     if _message is not None:
+    #         messages[message_frame_number] = _message
+
+    # import pdb;pdb.set_trace()
+
     # build formatted data
     logger.info("Build Formatted Data...")
     data_builder = DataBuilder(
@@ -189,7 +226,9 @@ def main():
         pre_battle_pokemons=pre_battle_pokemons,
         pokemon_select_order=pokemon_select_order,
         rank_numbers=rank_numbers,
+        messages=messages
     )
+
     (
         battle_ids,
         battle_logs,

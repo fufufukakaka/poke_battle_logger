@@ -4,6 +4,10 @@ from config.config import (
     LEVEL_50_TEMPLATE_PATH,
     LEVEL_50_WINDOW,
     LOST_TEMPLATE_PATH,
+    POKEMON_MESSAGE_WINDOW,
+    POKEMON_MESSAGE_WINDOW_MAX_WHITE_PIXELS,
+    POKEMON_MESSAGE_WINDOW_MIN_WHITE_PIXELS,
+    POKEMON_MESSAGE_WINDOW_THRESHOLD_VALUE,
     POKEMON_SELECT_DONE_WINDOW,
     RANKING_TEMPLATE_PATH,
     RANKING_WINDOW,
@@ -130,3 +134,27 @@ class FrameDetector:
             gray_select_done_area, self.gray_done_template, cv2.TM_CCOEFF_NORMED
         )
         return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+
+    def is_message_window_frame(self, frame):
+        gray = cv2.cvtColor(
+            frame[
+                POKEMON_MESSAGE_WINDOW[0] : POKEMON_MESSAGE_WINDOW[1],
+                POKEMON_MESSAGE_WINDOW[2] : POKEMON_MESSAGE_WINDOW[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        max_value = 255
+        _, thresh = cv2.threshold(
+            gray, POKEMON_MESSAGE_WINDOW_THRESHOLD_VALUE, max_value, cv2.THRESH_BINARY
+        )
+        white_pixels = cv2.countNonZero(thresh)
+        is_message = (
+            white_pixels > POKEMON_MESSAGE_WINDOW_MIN_WHITE_PIXELS
+            and white_pixels < POKEMON_MESSAGE_WINDOW_MAX_WHITE_PIXELS
+        )
+
+        mser = cv2.MSER_create()
+        regions, _ = mser.detectRegions(thresh)
+        is_exist_text = len(regions) >= 2
+
+        return is_message & is_exist_text
