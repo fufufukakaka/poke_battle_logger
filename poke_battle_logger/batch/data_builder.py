@@ -161,17 +161,17 @@ class DataBuilder:
                 win_or_lost[closest_frame] = outcome
             return win_or_lost
 
-        modified_win_or_lose_frames = {}
+        self.modified_win_or_lose_frames_from_rank = {}
         rank_frames = list(self.rank_numbers.keys())
         for i in range(1, len(self.rank_numbers.values())):
             previous_rank = list(self.rank_numbers.values())[i - 1]
             next_rank = list(self.rank_numbers.values())[i]
             if previous_rank > next_rank:
-                modified_win_or_lose_frames[rank_frames[i]] = "win"
+                self.modified_win_or_lose_frames_from_rank[rank_frames[i]] = "win"
             else:
-                modified_win_or_lose_frames[rank_frames[i]] = "lose"
+                self.modified_win_or_lose_frames_from_rank[rank_frames[i]] = "lose"
         self.filled_win_or_lost = determine_unknown_outcomes(
-            self.win_or_lost, modified_win_or_lose_frames
+            self.win_or_lost, self.modified_win_or_lose_frames_from_rank
         )
 
     def build(self):
@@ -213,10 +213,16 @@ class DataBuilder:
             else:
                 _next_rank = list(self.rank_numbers.values())[i]
 
+            # 長さが合わなくて信用できない時は、ランクから判断する
+            if len(self.modified_win_or_lose_frames_from_rank) == len(self.filled_win_or_lost):
+                _win_or_lose = list(self.filled_win_or_lost.values())[i]
+            else:
+                _win_or_lose = list(self.filled_win_or_lost.values())[i]
+
             _log = {
                 "battle_id": battle_id,
                 "created_at": created_at,
-                "win_or_lose": list(self.filled_win_or_lost.values())[i],
+                "win_or_lose": _win_or_lose,
                 "next_rank": _next_rank,
                 "your_team": ",".join(
                     [
