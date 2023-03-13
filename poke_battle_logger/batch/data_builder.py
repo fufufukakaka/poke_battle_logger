@@ -217,7 +217,7 @@ class DataBuilder:
             if len(self.modified_win_or_lose_frames_from_rank) == len(self.filled_win_or_lost):
                 _win_or_lose = list(self.filled_win_or_lost.values())[i]
             else:
-                _win_or_lose = list(self.filled_win_or_lost.values())[i]
+                _win_or_lose = list(self.modified_win_or_lose_frames_from_rank.values())[i]
 
             _log = {
                 "battle_id": battle_id,
