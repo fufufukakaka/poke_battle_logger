@@ -115,6 +115,7 @@ class SQLiteHandler:
                 InBattlePokemonLog.create(
                     battle_id=_in_battle_pokemon_log["battle_id"],
                     turn=_in_battle_pokemon_log["turn"],
+                    frame_number=_in_battle_pokemon_log["frame_number"],
                     your_pokemon_name=_in_battle_pokemon_log["your_pokemon_name"],
                     opponent_pokemon_name=_in_battle_pokemon_log[
                         "opponent_pokemon_name"
