@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { DispatchWithoutAction, ReactNode } from 'react'
 import {
   Box,
   useColorModeValue,
@@ -9,11 +9,11 @@ import {
 import SideBar from './sidebar'
 import MobileNav from '../atoms/MobileNav'
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout({ setSeason, children }: { setSeason: React.Dispatch<React.SetStateAction<string>>, children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      <SideBar onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+      <SideBar onClose={() => onClose} display={{ base: 'none', md: 'block' }} setSeason={setSeason} />
       <Drawer
         autoFocus={false}
         isOpen={isOpen}
@@ -24,7 +24,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         size="full"
       >
         <DrawerContent>
-          <SideBar onClose={onClose} />
+          <SideBar onClose={onClose} setSeason={setSeason}/>
         </DrawerContent>
       </Drawer>
       {/* mobilenav */}

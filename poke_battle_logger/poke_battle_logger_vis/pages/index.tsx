@@ -15,6 +15,8 @@ import {
 import { GetServerSideProps } from 'next';
 import getRecentSummaryHandler from './api/get_recent_summary';
 import PokeStatGroup from '../components/data-display/poke-stat-group';
+import useSWR from "swr";
+import axios from "axios"
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
@@ -33,55 +35,48 @@ interface DashBoardProps {
   }[];
 }
 
-export const getServerSideProps: GetServerSideProps<
-  DashBoardProps
-> = async () => {
-  const result = await getRecentSummaryHandler();
-
-  if ('error' in result) {
-    throw new Error('error');
+export const fetcher = async (url: string) => {
+  const results = await axios.get(url);
+  const data = {
+    latest_lose_pokemon: results.data.latest_lose_pokemon,
+    latest_lose_pokemon_image: results.data.latest_lose_pokemon_image,
+    latest_rank: results.data.latest_rank,
+    latest_win_pokemon: results.data.latest_win_pokemon,
+    latest_win_pokemon_image: results.data.latest_win_pokemon_image,
+    win_rate: results.data.win_rate,
+    recent_battle_history: [
+      ...results.data.recent_battle_history.map(
+        (battle: {
+          battle_id: string;
+          created_at: string;
+          next_rank: number;
+          opponent_pokemon_1: string;
+          win_or_lose: string;
+          your_pokemon_1: string;
+        }) => ({
+          battle_id: battle.battle_id,
+          created_at: battle.created_at,
+          next_rank: Number(battle.next_rank),
+          opponent_pokemon_1: battle.opponent_pokemon_1,
+          win_or_lose: battle.win_or_lose,
+          your_pokemon_1: battle.your_pokemon_1,
+        })
+      ),
+    ],
   }
-
-  return {
-    props: {
-      latest_lose_pokemon: result.latest_lose_pokemon,
-      latest_lose_pokemon_image: result.latest_lose_pokemon_image,
-      latest_rank: result.latest_rank,
-      latest_win_pokemon: result.latest_win_pokemon,
-      latest_win_pokemon_image: result.latest_win_pokemon_image,
-      win_rate: result.win_rate,
-      recent_battle_history: [
-        ...result.recent_battle_history.map(
-          (battle: {
-            battle_id: string;
-            created_at: string;
-            next_rank: number;
-            opponent_pokemon_1: string;
-            win_or_lose: string;
-            your_pokemon_1: string;
-          }) => ({
-            battle_id: battle.battle_id,
-            created_at: battle.created_at,
-            next_rank: Number(battle.next_rank),
-            opponent_pokemon_1: battle.opponent_pokemon_1,
-            win_or_lose: battle.win_or_lose,
-            your_pokemon_1: battle.your_pokemon_1,
-          })
-        ),
-      ],
-    },
-  };
-};
+  return data;
+}
 
 const Dashboard: React.FC<DashBoardProps> = ({
-  latest_lose_pokemon,
-  latest_lose_pokemon_image,
-  latest_rank,
-  latest_win_pokemon,
-  latest_win_pokemon_image,
-  win_rate,
-  recent_battle_history,
 }) => {
+  const { data, error, isLoading } = useSWR(
+    "http://127.0.0.1:8000/api/v1/recent_battle_summary",
+    fetcher
+  )
+  if (isLoading) return <p>loading...</p>
+  if (error) return <p>error</p>
+  if (!data) return <p>no data</p>
+
   return (
     <Box bg="gray.50" minH="100vh">
       <Container maxW="container.xl" py="8">
@@ -89,12 +84,12 @@ const Dashboard: React.FC<DashBoardProps> = ({
         <Box flex="1" p="4" bg="white">
           <Stack spacing={4}>
             <PokeStatGroup
-              latest_lose_pokemon={latest_lose_pokemon}
-              latest_lose_pokemon_image={latest_lose_pokemon_image}
-              latest_rank={latest_rank}
-              latest_win_pokemon={latest_win_pokemon}
-              latest_win_pokemon_image={latest_win_pokemon_image}
-              win_rate={Number(win_rate.toFixed(4))}
+              latest_lose_pokemon={data.latest_lose_pokemon}
+              latest_lose_pokemon_image={data.latest_lose_pokemon_image}
+              latest_rank={data.latest_rank}
+              latest_win_pokemon={data.latest_win_pokemon}
+              latest_win_pokemon_image={data.latest_win_pokemon_image}
+              win_rate={Number(data.win_rate.toFixed(4))}
             />
             <Divider />
             <Heading size="md" padding={'5px'}>
@@ -112,7 +107,7 @@ const Dashboard: React.FC<DashBoardProps> = ({
                 </Tr>
               </Thead>
               <Tbody>
-                {recent_battle_history.map((battle) => (
+                {data.recent_battle_history.map((battle) => (
                   <Tr key={battle.battle_id}>
                     <Td>{battle.battle_id}</Td>
                     <Td>{battle.created_at}</Td>

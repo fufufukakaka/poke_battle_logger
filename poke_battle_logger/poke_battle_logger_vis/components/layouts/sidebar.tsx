@@ -8,9 +8,10 @@ import { TbAnalyzeFilled } from 'react-icons/tb'
 
 interface SidebarProps extends BoxProps {
   onClose: () => void
+  setSeason: React.Dispatch<React.SetStateAction<string>>
 }
 
-const SideBar = ({ onClose, ...rest }: SidebarProps) => {
+const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
   return (
     <Box
       bg={useColorModeValue('rgba(11, 21, 48, 0.9)', 'gray.900')}
@@ -27,8 +28,8 @@ const SideBar = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      <Select defaultValue='0' color='white'>
-        <option value='0'>全シーズン</option>
+      <Select defaultValue='all' color='white' onChange={(e) => setSeason(e.target.value)}>
+        <option value='all'>全シーズン</option>
         <option value='3'>シーズン3</option>
         <option value='4'>シーズン4</option>
       </Select>

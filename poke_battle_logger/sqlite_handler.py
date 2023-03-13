@@ -227,8 +227,10 @@ class SQLiteHandler:
         """
         with self.db:
             latest_lose_pokemons = self.db.execute_sql(sql).fetchone()
-            # ランダムに1匹選ぶ
-            latest_lose_pokemon = random.choice(latest_lose_pokemons)
+            # Unseen を除いてランダムに1匹選ぶ
+            latest_lose_pokemon = random.choice(
+                [pokemon for pokemon in latest_lose_pokemons if pokemon != "Unseen"]
+            )
         return latest_lose_pokemon
 
     def get_win_rate_transitions_season(self, season: int) -> List[float]:
