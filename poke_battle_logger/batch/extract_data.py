@@ -208,8 +208,6 @@ def main(video_id: str):
         if _message is not None:
             messages[message_frame_number] = _message
 
-    import pdb;pdb.set_trace()
-
     # build formatted data
     logger.info("Build Formatted Data...")
     data_builder = DataBuilder(

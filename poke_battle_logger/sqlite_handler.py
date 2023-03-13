@@ -334,481 +334,107 @@ class SQLiteHandler:
     def get_your_pokemon_stats_summary_all(
         self,
     ) -> List[Dict[str, Union[str, int, float]]]:
-        sql_in_team_count = """
-        -- 採用回数
-        select
-            pokemon_name,
-            count(1)
-        from
-            battlepokemonteam
-        where
-            team = 'you'
-        group by pokemon_name
-        """
-        sql_in_battle_count = """
-        -- 選出回数
-        with first as (
-            select
-                your_pokemon_1 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            group by
-                your_pokemon_1
-        ),
-        second as (
-            select
-                your_pokemon_2 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            group by
-                your_pokemon_2
-        ),
-        third as (
-            select
-                your_pokemon_3 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            group by
-                your_pokemon_3
-        ),
-        unions as (
-            select
-                *
-            from
-                first
-            union
-            select
-                *
-            from
-                second
-            union
-            select
-                *
-            from
-                third
-        )
-        select
-            pokemon_name,
-            sum(counts)
-        from
-            unions
-        group by pokemon_name
-        """
-        sql_in_battle_win_count = """
-        -- 勝利したときの選出回数
-        with first as (
-            select
-                your_pokemon_1 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                win_or_lose = 'win'
-            group by
-                your_pokemon_1
-        ),
-        second as (
-            select
-                your_pokemon_2 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                win_or_lose = 'win'
-            group by
-                your_pokemon_2
-        ),
-        third as (
-            select
-                your_pokemon_3 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                win_or_lose = 'win'
-            group by
-                your_pokemon_3
-        ),
-        unions as (
-            select
-                *
-            from
-                first
-            union
-            select
-                *
-            from
-                second
-            union
-            select
-                *
-            from
-                third
-        )
-        select
-            pokemon_name,
-            sum(counts)
-        from
-            unions
-        group by pokemon_name
-        """
-        sql_head_battle_count = """
-        -- 選出されたときの先発回数
-        select
-            your_pokemon_1 as pokemon_name,
-            count(1) as counts
-        from
-            battlesummary
-        group by
-            your_pokemon_1
-        """
+        sql = open("sql/your_pokemon_stats_summary.sql").read()
 
         with self.db:
-            in_team_count = self.db.execute_sql(sql_in_team_count).fetchall()
-            in_battle_count = self.db.execute_sql(sql_in_battle_count).fetchall()
-            in_battle_win_count = self.db.execute_sql(
-                sql_in_battle_win_count
-            ).fetchall()
-            head_battle_count = self.db.execute_sql(sql_head_battle_count).fetchall()
+            stats = self.db.execute_sql(sql).fetchall()
 
             # merge as pandas
-            df_in_team_count = pd.DataFrame(
-                in_team_count, columns=["pokemon_name", "in_team_count"]
+            summary = pd.DataFrame(
+                stats,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_win_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count"
+                ],
             )
-            df_in_battle_count = pd.DataFrame(
-                in_battle_count, columns=["pokemon_name", "in_battle_count"]
-            )
-            df_in_battle_win_count = pd.DataFrame(
-                in_battle_win_count, columns=["pokemon_name", "in_battle_win_count"]
-            )
-            df_head_battle_count = pd.DataFrame(
-                head_battle_count, columns=["pokemon_name", "head_battle_count"]
-            )
-            merge_df = pd.merge(
-                df_in_team_count,
-                df_in_battle_count,
-                on="pokemon_name",
-                how="outer",
-            )
-            merge_df = pd.merge(
-                merge_df, df_in_battle_win_count, on="pokemon_name", how="outer"
-            )
-            merge_df = pd.merge(
-                merge_df, df_head_battle_count, on="pokemon_name", how="outer"
-            )
-            merge_df = merge_df.fillna(0)
-
-        # 割合にする
-        merge_df["in_battle_rate"] = (
-            merge_df["in_battle_count"] / merge_df["in_team_count"]
-        )
-        merge_df["head_battle_rate"] = (
-            merge_df["head_battle_count"] / merge_df["in_team_count"]
-        )
-        merge_df["in_battle_win_rate"] = (
-            merge_df["in_battle_win_count"] / merge_df["in_battle_count"]
-        )
-        return list(merge_df.to_dict(orient="index").values())
+        return list(summary.to_dict(orient="index").values())
 
     def get_your_pokemon_stats_summary_season(
         self, season: int
     ) -> List[Dict[str, Union[str, int, float]]]:
-        sql_battle_num = f"""
-        with season_start_end as (
-            select
-                start_datetime,
-                end_datetime
-            from
-                season
-            where
-                season = {season}
+        sql = (
+            open("sql/your_pokemon_stats_summary_in_season.sql")
+            .read()
+            .format(season=season)
         )
-        select
-            count(1)
-        from
-            battlesummary
-        where
-            created_at between(
-                select
-                    start_datetime from season_start_end)
-            and(
-                select
-                    end_datetime from season_start_end)
-        """
-        sql_in_team_count = f"""
-        with season_start_end as (
-            select
-                start_datetime,
-                end_datetime
-            from
-                season
-            where
-                season = {season}
-        ),
-        target_battles as (
-            select
-                battle_id
-            from
-                battlesummary
-            where
-                created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-        )
-        select
-            pokemon_name, count(1)
-        from
-            battlepokemonteam
-        where
-            team = 'you'
-            and battle_id in(
-                select
-                    battle_id from target_battles)
-        group by
-            pokemon_name
-        """
-        sql_in_battle_count = f"""
-        -- 選出回数
-        with season_start_end as (
-            select
-                start_datetime,
-                end_datetime
-            from
-                season
-            where
-                season = {season}
-        ), first as (
-            select
-                your_pokemon_1 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-            group by
-                your_pokemon_1
-        ),
-        second as (
-            select
-                your_pokemon_2 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-            group by
-                your_pokemon_2
-        ),
-        third as (
-            select
-                your_pokemon_3 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-            group by
-                your_pokemon_3
-        ),
-        unions as (
-            select
-                *
-            from
-                first
-            union
-            select
-                *
-            from
-                second
-            union
-            select
-                *
-            from
-                third
-        )
-        select
-            pokemon_name,
-            sum(counts)
-        from
-            unions
-        group by pokemon_name
-        """
-        sql_in_battle_win_count = f"""
-        -- 勝利したときの選出回数
-        with season_start_end as (
-            select
-                start_datetime,
-                end_datetime
-            from
-                season
-            where
-                season = {season}
-        ), first as (
-            select
-                your_pokemon_1 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                win_or_lose = 'win'
-                and created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-            group by
-                your_pokemon_1
-        ),
-        second as (
-            select
-                your_pokemon_2 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                win_or_lose = 'win'
-                and created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-            group by
-                your_pokemon_2
-        ),
-        third as (
-            select
-                your_pokemon_3 as pokemon_name,
-                count(1) as counts
-            from
-                battlesummary
-            where
-                win_or_lose = 'win'
-                and created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-            group by
-                your_pokemon_3
-        ),
-        unions as (
-            select
-                *
-            from
-                first
-            union
-            select
-                *
-            from
-                second
-            union
-            select
-                *
-            from
-                third
-        )
-        select
-            pokemon_name,
-            sum(counts)
-        from
-            unions
-        group by pokemon_name
-        """
-        sql_head_battle_count = f"""
-        with season_start_end as (
-            select
-                start_datetime,
-                end_datetime
-            from
-                season
-            where
-                season = {season}
-        )
-        -- 選出されたときの先発回数
-        select
-            your_pokemon_1 as pokemon_name,
-            count(1) as counts
-        from
-            battlesummary
-        where created_at between(
-                    select
-                        start_datetime from season_start_end)
-                and(
-                    select
-                        end_datetime from season_start_end)
-        group by
-            your_pokemon_1
-        """
 
         with self.db:
-            battle_num = self.db.execute_sql(sql_battle_num).fetchone()[0]
-            in_team_count = self.db.execute_sql(sql_in_team_count).fetchall()
-            in_battle_count = self.db.execute_sql(sql_in_battle_count).fetchall()
-            in_battle_win_count = self.db.execute_sql(
-                sql_in_battle_win_count
-            ).fetchall()
-            head_battle_count = self.db.execute_sql(sql_head_battle_count).fetchall()
+            stats = self.db.execute_sql(sql).fetchall()
 
             # merge as pandas
-            df_in_team_count = pd.DataFrame(
-                in_team_count, columns=["pokemon_name", "in_team_count"]
+            summary = pd.DataFrame(
+                stats,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_win_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count"
+                ],
             )
-            df_in_battle_count = pd.DataFrame(
-                in_battle_count, columns=["pokemon_name", "in_battle_count"]
-            )
-            df_in_battle_win_count = pd.DataFrame(
-                in_battle_win_count, columns=["pokemon_name", "in_battle_win_count"]
-            )
-            df_head_battle_count = pd.DataFrame(
-                head_battle_count, columns=["pokemon_name", "head_battle_count"]
-            )
-            merge_df = pd.merge(
-                df_in_team_count,
-                df_in_battle_count,
-                on="pokemon_name",
-                how="outer",
-            )
-            merge_df = pd.merge(
-                merge_df, df_in_battle_win_count, on="pokemon_name", how="outer"
-            )
-            merge_df = pd.merge(
-                merge_df, df_head_battle_count, on="pokemon_name", how="outer"
-            )
-            merge_df = merge_df.fillna(0)
+        return list(summary.to_dict(orient="index").values())
 
-        # 割合にする
-        merge_df["in_team_rate"] = merge_df["in_team_count"] / battle_num
-        merge_df["in_battle_rate"] = (
-            merge_df["in_battle_count"] / merge_df["in_team_count"]
+    def get_opponent_pokemon_stats_summary_all(
+        self,
+    ) -> List[Dict[str, Union[str, int, float]]]:
+        sql = open("sql/opponent_pokemon_stats_summary.sql").read()
+
+        with self.db:
+            stats = self.db.execute_sql(sql).fetchall()
+
+            # merge as pandas
+            summary = pd.DataFrame(
+                stats,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_lose_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count"
+                ],
+            )
+        return list(summary.to_dict(orient="index").values())
+
+    def get_opponent_pokemon_stats_summary_season(
+        self, season: int
+    ) -> List[Dict[str, Union[str, int, float]]]:
+        sql = (
+            open("sql/opponent_pokemon_stats_summary_in_season.sql")
+            .read()
+            .format(season=season)
         )
-        merge_df["head_battle_rate"] = (
-            merge_df["head_battle_count"] / merge_df["in_team_count"]
-        )
-        merge_df["in_battle_win_rate"] = (
-            merge_df["in_battle_win_count"] / merge_df["in_battle_count"]
-        )
-        return list(merge_df.to_dict(orient="index").values())
+
+        with self.db:
+            stats = self.db.execute_sql(sql).fetchall()
+
+            # merge as pandas
+            summary = pd.DataFrame(
+                stats,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_lose_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count"
+                ],
+            )
+        return list(summary.to_dict(orient="index").values())

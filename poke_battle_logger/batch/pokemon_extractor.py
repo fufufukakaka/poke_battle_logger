@@ -1,25 +1,30 @@
 import glob
 import time
 from typing import List
-
+import re
 import cv2
 import pytesseract
 
-from config.config import (MESSAGE_WINDOW,
-                           OPPONENT_PRE_POKEMON_POSITION, POKEMON_POSITIONS,
-                           POKEMON_SELECT_NUMBER_WINDOW1,
-                           POKEMON_SELECT_NUMBER_WINDOW2,
-                           POKEMON_SELECT_NUMBER_WINDOW3,
-                           POKEMON_SELECT_NUMBER_WINDOW4,
-                           POKEMON_SELECT_NUMBER_WINDOW5,
-                           POKEMON_SELECT_NUMBER_WINDOW6,
-                           RANKING_NUMBER_WINDOW, TEMPLATE_MATCHING_THRESHOLD,
-                           WIN_LOST_WINDOW,
-                           WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
-                           YOUR_PRE_POKEMON_POSITION)
+from config.config import (
+    MESSAGE_WINDOW,
+    OPPONENT_PRE_POKEMON_POSITION,
+    POKEMON_POSITIONS,
+    POKEMON_SELECT_NUMBER_WINDOW1,
+    POKEMON_SELECT_NUMBER_WINDOW2,
+    POKEMON_SELECT_NUMBER_WINDOW3,
+    POKEMON_SELECT_NUMBER_WINDOW4,
+    POKEMON_SELECT_NUMBER_WINDOW5,
+    POKEMON_SELECT_NUMBER_WINDOW6,
+    RANKING_NUMBER_WINDOW,
+    TEMPLATE_MATCHING_THRESHOLD,
+    WIN_LOST_WINDOW,
+    WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
+    YOUR_PRE_POKEMON_POSITION,
+)
 
 
 pytesseract.pytesseract.tesseract_cmd = r"/opt/brew/bin/tesseract"
+
 
 class PokemonExtractor:
     """
@@ -91,7 +96,9 @@ class PokemonExtractor:
             _image = cv2.imread(path, 0)
             threshold_value = 200
             max_value = 255
-            _, thresh = cv2.threshold(_image, threshold_value, max_value, cv2.THRESH_BINARY)
+            _, thresh = cv2.threshold(
+                _image, threshold_value, max_value, cv2.THRESH_BINARY
+            )
             message_window_templates[path.split("/")[-1].split(".")[0]] = thresh
         return message_window_templates
 
@@ -412,8 +419,9 @@ class PokemonExtractor:
         """Detects text in the file."""
         text = pytesseract.image_to_string(image, lang="eng")
 
-        # \n を削除する
-        return int(text.replace("\n", ""))
+        # 数字部分だけを取り出す
+        _rank = re.sub(r"\D", "", text)
+        return int(_rank)
 
     def _recognize_message(self, image):
         """Detects text in the file."""
