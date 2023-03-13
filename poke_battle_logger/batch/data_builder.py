@@ -186,6 +186,10 @@ class DataBuilder:
         self._build_battle_pokemon_combinations()
         self._build_modified_win_or_lose()
 
+        # filled_win_or_lost 上に unknown がある場合は abort する
+        if "unknown" in self.filled_win_or_lost.values():
+            raise Exception("unknown win or lost")
+
         for i in range(len(self.battle_start_end_frame_numbers)):
             start_frame = self.battle_start_end_frame_numbers[i][0]
             created_at = self._get_start_time(self.video_id, start_frame)
