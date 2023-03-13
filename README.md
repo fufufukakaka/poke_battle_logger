@@ -27,10 +27,10 @@ poetry install
 
 ## Batch
 
-GCP cloud vision を用いるので、credential を事前に配置する必要があります。
+Tesseract を用いるので、環境変数を設定する必要があります。
 
 ```
-export GOOGLE_APPLICATION_CREDENTIALS=.credentials/{your_credential}.json
+TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata/ \
 VIDEO_ID={your_pokemon_sv_rank_match_stream_id} make extract-data
 ```
 

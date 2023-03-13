@@ -73,6 +73,8 @@ class SQLiteHandler:
                 self.db.create_tables([BattlePokemonTeam])
             if not InBattlePokemonLog.table_exists():
                 self.db.create_tables([InBattlePokemonLog])
+            if not MessageLog.table_exists():
+                self.db.create_tables([MessageLog])
 
     def insert_battle_id(self, battle_ids):
         with self.db:

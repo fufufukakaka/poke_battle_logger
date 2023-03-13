@@ -193,12 +193,31 @@ class DataBuilder:
 
             battle_ids.append(battle_id)
 
+            # messages
+            message_log = self.compressed_messages[i]
+            for _message_log in message_log:
+                modified_messages.append(
+                    {
+                        "battle_id": battle_id,
+                        "frame_number": _message_log["frame_number"],
+                        "message": _message_log["message"],
+                    }
+                )
+
             # overview
+            if (
+                len(self.rank_numbers.values())
+                == len(self.battle_start_end_frame_numbers) + 1
+            ):
+                _next_rank = list(self.rank_numbers.values())[i + 1]
+            else:
+                _next_rank = list(self.rank_numbers.values())[i]
+
             _log = {
                 "battle_id": battle_id,
                 "created_at": created_at,
                 "win_or_lose": list(self.filled_win_or_lost.values())[i],
-                "next_rank": list(self.rank_numbers.values())[i + 1],
+                "next_rank": _next_rank,
                 "your_team": ",".join(
                     [
                         v.split("_")[0]
@@ -257,27 +276,16 @@ class DataBuilder:
 
             # in-battle
             in_battle_log = self.compressed_battle_pokemons[i]
-            for i, _in_battle_log in enumerate(in_battle_log):
+            for idx, _in_battle_log in enumerate(in_battle_log):
                 modified_in_battle_pokemons.append(
                     {
                         "battle_id": battle_id,
-                        "turn": i + 1,
+                        "turn": idx + 1,
                         "frame_number": _in_battle_log["frame_number"],
                         "your_pokemon_name": _in_battle_log["your_pokemon_name"],
                         "opponent_pokemon_name": _in_battle_log[
                             "opponent_pokemon_name"
                         ],
-                    }
-                )
-
-            # messages
-            message_log = self.compressed_messages[i]
-            for _message_log in message_log:
-                modified_messages.append(
-                    {
-                        "battle_id": battle_id,
-                        "frame": _message_log["frame_number"],
-                        "message": _message_log["message"],
                     }
                 )
 

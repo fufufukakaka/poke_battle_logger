@@ -3,26 +3,23 @@ import time
 from typing import List
 
 import cv2
-from google.cloud import vision
+import pytesseract
 
-from config.config import (
-    MESSAGE_TEMPLATE_MATCHING_THRESHOLD,
-    MESSAGE_WINDOW,
-    OPPONENT_PRE_POKEMON_POSITION,
-    POKEMON_POSITIONS,
-    POKEMON_SELECT_NUMBER_WINDOW1,
-    POKEMON_SELECT_NUMBER_WINDOW2,
-    POKEMON_SELECT_NUMBER_WINDOW3,
-    POKEMON_SELECT_NUMBER_WINDOW4,
-    POKEMON_SELECT_NUMBER_WINDOW5,
-    POKEMON_SELECT_NUMBER_WINDOW6,
-    RANKING_NUMBER_WINDOW,
-    TEMPLATE_MATCHING_THRESHOLD,
-    WIN_LOST_WINDOW,
-    WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
-    YOUR_PRE_POKEMON_POSITION,
-)
+from config.config import (MESSAGE_WINDOW,
+                           OPPONENT_PRE_POKEMON_POSITION, POKEMON_POSITIONS,
+                           POKEMON_SELECT_NUMBER_WINDOW1,
+                           POKEMON_SELECT_NUMBER_WINDOW2,
+                           POKEMON_SELECT_NUMBER_WINDOW3,
+                           POKEMON_SELECT_NUMBER_WINDOW4,
+                           POKEMON_SELECT_NUMBER_WINDOW5,
+                           POKEMON_SELECT_NUMBER_WINDOW6,
+                           RANKING_NUMBER_WINDOW, TEMPLATE_MATCHING_THRESHOLD,
+                           WIN_LOST_WINDOW,
+                           WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
+                           YOUR_PRE_POKEMON_POSITION)
 
+
+pytesseract.pytesseract.tesseract_cmd = r"/opt/brew/bin/tesseract"
 
 class PokemonExtractor:
     """
@@ -413,61 +410,20 @@ class PokemonExtractor:
 
     def _detect_rank_number(self, image):
         """Detects text in the file."""
-        client = vision.ImageAnnotatorClient()
-        _, encoded_image = cv2.imencode(".jpg", image)
-        content2 = encoded_image.tobytes()
-        vision_image = vision.Image(content=content2)
+        text = pytesseract.image_to_string(image, lang="eng")
 
-        response = client.text_detection(image=vision_image)
-        texts = response.text_annotations
-
-        if response.error.message:
-            return -1
-
-        # . が入ることがある
-        return int(texts[0].description.replace(".", ""))
+        # \n を削除する
+        return int(text.replace("\n", ""))
 
     def _recognize_message(self, image):
         """Detects text in the file."""
-        client = vision.ImageAnnotatorClient()
-        _, encoded_image = cv2.imencode(".jpg", image)
-        content2 = encoded_image.tobytes()
-        vision_image = vision.Image(content=content2)
+        text = pytesseract.image_to_string(image, lang="eng")
 
-        response = client.text_detection(
-            image=vision_image, image_context={"language_hints": ["ja", "en"]}
-        )
-        texts = response.text_annotations
-
-        if response.error.message:
-            return None
-        if len(texts) == 0:
-            return None
-
-        return texts[0].description
-
-    def _search_message_by_template_matching(self, image):
-        """
-        テンプレートマッチングでメッセージを照合する
-        """
-        score_results = {}
-        for message, template in self.message_window_templates.items():
-            res = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
-            score = cv2.minMaxLoc(res)[1]
-            if score >= MESSAGE_TEMPLATE_MATCHING_THRESHOLD:
-                score_results[message] = score
-        if len(score_results) > 0:
-            detected_message = max(score_results, key=score_results.get)
-            # post-process
-            detected_message = detected_message.replace("_", " ").replace(">", ".")
-            return detected_message
-        else:
-            return None
+        return text.replace("\n", "")
 
     def extract_rank_number(self, frame):
         """
         ランクをOCRで抽出する
-        -1 はエラー
         """
 
         rank_frame_window = frame[
@@ -497,13 +453,5 @@ class PokemonExtractor:
         if white_pixels > 10000:
             return None
 
-        message = self._search_message_by_template_matching(thresh)
-        if message is None:
-            message = self._recognize_message(thresh)
-            if message is None:
-                return None
-            # save message image as template
-            processed_message = message.replace(" ", "_").replace(".", ">")
-            cv2.imwrite(f"template_images/unknown_message_templates/{processed_message}.png", thresh)
-
+        message = self._recognize_message(thresh)
         return message

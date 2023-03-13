@@ -1,5 +1,5 @@
 import logging
-
+import click
 import cv2
 from rich.logging import RichHandler
 from tqdm.auto import tqdm
@@ -22,8 +22,9 @@ logging.basicConfig(
 logger = logging.getLogger("rich")
 
 
-def main():
-    video_id = "eWkhCLhQ2Kk"
+@click.command()
+@click.option("--video_id", "-v", type=str, required=True)
+def main(video_id: str):
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector()
@@ -79,17 +80,6 @@ def main():
     compressed_message_window_frames = message_frame_compress(
         message_window_frames, frame_threshold=3
     )
-
-    # メッセージの文字認識(OCR)
-    # logger.info("Extracting message...")
-    # messages = {}
-    # for message_frame_numbers in compressed_message_window_frames:
-    #     message_frame_number = message_frame_numbers[-1]
-    #     video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
-    #     _, _message_frame = video.read()
-    #     _message = pokemon_extractor.extract_message(_message_frame)
-    #     if _message is not None:
-    #         messages[message_frame_number] = _message
 
     # ランクを検出(OCR)
     logger.info("Extracting ranking...")
@@ -217,6 +207,8 @@ def main():
         _message = pokemon_extractor.extract_message(_message_frame)
         if _message is not None:
             messages[message_frame_number] = _message
+
+    import pdb;pdb.set_trace()
 
     # build formatted data
     logger.info("Build Formatted Data...")
