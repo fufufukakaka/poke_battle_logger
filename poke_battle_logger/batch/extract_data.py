@@ -187,15 +187,24 @@ def main(video_id: str):
         return
 
     # 勝ち負けを検出
+    # 間違いやすいので、周辺最大10フレームを見て、最も多いものを採用する
     logger.info("Extracting win or lost...")
     win_or_lost = {}
     for win_or_lost_frame_numbers in compressed_win_or_lost_frames:
-        win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
-        video.set(cv2.CAP_PROP_POS_FRAMES, win_or_lost_frame_number - 1)
-        _, _win_or_lost_frame = video.read()
-        win_or_lost[win_or_lost_frame_number] = pokemon_extractor.extract_win_or_lost(
-            _win_or_lost_frame
-        )
+        if len(win_or_lost_frame_numbers) > 1:
+            _win_or_lost_results = []
+            for idx in range(max(10, len(win_or_lost_frame_numbers))):
+                _win_or_lost_frame_number = win_or_lost_frame_numbers[-1] - idx
+                video.set(cv2.CAP_PROP_POS_FRAMES, _win_or_lost_frame_number - 1)
+                _, _win_or_lost_frame = video.read()
+                _win_or_lost_result = pokemon_extractor.extract_win_or_lost(
+                    _win_or_lost_frame
+                )
+                _win_or_lost_results.append(_win_or_lost_result)
+
+            win_or_lost_result = max(set(_win_or_lost_results), key=_win_or_lost_results.count)
+            win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
+            win_or_lost[win_or_lost_frame_number] = win_or_lost_result
 
     # メッセージの文字認識(OCR)
     logger.info("Extracting message...")

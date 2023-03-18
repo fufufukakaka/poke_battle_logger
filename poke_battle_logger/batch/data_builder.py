@@ -218,10 +218,12 @@ class DataBuilder:
                 _next_rank = list(self.rank_numbers.values())[i]
 
             # 長さが合わなくて信用できない時は、ランクから判断する
-            if len(self.modified_win_or_lose_frames_from_rank) == len(self.filled_win_or_lost):
+            if len(self.filled_win_or_lost) == len(self.rank_numbers):
                 _win_or_lose = list(self.filled_win_or_lost.values())[i]
-            else:
+            elif len(self.modified_win_or_lose_frames_from_rank) == len(self.rank_numbers) - 1:
                 _win_or_lose = list(self.modified_win_or_lose_frames_from_rank.values())[i]
+            else:
+                raise Exception("win or lost is not valid")
 
             _log = {
                 "battle_id": battle_id,
