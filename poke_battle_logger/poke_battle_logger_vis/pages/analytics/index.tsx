@@ -18,6 +18,8 @@ import useSWR from 'swr';
 import axios from 'axios';
 import { useContext } from 'react';
 import { SeasonContext } from '../_app';
+import { DataTable } from '@/components/data-display/data-table';
+import { createColumnHelper } from "@tanstack/react-table";
 
 interface AnalyticsProps {
   win_rates: number[];
@@ -55,13 +57,13 @@ const fetcher = async (url: string) => {
       }) => ({
         ...summary,
         head_battle_count: Number(summary.head_battle_count),
-        head_battle_rate: Number(summary.head_battle_rate),
+        head_battle_rate: Number(summary.head_battle_rate).toFixed(3),
         in_battle_count: Number(summary.in_battle_count),
-        in_battle_rate: Number(summary.in_battle_rate),
+        in_battle_rate: Number(summary.in_battle_rate).toFixed(3),
         in_battle_win_count: Number(summary.in_battle_win_count),
-        in_battle_win_rate: Number(summary.in_battle_win_rate),
+        in_battle_win_rate: Number(summary.in_battle_win_rate).toFixed(3),
         in_team_count: Number(summary.in_team_count),
-        in_team_rate: Number(summary.in_team_rate),
+        in_team_rate: Number(summary.in_team_rate).toFixed(3),
       })
     ),
     // convert to number
@@ -80,17 +82,61 @@ const fetcher = async (url: string) => {
         }) => ({
           ...summary,
           head_battle_count: Number(summary.head_battle_count),
-          head_battle_rate: Number(summary.head_battle_rate),
+          head_battle_rate: Number(summary.head_battle_rate).toFixed(3),
           in_battle_count: Number(summary.in_battle_count),
-          in_battle_rate: Number(summary.in_battle_rate),
+          in_battle_rate: Number(summary.in_battle_rate).toFixed(3),
           in_battle_win_count: Number(summary.in_battle_win_count),
-          in_battle_win_rate: Number(summary.in_battle_win_rate),
+          in_battle_win_rate: Number(summary.in_battle_win_rate).toFixed(3),
           in_team_count: Number(summary.in_team_count),
-          in_team_rate: Number(summary.in_team_rate),
+          in_team_rate: Number(summary.in_team_rate).toFixed(3),
         })
       ),
   };
 };
+
+type YourPokemonStat = {
+  pokemon_name: string;
+  in_team_rate: number;
+  in_battle_rate: number;
+  head_battle_rate: number;
+  in_battle_win_rate: number;
+};
+
+const columnHelper = createColumnHelper<YourPokemonStat>();
+const columns = [
+  columnHelper.accessor("pokemon_name", {
+    cell: (info) => info.getValue(),
+    header: "ポケモン名"
+  }),
+  columnHelper.accessor("in_team_rate", {
+    cell: (info) => info.getValue(),
+    header: "採用率",
+    meta: {
+      isNumeric: true
+    }
+  }),
+  columnHelper.accessor("in_battle_rate", {
+    cell: (info) => info.getValue(),
+    header: "選出率",
+    meta: {
+      isNumeric: true
+    }
+  }),
+  columnHelper.accessor("head_battle_rate", {
+    cell: (info) => info.getValue(),
+    header: "選出したときの先発率",
+    meta: {
+      isNumeric: true
+    }
+  }),
+  columnHelper.accessor("in_battle_win_rate", {
+    cell: (info) => info.getValue(),
+    header: "選出したときの勝率",
+    meta: {
+      isNumeric: true
+    }
+  })
+];
 
 const Analytics: React.FC<AnalyticsProps> = () => {
   const season = useContext(SeasonContext);
@@ -131,28 +177,7 @@ const Analytics: React.FC<AnalyticsProps> = () => {
           <Heading size="md" padding={'10px'}>
             サマリー: 自分のポケモン
           </Heading>
-          <Table>
-            <Thead>
-              <Tr>
-                <Th>ポケモン名</Th>
-                <Th>採用率</Th>
-                <Th>選出率</Th>
-                <Th>先発での選出率</Th>
-                <Th>選出されたときの勝率</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {data.yourPokemonStatsSummary.map((summary) => (
-                <Tr key={summary.pokemon_name}>
-                  <Td>{summary.pokemon_name}</Td>
-                  <Td>{summary.in_team_rate.toFixed(4)}</Td>
-                  <Td>{summary.in_battle_rate.toFixed(4)}</Td>
-                  <Td>{summary.head_battle_rate.toFixed(4)}</Td>
-                  <Td>{summary.in_battle_win_rate.toFixed(4)}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
+          <DataTable columns={columns} data={data.yourPokemonStatsSummary} />
         </Box>
       </Container>
     </Box>

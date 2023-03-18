@@ -185,6 +185,7 @@ class DataBuilder:
         self._compress_battle_pokemons()
         self._build_battle_pokemon_combinations()
         self._build_modified_win_or_lose()
+        import pdb;pdb.set_trace()
 
         # filled_win_or_lost 上に unknown がある場合は abort する
         if "unknown" in self.filled_win_or_lost.values():
