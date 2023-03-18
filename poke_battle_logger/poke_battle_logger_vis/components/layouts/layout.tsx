@@ -9,7 +9,7 @@ import {
 import SideBar from './sidebar'
 import MobileNav from '../atoms/MobileNav'
 
-export default function Layout({ setSeason, children }: { setSeason: React.Dispatch<React.SetStateAction<string>>, children: ReactNode }) {
+export default function Layout({ setSeason, children }: { setSeason: React.Dispatch<React.SetStateAction<number>>, children: ReactNode }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>

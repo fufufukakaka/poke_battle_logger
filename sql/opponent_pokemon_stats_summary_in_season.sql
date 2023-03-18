@@ -2,7 +2,7 @@ with season_start_end as (
     select start_datetime,
         end_datetime
     from season
-    where season = { season }
+    where season = {season}
 ),
 target_battles as (
     select battle_id
@@ -189,7 +189,7 @@ joins as (
 )
 select pokemon_name,
     (in_team_count * 1.0 / battle_count) as in_team_rate,
-    ifnull(in_battle_count * 1.0 / battle_count, 0.0) as in_battle_rate,
+    ifnull(in_battle_count * 1.0 / in_team_count, 0.0) as in_battle_rate,
     ifnull(
         in_battle_lose_count * 1.0 / in_battle_count,
         0.0

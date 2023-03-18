@@ -29,9 +29,9 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
       <Select defaultValue='all' color='white' onChange={(e) => setSeason(e.target.value)}>
-        <option value='all'>全シーズン</option>
-        <option value='3'>シーズン3</option>
-        <option value='4'>シーズン4</option>
+        <option value={0}>全シーズン</option>
+        <option value={3}>シーズン3</option>
+        <option value={4}>シーズン4</option>
       </Select>
       <NavItem key={'dashboard'} icon={MdCatchingPokemon} href={'/'} marginBottom="5px">
         ダッシュボード

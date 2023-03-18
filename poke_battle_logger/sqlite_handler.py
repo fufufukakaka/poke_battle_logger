@@ -1,5 +1,6 @@
 import random
 from typing import Dict, List, Union
+import unicodedata
 
 import pandas as pd
 from peewee import ForeignKeyField, IntegerField, Model, SqliteDatabase, TextField
@@ -89,14 +90,14 @@ class SQLiteHandler:
                     created_at=_battle_summary["created_at"],
                     win_or_lose=_battle_summary["win_or_lose"],
                     next_rank=_battle_summary["next_rank"],
-                    your_team=_battle_summary["your_team"],
-                    opponent_team=_battle_summary["opponent_team"],
-                    your_pokemon_1=_battle_summary["your_pokemon_1"],
-                    your_pokemon_2=_battle_summary["your_pokemon_2"],
-                    your_pokemon_3=_battle_summary["your_pokemon_3"],
-                    opponent_pokemon_1=_battle_summary["opponent_pokemon_1"],
-                    opponent_pokemon_2=_battle_summary["opponent_pokemon_2"],
-                    opponent_pokemon_3=_battle_summary["opponent_pokemon_3"],
+                    your_team=unicodedata.normalize("NFC", _battle_summary["your_team"]),
+                    opponent_team=unicodedata.normalize("NFC", _battle_summary["opponent_team"]),
+                    your_pokemon_1=unicodedata.normalize("NFC", _battle_summary["your_pokemon_1"]),
+                    your_pokemon_2=unicodedata.normalize("NFC", _battle_summary["your_pokemon_2"]),
+                    your_pokemon_3=unicodedata.normalize("NFC", _battle_summary["your_pokemon_3"]),
+                    opponent_pokemon_1=unicodedata.normalize("NFC", _battle_summary["opponent_pokemon_1"]),
+                    opponent_pokemon_2=unicodedata.normalize("NFC", _battle_summary["opponent_pokemon_2"]),
+                    opponent_pokemon_3=unicodedata.normalize("NFC", _battle_summary["opponent_pokemon_3"]),
                     video=_battle_summary["video"],
                 )
 
@@ -106,7 +107,7 @@ class SQLiteHandler:
                 BattlePokemonTeam.create(
                     battle_id=_battle_pokemon_team["battle_id"],
                     team=_battle_pokemon_team["team"],
-                    pokemon_name=_battle_pokemon_team["pokemon_name"],
+                    pokemon_name=unicodedata.normalize("NFC", _battle_pokemon_team["pokemon_name"]),
                 )
 
     def insert_in_battle_pokemon_log(self, in_battle_pokemon_log):
@@ -116,10 +117,10 @@ class SQLiteHandler:
                     battle_id=_in_battle_pokemon_log["battle_id"],
                     turn=_in_battle_pokemon_log["turn"],
                     frame_number=_in_battle_pokemon_log["frame_number"],
-                    your_pokemon_name=_in_battle_pokemon_log["your_pokemon_name"],
-                    opponent_pokemon_name=_in_battle_pokemon_log[
+                    your_pokemon_name=unicodedata.normalize("NFC", _in_battle_pokemon_log["your_pokemon_name"]),
+                    opponent_pokemon_name=unicodedata.normalize("NFC", _in_battle_pokemon_log[
                         "opponent_pokemon_name"
-                    ],
+                    ]),
                 )
 
     def insert_message_log(self, message_log):
@@ -272,6 +273,29 @@ class SQLiteHandler:
         ]
         return win_rate_transitions
 
+    def get_win_rate_transitions_all(self) -> List[float]:
+        sql = """
+        select
+            (
+                select
+                    COUNT(*)
+                from
+                    battlesummary t2
+                where
+                    t2.id <= t1.id
+                    and t2.win_or_lose = 'win') * 1.0 / id as win_rate
+            from
+                battlesummary t1
+            order by
+                created_at
+        """
+        with self.db:
+            win_rate_transitions = self.db.execute_sql(sql).fetchall()
+        win_rate_transitions = [
+            win_rate_transition[0] for win_rate_transition in win_rate_transitions
+        ]
+        return win_rate_transitions
+
     def get_next_rank_transitions_season(self, season: int) -> List[int]:
         sql = f"""
         with season_start_end as (
@@ -294,6 +318,22 @@ class SQLiteHandler:
             and(
                 select
                     end_datetime from season_start_end)
+        order by
+            created_at
+        """
+        with self.db:
+            next_rank_transitions = self.db.execute_sql(sql).fetchall()
+        next_rank_transitions = [
+            next_rank_transition[0] for next_rank_transition in next_rank_transitions
+        ]
+        return next_rank_transitions
+
+    def get_next_rank_transitions_all(self) -> List[int]:
+        sql = """
+        select
+            next_rank
+        from
+            battlesummary
         order by
             created_at
         """

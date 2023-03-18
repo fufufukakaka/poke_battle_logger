@@ -159,7 +159,7 @@ joins as (
 select
 	pokemon_name,
 	(in_team_count * 1.0 / battle_count) as in_team_rate,
-	(in_battle_count * 1.0 / battle_count) as in_battle_rate,
+	(in_battle_count * 1.0 / in_team_count) as in_battle_rate,
 	ifnull(in_battle_win_count * 1.0 / in_battle_count, 0.0) as in_battle_win_rate,
 	ifnull(head_battle_count * 1.0 / in_battle_count, 0.0) as head_battle_rate,
 	in_team_count,

@@ -72,37 +72,31 @@ async def get_recent_battle_summary() -> Dict[
     }
 
 
-@app.get("/api/v1/win_rate_transition")
-async def get_win_rate_transition(season: int) -> List[float]:
-    """
-    season 0 のときは全期間を返す
-    """
-    win_rate_transition = sqlite_handler.get_win_rate_transitions_season(season)
-    return win_rate_transition
-
-
-@app.get("/api/v1/next_rank_transition")
-async def get_next_rank_transition(season: int) -> List[int]:
-    """
-    season 0 のときは全期間を返す
-    """
-    next_rank_transition = sqlite_handler.get_next_rank_transitions_season(season)
-    return next_rank_transition
-
-
-@app.get("/api/v1/your_pokemon_stats_summary")
-async def get_your_pokemon_stats_summary(
+@app.get("/api/v1/analytics")
+async def get_analytics(
     season: int,
-) -> List[Dict[str, Union[str, int, float]]]:
-    """
-    season 0 のときは全期間を返す
-    """
+) -> Dict[str, Union[List[float], List[int], List[Dict[str, Union[str, int, float]]]]]:
     if season == 0:
+        win_rate_transition = sqlite_handler.get_win_rate_transitions_all()
+        next_rank_transition = sqlite_handler.get_next_rank_transitions_all()
         your_pokemon_stats_summary = sqlite_handler.get_your_pokemon_stats_summary_all()
+        opponent_pokemon_stats_summary = (
+            sqlite_handler.get_opponent_pokemon_stats_summary_all()
+        )
     elif season > 0:
+        win_rate_transition = sqlite_handler.get_win_rate_transitions_season(season)
+        next_rank_transition = sqlite_handler.get_next_rank_transitions_season(season)
         your_pokemon_stats_summary = (
             sqlite_handler.get_your_pokemon_stats_summary_season(season)
         )
+        opponent_pokemon_stats_summary = (
+            sqlite_handler.get_opponent_pokemon_stats_summary_season(season)
+        )
     else:
         raise ValueError("season must be 0 or positive")
-    return your_pokemon_stats_summary
+    return {
+        "winRate": win_rate_transition,
+        "nextRank": next_rank_transition,
+        "yourPokemonStatsSummary": your_pokemon_stats_summary,
+        "opponentPokemonStatsSummary": opponent_pokemon_stats_summary,
+    }
