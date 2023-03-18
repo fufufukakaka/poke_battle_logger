@@ -13,10 +13,6 @@ import {
   Table,
   Heading,
 } from '@chakra-ui/react';
-import { GetServerSideProps } from 'next';
-import getWinRateTransitionHandler from '../api/get_win_rate_transition';
-import getNextRankTransitionHandler from '../api/get_next_rank_transition';
-import getYourPokemonSummaryHandler from '../api/get_your_pokemon_stats_summary';
 import TransitionChart from '../../components/data-display/transition-chart';
 import useSWR from 'swr';
 import axios from 'axios';
@@ -39,61 +35,13 @@ interface AnalyticsProps {
   }[];
 }
 
-// export const getServerSideProps: GetServerSideProps<
-//   AnalyticsProps
-// > = async () => {
-//   const win_rate_result = await getWinRateTransitionHandler();
-//   if ('error' in win_rate_result) {
-//     throw new Error('error');
-//   }
-//   const next_rank_result = await getNextRankTransitionHandler();
-//   if ('error' in win_rate_result) {
-//     throw new Error('error');
-//   }
-//   const your_pokemon_summary_result = await getYourPokemonSummaryHandler();
-//   if ('error' in your_pokemon_summary_result) {
-//     throw new Error('error');
-//   }
-
-//   return {
-//     props: {
-//       win_rates: win_rate_result.data,
-//       next_ranks: next_rank_result.data,
-//       // convert to number
-//       your_pokemon_summary_result: your_pokemon_summary_result.data.map(
-//         (summary: {
-//           head_battle_count: number;
-//           head_battle_rate: number;
-//           in_battle_count: number;
-//           in_battle_rate: number;
-//           in_battle_win_count: number;
-//           in_battle_win_rate: number;
-//           in_team_count: number;
-//           in_team_rate: number;
-//           pokemon_name: string;
-//         }) => ({
-//           ...summary,
-//           head_battle_count: Number(summary.head_battle_count),
-//           head_battle_rate: Number(summary.head_battle_rate),
-//           in_battle_count: Number(summary.in_battle_count),
-//           in_battle_rate: Number(summary.in_battle_rate),
-//           in_battle_win_count: Number(summary.in_battle_win_count),
-//           in_battle_win_rate: Number(summary.in_battle_win_rate),
-//           in_team_count: Number(summary.in_team_count),
-//           in_team_rate: Number(summary.in_team_rate),
-//         })
-//       ),
-//     },
-//   };
-// };
-
 const fetcher = async (url: string) => {
   const results = await axios.get(url);
-  return {
+  return await {
     winRates: results.data.winRate,
     nextRanks: results.data.nextRank,
     // convert to number
-    yourPokemonStatsSummary: results.data.yourPokemonStatsSummary.data.map(
+    yourPokemonStatsSummary: results.data.yourPokemonStatsSummary.map(
       (summary: {
         head_battle_count: number;
         head_battle_rate: number;
@@ -118,7 +66,7 @@ const fetcher = async (url: string) => {
     ),
     // convert to number
     opponentPokemonStatsSummary:
-      results.data.opponentPokemonStatsSummary.data.map(
+      results.data.opponentPokemonStatsSummary.map(
         (summary: {
           head_battle_count: number;
           head_battle_rate: number;
@@ -149,10 +97,11 @@ const Analytics: React.FC<AnalyticsProps> = () => {
   const { data, error, isLoading } = useSWR(
     `http://127.0.0.1:8000/api/v1/analytics?season=${season}`,
     fetcher
-  );
-  if (isLoading) return <p>loading...</p>;
-  if (error) return <p>error</p>;
-  if (!data) return <p>no data</p>;
+  )
+
+  if (isLoading) return <p>loading...</p>
+  if (error) return <p>error</p>
+  if (!data) return <p>no data</p>
 
   return (
     <Box bg="gray.50" minH="100vh">
@@ -165,14 +114,14 @@ const Analytics: React.FC<AnalyticsProps> = () => {
           <SimpleGrid columns={2} spacing={10}>
             <TransitionChart
               data={data.winRates}
-              chartTitle={'勝率推移(シーズン3)'}
+              chartTitle={`勝率推移(シーズン${season})`}
               dataLabel={'勝率'}
               dataColor={'rgb(255, 99, 132)'}
               dataBackGroundColor={'rgba(255, 99, 132, 0.5)'}
             />
             <TransitionChart
               data={data.nextRanks}
-              chartTitle={'順位推移(シーズン3)'}
+              chartTitle={`順位推移(シーズン${season})`}
               dataLabel={'順位'}
               dataColor={'rgb(53, 162, 235)'}
               dataBackGroundColor={'rgba(53, 162, 235, 0.5)'}

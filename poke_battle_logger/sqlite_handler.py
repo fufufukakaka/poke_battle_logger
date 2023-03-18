@@ -76,6 +76,21 @@ class SQLiteHandler:
                 self.db.create_tables([InBattlePokemonLog])
             if not MessageLog.table_exists():
                 self.db.create_tables([MessageLog])
+            if not Season.table_exists():
+                self.db.create_tables([Season])
+                with self.db:
+                    Season.create(
+                        id=1,
+                        season=3,
+                        start_datetime="2023-02-01 09:00:00",
+                        end_datetime="2023-03-01 09:00:00",
+                    )
+                    Season.create(
+                        id=2,
+                        season=4,
+                        start_datetime="2023-03-01 09:00:00",
+                        end_datetime="2023-04-01 09:00:00",
+                    )
 
     def insert_battle_id(self, battle_ids):
         with self.db:

@@ -37,7 +37,7 @@ interface DashBoardProps {
 
 export const fetcher = async (url: string) => {
   const results = await axios.get(url);
-  const data = {
+  const data = await {
     latest_lose_pokemon: results.data.latest_lose_pokemon,
     latest_lose_pokemon_image: results.data.latest_lose_pokemon_image,
     latest_rank: results.data.latest_rank,
