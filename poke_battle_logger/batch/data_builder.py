@@ -161,6 +161,14 @@ class DataBuilder:
                 win_or_lost[closest_frame] = outcome
             return win_or_lost
 
+        def trim_win_or_lost(win_or_lost, battle_start_end_frame_numbers):
+            new_win_or_lost = {}
+            for start, end in battle_start_end_frame_numbers:
+                for frame, outcome in win_or_lost.items():
+                    if start <= frame <= end:
+                        new_win_or_lost[frame] = outcome
+            return new_win_or_lost
+
         self.modified_win_or_lose_frames_from_rank = {}
         rank_frames = list(self.rank_numbers.keys())
         for i in range(1, len(self.rank_numbers.values())):
@@ -170,8 +178,11 @@ class DataBuilder:
                 self.modified_win_or_lose_frames_from_rank[rank_frames[i]] = "win"
             else:
                 self.modified_win_or_lose_frames_from_rank[rank_frames[i]] = "lose"
-        self.filled_win_or_lost = determine_unknown_outcomes(
+        _filled_win_or_lost = determine_unknown_outcomes(
             self.win_or_lost, self.modified_win_or_lose_frames_from_rank
+        )
+        self.filled_win_or_lost = trim_win_or_lost(
+            _filled_win_or_lost, self.battle_start_end_frame_numbers
         )
 
     def build(self):
@@ -185,7 +196,6 @@ class DataBuilder:
         self._compress_battle_pokemons()
         self._build_battle_pokemon_combinations()
         self._build_modified_win_or_lose()
-        import pdb;pdb.set_trace()
 
         # filled_win_or_lost 上に unknown がある場合は abort する
         if "unknown" in self.filled_win_or_lost.values():

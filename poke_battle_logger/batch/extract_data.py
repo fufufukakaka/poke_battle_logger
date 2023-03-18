@@ -1,3 +1,4 @@
+from collections import Counter
 import logging
 import click
 import cv2
@@ -181,17 +182,14 @@ def main(video_id: str):
 
     # unknown が存在していたらここで処理を止める
     if is_exist_unknown_pokemon:
-        logger.warning(
-            "Unknown pokemon exists. Stop processing. Please annotate unknown pokemons."
-        )
-        return
+        raise Exception("Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.")
 
     # 勝ち負けを検出
-    # 間違いやすいので、周辺最大10フレームを見て、最も多いものを採用する
+    # 間違いやすいので、周辺最大10フレームを見て判断する。全て unknown の時は弾く
     logger.info("Extracting win or lost...")
     win_or_lost = {}
     for win_or_lost_frame_numbers in compressed_win_or_lost_frames:
-        if len(win_or_lost_frame_numbers) > 1:
+        if len(win_or_lost_frame_numbers) > 3:
             _win_or_lost_results = []
             for idx in range(max(10, len(win_or_lost_frame_numbers))):
                 _win_or_lost_frame_number = win_or_lost_frame_numbers[-1] - idx
@@ -202,7 +200,12 @@ def main(video_id: str):
                 )
                 _win_or_lost_results.append(_win_or_lost_result)
 
-            win_or_lost_result = max(set(_win_or_lost_results), key=_win_or_lost_results.count)
+            _win_or_lost_results = [v for v in _win_or_lost_results if v != "unknown"]
+            win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
+            if len(_win_or_lost_results) == 0:
+                win_or_lost[win_or_lost_frame_number] = "unknown"
+                continue
+            win_or_lost_result = Counter(_win_or_lost_results).most_common()[0][0]
             win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
             win_or_lost[win_or_lost_frame_number] = win_or_lost_result
 
