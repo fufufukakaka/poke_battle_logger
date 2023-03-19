@@ -1,4 +1,5 @@
 import logging
+import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
 
@@ -116,10 +117,16 @@ def get_battle_log(
 def get_pokemon_image_url(
     pokemon_name: str,
 ) -> str:
+    pokemon_name = unicodedata.normalize("NFC", pokemon_name)
+    # Unseen の場合は Unseen Image を返す
+    if pokemon_name == "Unseen":
+        return "https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg"
     # もしカタカナだったら英語に直す
     if pokemon_name in pokemon_japanese_to_english_dict:
         pokemon_name = pokemon_japanese_to_english_dict[pokemon_name]
     # lowerに変換・空白はハイフンに変換
     pokemon_name = pokemon_name.lower().replace(" ", "-")
-    pokemon_image_url = f"https://img.pokemondb.net/sprites/scarlet-violet/normal/{pokemon_name}.png"
+    pokemon_image_url = (
+        f"https://img.pokemondb.net/sprites/scarlet-violet/normal/{pokemon_name}.png"
+    )
     return pokemon_image_url

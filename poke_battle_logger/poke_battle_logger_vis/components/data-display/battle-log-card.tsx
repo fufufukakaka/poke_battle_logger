@@ -3,12 +3,13 @@ import {
   CardHeader,
   CardBody,
   SimpleGrid,
-  Heading,
+  Flex,
   Text,
   Badge,
   Divider,
 } from '@chakra-ui/react';
-import {TimeIcon} from '@chakra-ui/icons';
+import { TimeIcon } from '@chakra-ui/icons';
+import PokemonIcon from '../atoms/pokemon-icon';
 
 interface BattleLogCardProps {
   battle_id: string;
@@ -42,23 +43,57 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
   return (
     <Card>
       <CardBody>
-        <Text><TimeIcon boxSize={4} margin={"5px"} />{battle_created_at}</Text>
+        <Text>
+          <TimeIcon boxSize={4} margin={'5px'} />
+          {battle_created_at}
+        </Text>
         <Text>
           {win_or_lose === 'win' ? (
             <Badge colorScheme="green">勝利！</Badge>
           ) : (
             <Badge colorScheme="red">負け</Badge>
-          )} → 👑 {next_rank}
+          )}{' '}
+          → 👑 {next_rank}
         </Text>
-        <Divider margin={"5px"}/>
-        <Text>あなたのポケモンチーム: {your_pokemon_team}</Text>
-        <Text>相手のポケモンチーム: {opponent_pokemon_team}</Text>
-        <Text>あなたのポケモン1: {your_pokemon_select1}</Text>
-        <Text>あなたのポケモン2: {your_pokemon_select2}</Text>
-        <Text>あなたのポケモン3: {your_pokemon_select3}</Text>
-        <Text>相手のポケモン1: {opponent_pokemon_select1}</Text>
-        <Text>相手のポケモン2: {opponent_pokemon_select2}</Text>
-        <Text>相手のポケモン3: {opponent_pokemon_select3}</Text>
+        <Divider margin={'5px'} />
+        <Text>ShowDown</Text>
+        <Flex>
+          {
+            your_pokemon_team.split(',').map((pokemon_name) => (
+              <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'40px'} />
+            ))
+          }
+        </Flex>
+        <Text>VS</Text>
+        <Flex>
+          {
+            opponent_pokemon_team.split(',').map((pokemon_name) => (
+              <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'40px'} />
+            ))
+          }
+        </Flex>
+        <Divider margin={'5px'} />
+        <Text>Selection</Text>
+        <Flex>
+          <PokemonIcon pokemon_name={your_pokemon_select1} boxSize={'50px'} />
+          <PokemonIcon pokemon_name={your_pokemon_select2} boxSize={'50px'} />
+          <PokemonIcon pokemon_name={your_pokemon_select3} boxSize={'50px'} />
+        </Flex>
+        <Text>VS</Text>
+        <Flex>
+          <PokemonIcon
+            pokemon_name={opponent_pokemon_select1}
+            boxSize={'50px'}
+          />
+          <PokemonIcon
+            pokemon_name={opponent_pokemon_select2}
+            boxSize={'50px'}
+          />
+          <PokemonIcon
+            pokemon_name={opponent_pokemon_select3}
+            boxSize={'50px'}
+          />
+        </Flex>
       </CardBody>
     </Card>
   );

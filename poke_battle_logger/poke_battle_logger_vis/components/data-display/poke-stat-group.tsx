@@ -48,7 +48,7 @@ const PokeStatGroup: React.FunctionComponent<PokeStatGroupProps> = ({
         </CardHeader>
         <CardBody>
           <Text fontSize="2xl">{latest_win_pokemon}</Text>
-          <PokemonIcon pokemon_name={latest_win_pokemon} />
+          <PokemonIcon pokemon_name={latest_win_pokemon} boxSize={"150px"}/>
         </CardBody>
       </Card>
       <Card>
@@ -57,7 +57,7 @@ const PokeStatGroup: React.FunctionComponent<PokeStatGroupProps> = ({
         </CardHeader>
         <CardBody>
           <Text fontSize="2xl">{latest_lose_pokemon}</Text>
-          <PokemonIcon pokemon_name={latest_lose_pokemon} />
+          <PokemonIcon pokemon_name={latest_lose_pokemon} boxSize={"150px"}/>
         </CardBody>
       </Card>
     </SimpleGrid>
