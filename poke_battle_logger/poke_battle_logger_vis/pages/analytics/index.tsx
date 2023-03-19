@@ -13,6 +13,7 @@ import {
   Table,
   Heading,
 } from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import TransitionChart from '../../components/data-display/transition-chart';
 import useSWR from 'swr';
 import axios from 'axios';
@@ -74,8 +75,8 @@ const fetcher = async (url: string) => {
           head_battle_rate: number;
           in_battle_count: number;
           in_battle_rate: number;
-          in_battle_win_count: number;
-          in_battle_win_rate: number;
+          in_battle_lose_count: number;
+          in_battle_lose_rate: number;
           in_team_count: number;
           in_team_rate: number;
           pokemon_name: string;
@@ -85,8 +86,8 @@ const fetcher = async (url: string) => {
           head_battle_rate: Number(summary.head_battle_rate).toFixed(3),
           in_battle_count: Number(summary.in_battle_count),
           in_battle_rate: Number(summary.in_battle_rate).toFixed(3),
-          in_battle_win_count: Number(summary.in_battle_win_count),
-          in_battle_win_rate: Number(summary.in_battle_win_rate).toFixed(3),
+          in_battle_losecount: Number(summary.in_battle_lose_count),
+          in_battle_lose_rate: Number(summary.in_battle_lose_rate).toFixed(3),
           in_team_count: Number(summary.in_team_count),
           in_team_rate: Number(summary.in_team_rate).toFixed(3),
         })
@@ -102,36 +103,80 @@ type YourPokemonStat = {
   in_battle_win_rate: number;
 };
 
-const columnHelper = createColumnHelper<YourPokemonStat>();
-const columns = [
-  columnHelper.accessor("pokemon_name", {
+type OpponentPokemonStat = {
+  pokemon_name: string;
+  in_team_rate: number;
+  in_battle_rate: number;
+  head_battle_rate: number;
+  in_battle_lose_rate: number;
+};
+
+const yourPokemonStatsColumnHelper = createColumnHelper<YourPokemonStat>();
+const yourPokemonStatsColumns = [
+  yourPokemonStatsColumnHelper.accessor("pokemon_name", {
     cell: (info) => info.getValue(),
     header: "ポケモン名"
   }),
-  columnHelper.accessor("in_team_rate", {
+  yourPokemonStatsColumnHelper.accessor("in_team_rate", {
     cell: (info) => info.getValue(),
     header: "採用率",
     meta: {
       isNumeric: true
     }
   }),
-  columnHelper.accessor("in_battle_rate", {
+  yourPokemonStatsColumnHelper.accessor("in_battle_rate", {
     cell: (info) => info.getValue(),
     header: "選出率",
     meta: {
       isNumeric: true
     }
   }),
-  columnHelper.accessor("head_battle_rate", {
+  yourPokemonStatsColumnHelper.accessor("head_battle_rate", {
     cell: (info) => info.getValue(),
     header: "選出したときの先発率",
     meta: {
       isNumeric: true
     }
   }),
-  columnHelper.accessor("in_battle_win_rate", {
+  yourPokemonStatsColumnHelper.accessor("in_battle_win_rate", {
     cell: (info) => info.getValue(),
     header: "選出したときの勝率",
+    meta: {
+      isNumeric: true
+    }
+  })
+];
+
+const opponentPokemonStatsColumnHelper = createColumnHelper<OpponentPokemonStat>();
+const opponentPokemonStatsColumns = [
+  opponentPokemonStatsColumnHelper.accessor("pokemon_name", {
+    cell: (info) => info.getValue(),
+    header: "ポケモン名"
+  }),
+  opponentPokemonStatsColumnHelper.accessor("in_team_rate", {
+    cell: (info) => info.getValue(),
+    header: "遭遇率",
+    meta: {
+      isNumeric: true
+    }
+  }),
+  opponentPokemonStatsColumnHelper.accessor("in_battle_rate", {
+    cell: (info) => info.getValue(),
+    header: "選出率",
+    meta: {
+      isNumeric: true
+    }
+  }),
+  opponentPokemonStatsColumnHelper.accessor("head_battle_rate", {
+    cell: (info) => info.getValue(),
+    header: "選出されたときの先発率",
+    meta: {
+      isNumeric: true
+    }
+  }),
+  opponentPokemonStatsColumnHelper.accessor("in_battle_lose_rate", {
+    cell: (info) => info.getValue(),
+    header: "選出されたときの負け率",
     meta: {
       isNumeric: true
     }
@@ -160,14 +205,14 @@ const Analytics: React.FC<AnalyticsProps> = () => {
           <SimpleGrid columns={2} spacing={10}>
             <TransitionChart
               data={data.winRates}
-              chartTitle={`勝率推移(シーズン${season})`}
+              chartTitle={season === 0 ? `勝率推移(通算)` : `勝率推移(シーズン${season})`}
               dataLabel={'勝率'}
               dataColor={'rgb(255, 99, 132)'}
               dataBackGroundColor={'rgba(255, 99, 132, 0.5)'}
             />
             <TransitionChart
               data={data.nextRanks}
-              chartTitle={`順位推移(シーズン${season})`}
+              chartTitle={season === 0 ? `順位推移(通算)` : `順位推移(シーズン${season})`}
               dataLabel={'順位'}
               dataColor={'rgb(53, 162, 235)'}
               dataBackGroundColor={'rgba(53, 162, 235, 0.5)'}
@@ -175,9 +220,22 @@ const Analytics: React.FC<AnalyticsProps> = () => {
           </SimpleGrid>
           <Divider marginY={'10px'} />
           <Heading size="md" padding={'10px'}>
-            サマリー: 自分のポケモン
+            サマリー
           </Heading>
-          <DataTable columns={columns} data={data.yourPokemonStatsSummary} />
+          <Tabs>
+            <TabList>
+              <Tab>自分のポケモン</Tab>
+              <Tab>相手のポケモン</Tab>
+            </TabList>
+            <TabPanels>
+              <TabPanel>
+                <DataTable columns={yourPokemonStatsColumns} data={data.yourPokemonStatsSummary} />
+              </TabPanel>
+              <TabPanel>
+                <DataTable columns={opponentPokemonStatsColumns} data={data.opponentPokemonStatsSummary} />
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </Box>
       </Container>
     </Box>

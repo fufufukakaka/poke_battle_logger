@@ -39,7 +39,7 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
       <NavItem key={'analytics'} icon={TbAnalyzeFilled} href={'/analytics'} marginTop="5px">
         ログ分析
       </NavItem>
-      <NavItem key={'all_log'} icon={RiDatabaseFill} href={'/all_battle_log'} marginTop="5px">
+      <NavItem key={'battle_log'} icon={RiDatabaseFill} href={'/battle_log'} marginTop="5px">
         対戦ログ一覧
       </NavItem>
     </Box>

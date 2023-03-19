@@ -12,18 +12,14 @@ import {
   Divider,
   Badge,
 } from '@chakra-ui/react';
-import { GetServerSideProps } from 'next';
-import getRecentSummaryHandler from './api/get_recent_summary';
 import PokeStatGroup from '../components/data-display/poke-stat-group';
 import useSWR from "swr";
 import axios from "axios"
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
-  latest_win_pokemon_image: string;
   latest_rank: number;
   latest_win_pokemon: string;
-  latest_lose_pokemon_image: string;
   win_rate: number;
   recent_battle_history: {
     battle_id: string;
@@ -39,10 +35,8 @@ export const fetcher = async (url: string) => {
   const results = await axios.get(url);
   const data = await {
     latest_lose_pokemon: results.data.latest_lose_pokemon,
-    latest_lose_pokemon_image: results.data.latest_lose_pokemon_image,
     latest_rank: results.data.latest_rank,
     latest_win_pokemon: results.data.latest_win_pokemon,
-    latest_win_pokemon_image: results.data.latest_win_pokemon_image,
     win_rate: results.data.win_rate,
     recent_battle_history: [
       ...results.data.recent_battle_history.map(
@@ -85,10 +79,8 @@ const Dashboard: React.FC<DashBoardProps> = ({
           <Stack spacing={4}>
             <PokeStatGroup
               latest_lose_pokemon={data.latest_lose_pokemon}
-              latest_lose_pokemon_image={data.latest_lose_pokemon_image}
               latest_rank={data.latest_rank}
               latest_win_pokemon={data.latest_win_pokemon}
-              latest_win_pokemon_image={data.latest_win_pokemon_image}
               win_rate={Number(data.win_rate.toFixed(4))}
             />
             <Divider />

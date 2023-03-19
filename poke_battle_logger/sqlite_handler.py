@@ -550,15 +550,21 @@ class SQLiteHandler:
             )
         return list(summary.to_dict(orient="index").values())
 
-    def get_battle_logs(self):
+    def get_battle_log_all(self):
         sql = """
         select
             battle_id,
             created_at,
             win_or_lose,
             next_rank,
+            your_team,
+            opponent_team,
             your_pokemon_1,
-            opponent_pokemon_1
+            your_pokemon_2,
+            your_pokemon_3,
+            opponent_pokemon_1,
+            opponent_pokemon_2,
+            opponent_pokemon_3
         from
             battlesummary
         order by
@@ -569,12 +575,96 @@ class SQLiteHandler:
             battle_logs_dict = [
                 {
                     "battle_id": battle_id,
-                    "created_at": created_at,
+                    "battle_created_at": created_at,
                     "win_or_lose": win_or_lose,
                     "next_rank": next_rank,
-                    "your_pokemon_1": your_pokemon_1,
-                    "opponent_pokemon_1": opponent_pokemon_1,
+                    "your_pokemon_team": your_team,
+                    "opponent_pokemon_team": opponent_team,
+                    "your_pokemon_select1": your_pokemon_1,
+                    "your_pokemon_select2": your_pokemon_2,
+                    "your_pokemon_select3": your_pokemon_3,
+                    "opponent_pokemon_select1": opponent_pokemon_1,
+                    "opponent_pokemon_select2": opponent_pokemon_2,
+                    "opponent_pokemon_select3": opponent_pokemon_3,
                 }
-                for battle_id, created_at, win_or_lose, next_rank, your_pokemon_1, opponent_pokemon_1 in battle_logs
+                for (
+                    battle_id,
+                    created_at,
+                    win_or_lose,
+                    next_rank,
+                    your_team,
+                    opponent_team,
+                    your_pokemon_1,
+                    your_pokemon_2,
+                    your_pokemon_3,
+                    opponent_pokemon_1,
+                    opponent_pokemon_2,
+                    opponent_pokemon_3,
+                ) in battle_logs
+            ]
+        return battle_logs_dict
+
+    def get_battle_log_season(self, season: int):
+        sql = f"""
+        with season_start_end as (
+            select
+                start_datetime,
+                end_datetime
+            from
+                season
+            where
+                season = {season}
+        )
+        select
+            battle_id,
+            created_at,
+            win_or_lose,
+            next_rank,
+            your_team,
+            opponent_team,
+            your_pokemon_1,
+            your_pokemon_2,
+            your_pokemon_3,
+            opponent_pokemon_1,
+            opponent_pokemon_2,
+            opponent_pokemon_3
+        from
+            battlesummary
+        where
+            created_at between (select start_datetime from season_start_end) and (select end_datetime from season_start_end)
+        order by
+            created_at desc
+        """
+        with self.db:
+            battle_logs = self.db.execute_sql(sql).fetchall()
+            battle_logs_dict = [
+                {
+                    "battle_id": battle_id,
+                    "battle_created_at": created_at,
+                    "win_or_lose": win_or_lose,
+                    "next_rank": next_rank,
+                    "your_pokemon_team": your_team,
+                    "opponent_pokemon_team": opponent_team,
+                    "your_pokemon_select1": your_pokemon_1,
+                    "your_pokemon_select2": your_pokemon_2,
+                    "your_pokemon_select3": your_pokemon_3,
+                    "opponent_pokemon_select1": opponent_pokemon_1,
+                    "opponent_pokemon_select2": opponent_pokemon_2,
+                    "opponent_pokemon_select3": opponent_pokemon_3,
+                }
+                for (
+                    battle_id,
+                    created_at,
+                    win_or_lose,
+                    next_rank,
+                    your_team,
+                    opponent_team,
+                    your_pokemon_1,
+                    your_pokemon_2,
+                    your_pokemon_3,
+                    opponent_pokemon_1,
+                    opponent_pokemon_2,
+                    opponent_pokemon_3,
+                ) in battle_logs
             ]
         return battle_logs_dict

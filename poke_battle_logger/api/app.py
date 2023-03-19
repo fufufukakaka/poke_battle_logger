@@ -35,6 +35,9 @@ pokemon_name_df = pd.read_csv("data/pokemon_names.csv")
 pokemon_japanese_to_no_dict = dict(
     zip(pokemon_name_df["Japanese"], pokemon_name_df["No."])
 )
+pokemon_japanese_to_english_dict = dict(
+    zip(pokemon_name_df["Japanese"], pokemon_name_df["English"])
+)
 
 
 @app.get("/hello")
@@ -57,16 +60,10 @@ async def get_recent_battle_summary() -> Dict[
     latest_lose_pokemon = sqlite_handler.get_latest_lose_pokemon()
     recent_battle_history = sqlite_handler.get_recent_battle_history()
 
-    # get image url
-    latest_win_pokemon_image = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_japanese_to_no_dict[latest_win_pokemon]}.png"
-    latest_lose_pokemon_image = f"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{pokemon_japanese_to_no_dict[latest_lose_pokemon]}.png"
-
     return {
         "win_rate": win_rate,
         "latest_rank": latest_rank,
         "latest_win_pokemon": latest_win_pokemon,
-        "latest_win_pokemon_image": latest_win_pokemon_image,
-        "latest_lose_pokemon_image": latest_lose_pokemon_image,
         "latest_lose_pokemon": latest_lose_pokemon,
         "recent_battle_history": recent_battle_history,
     }
@@ -100,3 +97,29 @@ async def get_analytics(
         "yourPokemonStatsSummary": your_pokemon_stats_summary,
         "opponentPokemonStatsSummary": opponent_pokemon_stats_summary,
     }
+
+
+@app.get("/api/v1/battle_log")
+def get_battle_log(
+    season: int,
+) -> List[Dict[str, Union[str, int, float]]]:
+    if season == 0:
+        battle_log = sqlite_handler.get_battle_log_all()
+    elif season > 0:
+        battle_log = sqlite_handler.get_battle_log_season(season)
+    else:
+        raise ValueError("season must be 0 or positive")
+    return battle_log
+
+
+@app.get("/api/v1/pokemon_image_url")
+def get_pokemon_image_url(
+    pokemon_name: str,
+) -> str:
+    # もしカタカナだったら英語に直す
+    if pokemon_name in pokemon_japanese_to_english_dict:
+        pokemon_name = pokemon_japanese_to_english_dict[pokemon_name]
+    # lowerに変換・空白はハイフンに変換
+    pokemon_name = pokemon_name.lower().replace(" ", "-")
+    pokemon_image_url = f"https://img.pokemondb.net/sprites/scarlet-violet/normal/{pokemon_name}.png"
+    return pokemon_image_url
