@@ -216,7 +216,7 @@ class PokemonExtractor:
         if win_score >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD:
             return "win"
         elif lost_score >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD:
-            return "lost"
+            return "lose"
         else:
             return "unknown"
 
@@ -303,25 +303,30 @@ class PokemonExtractor:
         """
         対戦前のポケモンをパターンマッチングで抽出する
         """
-
         is_exist_unknown_pokemon = False
         your_pokemons, opponent_pokemons = self._get_pokemons(frame)
 
+        is_exist_unknown_pokemon_list = []
         # search by template matching
         your_pokemon_names = []
         for pokemon_image in your_pokemons:
-            pokemon_name, is_exist_unknown_pokemon = self._search_by_template_matching(
+            pokemon_name, _is_exist_unknown_pokemon = self._search_by_template_matching(
                 pokemon_image
             )
+            is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
             your_pokemon_names.append(pokemon_name)
 
         opponent_pokemon_names = []
         for pokemon_image in opponent_pokemons:
-            pokemon_name, is_exist_unknown_pokemon = self._search_by_template_matching(
+            pokemon_name, _is_exist_unknown_pokemon = self._search_by_template_matching(
                 pokemon_image
             )
+            is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
             opponent_pokemon_names.append(pokemon_name)
 
+        # True を一つでも含んでいたら
+        if is_exist_unknown_pokemon_list.count(True) > 0:
+            is_exist_unknown_pokemon = True
         return your_pokemon_names, opponent_pokemon_names, is_exist_unknown_pokemon
 
     def extract_pokemon_select_numbers(self, frame):
@@ -399,12 +404,16 @@ class PokemonExtractor:
         ) = self._get_pokemon_name_window(frame)
         (
             your_pokemon_name,
-            is_exist_unknown_pokemon,
+            is_exist_unknown_pokemon1,
         ) = self._search_name_window_by_template_matching(your_pokemon_name_window)
         (
             opponent_pokemon_name,
-            is_exist_unknown_pokemon,
+            is_exist_unknown_pokemon2,
         ) = self._search_name_window_by_template_matching(opponent_pokemon_name_window)
+
+        if is_exist_unknown_pokemon1 or is_exist_unknown_pokemon2:
+            is_exist_unknown_pokemon = True
+
         return your_pokemon_name, opponent_pokemon_name, is_exist_unknown_pokemon
 
     def extract_win_or_lost(self, frame):
