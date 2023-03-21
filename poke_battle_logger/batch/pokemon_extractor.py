@@ -328,6 +328,7 @@ class PokemonExtractor:
         # True を一つでも含んでいたら
         if is_exist_unknown_pokemon_list.count(True) > 0:
             is_exist_unknown_pokemon = True
+
         return your_pokemon_names, opponent_pokemon_names, is_exist_unknown_pokemon
 
     def extract_pokemon_select_numbers(self, frame):
