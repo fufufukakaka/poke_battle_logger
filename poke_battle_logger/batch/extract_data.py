@@ -187,8 +187,6 @@ def main(video_id: str):
     if any(is_exist_unknown_pokemon_list):
         raise Exception("Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.")
 
-    import pdb;pdb.set_trace()
-
     # 勝ち負けを検出
     # 間違いやすいので、周辺最大10フレームを見て判断する。全て unknown の時は弾く
     logger.info("Extracting win or lost...")
