@@ -60,13 +60,13 @@ class DataBuilder:
 
     def _get_start_time(self, video_id, start_frame_number):
         yt = YouTube(f"http://youtube.com/watch?v={video_id}")
-        second_from_frame_number = int(0.03 * start_frame_number)
+        second_from_frame_number = int(start_frame_number / 30)  # FPS=30
 
         # +9h は UTC to JST
         start_datetime = self._publish_date(yt.watch_html) + timedelta(
             seconds=second_from_frame_number, hours=9
         )
-        return start_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        return start_datetime.strftime("%Y-%m-%d %H:%M:%S"), second_from_frame_number
 
     def _get_battle_id(self, start_datetime):
         return str(uuid.uuid5(uuid.uuid1(), start_datetime))
@@ -203,7 +203,7 @@ class DataBuilder:
 
         for i in range(len(self.battle_start_end_frame_numbers)):
             start_frame = self.battle_start_end_frame_numbers[i][0]
-            created_at = self._get_start_time(self.video_id, start_frame)
+            created_at, second_from_frame_number = self._get_start_time(self.video_id, start_frame)
             battle_id = self._get_battle_id(created_at)
 
             battle_ids.append(battle_id)
@@ -271,7 +271,7 @@ class DataBuilder:
                 "opponent_pokemon_3": self.battle_pokemon_combinations[i]["opponent"][
                     2
                 ],
-                "video": f"http://youtube.com/watch?v={self.video_id}",
+                "video": f"http://youtube.com/watch?v={self.video_id}&t={second_from_frame_number}",
             }
             battle_logs.append(_log)
 

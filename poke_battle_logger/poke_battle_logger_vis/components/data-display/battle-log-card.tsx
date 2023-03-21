@@ -1,15 +1,21 @@
 import {
   Card,
-  CardHeader,
+  Heading,
   CardBody,
-  SimpleGrid,
   Flex,
   Text,
   Badge,
   Divider,
+  Editable,
+  EditableTextarea,
+  EditablePreview,
+  CardFooter,
+  Button,
 } from '@chakra-ui/react';
+import { useDisclosure } from '@chakra-ui/react'
 import { TimeIcon } from '@chakra-ui/icons';
 import PokemonIcon from '../atoms/pokemon-icon';
+import BattleLogDetailModal from './battle-log-detail-model';
 
 interface BattleLogCardProps {
   battle_id: string;
@@ -24,6 +30,8 @@ interface BattleLogCardProps {
   opponent_pokemon_select1: string;
   opponent_pokemon_select2: string;
   opponent_pokemon_select3: string;
+  memo: string;
+  video: string;
 }
 
 const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
@@ -39,8 +47,31 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
   opponent_pokemon_select1,
   opponent_pokemon_select2,
   opponent_pokemon_select3,
+  memo,
+  video
 }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
+    <>
+    <BattleLogDetailModal
+      isOpen={isOpen}
+      onClose={onClose}
+      battle_id={battle_id}
+      battle_created_at={battle_created_at}
+      win_or_lose={win_or_lose}
+      next_rank={next_rank}
+      your_pokemon_team={your_pokemon_team}
+      opponent_pokemon_team={opponent_pokemon_team}
+      your_pokemon_select1={your_pokemon_select1}
+      your_pokemon_select2={your_pokemon_select2}
+      your_pokemon_select3={your_pokemon_select3}
+      opponent_pokemon_select1={opponent_pokemon_select1}
+      opponent_pokemon_select2={opponent_pokemon_select2}
+      opponent_pokemon_select3={opponent_pokemon_select3}
+      memo={memo}
+      video={video}
+    />
     <Card>
       <CardBody>
         <Text>
@@ -56,7 +87,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
           → 👑 {next_rank}
         </Text>
         <Divider margin={'5px'} />
-        <Text>ShowDown</Text>
+        <Heading size={"xs"}>MatchUp</Heading>
         <Flex>
           {
             your_pokemon_team.split(',').map((pokemon_name) => (
@@ -73,7 +104,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
           }
         </Flex>
         <Divider margin={'5px'} />
-        <Text>Selection</Text>
+        <Heading size={"xs"}>Selection</Heading>
         <Flex>
           <PokemonIcon pokemon_name={your_pokemon_select1} boxSize={'50px'} />
           <PokemonIcon pokemon_name={your_pokemon_select2} boxSize={'50px'} />
@@ -94,8 +125,20 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
             boxSize={'50px'}
           />
         </Flex>
+        <Divider margin={'5px'} />
+        <Heading size={"xs"}>📝 Memo</Heading>
+        <Editable defaultValue={memo}>
+          <EditablePreview />
+          <EditableTextarea />
+        </Editable>
       </CardBody>
+      <CardFooter>
+        <Button onClick={onOpen} variant='solid' colorScheme='blue'>
+          詳細を確認する
+        </Button>
+      </CardFooter>
     </Card>
+    </>
   );
 };
 

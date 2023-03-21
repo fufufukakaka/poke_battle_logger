@@ -35,6 +35,7 @@ class BattleSummary(BaseModel):
     opponent_pokemon_2 = TextField()
     opponent_pokemon_3 = TextField()
     video = TextField()
+    memo = TextField()
 
 
 class InBattlePokemonLog(BaseModel):
@@ -134,6 +135,7 @@ class SQLiteHandler:
                         "NFC", _battle_summary["opponent_pokemon_3"]
                     ),
                     video=_battle_summary["video"],
+                    memo=""
                 )
 
     def insert_battle_pokemon_team(self, battle_pokemon_team):
@@ -564,7 +566,9 @@ class SQLiteHandler:
             your_pokemon_3,
             opponent_pokemon_1,
             opponent_pokemon_2,
-            opponent_pokemon_3
+            opponent_pokemon_3,
+            memo,
+            video
         from
             battlesummary
         order by
@@ -586,6 +590,8 @@ class SQLiteHandler:
                     "opponent_pokemon_select1": opponent_pokemon_1,
                     "opponent_pokemon_select2": opponent_pokemon_2,
                     "opponent_pokemon_select3": opponent_pokemon_3,
+                    "memo": memo,
+                    "video": video
                 }
                 for (
                     battle_id,
@@ -600,6 +606,8 @@ class SQLiteHandler:
                     opponent_pokemon_1,
                     opponent_pokemon_2,
                     opponent_pokemon_3,
+                    memo,
+                    video,
                 ) in battle_logs
             ]
         return battle_logs_dict
@@ -651,6 +659,8 @@ class SQLiteHandler:
                     "opponent_pokemon_select1": opponent_pokemon_1,
                     "opponent_pokemon_select2": opponent_pokemon_2,
                     "opponent_pokemon_select3": opponent_pokemon_3,
+                    "memo": memo,
+                    "video": video
                 }
                 for (
                     battle_id,
@@ -665,6 +675,8 @@ class SQLiteHandler:
                     opponent_pokemon_1,
                     opponent_pokemon_2,
                     opponent_pokemon_3,
+                    memo,
+                    video
                 ) in battle_logs
             ]
         return battle_logs_dict

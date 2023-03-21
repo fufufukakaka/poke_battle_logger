@@ -20,6 +20,7 @@ from config.config import (
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     YOUR_PRE_POKEMON_POSITION,
+    POKEMON_TEMPLATE_MATCHING_THRESHOLD,
 )
 
 
@@ -112,7 +113,7 @@ class PokemonExtractor:
         for pokemon_name, template in self.pre_battle_pokemon_templates.items():
             res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
             score = cv2.minMaxLoc(res)[1]
-            if score >= TEMPLATE_MATCHING_THRESHOLD:
+            if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
             # save image for annotation(name is timestamp)
@@ -134,7 +135,7 @@ class PokemonExtractor:
         for pokemon_name, template in self.battle_pokemon_name_window_templates.items():
             res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
             score = cv2.minMaxLoc(res)[1]
-            if score >= TEMPLATE_MATCHING_THRESHOLD:
+            if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
             # save image for annotation(name is timestamp)

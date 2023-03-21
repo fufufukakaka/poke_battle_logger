@@ -26,6 +26,8 @@ interface BattleLogProps {
   opponent_pokemon_select1: string;
   opponent_pokemon_select2: string;
   opponent_pokemon_select3: string;
+  memo: string
+  video: string
 }
 
 const fetcher = async (url: string) => {
@@ -69,6 +71,8 @@ const BattleLogs: React.FC = () => {
                 opponent_pokemon_select1={battle.opponent_pokemon_select1}
                 opponent_pokemon_select2={battle.opponent_pokemon_select2}
                 opponent_pokemon_select3={battle.opponent_pokemon_select3}
+                memo={battle.memo}
+                video={battle.video}
               />
             ))}
           </SimpleGrid>
