@@ -1,5 +1,6 @@
-from collections import Counter
 import logging
+from collections import Counter
+
 import click
 import cv2
 from rich.logging import RichHandler
@@ -140,7 +141,7 @@ def main(video_id: str):
     # 6vs6のポケモンを抽出する
     logger.info("Extracting pre-battle pokemons...")
     pre_battle_pokemons = {}
-    is_exist_unknown_pokemon_list = []
+    is_exist_unknown_pokemon_list1 = []
     for i in range(len(compressed_standing_by_frames)):
         _standing_by_frames = compressed_standing_by_frames[i]
         _standing_by_frame_number = _standing_by_frames[-10]
@@ -157,14 +158,12 @@ def main(video_id: str):
             "your_pokemon_names": your_pokemon_names,
             "opponent_pokemon_names": opponent_pokemon_names,
         }
-        is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
-    if any(is_exist_unknown_pokemon_list):
-        raise Exception("Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.")
+        is_exist_unknown_pokemon_list1.append(_is_exist_unknown_pokemon)
 
     # 対戦中のポケモンを抽出する
     logger.info("Extracting in-battle pokemons...")
     battle_pokemons = []
-    is_exist_unknown_pokemon_list = []
+    is_exist_unknown_pokemon_list2 = []
     for level_50_frame_numbers in compressed_level_50_frames:
         _level_50_frame_number = level_50_frame_numbers[-10]
         video.set(cv2.CAP_PROP_POS_FRAMES, _level_50_frame_number - 1)
@@ -182,10 +181,12 @@ def main(video_id: str):
                 "opponent_pokemon_name": opponent_pokemon_name,
             }
         )
-        is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
+        is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
 
-    if any(is_exist_unknown_pokemon_list):
-        raise Exception("Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.")
+    if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
+        raise Exception(
+            "Unknown pokemon exists. Stop processing. Please annotate unknown pokemons."
+        )
 
     # 勝ち負けを検出
     # 間違いやすいので、周辺最大10フレームを見て判断する。全て unknown の時は弾く
