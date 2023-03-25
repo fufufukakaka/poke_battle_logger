@@ -23,7 +23,7 @@ const PokemonIcon: React.FC<PokemonIconProps> = ({ pokemon_name, boxSize }) => {
   if (!data) return <Skeleton />;
 
   return (
-    <Image src={data} alt={pokemon_name} boxSize={boxSize} />
+    <Image src={data} alt={pokemon_name} boxSize={boxSize} align={'center'}/>
   );
 };
 
