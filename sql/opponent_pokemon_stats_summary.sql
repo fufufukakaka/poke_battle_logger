@@ -34,10 +34,10 @@ third_in_battle_count as (
 unions_in_battle_count as (
     select *
     from first_in_battle_count
-    union
+    union all
     select *
     from second_in_battle_count
-    union
+    union all
     select *
     from third_in_battle_count
 ),
@@ -71,10 +71,10 @@ third_in_battle_lose_count as (
 unions_in_battle_lose_count as (
     select *
     from first_in_battle_lose_count
-    union
+    union all
     select *
     from second_in_battle_lose_count
-    union
+    union all
     select *
     from third_in_battle_lose_count
 ),

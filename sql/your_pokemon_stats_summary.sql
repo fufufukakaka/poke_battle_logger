@@ -47,12 +47,12 @@ unions_in_battle_count as (
 		*
 	from
 		first_in_battle_count
-	union
+	union all
 	select
 		*
 	from
 		second_in_battle_count
-	union
+	union all
 	select
 		*
 	from
@@ -105,12 +105,12 @@ unions_in_battle_win_count as (
 		*
 	from
 		first_in_battle_win_count
-	union
+	union all
 	select
 		*
 	from
 		second_in_battle_win_count
-	union
+	union all
 	select
 		*
 	from
