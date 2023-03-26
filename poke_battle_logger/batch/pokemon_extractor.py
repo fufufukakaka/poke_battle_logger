@@ -28,6 +28,9 @@ from config.config import (
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     YOUR_PRE_POKEMON_POSITION,
 )
+from poke_battle_logger.batch.pokemon_name_window_extractor import (
+    PokemonNameWindowExtractor,
+)
 
 pytesseract.pytesseract.tesseract_cmd = r"/opt/brew/bin/tesseract"
 
@@ -36,12 +39,12 @@ class PokemonExtractor:
     """
     6vs6 の見せ合い画面でのポケモン検出と
     対戦中でのポケモン検出を行う
+
+    TODO: やっていることが増えすぎたので、いずれ複数の小さなクラスに分割する
     """
 
-    def __init__(self):
-        self.battle_pokemon_name_window_templates = (
-            self._setup_battle_pokemon_name_window_templates()
-        )
+    def __init__(self) -> None:
+        self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
         (
             self.win_window_template,
             self.lost_window_template,
@@ -54,7 +57,7 @@ class PokemonExtractor:
         self.message_window_templates = self._setup_message_window_templates()
         self.setup_trained_pokemon_faiss_index()
 
-    def setup_trained_pokemon_faiss_index(self):
+    def setup_trained_pokemon_faiss_index(self) -> None:
         """
         model/pokemon_image_faiss/pokemon_faiss_index が事前に学習した faiss_index となっている。
         これを読み込む。
@@ -84,18 +87,6 @@ class PokemonExtractor:
         )
 
         return win_window_template, lost_window_template
-
-    def _setup_battle_pokemon_name_window_templates(self):
-        battle_pokemon_name_window_template_paths = glob.glob(
-            "template_images/labeled_pokemon_name_window_templates/*.png"
-        )
-        battle_pokemon_name_window_templates = {}
-        for path in battle_pokemon_name_window_template_paths:
-            _gray_image = cv2.imread(path, 0)
-            battle_pokemon_name_window_templates[
-                path.split("/")[-1].split(".")[0]
-            ] = _gray_image
-        return battle_pokemon_name_window_templates
 
     def _setup_message_window_templates(self):
         message_window_template_paths = glob.glob(
@@ -136,28 +127,6 @@ class PokemonExtractor:
             )
             return "unknown_pokemon", True
         return results[0], False
-
-    def _search_name_window_by_template_matching(self, pokemon_image):
-        """
-        テンプレートマッチングでポケモン名ウィンドウを検出する
-        """
-        score_results = {}
-        gray_pokemon_image = cv2.cvtColor(pokemon_image, cv2.COLOR_RGB2GRAY)
-        for pokemon_name, template in self.battle_pokemon_name_window_templates.items():
-            res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
-            score = cv2.minMaxLoc(res)[1]
-            if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
-                score_results[pokemon_name] = score
-        if len(score_results) == 0:
-            # save image for annotation(name is timestamp)
-            cv2.imwrite(
-                "template_images/unknown_pokemon_name_window_templates/"
-                + str(time.time())
-                + ".png",
-                pokemon_image,
-            )
-            return "unknown_pokemon", True
-        return max(score_results, key=score_results.get), False
 
     def _search_pokemon_select_window_by_template_matching(
         self,
@@ -418,11 +387,15 @@ class PokemonExtractor:
         (
             your_pokemon_name,
             is_exist_unknown_pokemon1,
-        ) = self._search_name_window_by_template_matching(your_pokemon_name_window)
+        ) = self.pokemon_name_window_extractor.extract_pokemon_name_in_battle(
+            your_pokemon_name_window
+        )
         (
             opponent_pokemon_name,
             is_exist_unknown_pokemon2,
-        ) = self._search_name_window_by_template_matching(opponent_pokemon_name_window)
+        ) = self.pokemon_name_window_extractor.extract_pokemon_name_in_battle(
+            opponent_pokemon_name_window
+        )
 
         if is_exist_unknown_pokemon1 or is_exist_unknown_pokemon2:
             is_exist_unknown_pokemon = True
