@@ -438,9 +438,7 @@ class PokemonExtractor:
 
     def extract_message(self, frame):
         """
-        一度読み取ったメッセージの画像についてはテンプレートマッチングで照合し、
-
-        まだ読み取ったことがないメッセージをOCRで認識する
+        メッセージをOCRで認識する
         """
 
         message_frame_window = frame[
