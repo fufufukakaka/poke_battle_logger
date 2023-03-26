@@ -30,6 +30,9 @@ extract-data: # extract battle data from video file
 build-pokemon-faiss-index: # build pokemon faiss index
 	$(PYTHON) poke_battle_logger/batch/build_pokemon_faiss_index.py
 
+build-pokemon-multi-name-dict: # build pokemon multi name dict
+	$(PYTHON) poke_battle_logger/batch/build_pokemon_name_dict.py
+
 ###########################################################################################################
 ## GENERAL TARGETS
 ###########################################################################################################
