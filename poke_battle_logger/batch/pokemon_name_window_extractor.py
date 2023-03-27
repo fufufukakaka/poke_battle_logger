@@ -1,13 +1,20 @@
 import collections
-from typing import List, Optional, Tuple
+import glob
+import re
 import time
+import unicodedata
+from typing import List, Optional, Tuple
+
 import cv2
 import editdistance
 import numpy as np
 import pandas as pd
 import pytesseract
 
-from config.config import POKEMON_MESSAGE_WINDOW_THRESHOLD_VALUE, POKEMON_TEMPLATE_MATCHING_THRESHOLD
+from config.config import (
+    POKEMON_NAME_WINDOW_THRESHOLD_VALUE,
+    POKEMON_TEMPLATE_MATCHING_THRESHOLD,
+)
 
 EDIT_DISTANCE_THRESHOLD = 0.5
 
@@ -30,7 +37,25 @@ class PokemonNameWindowExtractor:
             "deu_frak",
         ]
         self._setup_multi_lang_list()
-        self.battle_pokemon_name_window_templates = self._setup_battle_pokemon_name_window_templates()
+        self.battle_pokemon_name_window_templates = (
+            self._setup_battle_pokemon_name_window_templates()
+        )
+        self.non_CJK_patterns = re.compile(
+            "[^"
+            "\U00003040-\U0000309F"  # Hiragana
+            "\U000030A0-\U000030FF"  # Katakana
+            "\U0000FF65-\U0000FF9F"  # Half width Katakana
+            "\U0000FF10-\U0000FF19"  # Full width digits
+            "\U0000FF21-\U0000FF3A"  # Full width Upper case Alphabets
+            "\U0000FF41-\U0000FF5A"  # Full width Lower case Alphabets
+            "\U00000030-\U00000039"  # Half width digits
+            "\U00000041-\U0000005A"  # Half width Upper case Alphabets
+            "\U00000061-\U0000007A"  # Half width Lower case Alphabets
+            "\U00003190-\U0000319F"  # Kanbun
+            "\U00004E00-\U00009FFF"  # CJK unified ideographs. kanjis
+            "]+",
+            flags=re.UNICODE,
+        )
 
     def _setup_multi_lang_list(self) -> None:
         multi_lang_names = pd.read_csv("data/pokemon_name_multi_language.csv")
@@ -56,14 +81,15 @@ class PokemonNameWindowExtractor:
             ] = _gray_image
         return battle_pokemon_name_window_templates
 
-    def _search_name_window_by_template_matching(self, pokemon_name_window_image: np.ndarray) -> Tuple[str, bool]:
+    def _search_name_window_by_template_matching(
+        self, gray_name_window: np.ndarray, pokemon_name_window_image: np.ndarray
+    ) -> Tuple[str, bool]:
         """
         テンプレートマッチングでポケモン名ウィンドウを検出する
         """
         score_results = {}
-        gray_pokemon_image = cv2.cvtColor(pokemon_name_window_image, cv2.COLOR_RGB2GRAY)
         for pokemon_name, template in self.battle_pokemon_name_window_templates.items():
-            res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
+            res = cv2.matchTemplate(gray_name_window, template, cv2.TM_CCOEFF_NORMED)
             score = cv2.minMaxLoc(res)[1]
             if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
@@ -94,32 +120,56 @@ class PokemonNameWindowExtractor:
         min_score_name = min(scores, key=scores.get)
         return min_score_name
 
-    def extract_pokemon_name_in_battle(self, message: np.ndarray) -> Tuple[str, bool]:
-        threshold_value = POKEMON_MESSAGE_WINDOW_THRESHOLD_VALUE
+    def _normalize_japanese_ocr_name(self, text: str) -> str:
+        """
+        OCRで読み取った日本語の名前から特殊文字を削除する
+        """
+        return self.non_CJK_patterns.sub(r"", text)
+
+    def extract_pokemon_name_in_battle(
+        self, name_window: np.ndarray
+    ) -> Tuple[str, bool]:
+        threshold_value = POKEMON_NAME_WINDOW_THRESHOLD_VALUE
         max_value = 255
-        _, message = cv2.threshold(
-            message, threshold_value, max_value, cv2.THRESH_BINARY
+        gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
+        _, name_window2 = cv2.threshold(
+            gray_name_window, threshold_value, max_value, cv2.THRESH_BINARY
         )
         results = []
+        _name_results = []
         for _lang in self.tesseract_candidate_langs:
-            _name = pytesseract.image_to_string(message, lang=_lang, config="--psm 6")
+            _name = pytesseract.image_to_string(
+                name_window2, lang=_lang, config="--psm 6"
+            )
             if _lang == "chi_sim":
+                _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.zh_list, _name))
             elif _lang == "chi_tra":
+                _name_results.append(_name)
                 results.append(
                     self._search_name_by_edit_distance(self.zh_HK_list, _name)
                 )
             elif _lang == "eng":
+                _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.en_list, _name))
             elif _lang == "fra":
+                _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.fr_list, _name))
             elif _lang == "jpn":
-                results.append(self._search_name_by_edit_distance(self.ja_list, _name))
+                _name_results.append(self._normalize_japanese_ocr_name(_name))
+                results.append(
+                    self._search_name_by_edit_distance(
+                        self.ja_list, self._normalize_japanese_ocr_name(_name)
+                    )
+                )
             elif _lang == "kor":
+                _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.ko_list, _name))
             elif _lang == "spa":
+                _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.es_list, _name))
             elif _lang == "deu_frak":
+                _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.de_list, _name))
             else:
                 continue
@@ -131,5 +181,7 @@ class PokemonNameWindowExtractor:
             return _most_common_name[0][0], _is_unknown
         else:
             # search by template matching
-            _name, _is_unknown = self._search_name_window_by_template_matching(message)
+            _name, _is_unknown = self._search_name_window_by_template_matching(
+                gray_name_window, name_window
+            )
             return _name, _is_unknown

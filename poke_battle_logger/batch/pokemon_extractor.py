@@ -44,6 +44,7 @@ class PokemonExtractor:
     """
 
     def __init__(self) -> None:
+        self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
         (
             self.win_window_template,
@@ -56,6 +57,18 @@ class PokemonExtractor:
         ) = self._setup_pokemon_select_window_templates()
         self.message_window_templates = self._setup_message_window_templates()
         self.setup_trained_pokemon_faiss_index()
+
+    def _setup_pre_battle_pokemon_templates(self):
+        pre_battle_pokemon_template_paths = glob.glob(
+            "template_images/labeled_pokemon_templates/*.png"
+        )
+        pre_battle_pokemon_templates = {}
+        for path in pre_battle_pokemon_template_paths:
+            _gray_image = cv2.imread(path, 0)
+            pre_battle_pokemon_templates[
+                path.split("/")[-1].split(".")[0]
+            ] = _gray_image
+        return pre_battle_pokemon_templates
 
     def setup_trained_pokemon_faiss_index(self) -> None:
         """
@@ -103,21 +116,21 @@ class PokemonExtractor:
             message_window_templates[path.split("/")[-1].split(".")[0]] = thresh
         return message_window_templates
 
-    def _search_pokemon_by_faiss(self, pokemon_image) -> Tuple[str, bool]:
+    def _search_pokemon_by_template_matching(self, pokemon_image) -> Tuple[str, bool]:
         """
+        テンプレートマッチングでポケモンを検出する
         ベクトル検索でポケモンを検出する
         """
+        score_results = {}
+        gray_pokemon_image = cv2.cvtColor(pokemon_image, cv2.COLOR_RGB2GRAY)
         pokemon_image = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2RGB)
 
-        results = []
-        vec = self.vtr.vectorize(pokemon_image)
-        vec = np.reshape(vec, (1, vec.shape[0]))
-        scores, indexes = self.faiss_index.search(vec, 10)
-        for score, idx in zip(scores[0], indexes[0]):
-            if score < FAISS_POKEMON_SCORE_THRESHOLD:
-                results.append(self.vector_index[idx].split("_")[0])
-
-        if len(results) == 0:
+        for pokemon_name, template in self.pre_battle_pokemon_templates.items():
+            res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
+            score = cv2.minMaxLoc(res)[1]
+            if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
+                score_results[pokemon_name] = score
+        if len(score_results) == 0:
             # save image for annotation(name is timestamp)
             cv2.imwrite(
                 "template_images/unknown_pokemon_templates/"
@@ -126,7 +139,26 @@ class PokemonExtractor:
                 pokemon_image,
             )
             return "unknown_pokemon", True
-        return results[0], False
+        return max(score_results, key=score_results.get), False
+
+    def _search_pokemon_by_faiss(self, pokemon_image: np.ndarray) -> Tuple[str, bool]:
+        """
+        ベクトル検索でポケモンを検出する
+        """
+
+        results = []
+        pokemon_image2 = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2RGB)
+        vec = self.vtr.vectorize(pokemon_image2)
+        vec = np.reshape(vec, (1, vec.shape[0]))
+        scores, indexes = self.faiss_index.search(vec, 10)
+        for score, idx in zip(scores[0], indexes[0]):
+            if score < FAISS_POKEMON_SCORE_THRESHOLD:
+                results.append(self.vector_index[idx].split("_")[0])
+        if len(results) > 0:
+            return results[0], False
+        else:
+            # テンプレートマッチングで検出する
+            return self._search_pokemon_by_template_matching(pokemon_image)
 
     def _search_pokemon_select_window_by_template_matching(
         self,
