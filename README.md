@@ -37,6 +37,8 @@ poetry install
 
 インストール方法は各サイトを御覧ください。
 
+tessdata は best を使います。
+
 ## Batch
 
 Tesseract を用いるので、環境変数を設定する必要があります。Makefile に設定されているので、自分の環境に合わせて調整してください。

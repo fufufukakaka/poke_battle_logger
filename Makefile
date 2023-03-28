@@ -16,7 +16,7 @@ export JUPYTER_HOST_PORT=8080
 export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
 export ENV=staging
-export TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata/
+export TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"

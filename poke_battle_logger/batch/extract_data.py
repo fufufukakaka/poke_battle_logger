@@ -91,6 +91,8 @@ def main(video_id: str):
         rank_numbers[ranking_frame_number] = pokemon_extractor.extract_rank_number(
             _ranking_frame
         )
+    # temporary
+    rank_numbers[48150] = 18037
 
     # 順位が変動しなかった場合、その値を rank_numbers から削除する
     logger.info("Removing unchanged ranking from rank_numbers...")

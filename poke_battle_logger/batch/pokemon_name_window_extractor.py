@@ -34,7 +34,7 @@ class PokemonNameWindowExtractor:
             "jpn",
             "kor",
             "spa",
-            "deu_frak",
+            "deu",
         ]
         self._setup_multi_lang_list()
         self.battle_pokemon_name_window_templates = (
@@ -168,7 +168,7 @@ class PokemonNameWindowExtractor:
             elif _lang == "spa":
                 _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.es_list, _name))
-            elif _lang == "deu_frak":
+            elif _lang == "deu":
                 _name_results.append(_name)
                 results.append(self._search_name_by_edit_distance(self.de_list, _name))
             else:
