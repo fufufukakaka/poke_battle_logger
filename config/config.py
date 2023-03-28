@@ -13,6 +13,9 @@ LEVEL_50_TEMPLATE_PATH = [
     "template_images/japanese_general_templates/level_50.png",
 ]
 LEVEL_50_WINDOW = (50, 90, 1560, 1670)
+YOUR_POKEMON_NAME_WINDOW = (880, 940, 80, 320)
+OPPONENT_POKEMON_NAME_WINDOW = (90, 150, 1530, 1750)
+
 
 RANKING_TEMPLATE_PATH = [
     "template_images/general_templates/ranking.png",
