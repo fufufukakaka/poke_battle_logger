@@ -13,6 +13,7 @@ import pytesseract
 from config.config import (
     FAISS_POKEMON_SCORE_THRESHOLD,
     MESSAGE_WINDOW,
+    OPPONENT_POKEMON_NAME_WINDOW,
     OPPONENT_PRE_POKEMON_POSITION,
     POKEMON_POSITIONS,
     POKEMON_SELECT_NUMBER_WINDOW1,
@@ -26,6 +27,7 @@ from config.config import (
     TEMPLATE_MATCHING_THRESHOLD,
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
+    YOUR_POKEMON_NAME_WINDOW,
     YOUR_PRE_POKEMON_POSITION,
 )
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
@@ -43,7 +45,8 @@ class PokemonExtractor:
     TODO: やっていることが増えすぎたので、いずれ複数の小さなクラスに分割する
     """
 
-    def __init__(self) -> None:
+    def __init__(self, lang: str = "en") -> None:
+        self.lang = lang
         self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
         (
@@ -87,17 +90,32 @@ class PokemonExtractor:
         self.vtr = imgsim.Vectorizer()
 
     def _setup_pokemon_select_window_templates(self):
-        first_template = cv2.imread("template_images/general_templates/first.png", 0)
-        second_template = cv2.imread("template_images/general_templates/second.png", 0)
-        third_template = cv2.imread("template_images/general_templates/third.png", 0)
+        if self.lang == "en":
+            first_template = cv2.imread("template_images/general_templates/first.png", 0)
+            second_template = cv2.imread("template_images/general_templates/second.png", 0)
+            third_template = cv2.imread("template_images/general_templates/third.png", 0)
+        elif self.lang == "ja":
+            first_template = cv2.imread("template_images/japanese_general_templates/first.png", 0)
+            second_template = cv2.imread("template_images/japanese_general_templates/second.png", 0)
+            third_template = cv2.imread("template_images/japanese_general_templates/third.png", 0)
+        else:
+            raise ValueError("lang must be en or ja")
 
         return first_template, second_template, third_template
 
     def _setup_win_lost_window_templates(self):
-        win_window_template = cv2.imread("template_images/general_templates/win.png", 0)
-        lost_window_template = cv2.imread(
-            "template_images/general_templates/lost.png", 0
-        )
+        if self.lang == "en":
+            win_window_template = cv2.imread("template_images/general_templates/win.png", 0)
+            lost_window_template = cv2.imread(
+                "template_images/general_templates/lost.png", 0
+            )
+        elif self.lang == "ja":
+            win_window_template = cv2.imread("template_images/japanese_general_templates/win.png", 0)
+            lost_window_template = cv2.imread(
+                "template_images/japanese_general_templates/lost.png", 0
+            )
+        else:
+            raise ValueError("lang must be en or ja")
 
         return win_window_template, lost_window_template
 
@@ -308,8 +326,15 @@ class PokemonExtractor:
 
     # ポケモンの名前を切り取る
     def _get_pokemon_name_window(self, frame):
-        your_pokemon_name_window = frame[575:615, 50:250]
-        opponent_pokemon_name_window = frame[80:120, 950:1150]
+        your_pokemon_name_window = frame[
+            YOUR_POKEMON_NAME_WINDOW[0] : YOUR_POKEMON_NAME_WINDOW[1],
+            YOUR_POKEMON_NAME_WINDOW[2] : YOUR_POKEMON_NAME_WINDOW[3],
+        ]
+        opponent_pokemon_name_window = frame[
+            OPPONENT_POKEMON_NAME_WINDOW[0] : OPPONENT_POKEMON_NAME_WINDOW[1],
+            OPPONENT_POKEMON_NAME_WINDOW[2] : OPPONENT_POKEMON_NAME_WINDOW[3],
+        ]
+
         return your_pokemon_name_window, opponent_pokemon_name_window
 
     def extract_pre_battle_pokemons(self, frame):
@@ -444,7 +469,7 @@ class PokemonExtractor:
 
     def _detect_rank_number(self, image):
         """Detects text in the file."""
-        text = pytesseract.image_to_string(image, lang="eng", config='--psm 6')
+        text = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
 
         # 数字部分だけを取り出す
         _rank = re.sub(r"\D", "", text)
@@ -452,7 +477,7 @@ class PokemonExtractor:
 
     def _recognize_message(self, image):
         """Detects text in the file."""
-        text = pytesseract.image_to_string(image, lang="eng+jpn", config='--psm 6')
+        text = pytesseract.image_to_string(image, lang="eng+jpn", config="--psm 6")
 
         return text.replace("\n", "")
 
