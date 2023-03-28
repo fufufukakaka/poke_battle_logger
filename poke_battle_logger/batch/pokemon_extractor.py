@@ -444,7 +444,7 @@ class PokemonExtractor:
 
     def _detect_rank_number(self, image):
         """Detects text in the file."""
-        text = pytesseract.image_to_string(image, lang="eng")
+        text = pytesseract.image_to_string(image, lang="eng", config='--psm 6')
 
         # 数字部分だけを取り出す
         _rank = re.sub(r"\D", "", text)
@@ -452,7 +452,7 @@ class PokemonExtractor:
 
     def _recognize_message(self, image):
         """Detects text in the file."""
-        text = pytesseract.image_to_string(image, lang="eng")
+        text = pytesseract.image_to_string(image, lang="eng+jpn", config='--psm 6')
 
         return text.replace("\n", "")
 
