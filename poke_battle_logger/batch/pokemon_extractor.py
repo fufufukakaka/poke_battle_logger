@@ -335,8 +335,6 @@ class PokemonExtractor:
             OPPONENT_POKEMON_NAME_WINDOW[2] : OPPONENT_POKEMON_NAME_WINDOW[3],
         ]
 
-        your_pokemon_name_window = frame[575:615, 50:250]
-        opponent_pokemon_name_window = frame[80:120, 950:1150]
         return your_pokemon_name_window, opponent_pokemon_name_window
 
     def extract_pre_battle_pokemons(self, frame):
