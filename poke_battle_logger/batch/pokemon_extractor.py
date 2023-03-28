@@ -45,7 +45,8 @@ class PokemonExtractor:
     TODO: やっていることが増えすぎたので、いずれ複数の小さなクラスに分割する
     """
 
-    def __init__(self) -> None:
+    def __init__(self, lang: str = "en") -> None:
+        self.lang = lang
         self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
         (
@@ -89,17 +90,32 @@ class PokemonExtractor:
         self.vtr = imgsim.Vectorizer()
 
     def _setup_pokemon_select_window_templates(self):
-        first_template = cv2.imread("template_images/general_templates/first.png", 0)
-        second_template = cv2.imread("template_images/general_templates/second.png", 0)
-        third_template = cv2.imread("template_images/general_templates/third.png", 0)
+        if self.lang == "en":
+            first_template = cv2.imread("template_images/general_templates/first.png", 0)
+            second_template = cv2.imread("template_images/general_templates/second.png", 0)
+            third_template = cv2.imread("template_images/general_templates/third.png", 0)
+        elif self.lang == "ja":
+            first_template = cv2.imread("template_images/japanese_general_templates/first.png", 0)
+            second_template = cv2.imread("template_images/japanese_general_templates/second.png", 0)
+            third_template = cv2.imread("template_images/japanese_general_templates/third.png", 0)
+        else:
+            raise ValueError("lang must be en or ja")
 
         return first_template, second_template, third_template
 
     def _setup_win_lost_window_templates(self):
-        win_window_template = cv2.imread("template_images/general_templates/win.png", 0)
-        lost_window_template = cv2.imread(
-            "template_images/general_templates/lost.png", 0
-        )
+        if self.lang == "en":
+            win_window_template = cv2.imread("template_images/general_templates/win.png", 0)
+            lost_window_template = cv2.imread(
+                "template_images/general_templates/lost.png", 0
+            )
+        elif self.lang == "ja":
+            win_window_template = cv2.imread("template_images/japanese_general_templates/win.png", 0)
+            lost_window_template = cv2.imread(
+                "template_images/japanese_general_templates/lost.png", 0
+            )
+        else:
+            raise ValueError("lang must be en or ja")
 
         return win_window_template, lost_window_template
 

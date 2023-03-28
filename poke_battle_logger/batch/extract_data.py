@@ -26,11 +26,12 @@ logger = logging.getLogger("rich")
 
 @click.command()
 @click.option("--video_id", "-v", type=str, required=True)
-def main(video_id: str):
+@click.option("--lang", "-l", type=str, default="en")
+def main(video_id: str, lang: str) -> None:
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
-    frame_detector = FrameDetector()
-    pokemon_extractor = PokemonExtractor()
+    frame_detector = FrameDetector(lang)
+    pokemon_extractor = PokemonExtractor(lang)
     sqlite_handler = SQLiteHandler()
 
     select_done_frames = []

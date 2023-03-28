@@ -18,11 +18,18 @@ from config.config import (
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     WIN_TEMPLATE_PATH,
+    JAPANESE_LEVEL_50_TEMPLATE_PATH,
+    JAPANESE_RANKING_TEMPLATE_PATH,
+    JAPANESE_SELECT_DONE_TEMPLATE_PATH,
+    JAPANESE_STANDING_BY_TEMPLATE_PATH,
+    JAPANESE_WIN_TEMPLATE_PATH,
+    JAPANESE_LOST_TEMPLATE_PATH,
 )
 
 
 class FrameDetector:
-    def __init__(self) -> None:
+    def __init__(self, lang: str = "en") -> None:
+        self.lang = lang
         (
             self.gray_standing_by_template,
             self.gray_level_50_template,
@@ -33,24 +40,30 @@ class FrameDetector:
         ) = self.setup_templates()
 
     def setup_templates(self):
-        standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH)
+        if self.lang == "en":
+            standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH)
+            level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH)
+            ranking_template = cv2.imread(RANKING_TEMPLATE_PATH)
+            win_template = cv2.imread(WIN_TEMPLATE_PATH)
+            lost_template = cv2.imread(LOST_TEMPLATE_PATH)
+            select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH)
+        elif self.lang == "ja":
+            standing_by_template = cv2.imread(JAPANESE_STANDING_BY_TEMPLATE_PATH)
+            level_50_template = cv2.imread(JAPANESE_LEVEL_50_TEMPLATE_PATH)
+            ranking_template = cv2.imread(JAPANESE_RANKING_TEMPLATE_PATH)
+            win_template = cv2.imread(JAPANESE_WIN_TEMPLATE_PATH)
+            lost_template = cv2.imread(JAPANESE_LOST_TEMPLATE_PATH)
+            select_done_template = cv2.imread(JAPANESE_SELECT_DONE_TEMPLATE_PATH)
+        else:
+            raise ValueError("Invalid language")
+
         gray_standing_by_template = cv2.cvtColor(
             standing_by_template, cv2.COLOR_RGB2GRAY
         )
-
-        level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH)
         gray_level_50_template = cv2.cvtColor(level_50_template, cv2.COLOR_RGB2GRAY)
-
-        ranking_template = cv2.imread(RANKING_TEMPLATE_PATH)
         gray_ranking_template = cv2.cvtColor(ranking_template, cv2.COLOR_RGB2GRAY)
-
-        win_template = cv2.imread(WIN_TEMPLATE_PATH)
         gray_win_template = cv2.cvtColor(win_template, cv2.COLOR_RGB2GRAY)
-
-        lost_template = cv2.imread(LOST_TEMPLATE_PATH)
         gray_lost_template = cv2.cvtColor(lost_template, cv2.COLOR_RGB2GRAY)
-
-        select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH)
         gray_select_done_template = cv2.cvtColor(
             select_done_template, cv2.COLOR_RGB2GRAY
         )
