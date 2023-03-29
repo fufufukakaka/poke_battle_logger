@@ -5,6 +5,7 @@ from typing import List, Tuple
 
 import cloudpickle
 import cv2
+import editdistance
 import faiss
 import imgsim
 import numpy as np
@@ -31,6 +32,7 @@ from config.config import (
     YOUR_PRE_POKEMON_POSITION,
 )
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
+    EDIT_DISTANCE_THRESHOLD,
     PokemonNameWindowExtractor,
 )
 
@@ -91,13 +93,27 @@ class PokemonExtractor:
 
     def _setup_pokemon_select_window_templates(self):
         if self.lang == "en":
-            first_template = cv2.imread("template_images/general_templates/first.png", 0)
-            second_template = cv2.imread("template_images/general_templates/second.png", 0)
-            third_template = cv2.imread("template_images/general_templates/third.png", 0)
+            first_template = cv2.imread(
+                "template_images/general_templates/first.png", 0
+            )
+            second_template = cv2.imread(
+                "template_images/general_templates/second.png", 0
+            )
+            third_template = cv2.imread(
+                "template_images/general_templates/third.png", 0
+            )
+            self.order_str = ["First", "Second", "Third"]
         elif self.lang == "ja":
-            first_template = cv2.imread("template_images/japanese_general_templates/first.png", 0)
-            second_template = cv2.imread("template_images/japanese_general_templates/second.png", 0)
-            third_template = cv2.imread("template_images/japanese_general_templates/third.png", 0)
+            first_template = cv2.imread(
+                "template_images/japanese_general_templates/first.png", 0
+            )
+            second_template = cv2.imread(
+                "template_images/japanese_general_templates/second.png", 0
+            )
+            third_template = cv2.imread(
+                "template_images/japanese_general_templates/third.png", 0
+            )
+            self.order_str = ["1番目", "2番目", "3番目"]
         else:
             raise ValueError("lang must be en or ja")
 
@@ -105,12 +121,16 @@ class PokemonExtractor:
 
     def _setup_win_lost_window_templates(self):
         if self.lang == "en":
-            win_window_template = cv2.imread("template_images/general_templates/win.png", 0)
+            win_window_template = cv2.imread(
+                "template_images/general_templates/win.png", 0
+            )
             lost_window_template = cv2.imread(
                 "template_images/general_templates/lost.png", 0
             )
         elif self.lang == "ja":
-            win_window_template = cv2.imread("template_images/japanese_general_templates/win.png", 0)
+            win_window_template = cv2.imread(
+                "template_images/japanese_general_templates/win.png", 0
+            )
             lost_window_template = cv2.imread(
                 "template_images/japanese_general_templates/lost.png", 0
             )
@@ -195,6 +215,7 @@ class PokemonExtractor:
         """
 
         pokemon_select_order_score = []
+
         for i, template in enumerate(
             [self.first_template, self.second_template, self.third_template]
         ):
@@ -208,9 +229,32 @@ class PokemonExtractor:
                     select6_window,
                 ]
             ):
+                if self.lang == "ja":
+                    _recognized_order_str = pytesseract.image_to_string(
+                        window, lang="jpn", config="--psm 6"
+                    )
+                elif self.lang == "en":
+                    _recognized_order_str = pytesseract.image_to_string(
+                        window, lang="eng", config="--psm 6"
+                    )
+                else:
+                    raise ValueError("lang must be en or ja")
+                _recognized_order_str = (
+                    _recognized_order_str.replace(" ", "")
+                    .replace("\n", "")
+                    .replace("|", "")
+                )
+
+                _order_str = self.order_str[i]
+                ed_score = editdistance.eval(_recognized_order_str, _order_str) / (
+                    max(len(_recognized_order_str), len(_order_str)) * 1.00
+                )
                 res = cv2.matchTemplate(window, template, cv2.TM_CCOEFF_NORMED)
                 score = cv2.minMaxLoc(res)[1]
-                if score >= TEMPLATE_MATCHING_THRESHOLD:
+                if (
+                    score > TEMPLATE_MATCHING_THRESHOLD
+                    and ed_score < EDIT_DISTANCE_THRESHOLD
+                ):
                     pokemon_select_order_score.append([k, i, score])
 
         pokemon_select_order: List[int] = []
