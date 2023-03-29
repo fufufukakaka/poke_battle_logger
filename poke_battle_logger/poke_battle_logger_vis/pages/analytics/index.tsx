@@ -5,12 +5,6 @@ import {
   Container,
   Divider,
   SimpleGrid,
-  Tbody,
-  Td,
-  Thead,
-  Th,
-  Tr,
-  Table,
   Heading,
 } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
@@ -21,6 +15,7 @@ import { useContext } from 'react';
 import { SeasonContext } from '../_app';
 import { DataTable } from '@/components/data-display/data-table';
 import { createColumnHelper } from "@tanstack/react-table";
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 interface AnalyticsProps {
   win_rates: number[];
@@ -242,4 +237,4 @@ const Analytics: React.FC<AnalyticsProps> = () => {
   );
 };
 
-export default Analytics;
+export default withAuthenticationRequired(Analytics);

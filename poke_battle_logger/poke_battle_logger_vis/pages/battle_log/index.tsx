@@ -6,12 +6,12 @@ import {
   SimpleGrid,
   Heading,
 } from '@chakra-ui/react';
-import { Card, CardHeader, CardBody, CardFooter, Text } from '@chakra-ui/react';
 import useSWR from 'swr';
 import axios from 'axios';
 import { useContext } from 'react';
 import { SeasonContext } from '../_app';
 import BattleLogCard from '@/components/data-display/battle-log-card';
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 interface BattleLogProps {
   battle_id: string;
@@ -82,4 +82,4 @@ const BattleLogs: React.FC = () => {
   );
 };
 
-export default BattleLogs;
+export default withAuthenticationRequired(BattleLogs);

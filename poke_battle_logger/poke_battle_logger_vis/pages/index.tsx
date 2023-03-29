@@ -15,6 +15,7 @@ import {
 import PokeStatGroup from '../components/data-display/poke-stat-group';
 import useSWR from "swr";
 import axios from "axios"
+import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
@@ -124,4 +125,4 @@ const Dashboard: React.FC<DashBoardProps> = ({
   );
 };
 
-export default Dashboard;
+export default withAuthenticationRequired(Dashboard);
