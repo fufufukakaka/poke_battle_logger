@@ -81,7 +81,6 @@ def main(video_id: str, lang: str) -> None:
     compressed_message_window_frames = message_frame_compress(
         message_window_frames, frame_threshold=3
     )
-    import pdb;pdb.set_trace()
 
     # ランクを検出(OCR)
     logger.info("Extracting ranking...")
