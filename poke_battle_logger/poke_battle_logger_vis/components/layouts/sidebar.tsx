@@ -17,7 +17,7 @@ import NavItem from '../atoms/NavItem';
 import { MdCatchingPokemon } from 'react-icons/md';
 import { MdLogout } from 'react-icons/md';
 import { TbAnalyzeFilled } from 'react-icons/tb';
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
@@ -25,7 +25,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
-  const { logout } = useAuth0();
+  const { user, isAuthenticated, logout } = useAuth0();
   return (
     <Box
       bg={useColorModeValue('rgba(11, 21, 48, 0.9)', 'gray.900')}
@@ -98,15 +98,24 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
         overflowWrap="anywhere"
         {...rest}
       >
-        <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
-          <Button
-            leftIcon={<Icon as={MdLogout} />}
-            colorScheme="teal"
-            variant="solid"
-            onClick={() => logout({ logoutParams: { returnTo: "http://localhost:3000/login" } })}
-          >
-            ログアウト
-          </Button>
+        {isAuthenticated && user ? (
+          <>
+            <Avatar size='lg' name={user.name} src={user.picture} marginLeft="10px" />
+            <Button
+              marginTop="10px"
+              leftIcon={<Icon as={MdLogout} />}
+              colorScheme="teal"
+              variant="solid"
+              onClick={() =>
+                logout({
+                  logoutParams: { returnTo: 'http://localhost:3000/login' },
+                })
+              }
+            >
+              ログアウト
+            </Button>
+          </>
+        ) : null}
       </Flex>
     </Box>
   );
