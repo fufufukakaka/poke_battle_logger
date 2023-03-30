@@ -237,4 +237,4 @@ const Analytics: React.FC<AnalyticsProps> = () => {
   );
 };
 
-export default withAuthenticationRequired(Analytics);
+export default Analytics;

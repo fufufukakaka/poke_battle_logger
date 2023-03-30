@@ -82,4 +82,4 @@ const BattleLogs: React.FC = () => {
   );
 };
 
-export default withAuthenticationRequired(BattleLogs);
+export default BattleLogs;

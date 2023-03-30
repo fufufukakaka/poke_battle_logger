@@ -15,7 +15,6 @@ import {
 import PokeStatGroup from '../components/data-display/poke-stat-group';
 import useSWR from "swr";
 import axios from "axios"
-import { withAuthenticationRequired } from '@auth0/auth0-react';
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
@@ -68,6 +67,7 @@ const Dashboard: React.FC<DashBoardProps> = ({
     "http://127.0.0.1:8000/api/v1/recent_battle_summary",
     fetcher
   )
+
   if (isLoading) return <p>loading...</p>
   if (error) return <p>error</p>
   if (!data) return <p>no data</p>
@@ -125,4 +125,4 @@ const Dashboard: React.FC<DashBoardProps> = ({
   );
 };
 
-export default withAuthenticationRequired(Dashboard);
+export default Dashboard;
