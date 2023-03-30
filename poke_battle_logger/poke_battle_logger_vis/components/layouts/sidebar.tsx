@@ -103,7 +103,6 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
           leftIcon={<Icon as={MdLogout} />}
           colorScheme="teal"
           variant="solid"
-          as = "a"
         >
           ログアウト
         </Button>

@@ -9,13 +9,12 @@ export const SeasonContext = createContext(0);
 
 export default function App({ Component, pageProps }: AppProps) {
   const [season, setSeason] = useState(0);
-  // const hideSidebar = Component !== Login;
 
   return (
     <UserProvider>
       <ChakraProvider>
         <SeasonContext.Provider value={season}>
-          <Layout setSeason={setSeason} hideSidebar={false}>
+          <Layout setSeason={setSeason}>
             <Component {...pageProps} />
           </Layout>
         </SeasonContext.Provider>

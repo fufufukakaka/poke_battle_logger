@@ -11,11 +11,9 @@ import MobileNav from '../atoms/MobileNav';
 
 export default function Layout({
   setSeason,
-  hideSidebar,
   children,
 }: {
   setSeason: React.Dispatch<React.SetStateAction<number>>;
-  hideSidebar: boolean;
   children: ReactNode;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

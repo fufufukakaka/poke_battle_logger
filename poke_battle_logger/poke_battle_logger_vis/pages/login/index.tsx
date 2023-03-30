@@ -30,7 +30,6 @@ export const Login = () => {
               colorScheme="blue"
               backgroundColor={buttonBgColor}
               _hover={{ backgroundColor: buttonHoverBgColor }}
-              as="a"
             >
               ログイン
             </Button>
