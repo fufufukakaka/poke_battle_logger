@@ -7,12 +7,13 @@ import {
   VStack,
   useColorModeValue,
 } from '@chakra-ui/react';
-import NextLink from 'next/link';
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 export const Login = () => {
   const buttonBgColor = useColorModeValue('blue.600', 'blue.200');
   const buttonHoverBgColor = useColorModeValue('blue.500', 'blue.300');
+  const { loginWithRedirect } = useAuth0();
 
   return (
     <Box
@@ -24,16 +25,15 @@ export const Login = () => {
       <Center flexGrow={1}>
         <VStack spacing={8}>
           <Heading fontSize="6xl">PokeBattleLogger</Heading>
-          <NextLink href="/api/auth/login" passHref>
             <Button
               size="lg"
               colorScheme="blue"
               backgroundColor={buttonBgColor}
               _hover={{ backgroundColor: buttonHoverBgColor }}
+              onClick={() => loginWithRedirect()}
             >
               ログイン
             </Button>
-          </NextLink>
         </VStack>
       </Center>
     </Box>
