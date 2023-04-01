@@ -15,7 +15,8 @@ import {
 import PokeStatGroup from '../components/data-display/poke-stat-group';
 import useSWR from "swr";
 import axios from "axios"
-import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { withAuthenticationRequired, useAuth0 } from '@auth0/auth0-react';
+import { useEffect } from "react";
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
@@ -64,10 +65,22 @@ export const fetcher = async (url: string) => {
 
 const Dashboard: React.FC<DashBoardProps> = ({
 }) => {
+  // ここで useEffect して新しいユーザだった場合、User テーブルに書き込む
+  // まだ対戦履歴がないユーザだった場合は、「記録してみよう」的な文言を出す
+
+  const { isAuthenticated, user } = useAuth0();
   const { data, error, isLoading } = useSWR(
-    "http://127.0.0.1:8000/api/v1/recent_battle_summary",
+    `http://127.0.0.1:8000/api/v1/recent_battle_summary?trainer_id=${user?.sub?.replace("|", "_")}`,
     fetcher
   )
+
+  useEffect(() => {
+    if (isAuthenticated && user && user.sub) {
+      axios.post("http://127.0.0.1:8000/api/v1/save_new_trainer", {
+        trainer_id: user.sub.replace("|", "_"),
+    })
+  }}, [isAuthenticated, user])
+
 
   if (isLoading) return <p>loading...</p>
   if (error) return <p>error</p>

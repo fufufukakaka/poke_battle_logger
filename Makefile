@@ -25,7 +25,8 @@ export TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 extract-data: # extract battle data from video file
 	TESSDATA_PREFIX=$(TESSDATA_PREFIX) \
 	$(PYTHON) poke_battle_logger/batch/extract_data.py \
-	--video_id $(VIDEO_ID)
+	--video_id $(VIDEO_ID) \
+	--trainer_id $(TRAINER_ID)
 
 build-pokemon-faiss-index: # build pokemon faiss index
 	$(PYTHON) poke_battle_logger/batch/build_pokemon_faiss_index.py

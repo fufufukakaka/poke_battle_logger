@@ -1,15 +1,45 @@
-with battle_count as (
+with target_trainer as (
+	select
+		id
+	from
+		trainer
+	where
+		identity = '{trainer_id}'
+),
+target_trainer_battles as (
+	select
+		battle_id
+	from
+		battle
+	where
+		trainer_id in (select id from target_trainer)
+),
+target_battle_pokemon_team as (
+	select * from battlepokemonteam
+	where
+		battle_id in (
+			select
+				battle_id from target_trainer_battles)
+),
+target_battle_summary as (
+	select * from battlesummary
+	where
+		battle_id in (
+			select
+				battle_id from target_trainer_battles)
+),
+battle_count as (
 	select
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 ),
 in_team_count as (
 	select
 		pokemon_name,
 		count(1) as counts
 	from
-		battlepokemonteam
+		target_battle_pokemon_team
 	where
 		team = 'you'
 	group by
@@ -20,7 +50,7 @@ first_in_battle_count as (
 		your_pokemon_1 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	group by
 		your_pokemon_1
 ),
@@ -29,7 +59,7 @@ second_in_battle_count as (
 		your_pokemon_2 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	group by
 		your_pokemon_2
 ),
@@ -38,7 +68,7 @@ third_in_battle_count as (
 		your_pokemon_3 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	group by
 		your_pokemon_3
 ),
@@ -72,7 +102,7 @@ first_in_battle_win_count as (
 		your_pokemon_1 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	where
 		win_or_lose = 'win'
 	group by
@@ -83,7 +113,7 @@ second_in_battle_win_count as (
 		your_pokemon_2 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	where
 		win_or_lose = 'win'
 	group by
@@ -94,7 +124,7 @@ third_in_battle_win_count as (
 		your_pokemon_3 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	where
 		win_or_lose = 'win'
 	group by
@@ -130,7 +160,7 @@ head_battle_count as (
 		your_pokemon_1 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	group by
 		your_pokemon_1
 ),

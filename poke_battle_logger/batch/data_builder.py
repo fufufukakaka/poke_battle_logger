@@ -13,6 +13,7 @@ class DataBuilder:
 
     def __init__(
         self,
+        trainer_id,
         video_id,
         battle_start_end_frame_numbers,
         battle_pokemons,
@@ -22,6 +23,7 @@ class DataBuilder:
         messages,
         win_or_lost,
     ):
+        self.trainer_id = trainer_id
         self.video_id = video_id
         self.battle_start_end_frame_numbers = battle_start_end_frame_numbers
         self.battle_pokemons = battle_pokemons
@@ -186,7 +188,7 @@ class DataBuilder:
         )
 
     def build(self):
-        battle_ids = []
+        battles = []
         battle_logs = []
         modified_pre_battle_pokemons = []
         modified_in_battle_pokemons = []
@@ -206,7 +208,12 @@ class DataBuilder:
             created_at, second_from_frame_number = self._get_start_time(self.video_id, start_frame)
             battle_id = self._get_battle_id(created_at)
 
-            battle_ids.append(battle_id)
+            battles.append(
+                {
+                    "battle_id": battle_id,
+                    "trainer_id": self.trainer_id,
+                }
+            )
 
             # messages
             message_log = self.compressed_messages[i]
@@ -315,7 +322,7 @@ class DataBuilder:
                 )
 
         return (
-            battle_ids,
+            battles,
             battle_logs,
             modified_pre_battle_pokemons,
             modified_in_battle_pokemons,

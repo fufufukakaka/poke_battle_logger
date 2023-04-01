@@ -2,7 +2,7 @@ import logging
 import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
-
+from pydantic import BaseModel
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -52,14 +52,14 @@ async def get_pokemon_name_to_no(pokemon_name: str) -> int:
 
 
 @app.get("/api/v1/recent_battle_summary")
-async def get_recent_battle_summary() -> Dict[
+async def get_recent_battle_summary(trainer_id: str) -> Dict[
     str, Union[float, int, str, List[Dict[str, Union[str, int]]]]
 ]:
-    win_rate = sqlite_handler.get_latest_season_win_rate()
-    latest_rank = sqlite_handler.get_latest_season_rank()
-    latest_win_pokemon = sqlite_handler.get_latest_win_pokemon()
-    latest_lose_pokemon = sqlite_handler.get_latest_lose_pokemon()
-    recent_battle_history = sqlite_handler.get_recent_battle_history()
+    win_rate = sqlite_handler.get_latest_season_win_rate(trainer_id)
+    latest_rank = sqlite_handler.get_latest_season_rank(trainer_id)
+    latest_win_pokemon = sqlite_handler.get_latest_win_pokemon(trainer_id)
+    latest_lose_pokemon = sqlite_handler.get_latest_lose_pokemon(trainer_id)
+    recent_battle_history = sqlite_handler.get_recent_battle_history(trainer_id)
 
     return {
         "win_rate": win_rate,
@@ -72,23 +72,23 @@ async def get_recent_battle_summary() -> Dict[
 
 @app.get("/api/v1/analytics")
 async def get_analytics(
-    season: int,
+    trainer_id: str, season: int,
 ) -> Dict[str, Union[List[float], List[int], List[Dict[str, Union[str, int, float]]]]]:
     if season == 0:
-        win_rate_transition = sqlite_handler.get_win_rate_transitions_all()
-        next_rank_transition = sqlite_handler.get_next_rank_transitions_all()
-        your_pokemon_stats_summary = sqlite_handler.get_your_pokemon_stats_summary_all()
+        win_rate_transition = sqlite_handler.get_win_rate_transitions_all(trainer_id)
+        next_rank_transition = sqlite_handler.get_next_rank_transitions_all(trainer_id)
+        your_pokemon_stats_summary = sqlite_handler.get_your_pokemon_stats_summary_all(trainer_id)
         opponent_pokemon_stats_summary = (
-            sqlite_handler.get_opponent_pokemon_stats_summary_all()
+            sqlite_handler.get_opponent_pokemon_stats_summary_all(trainer_id)
         )
     elif season > 0:
-        win_rate_transition = sqlite_handler.get_win_rate_transitions_season(season)
-        next_rank_transition = sqlite_handler.get_next_rank_transitions_season(season)
+        win_rate_transition = sqlite_handler.get_win_rate_transitions_season(season, trainer_id)
+        next_rank_transition = sqlite_handler.get_next_rank_transitions_season(season, trainer_id)
         your_pokemon_stats_summary = (
-            sqlite_handler.get_your_pokemon_stats_summary_season(season)
+            sqlite_handler.get_your_pokemon_stats_summary_season(season, trainer_id)
         )
         opponent_pokemon_stats_summary = (
-            sqlite_handler.get_opponent_pokemon_stats_summary_season(season)
+            sqlite_handler.get_opponent_pokemon_stats_summary_season(season, trainer_id)
         )
     else:
         raise ValueError("season must be 0 or positive")
@@ -101,20 +101,20 @@ async def get_analytics(
 
 
 @app.get("/api/v1/battle_log")
-def get_battle_log(
-    season: int,
+async def get_battle_log(
+    trainer_id: str, season: int,
 ) -> List[Dict[str, Union[str, int, float]]]:
     if season == 0:
-        battle_log = sqlite_handler.get_battle_log_all()
+        battle_log = sqlite_handler.get_battle_log_all(trainer_id)
     elif season > 0:
-        battle_log = sqlite_handler.get_battle_log_season(season)
+        battle_log = sqlite_handler.get_battle_log_season(trainer_id, season)
     else:
         raise ValueError("season must be 0 or positive")
     return battle_log
 
 
 @app.get("/api/v1/pokemon_image_url")
-def get_pokemon_image_url(
+async def get_pokemon_image_url(
     pokemon_name: str,
 ) -> str:
     pokemon_name = unicodedata.normalize("NFC", pokemon_name)
@@ -130,3 +130,27 @@ def get_pokemon_image_url(
         f"https://img.pokemondb.net/sprites/scarlet-violet/normal/{pokemon_name}.png"
     )
     return pokemon_image_url
+
+
+class UserModel(BaseModel):
+    trainer_id: str
+
+
+@app.post("/api/v1/save_new_trainer")
+async def save_new_trainer(
+    user: UserModel,
+) -> str:
+    """
+
+    trainer_id について、以下の処理を行う。
+    - trainer_id が存在しない場合は新規登録
+    - trainer_id が存在する場合は何もしない
+    """
+    # check if trainer_id exists
+    if sqlite_handler.check_trainer_id_exists(user.trainer_id):
+        logger.info("trainer_id already exists")
+        return "trainer_id already exists"
+    else:
+        logger.info("trainer_id does not exist")
+        sqlite_handler.save_new_trainer(user.trainer_id)
+        return f"save new user: {user.trainer_id}"

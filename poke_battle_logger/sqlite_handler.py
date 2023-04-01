@@ -19,6 +19,7 @@ class BaseModel(Model):
 
 class Battle(BaseModel):
     battle_id = TextField(unique=True)
+    trainer_id = IntegerField()
 
 
 class BattleSummary(BaseModel):
@@ -59,10 +60,13 @@ class BattlePokemonTeam(BaseModel):
 
 
 class Season(BaseModel):
-    id = IntegerField(unique=True)
     season = IntegerField()
     start_datetime = TextField()
     end_datetime = TextField()
+
+
+class Trainer(BaseModel):
+    identity = TextField()
 
 
 class SQLiteHandler:
@@ -97,10 +101,10 @@ class SQLiteHandler:
                         end_datetime="2023-04-01 09:00:00",
                     )
 
-    def insert_battle_id(self, battle_ids):
+    def insert_battle_id(self, battles):
         with self.db:
-            for battle_id in battle_ids:
-                Battle.create(battle_id=battle_id)
+            for _battle in battles:
+                Battle.create(battle_id=_battle["battle_id"], trainer_id=_battle["trainer_id"])
 
     def insert_battle_summary(self, battle_summary):
         with self.db:
@@ -173,15 +177,32 @@ class SQLiteHandler:
                     message=_message_log["message"],
                 )
 
-    def get_latest_season_win_rate(self) -> float:
-        sql = """
-        with latest_season_start_end as (
+    def get_latest_season_win_rate(self, trainer_id: str) -> float:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        latest_season_start_end as (
             select
                 start_datetime,
                 end_datetime
             from
                 season
-            order by season desc
+            order by
+                season desc
             limit 1
         )
         select
@@ -200,6 +221,9 @@ class SQLiteHandler:
             and(
                 select
                     end_datetime from latest_season_start_end)
+            and battle_id in(
+                select
+                    battle_id from target_trainer_battles)
         order by
             created_at
         """
@@ -207,9 +231,25 @@ class SQLiteHandler:
             win_rate = self.db.execute_sql(sql).fetchone()[0]
         return win_rate
 
-    def get_latest_season_rank(self) -> int:
-        sql = """
-        with latest_season_start_end as (
+    def get_latest_season_rank(self, trainer_id: str) -> int:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        latest_season_start_end as (
             select
                 start_datetime,
                 end_datetime
@@ -229,6 +269,9 @@ class SQLiteHandler:
             and(
                 select
                     end_datetime from latest_season_start_end)
+            and battle_id in(
+                select
+                    battle_id from target_trainer_battles)
         order by
             created_at desc
         limit 1
@@ -237,14 +280,33 @@ class SQLiteHandler:
             latest_season_rank = self.db.execute_sql(sql).fetchone()[0]
         return latest_season_rank
 
-    def get_latest_win_pokemon(self) -> str:
-        sql = """
+    def get_latest_win_pokemon(self, trainer_id: str) -> str:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        )
         select
             opponent_pokemon_1, opponent_pokemon_2, opponent_pokemon_3
         from
             battlesummary
         where
             win_or_lose = "win"
+            and battle_id in (
+                select
+                    battle_id from target_trainer_battles)
         order by
             created_at desc
         limit 1
@@ -255,14 +317,33 @@ class SQLiteHandler:
             latest_win_pokemon = random.choice(latest_win_pokemons)
         return latest_win_pokemon
 
-    def get_latest_lose_pokemon(self) -> str:
-        sql = """
+    def get_latest_lose_pokemon(self, trainer_id: str) -> str:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        )
         select
             opponent_pokemon_1, opponent_pokemon_2, opponent_pokemon_3
         from
             battlesummary
         where
             win_or_lose = "lose"
+            and battle_id in (
+                select
+                    battle_id from target_trainer_battles)
         order by
             created_at desc
         limit 1
@@ -275,7 +356,7 @@ class SQLiteHandler:
             )
         return latest_lose_pokemon
 
-    def get_win_rate_transitions_season(self, season: int) -> List[float]:
+    def get_win_rate_transitions_season(self, season: int, trainer_id: str) -> List[float]:
         sql = f"""
         with season_start_end as (
             select
@@ -285,6 +366,22 @@ class SQLiteHandler:
                 season
             where
                 season = {season}
+        ),
+        target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
         )
         select
             (
@@ -323,6 +420,9 @@ class SQLiteHandler:
                 and(
                     select
                         end_datetime from season_start_end)
+                and battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
                 order by
                     created_at asc
         """
@@ -333,8 +433,31 @@ class SQLiteHandler:
         ]
         return win_rate_transitions
 
-    def get_win_rate_transitions_all(self) -> List[float]:
-        sql = """
+    def get_win_rate_transitions_all(self, trainer_id: str) -> List[float]:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+        )
         select
             (
                 select
@@ -345,17 +468,17 @@ class SQLiteHandler:
                             0.0
                         end)
                 from
-                    battlesummary as t2
+                    target_battle_summary as t2
                 where
                     t2.created_at <= t1.created_at) / (
                     select
                         COUNT(*)
                     from
-                        battlesummary as t3
+                        target_battle_summary as t3
                     where
                         t3.created_at <= t1.created_at) as win_rate
                 from
-                    battlesummary as t1
+                    target_battle_summary as t1
                 order by
                     created_at asc
         """
@@ -366,9 +489,32 @@ class SQLiteHandler:
         ]
         return win_rate_transitions
 
-    def get_next_rank_transitions_season(self, season: int) -> List[int]:
+    def get_next_rank_transitions_season(self, season: int, trainer_id: str) -> List[int]:
         sql = f"""
-        with season_start_end as (
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+        ),
+        season_start_end as (
             select
                 start_datetime,
                 end_datetime
@@ -380,7 +526,7 @@ class SQLiteHandler:
         select
             next_rank
         from
-            battlesummary
+            target_battle_summary
         where
             created_at between(
                 select
@@ -398,12 +544,35 @@ class SQLiteHandler:
         ]
         return next_rank_transitions
 
-    def get_next_rank_transitions_all(self) -> List[int]:
-        sql = """
+    def get_next_rank_transitions_all(self, trainer_id: str) -> List[int]:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+        )
         select
             next_rank
         from
-            battlesummary
+            target_battle_summary
         order by
             created_at
         """
@@ -414,8 +583,31 @@ class SQLiteHandler:
         ]
         return next_rank_transitions
 
-    def get_recent_battle_history(self) -> List[Dict[str, Union[str, int]]]:
-        sql = """
+    def get_recent_battle_history(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+        )
         select
             battle_id,
             created_at,
@@ -424,7 +616,7 @@ class SQLiteHandler:
             your_pokemon_1,
             opponent_pokemon_1
         from
-            battlesummary
+            target_battle_summary
         order by
             created_at desc
         limit 5
@@ -445,9 +637,9 @@ class SQLiteHandler:
         return recent_battle_history_dict
 
     def get_your_pokemon_stats_summary_all(
-        self,
+        self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
-        sql = open("sql/your_pokemon_stats_summary.sql").read()
+        sql = open("sql/your_pokemon_stats_summary.sql").read().format(trainer_id=trainer_id)
 
         with self.db:
             stats = self.db.execute_sql(sql).fetchall()
@@ -470,12 +662,12 @@ class SQLiteHandler:
         return list(summary.to_dict(orient="index").values())
 
     def get_your_pokemon_stats_summary_season(
-        self, season: int
+        self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
             open("sql/your_pokemon_stats_summary_in_season.sql")
             .read()
-            .format(season=season)
+            .format(trainer_id=trainer_id, season=season)
         )
 
         with self.db:
@@ -499,9 +691,9 @@ class SQLiteHandler:
         return list(summary.to_dict(orient="index").values())
 
     def get_opponent_pokemon_stats_summary_all(
-        self,
+        self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
-        sql = open("sql/opponent_pokemon_stats_summary.sql").read()
+        sql = open("sql/opponent_pokemon_stats_summary.sql").read().format(trainer_id=trainer_id)
 
         with self.db:
             stats = self.db.execute_sql(sql).fetchall()
@@ -524,12 +716,12 @@ class SQLiteHandler:
         return list(summary.to_dict(orient="index").values())
 
     def get_opponent_pokemon_stats_summary_season(
-        self, season: int
+        self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
             open("sql/opponent_pokemon_stats_summary_in_season.sql")
             .read()
-            .format(season=season)
+            .format(trainer_id=trainer_id, season=season)
         )
 
         with self.db:
@@ -552,8 +744,31 @@ class SQLiteHandler:
             )
         return list(summary.to_dict(orient="index").values())
 
-    def get_battle_log_all(self):
-        sql = """
+    def get_battle_log_all(self, trainer_id: str):
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+        )
         select
             battle_id,
             created_at,
@@ -570,7 +785,7 @@ class SQLiteHandler:
             memo,
             video
         from
-            battlesummary
+            target_battle_summary
         order by
             created_at desc
         """
@@ -612,9 +827,25 @@ class SQLiteHandler:
             ]
         return battle_logs_dict
 
-    def get_battle_log_season(self, season: int):
+    def get_battle_log_season(self, trainer_id: str, season: int):
         sql = f"""
-        with season_start_end as (
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        season_start_end as (
             select
                 start_datetime,
                 end_datetime
@@ -622,6 +853,20 @@ class SQLiteHandler:
                 season
             where
                 season = {season}
+        ),
+        target_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+                and created_at between(
+                    select
+                        start_datetime from season_start_end)
+                and(
+                    select
+                        end_datetime from season_start_end)
         )
         select
             battle_id,
@@ -639,9 +884,7 @@ class SQLiteHandler:
             memo,
             video
         from
-            battlesummary
-        where
-            created_at between (select start_datetime from season_start_end) and (select end_datetime from season_start_end)
+            target_battles
         order by
             created_at desc
         """
@@ -682,3 +925,26 @@ class SQLiteHandler:
                 ) in battle_logs
             ]
         return battle_logs_dict
+
+    def check_trainer_id_exists(self, trainer_id: str) -> bool:
+        sql = f"""
+        select
+            count(*)
+        from
+            trainer
+        where
+            identity = '{trainer_id}'
+        """
+        with self.db:
+            count = self.db.execute_sql(sql).fetchone()[0]
+        return count > 0
+
+    def save_new_trainer(self, trainer_id: str) -> None:
+        sql = f"""
+        insert into
+            trainer
+        values
+            ('{trainer_id}')
+        """
+        with self.db:
+            self.db.execute_sql(sql)

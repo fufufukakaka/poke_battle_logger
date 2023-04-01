@@ -7,6 +7,42 @@ with season_start_end as (
 	where
 		season = {season}
 ),
+target_trainer as (
+	select
+		id
+	from
+		trainer
+	where
+		identity = '{trainer_id}'
+),
+target_battles as (
+	select
+		battle_id
+	from
+		battle
+	where
+		trainer_id in (select id from target_trainer)
+		and created_at between(
+			select
+				start_datetime from season_start_end)
+		and(
+			select
+				end_datetime from season_start_end)
+),
+target_battle_pokemon_team as (
+	select * from battlepokemonteam
+	where
+		battle_id in (
+			select
+				battle_id from target_battles)
+),
+target_battle_summary as (
+	select * from battlesummary
+	where
+		battle_id in (
+			select
+				battle_id from target_battles)
+),
 target_battles as (
 	select
 		battle_id
@@ -24,21 +60,14 @@ battle_count as (
 	select
 		count(1) as counts
 	from
-		battlesummary
-	where
-		created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
+		target_battle_summary
 ),
 in_team_count as (
 	select
 		pokemon_name,
 		count(1) as counts
 	from
-		battlepokemonteam
+		target_battle_pokemon_team
 	where
 		team = 'you'
 		and battle_id in(
@@ -52,14 +81,7 @@ first_in_battle_count as (
 		your_pokemon_1 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
-	where
-		created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
+		target_battle_summary
 	group by
 		your_pokemon_1
 ),
@@ -68,14 +90,7 @@ second_in_battle_count as (
 		your_pokemon_2 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
-	where
-		created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
+		target_battle_summary
 	group by
 		your_pokemon_2
 ),
@@ -84,14 +99,7 @@ third_in_battle_count as (
 		your_pokemon_3 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
-	where
-		created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
+		target_battle_summary
 	group by
 		your_pokemon_3
 ),
@@ -125,15 +133,9 @@ first_in_battle_win_count as (
 		your_pokemon_1 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	where
 		win_or_lose = 'win'
-		and created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
 	group by
 		your_pokemon_1
 ),
@@ -142,15 +144,9 @@ second_in_battle_win_count as (
 		your_pokemon_2 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	where
 		win_or_lose = 'win'
-		and created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
 	group by
 		your_pokemon_2
 ),
@@ -159,15 +155,9 @@ third_in_battle_win_count as (
 		your_pokemon_3 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
+		target_battle_summary
 	where
 		win_or_lose = 'win'
-		and created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
 	group by
 		your_pokemon_3
 ),
@@ -201,14 +191,7 @@ head_battle_count as (
 		your_pokemon_1 as pokemon_name,
 		count(1) as counts
 	from
-		battlesummary
-	where
-		created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
+		target_battle_summary
 	group by
 		your_pokemon_1
 ),

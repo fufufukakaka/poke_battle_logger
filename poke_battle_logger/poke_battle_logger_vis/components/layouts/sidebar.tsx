@@ -100,7 +100,7 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
       >
         {isAuthenticated && user ? (
           <>
-            <Avatar size='lg' name={user.name} src={user.picture} marginLeft="10px" />
+            <Avatar size='lg' name={user.name} src={user.picture} marginLeft="10px"/>
             <Button
               marginTop="10px"
               leftIcon={<Icon as={MdLogout} />}

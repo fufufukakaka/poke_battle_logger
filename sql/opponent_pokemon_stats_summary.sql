@@ -1,34 +1,60 @@
-with target_battles as (
-    select battle_id
-    from battlesummary
+with target_trainer as (
+select
+    id
+from
+    trainer
+where
+    identity = '{trainer_id}'
+),
+target_trainer_battles as (
+select
+    battle_id
+from
+    battle
+where
+    trainer_id in (select id from target_trainer)
+),
+target_battle_pokemon_team as (
+select * from battlepokemonteam
+where
+    battle_id in (
+        select
+            battle_id from target_trainer_battles)
+),
+target_battle_summary as (
+select * from battlesummary
+where
+    battle_id in (
+        select
+            battle_id from target_trainer_battles)
 ),
 battle_count as (
     select count(1) as counts
-    from battlesummary
+    from target_battle_summary
 ),
 in_team_count as (
     select pokemon_name,
         count(1) as counts
-    from battlepokemonteam
+    from target_battle_pokemon_team
     where team = 'opponent'
     group by pokemon_name
 ),
 first_in_battle_count as (
     select opponent_pokemon_1 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     group by opponent_pokemon_1
 ),
 second_in_battle_count as (
     select opponent_pokemon_2 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     group by opponent_pokemon_2
 ),
 third_in_battle_count as (
     select opponent_pokemon_3 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     group by opponent_pokemon_3
 ),
 unions_in_battle_count as (
@@ -50,21 +76,21 @@ in_battle_count as (
 first_in_battle_lose_count as (
     select opponent_pokemon_1 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     where win_or_lose = 'lose'
     group by opponent_pokemon_1
 ),
 second_in_battle_lose_count as (
     select opponent_pokemon_2 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     where win_or_lose = 'lose'
     group by opponent_pokemon_2
 ),
 third_in_battle_lose_count as (
     select opponent_pokemon_3 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     where win_or_lose = 'lose'
     group by opponent_pokemon_3
 ),
@@ -87,7 +113,7 @@ in_battle_lose_count as (
 head_battle_count as (
     select opponent_pokemon_1 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     group by opponent_pokemon_1
 ),
 joins as (

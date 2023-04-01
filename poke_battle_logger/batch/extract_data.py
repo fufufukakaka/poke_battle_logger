@@ -27,7 +27,8 @@ logger = logging.getLogger("rich")
 @click.command()
 @click.option("--video_id", "-v", type=str, required=True)
 @click.option("--lang", "-l", type=str, default="en")
-def main(video_id: str, lang: str) -> None:
+@click.option("--trainer_id", "-t", type=str, required=True)  # 1,2,...
+def main(video_id: str, lang: str, trainer_id: str) -> None:
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector(lang)
@@ -228,6 +229,7 @@ def main(video_id: str, lang: str) -> None:
     # build formatted data
     logger.info("Build Formatted Data...")
     data_builder = DataBuilder(
+        trainer_id=trainer_id,
         video_id=video_id,
         battle_start_end_frame_numbers=battle_start_end_frame_numbers,
         battle_pokemons=battle_pokemons,
@@ -239,7 +241,7 @@ def main(video_id: str, lang: str) -> None:
     )
 
     (
-        battle_ids,
+        battles,
         battle_logs,
         modified_pre_battle_pokemons,
         modified_in_battle_pokemons,
@@ -249,7 +251,7 @@ def main(video_id: str, lang: str) -> None:
     # insert data to database
     logger.info("Insert Data to Database...")
     sqlite_handler.create_tables()
-    sqlite_handler.insert_battle_id(battle_ids)
+    sqlite_handler.insert_battle_id(battles)
     sqlite_handler.insert_battle_summary(battle_logs)
     sqlite_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
     sqlite_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
