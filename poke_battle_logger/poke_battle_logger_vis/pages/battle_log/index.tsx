@@ -11,7 +11,7 @@ import axios from 'axios';
 import { useContext } from 'react';
 import { SeasonContext } from '../_app';
 import BattleLogCard from '@/components/data-display/battle-log-card';
-import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 
 interface BattleLogProps {
   battle_id: string;
@@ -37,9 +37,10 @@ const fetcher = async (url: string) => {
 };
 
 const BattleLogs: React.FC = () => {
+  const { user } = useAuth0();
   const season = useContext(SeasonContext);
   const { data, error, isLoading } = useSWR(
-    `http://127.0.0.1:8000/api/v1/battle_log?season=${season}`,
+    `http://127.0.0.1:8000/api/v1/battle_log?season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
     fetcher
   );
 
@@ -82,4 +83,4 @@ const BattleLogs: React.FC = () => {
   );
 };
 
-export default BattleLogs;
+export default withAuthenticationRequired(BattleLogs);

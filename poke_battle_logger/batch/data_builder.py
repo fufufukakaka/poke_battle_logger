@@ -239,7 +239,7 @@ class DataBuilder:
             # 最初に rank が表示されない時(latest)
             if len(self.filled_win_or_lost) == len(self.rank_numbers):
                 _win_or_lose = list(self.filled_win_or_lost.values())[i]
-            # 最後に rank が表示される時(old)
+            # 最初に rank が表示される時(old)
             elif len(self.modified_win_or_lose_frames_from_rank) == len(self.rank_numbers) - 1:
                 _win_or_lose = list(self.modified_win_or_lose_frames_from_rank.values())[i]
             else:

@@ -16,6 +16,7 @@ from config.config import (
     MESSAGE_WINDOW,
     OPPONENT_POKEMON_NAME_WINDOW,
     OPPONENT_PRE_POKEMON_POSITION,
+    POKEMON_NAME_WINDOW_THRESHOLD_VALUE,
     POKEMON_POSITIONS,
     POKEMON_SELECT_NUMBER_WINDOW1,
     POKEMON_SELECT_NUMBER_WINDOW2,
@@ -160,8 +161,7 @@ class PokemonExtractor:
         ベクトル検索でポケモンを検出する
         """
         score_results = {}
-        gray_pokemon_image = cv2.cvtColor(pokemon_image, cv2.COLOR_RGB2GRAY)
-        pokemon_image = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2RGB)
+        gray_pokemon_image = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2GRAY)
 
         for pokemon_name, template in self.pre_battle_pokemon_templates.items():
             res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
@@ -229,13 +229,18 @@ class PokemonExtractor:
                     select6_window,
                 ]
             ):
+                threshold_value = POKEMON_NAME_WINDOW_THRESHOLD_VALUE
+                max_value = 255
+                _, window2 = cv2.threshold(
+                    window, threshold_value, max_value, cv2.THRESH_BINARY
+                )
                 if self.lang == "ja":
                     _recognized_order_str = pytesseract.image_to_string(
-                        window, lang="jpn", config="--psm 6"
+                        window2, lang="jpn", config="--psm 6"
                     )
                 elif self.lang == "en":
                     _recognized_order_str = pytesseract.image_to_string(
-                        window, lang="eng", config="--psm 6"
+                        window2, lang="eng", config="--psm 6"
                     )
                 else:
                     raise ValueError("lang must be en or ja")
@@ -253,7 +258,7 @@ class PokemonExtractor:
                 score = cv2.minMaxLoc(res)[1]
                 if (
                     score > TEMPLATE_MATCHING_THRESHOLD
-                    and ed_score < EDIT_DISTANCE_THRESHOLD
+                    and ed_score <= EDIT_DISTANCE_THRESHOLD
                 ):
                     pokemon_select_order_score.append([k, i, score])
 
@@ -516,8 +521,9 @@ class PokemonExtractor:
         text = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
 
         # 数字部分だけを取り出す
-        _rank = re.sub(r"\D", "", text)
-        return int(_rank)
+        _rank_text = text.split("No. ")[-1]
+        _rank = int(re.sub(r"\D", "", _rank_text))
+        return _rank
 
     def _recognize_message(self, image):
         """Detects text in the file."""
@@ -534,7 +540,11 @@ class PokemonExtractor:
             RANKING_NUMBER_WINDOW[0] : RANKING_NUMBER_WINDOW[1],
             RANKING_NUMBER_WINDOW[2] : RANKING_NUMBER_WINDOW[3],
         ]
-        rank_number = self._detect_rank_number(rank_frame_window)
+        gray = cv2.cvtColor(rank_frame_window, cv2.COLOR_BGR2GRAY)
+        threshold_value = 200
+        max_value = 255
+        _, thresh = cv2.threshold(gray, threshold_value, max_value, cv2.THRESH_BINARY)
+        rank_number = self._detect_rank_number(thresh)
         return rank_number
 
     def extract_message(self, frame):

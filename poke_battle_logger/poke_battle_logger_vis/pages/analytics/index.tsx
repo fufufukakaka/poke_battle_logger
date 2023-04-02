@@ -15,7 +15,7 @@ import { useContext } from 'react';
 import { SeasonContext } from '../_app';
 import { DataTable } from '@/components/data-display/data-table';
 import { createColumnHelper } from "@tanstack/react-table";
-import { withAuthenticationRequired } from '@auth0/auth0-react';
+import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 
 interface AnalyticsProps {
   win_rates: number[];
@@ -179,9 +179,10 @@ const opponentPokemonStatsColumns = [
 ];
 
 const Analytics: React.FC<AnalyticsProps> = () => {
+  const { user } = useAuth0();
   const season = useContext(SeasonContext);
   const { data, error, isLoading } = useSWR(
-    `http://127.0.0.1:8000/api/v1/analytics?season=${season}`,
+    `http://127.0.0.1:8000/api/v1/analytics?season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
     fetcher
   )
 
@@ -237,4 +238,4 @@ const Analytics: React.FC<AnalyticsProps> = () => {
   );
 };
 
-export default Analytics;
+export default withAuthenticationRequired(Analytics);

@@ -41,32 +41,21 @@ class FrameDetector:
 
     def setup_templates(self):
         if self.lang == "en":
-            standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH)
-            level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH)
-            ranking_template = cv2.imread(RANKING_TEMPLATE_PATH)
-            win_template = cv2.imread(WIN_TEMPLATE_PATH)
-            lost_template = cv2.imread(LOST_TEMPLATE_PATH)
-            select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH)
+            gray_standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH, 0)
+            gray_level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH, 0)
+            gray_ranking_template = cv2.imread(RANKING_TEMPLATE_PATH, 0)
+            gray_win_template = cv2.imread(WIN_TEMPLATE_PATH, 0)
+            gray_lost_template = cv2.imread(LOST_TEMPLATE_PATH, 0)
+            gray_select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH, 0)
         elif self.lang == "ja":
-            standing_by_template = cv2.imread(JAPANESE_STANDING_BY_TEMPLATE_PATH)
-            level_50_template = cv2.imread(JAPANESE_LEVEL_50_TEMPLATE_PATH)
-            ranking_template = cv2.imread(JAPANESE_RANKING_TEMPLATE_PATH)
-            win_template = cv2.imread(JAPANESE_WIN_TEMPLATE_PATH)
-            lost_template = cv2.imread(JAPANESE_LOST_TEMPLATE_PATH)
-            select_done_template = cv2.imread(JAPANESE_SELECT_DONE_TEMPLATE_PATH)
+            gray_standing_by_template = cv2.imread(JAPANESE_STANDING_BY_TEMPLATE_PATH, 0)
+            gray_level_50_template = cv2.imread(JAPANESE_LEVEL_50_TEMPLATE_PATH, 0)
+            gray_ranking_template = cv2.imread(JAPANESE_RANKING_TEMPLATE_PATH, 0)
+            gray_win_template = cv2.imread(JAPANESE_WIN_TEMPLATE_PATH, 0)
+            gray_lost_template = cv2.imread(JAPANESE_LOST_TEMPLATE_PATH, 0)
+            gray_select_done_template = cv2.imread(JAPANESE_SELECT_DONE_TEMPLATE_PATH, 0)
         else:
             raise ValueError("Invalid language")
-
-        gray_standing_by_template = cv2.cvtColor(
-            standing_by_template, cv2.COLOR_RGB2GRAY
-        )
-        gray_level_50_template = cv2.cvtColor(level_50_template, cv2.COLOR_RGB2GRAY)
-        gray_ranking_template = cv2.cvtColor(ranking_template, cv2.COLOR_RGB2GRAY)
-        gray_win_template = cv2.cvtColor(win_template, cv2.COLOR_RGB2GRAY)
-        gray_lost_template = cv2.cvtColor(lost_template, cv2.COLOR_RGB2GRAY)
-        gray_select_done_template = cv2.cvtColor(
-            select_done_template, cv2.COLOR_RGB2GRAY
-        )
 
         return (
             gray_standing_by_template,

@@ -87,7 +87,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     logger.info("Extracting ranking...")
     rank_numbers = {}
     for ranking_frame_numbers in compressed_ranking_frames:
-        ranking_frame_number = ranking_frame_numbers[-1]
+        ranking_frame_number = ranking_frame_numbers[-5]
         video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
         _, _ranking_frame = video.read()
         rank_numbers[ranking_frame_number] = pokemon_extractor.extract_rank_number(

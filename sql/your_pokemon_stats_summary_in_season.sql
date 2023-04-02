@@ -22,6 +22,13 @@ target_battles as (
 		battle
 	where
 		trainer_id in (select id from target_trainer)
+),
+target_battle_summary as (
+	select * from battlesummary
+	where
+		battle_id in (
+			select
+				battle_id from target_battles)
 		and created_at between(
 			select
 				start_datetime from season_start_end)
@@ -34,27 +41,7 @@ target_battle_pokemon_team as (
 	where
 		battle_id in (
 			select
-				battle_id from target_battles)
-),
-target_battle_summary as (
-	select * from battlesummary
-	where
-		battle_id in (
-			select
-				battle_id from target_battles)
-),
-target_battles as (
-	select
-		battle_id
-	from
-		battlesummary
-	where
-		created_at between(
-			select
-				start_datetime from season_start_end)
-		and(
-			select
-				end_datetime from season_start_end)
+				battle_id from target_battle_summary)
 ),
 battle_count as (
 	select

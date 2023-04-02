@@ -7,31 +7,35 @@ with season_start_end as (
 target_battles as (
     select battle_id
     from battlesummary
-    where created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
+),
+target_battle_summary as (
+select * from battlesummary
+where
+    battle_id in (
+        select
+            battle_id from target_battles)
+    and created_at between(
+        select
+            start_datetime from season_start_end)
+    and(
+        select
+            end_datetime from season_start_end)
+),
+target_battle_pokemon_team as (
+select * from battlepokemonteam
+where
+    battle_id in (
+        select
+            battle_id from target_battle_summary)
 ),
 battle_count as (
     select count(1) as counts
-    from battlesummary
-    where created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
+    from target_battle_summary
 ),
 in_team_count as (
     select pokemon_name,
         count(1) as counts
-    from battlepokemonteam
+    from target_battle_pokemon_team
     where team = 'opponent'
         and battle_id in(
             select battle_id
@@ -42,43 +46,19 @@ in_team_count as (
 first_in_battle_count as (
     select opponent_pokemon_1 as pokemon_name,
         count(1) as counts
-    from battlesummary
-    where created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
+    from target_battle_summary
     group by opponent_pokemon_1
 ),
 second_in_battle_count as (
     select opponent_pokemon_2 as pokemon_name,
         count(1) as counts
-    from battlesummary
-    where created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
+    from target_battle_summary
     group by opponent_pokemon_2
 ),
 third_in_battle_count as (
     select opponent_pokemon_3 as pokemon_name,
         count(1) as counts
-    from battlesummary
-    where created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
+    from target_battle_summary
     group by opponent_pokemon_3
 ),
 unions_in_battle_count as (
@@ -100,46 +80,22 @@ in_battle_count as (
 first_in_battle_lose_count as (
     select opponent_pokemon_1 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     where win_or_lose = 'lose'
-        and created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
     group by opponent_pokemon_1
 ),
 second_in_battle_lose_count as (
     select opponent_pokemon_2 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     where win_or_lose = 'lose'
-        and created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
     group by opponent_pokemon_2
 ),
 third_in_battle_lose_count as (
     select opponent_pokemon_3 as pokemon_name,
         count(1) as counts
-    from battlesummary
+    from target_battle_summary
     where win_or_lose = 'lose'
-        and created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
     group by opponent_pokemon_3
 ),
 unions_in_battle_lose_count as (
@@ -161,15 +117,7 @@ in_battle_lose_count as (
 head_battle_count as (
     select opponent_pokemon_1 as pokemon_name,
         count(1) as counts
-    from battlesummary
-    where created_at between(
-            select start_datetime
-            from season_start_end
-        )
-        and(
-            select end_datetime
-            from season_start_end
-        )
+    from target_battle_summary
     group by opponent_pokemon_1
 ),
 joins as (
