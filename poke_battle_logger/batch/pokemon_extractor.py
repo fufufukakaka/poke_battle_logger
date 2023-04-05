@@ -11,31 +11,24 @@ import imgsim
 import numpy as np
 import pytesseract
 
-from config.config import (
-    FAISS_POKEMON_SCORE_THRESHOLD,
-    MESSAGE_WINDOW,
-    OPPONENT_POKEMON_NAME_WINDOW,
-    OPPONENT_PRE_POKEMON_POSITION,
-    POKEMON_NAME_WINDOW_THRESHOLD_VALUE,
-    POKEMON_POSITIONS,
-    POKEMON_SELECT_NUMBER_WINDOW1,
-    POKEMON_SELECT_NUMBER_WINDOW2,
-    POKEMON_SELECT_NUMBER_WINDOW3,
-    POKEMON_SELECT_NUMBER_WINDOW4,
-    POKEMON_SELECT_NUMBER_WINDOW5,
-    POKEMON_SELECT_NUMBER_WINDOW6,
-    POKEMON_TEMPLATE_MATCHING_THRESHOLD,
-    RANKING_NUMBER_WINDOW,
-    TEMPLATE_MATCHING_THRESHOLD,
-    WIN_LOST_WINDOW,
-    WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
-    YOUR_POKEMON_NAME_WINDOW,
-    YOUR_PRE_POKEMON_POSITION,
-)
+from config.config import (FAISS_POKEMON_SCORE_THRESHOLD,
+                           FIRST_RANKING_NUMBER_WINDOW, MESSAGE_WINDOW,
+                           OPPONENT_POKEMON_NAME_WINDOW,
+                           OPPONENT_PRE_POKEMON_POSITION,
+                           POKEMON_NAME_WINDOW_THRESHOLD_VALUE,
+                           POKEMON_POSITIONS, POKEMON_SELECT_NUMBER_WINDOW1,
+                           POKEMON_SELECT_NUMBER_WINDOW2,
+                           POKEMON_SELECT_NUMBER_WINDOW3,
+                           POKEMON_SELECT_NUMBER_WINDOW4,
+                           POKEMON_SELECT_NUMBER_WINDOW5,
+                           POKEMON_SELECT_NUMBER_WINDOW6,
+                           POKEMON_TEMPLATE_MATCHING_THRESHOLD,
+                           RANKING_NUMBER_WINDOW, TEMPLATE_MATCHING_THRESHOLD,
+                           WIN_LOST_WINDOW,
+                           WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
+                           YOUR_POKEMON_NAME_WINDOW, YOUR_PRE_POKEMON_POSITION)
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
-    EDIT_DISTANCE_THRESHOLD,
-    PokemonNameWindowExtractor,
-)
+    EDIT_DISTANCE_THRESHOLD, PokemonNameWindowExtractor)
 
 pytesseract.pytesseract.tesseract_cmd = r"/opt/brew/bin/tesseract"
 
@@ -185,8 +178,13 @@ class PokemonExtractor:
         """
 
         results = []
-        pokemon_image2 = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2RGB)
-        vec = self.vtr.vectorize(pokemon_image2)
+
+        gray = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2GRAY)
+        img2 = np.zeros_like(pokemon_image)
+        img2[:,:,0] = gray
+        img2[:,:,1] = gray
+        img2[:,:,2] = gray
+        vec = self.vtr.vectorize(img2)
         vec = np.reshape(vec, (1, vec.shape[0]))
         scores, indexes = self.faiss_index.search(vec, 10)
         for score, idx in zip(scores[0], indexes[0]):
@@ -536,6 +534,22 @@ class PokemonExtractor:
         text = pytesseract.image_to_string(image, lang="eng+jpn", config="--psm 6")
 
         return text.replace("\n", "")
+
+    def extract_first_rank_number(self, frame):
+        """
+        (開始時の)ランクをOCRで抽出する
+        """
+
+        rank_frame_window = frame[
+            FIRST_RANKING_NUMBER_WINDOW[0] : FIRST_RANKING_NUMBER_WINDOW[1],
+            FIRST_RANKING_NUMBER_WINDOW[2] : FIRST_RANKING_NUMBER_WINDOW[3],
+        ]
+        gray = cv2.cvtColor(rank_frame_window, cv2.COLOR_BGR2GRAY)
+        threshold_value = 160
+        max_value = 255
+        _, thresh = cv2.threshold(gray, threshold_value, max_value, cv2.THRESH_BINARY)
+        rank_number = self._detect_rank_number(thresh)
+        return rank_number
 
     def extract_rank_number(self, frame):
         """

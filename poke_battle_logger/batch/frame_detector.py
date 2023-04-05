@@ -1,6 +1,7 @@
 import cv2
 
 from config.config import (
+    FIRST_RANKING_WINDOW,
     LEVEL_50_TEMPLATE_PATH,
     LEVEL_50_WINDOW,
     LOST_TEMPLATE_PATH,
@@ -92,6 +93,19 @@ class FrameDetector:
         )
         _, thresh = cv2.threshold(gray_level_50_area, 200, 255, cv2.THRESH_BINARY)
         return cv2.countNonZero(thresh) > 100 and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+
+    def is_first_ranking_frame(self, frame):
+        gray_ranking_area = cv2.cvtColor(
+            frame[
+                FIRST_RANKING_WINDOW[0] : FIRST_RANKING_WINDOW[1],
+                FIRST_RANKING_WINDOW[2] : FIRST_RANKING_WINDOW[3],
+            ],
+            cv2.COLOR_RGB2GRAY,
+        )
+        result = cv2.matchTemplate(
+            gray_ranking_area, self.gray_ranking_template, cv2.TM_CCOEFF_NORMED
+        )
+        return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
 
     def is_ranking_frame(self, frame):
         gray_ranking_area = cv2.cvtColor(

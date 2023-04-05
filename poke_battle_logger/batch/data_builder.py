@@ -108,16 +108,25 @@ class DataBuilder:
     def _build_battle_pokemon_combinations(self):
         battle_pokemon_combinations = []
         for i, _battle_pokemons in enumerate(self.compressed_battle_pokemons):
-            # team にいるロトムを見つける(ロトムは必ず1体しかいない)
             _pre_battle_opponent_pokemons = list(self.pre_battle_pokemons.values())[i][
                 "opponent_pokemon_names"
             ]
+
+            # team にいるロトムを見つける(ロトムは必ず1体しかいない)
             opponent_team_rotom_names = [
                 v for v in _pre_battle_opponent_pokemons if "ロトム" in v
             ]
             opponent_team_rotom_name = "None"
             if len(opponent_team_rotom_names) == 1:
                 opponent_team_rotom_name = opponent_team_rotom_names[0].split("_")[0]
+
+            # team にいるケンタロスを見つける(ケンタロスは必ず1体しかいない)
+            opponent_team_tauros_names = [
+                v for v in _pre_battle_opponent_pokemons if "ケンタロス" in v
+            ]
+            opponent_team_tauros_name = "None"
+            if len(opponent_team_tauros_names) == 1:
+                opponent_team_tauros_name = opponent_team_tauros_names[0].split("_")[0]
 
             _pre_battle_your_pokemons = list(self.pre_battle_pokemons.values())[i][
                 "your_pokemon_names"
@@ -136,6 +145,10 @@ class DataBuilder:
                 # ロトムなら修正する
                 if _opponent == "ロトム":
                     _opponent = opponent_team_rotom_name
+
+                # ケンタロスなら修正する
+                if _opponent == "ケンタロス":
+                    _opponent = opponent_team_tauros_name
 
                 if (
                     len(_battle_pokemon_opponent_combinations) < 3
@@ -237,7 +250,6 @@ class DataBuilder:
 
             # 長さが合うものを使う
             # 最初に rank が表示されない時
-            import pdb;pdb.set_trace()
             if len(self.filled_win_or_lost) == len(self.rank_numbers):
                 _win_or_lose = list(self.filled_win_or_lost.values())[i]
             # 最初に rank が表示された時

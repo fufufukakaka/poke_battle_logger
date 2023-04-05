@@ -35,6 +35,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     pokemon_extractor = PokemonExtractor(lang)
     sqlite_handler = SQLiteHandler()
 
+    first_ranking_frames = []
     select_done_frames = []
     standing_by_frames = []
     level_50_frames = []
@@ -46,6 +47,10 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     for i in tqdm(range(int(video.get(cv2.CAP_PROP_FRAME_COUNT)))):
         ret, frame = video.read()
         if ret:
+            # first ranking
+            if frame_detector.is_first_ranking_frame(frame):
+                first_ranking_frames.append(i)
+
             # select done
             if frame_detector.is_select_done_frame(frame):
                 select_done_frames.append(i)
@@ -83,9 +88,18 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
         message_window_frames, frame_threshold=3
     )
 
+    # 開始時のランクを検出(OCR)
+    logger.info("Extracting first ranking...")
+    rank_numbers = {}
+    first_ranking_frame_number = first_ranking_frames[-1]
+    video.set(cv2.CAP_PROP_POS_FRAMES, first_ranking_frame_number - 1)
+    _, _first_ranking_frame = video.read()
+    rank_numbers[first_ranking_frame_number] = pokemon_extractor.extract_first_rank_number(
+        _first_ranking_frame
+    )
+
     # ランクを検出(OCR)
     logger.info("Extracting ranking...")
-    rank_numbers = {}
     for ranking_frame_numbers in compressed_ranking_frames:
         ranking_frame_number = ranking_frame_numbers[-5]
         video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
