@@ -167,7 +167,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     battle_pokemons = []
     is_exist_unknown_pokemon_list2 = []
     for level_50_frame_numbers in compressed_level_50_frames:
-        _level_50_frame_number = level_50_frame_numbers[-10]
+        _level_50_frame_number = level_50_frame_numbers[-1]
         video.set(cv2.CAP_PROP_POS_FRAMES, _level_50_frame_number - 1)
         _, _level_50_frame = video.read()
 
@@ -176,6 +176,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
             opponent_pokemon_name,
             _is_exist_unknown_pokemon,
         ) = pokemon_extractor.extract_pokemon_name_in_battle(_level_50_frame)
+
         battle_pokemons.append(
             {
                 "frame_number": _level_50_frame_number,

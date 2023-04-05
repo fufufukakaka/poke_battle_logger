@@ -518,7 +518,13 @@ class PokemonExtractor:
 
     def _detect_rank_number(self, image):
         """Detects text in the file."""
-        text = pytesseract.image_to_string(image, lang="eng", config="--psm 6")
+        if self.lang == "en":
+            _lang = "eng"
+        elif self.lang == "ja":
+            _lang = "jpn"
+        else:
+            raise ValueError("lang must be en or ja")
+        text = pytesseract.image_to_string(image, lang=_lang, config="--psm 6")
 
         # 数字部分だけを取り出す
         _rank_text = text.split("No. ")[-1]
@@ -541,7 +547,7 @@ class PokemonExtractor:
             RANKING_NUMBER_WINDOW[2] : RANKING_NUMBER_WINDOW[3],
         ]
         gray = cv2.cvtColor(rank_frame_window, cv2.COLOR_BGR2GRAY)
-        threshold_value = 200
+        threshold_value = 160
         max_value = 255
         _, thresh = cv2.threshold(gray, threshold_value, max_value, cv2.THRESH_BINARY)
         rank_number = self._detect_rank_number(thresh)

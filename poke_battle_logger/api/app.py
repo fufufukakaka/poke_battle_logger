@@ -55,6 +55,16 @@ async def get_pokemon_name_to_no(pokemon_name: str) -> int:
 async def get_recent_battle_summary(trainer_id: str) -> Dict[
     str, Union[float, int, str, List[Dict[str, Union[str, int]]]]
 ]:
+    is_exist = sqlite_handler.check_trainer_id_exists(trainer_id)
+    if not is_exist:
+        return {
+            "win_rate": 0.0,
+            "latest_rank": 0,
+            "latest_win_pokemon": [],
+            "latest_lose_pokemon": [],
+            "recent_battle_history": [],
+        }
+
     win_rate = sqlite_handler.get_latest_season_win_rate(trainer_id)
     latest_rank = sqlite_handler.get_latest_season_rank(trainer_id)
     latest_win_pokemon = sqlite_handler.get_latest_win_pokemon(trainer_id)

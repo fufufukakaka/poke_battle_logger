@@ -236,10 +236,11 @@ class DataBuilder:
                 _next_rank = list(self.rank_numbers.values())[i]
 
             # 長さが合うものを使う
-            # 最初に rank が表示されない時(latest)
+            # 最初に rank が表示されない時
+            import pdb;pdb.set_trace()
             if len(self.filled_win_or_lost) == len(self.rank_numbers):
                 _win_or_lose = list(self.filled_win_or_lost.values())[i]
-            # 最初に rank が表示される時(old)
+            # 最初に rank が表示された時
             elif len(self.modified_win_or_lose_frames_from_rank) == len(self.rank_numbers) - 1:
                 _win_or_lose = list(self.modified_win_or_lose_frames_from_rank.values())[i]
             else:

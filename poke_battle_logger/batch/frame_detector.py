@@ -90,7 +90,8 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_level_50_area, self.gray_level_50_template, cv2.TM_CCOEFF_NORMED
         )
-        return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        _, thresh = cv2.threshold(gray_level_50_area, 200, 255, cv2.THRESH_BINARY)
+        return cv2.countNonZero(thresh) > 100 and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
 
     def is_ranking_frame(self, frame):
         gray_ranking_area = cv2.cvtColor(

@@ -854,13 +854,12 @@ class SQLiteHandler:
             where
                 season = {season}
         ),
-        target_battles as (
-            select
-                battle_id
-            from
-                battle
+        target_battle_summary as (
+            select * from battlesummary
             where
-                trainer_id in (select id from target_trainer)
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
                 and created_at between(
                     select
                         start_datetime from season_start_end)
@@ -884,7 +883,7 @@ class SQLiteHandler:
             memo,
             video
         from
-            target_battles
+            target_battle_summary
         order by
             created_at desc
         """
