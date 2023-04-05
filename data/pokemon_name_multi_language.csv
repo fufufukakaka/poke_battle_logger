@@ -492,7 +492,7 @@ NAME_PkMn_MANAPHY,Manaphy,マナフィ,Manaphy,Manaphy,Manaphy,Manaphy,마나피
 NAME_PkMn_DARKRAI,Darkrai,ダークライ,Darkrai,Darkrai,Darkrai,Darkrai,다크라이,達克萊伊,达克莱伊
 NAME_PkMn_SHAYMIN,Shaymin,シェイミ,Shaymin,Shaymin,Shaymin,Shaymin,쉐이미,謝米,谢米
 NAME_PkMn_ARCEUS,Arceus,アルセウス,Arceus,Arceus,Arceus,Arceus,아르세우스,阿爾宙斯,阿尔宙斯
-NAME_PkMn_VICTINI,Victini,ビクチイニ,Victini,Victini,Victini,Victini,아르세우스,比克提尼,比克提尼
+NAME_PkMn_VICTINI,Victini,ビクティニ,Victini,Victini,Victini,Victini,아르세우스,比克提尼,比克提尼
 NAME_PkMn_SNIVY,Snivy,ツタージャ,Vipélierre,Serpifeu,Snivy,Snivy,주리비얀,藤藤蛇,藤藤蛇
 NAME_PkMn_SERVINE,Servine,ジャノビー,Lianaja,Efoserp,Servine,Servine,샤비,青藤蛇,青藤蛇
 NAME_PkMn_SERPERIOR,Serperior,ジャローダ,Majaspic,Serpiroyal,Serperior,Serperior,샤로다,君主蛇,君主蛇
@@ -798,7 +798,7 @@ NAME_PkMn_XURKITREE,Xurkitree,デンジュモク,Câblifère,Voltriant,Xurkitree
 NAME_PkMn_CELESTEELA,Celesteela,テッカグヤ,Bamboiselle,Kaguron,Celesteela,Celesteela,철화구야,鐵火輝夜,铁火辉夜
 NAME_PkMn_KARTANA,Kartana,カミツルギ,Katagami,Katagami,Kartana,Kartana,종이신도,紙御劍,纸御剑
 NAME_PkMn_GUZZLORD,Guzzlord,アクジキング,Engloutyran,Schlingking,Guzzlord,Guzzlord,악식킹,惡食大王,恶食大王
-NAME_PkMn_NECROZMA,Necrozma,ネクロスマ,Necrozma,Necrozma,Necrozma,Necrozma,네크로즈마,奈克洛茲瑪,奈克洛兹玛
+NAME_PkMn_NECROZMA,Necrozma,ネクロズマ,Necrozma,Necrozma,Necrozma,Necrozma,네크로즈마,奈克洛茲瑪,奈克洛兹玛
 NAME_PkMn_MAGEARNA,Magearna,マギアナ,Magearna,Magearna,Magearna,Magearna,마기아나,瑪機雅娜,玛机雅娜
 NAME_PkMn_MARSHADOW,Marshadow,マーシャドー,Marshadow,Marshadow,Marshadow,Marshadow,마샤도,瑪夏多,玛夏多
 NAME_PkMn_POIPOLE,Poipole,ベベノム,Vémini,Venicro,Poipole,Poipole,베베놈,毒貝比,毒贝比
@@ -875,7 +875,7 @@ NAME_PkMn_FROSMOTH,Frosmoth,モスノウ,Beldeneige,Mottineva,Frosmoth,Frosmoth,
 NAME_PkMn_STONJOURNER,Stonjourner,イシヘンジン,Dolman,Humanolith,Stonjourner,Stonjourner,돌헨진,巨石丁,巨石丁
 NAME_PkMn_EISCUE,Eiscue,コオリッポ,Bekaglaçon,Kubuin,Eiscue,Eiscue,빙큐보,冰砌鵝,冰砌鹅
 NAME_PkMn_INDEEDEE,Indeedee,イエッサン,Wimessir,Servol,Indeedee,Indeedee,에써르,愛管侍,爱管侍
-NAME_PkMn_MORPEKO,Morpeko,モモルペコ,Morpeko,Morpeko,Morpeko,Morpeko,모르페코,莫魯貝可,莫鲁贝可
+NAME_PkMn_MORPEKO,Morpeko,モルペコ,Morpeko,Morpeko,Morpeko,Morpeko,모르페코,莫魯貝可,莫鲁贝可
 NAME_PkMn_CUFANT,Cufant,ゾウドウ,Charibari,Kupfanti,Cufant,Cufant,끼리동,銅象,铜象
 NAME_PkMn_COPPERAJAH,Copperajah,ダイオウドウ,Pachyradjah,Patinaraja,Copperajah,Copperajah,대왕끼리동,大王銅象,大王铜象
 NAME_PkMn_DRACOZOLT,Dracozolt,パッチラゴン,Galvagon,Lectragon,Dracozolt,Dracozolt,파치래곤,雷鳥龍,雷鸟龙
@@ -974,7 +974,7 @@ NAME_PkMn_HOUNDSTONE,Houndstone,ハカドッグ,Tomberro,Friedwuff,Houndstone,Ho
 NAME_PkMn_FLAMIGO,Flamigo,カラミンゴ,Flamenroule,Flaminkno,Flamigo,Flamigo,꼬이밍고,纏紅鶴,缠红鹤
 NAME_PkMn_CETODDLE,Cetoddle,アルクジラ,Piétacé,Flaniwal,Cetoddle,Cetoddle,터벅고래,走鯨,走鲸
 NAME_PkMn_CETITAN,Cetitan,ハルクジラ,Balbalèze,Kolowal,Cetitan,Cetitan,우락고래,浩大鯨,浩大鲸
-NAME_PkMn_VELUZA,Veluza,ミミガルーサ,Délestin,Agiluza,Veluza,Veluza,가비루사,輕身鱈,轻身鳕
+NAME_PkMn_VELUZA,Veluza,ミガルーサ,Délestin,Agiluza,Veluza,Veluza,가비루사,輕身鱈,轻身鳕
 NAME_PkMn_DONDOZO,Dondozo,ヘイラッシャ,Oyacata,Heerashai,Dondozo,Dondozo,어써러셔,吃吼霸,吃吼霸
 NAME_PkMn_TATSUGIRI,Tatsugiri,シャリタツ,Nigirigon,Nigiragi,Tatsugiri,Tatsugiri,싸리용,米立龍,米立龙
 NAME_PkMn_ANNIHILAPE,Annihilape,コノヨザル,Courrousinge,Epitaff,Annihilape,Annihilape,저승갓숭,棄世猴,弃世猴

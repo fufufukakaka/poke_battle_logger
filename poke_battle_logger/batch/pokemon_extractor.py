@@ -179,7 +179,7 @@ class PokemonExtractor:
 
         results = []
 
-        gray = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(pokemon_image, cv2.COLOR_RGB2GRAY)
         img2 = np.zeros_like(pokemon_image)
         img2[:,:,0] = gray
         img2[:,:,1] = gray
@@ -190,6 +190,7 @@ class PokemonExtractor:
         for score, idx in zip(scores[0], indexes[0]):
             if score < FAISS_POKEMON_SCORE_THRESHOLD:
                 results.append(self.vector_index[idx].split("_")[0])
+        import pdb;pdb.set_trace()
         if len(results) > 0:
             return results[0], False
         else:
