@@ -21,7 +21,7 @@ from config.config import (FAISS_POKEMON_SCORE_THRESHOLD,
                            POKEMON_SELECT_NUMBER_WINDOW3,
                            POKEMON_SELECT_NUMBER_WINDOW4,
                            POKEMON_SELECT_NUMBER_WINDOW5,
-                           POKEMON_SELECT_NUMBER_WINDOW6,
+                           POKEMON_SELECT_NUMBER_WINDOW6, POKEMON_SELECT_WINDOW_THRESHOLD_VALUE,
                            POKEMON_TEMPLATE_MATCHING_THRESHOLD,
                            RANKING_NUMBER_WINDOW, TEMPLATE_MATCHING_THRESHOLD,
                            WIN_LOST_WINDOW,
@@ -228,7 +228,7 @@ class PokemonExtractor:
                     select6_window,
                 ]
             ):
-                threshold_value = POKEMON_NAME_WINDOW_THRESHOLD_VALUE
+                threshold_value = POKEMON_SELECT_WINDOW_THRESHOLD_VALUE
                 max_value = 255
                 _, window2 = cv2.threshold(
                     window, threshold_value, max_value, cv2.THRESH_BINARY
