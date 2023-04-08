@@ -134,3 +134,4 @@ raw
 .DS_Store
 .credentials
 *.db
+experimental/imgs/*/*.png

@@ -190,7 +190,6 @@ class PokemonExtractor:
         for score, idx in zip(scores[0], indexes[0]):
             if score < FAISS_POKEMON_SCORE_THRESHOLD:
                 results.append(self.vector_index[idx].split("_")[0])
-        import pdb;pdb.set_trace()
         if len(results) > 0:
             return results[0], False
         else:

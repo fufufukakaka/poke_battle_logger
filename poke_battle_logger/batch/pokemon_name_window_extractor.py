@@ -12,7 +12,8 @@ import pandas as pd
 import pytesseract
 
 from config.config import (
-    POKEMON_NAME_WINDOW_THRESHOLD_VALUE,
+    POKEMON_NAME_WINDOW_THRESHOLD_VALUE1,
+    POKEMON_NAME_WINDOW_THRESHOLD_VALUE2,
     POKEMON_TEMPLATE_MATCHING_THRESHOLD,
 )
 
@@ -129,50 +130,52 @@ class PokemonNameWindowExtractor:
     def extract_pokemon_name_in_battle(
         self, name_window: np.ndarray
     ) -> Tuple[str, bool]:
-        threshold_value = POKEMON_NAME_WINDOW_THRESHOLD_VALUE
-        max_value = 255
-        gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
-        _, name_window2 = cv2.threshold(
-            gray_name_window, threshold_value, max_value, cv2.THRESH_BINARY
-        )
         results = []
         _name_results = []
-        for _lang in self.tesseract_candidate_langs:
-            _name = pytesseract.image_to_string(
-                name_window2, lang=_lang, config="--psm 6"
+
+        # 濃いときと薄いときで2回テンプレートマッチングを行う
+        for threshold_value in [POKEMON_NAME_WINDOW_THRESHOLD_VALUE1, POKEMON_NAME_WINDOW_THRESHOLD_VALUE2]:
+            max_value = 255
+            gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
+            _, name_window2 = cv2.threshold(
+                gray_name_window, threshold_value, max_value, cv2.THRESH_BINARY
             )
-            if _lang == "chi_sim":
-                _name_results.append(_name)
-                results.append(self._search_name_by_edit_distance(self.zh_list, _name))
-            elif _lang == "chi_tra":
-                _name_results.append(_name)
-                results.append(
-                    self._search_name_by_edit_distance(self.zh_HK_list, _name)
+            for _lang in self.tesseract_candidate_langs:
+                _name = pytesseract.image_to_string(
+                    name_window2, lang=_lang, config="--psm 6"
                 )
-            elif _lang == "eng":
-                _name_results.append(_name)
-                results.append(self._search_name_by_edit_distance(self.en_list, _name))
-            elif _lang == "fra":
-                _name_results.append(_name)
-                results.append(self._search_name_by_edit_distance(self.fr_list, _name))
-            elif _lang == "jpn":
-                _name_results.append(self._normalize_japanese_ocr_name(_name))
-                results.append(
-                    self._search_name_by_edit_distance(
-                        self.ja_list, self._normalize_japanese_ocr_name(_name)
+                if _lang == "chi_sim":
+                    _name_results.append(_name)
+                    results.append(self._search_name_by_edit_distance(self.zh_list, _name))
+                elif _lang == "chi_tra":
+                    _name_results.append(_name)
+                    results.append(
+                        self._search_name_by_edit_distance(self.zh_HK_list, _name)
                     )
-                )
-            elif _lang == "kor":
-                _name_results.append(_name)
-                results.append(self._search_name_by_edit_distance(self.ko_list, _name))
-            elif _lang == "spa":
-                _name_results.append(_name)
-                results.append(self._search_name_by_edit_distance(self.es_list, _name))
-            elif _lang == "deu":
-                _name_results.append(_name)
-                results.append(self._search_name_by_edit_distance(self.de_list, _name))
-            else:
-                continue
+                elif _lang == "eng":
+                    _name_results.append(_name)
+                    results.append(self._search_name_by_edit_distance(self.en_list, _name))
+                elif _lang == "fra":
+                    _name_results.append(_name)
+                    results.append(self._search_name_by_edit_distance(self.fr_list, _name))
+                elif _lang == "jpn":
+                    _name_results.append(self._normalize_japanese_ocr_name(_name))
+                    results.append(
+                        self._search_name_by_edit_distance(
+                            self.ja_list, self._normalize_japanese_ocr_name(_name)
+                        )
+                    )
+                elif _lang == "kor":
+                    _name_results.append(_name)
+                    results.append(self._search_name_by_edit_distance(self.ko_list, _name))
+                elif _lang == "spa":
+                    _name_results.append(_name)
+                    results.append(self._search_name_by_edit_distance(self.es_list, _name))
+                elif _lang == "deu":
+                    _name_results.append(_name)
+                    results.append(self._search_name_by_edit_distance(self.de_list, _name))
+                else:
+                    continue
         results_exclude_None = [v for v in results if v is not None]
         if len(results_exclude_None) > 0:
             _counter = collections.Counter([v for v in results if v is not None])
