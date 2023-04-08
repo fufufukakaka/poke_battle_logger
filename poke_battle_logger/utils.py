@@ -37,7 +37,5 @@ def get_youtube_url_with_timestamp(video_url, battle_started_at):
     yt = YouTube(video_url)
     video_started_at = publish_date(yt.watch_html)
     timestamp = battle_started_at - video_started_at
-    youtube_url_with_timestamp = (
-        f"{video_url}&t={timestamp}"
-    )
+    youtube_url_with_timestamp = f"{video_url}&t={timestamp}"
     return youtube_url_with_timestamp

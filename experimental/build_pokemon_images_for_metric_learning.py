@@ -1,8 +1,9 @@
 import glob
 import os
 import shutil
-import pandas as pd
 import unicodedata
+
+import pandas as pd
 
 
 def main():
@@ -28,7 +29,9 @@ def main():
 
     for pokemon_name in pokemon_names:
         pokemon_name = unicodedata.normalize("NFC", pokemon_name)
-        target_paths = glob.glob(f"template_images/labeled_pokemon_templates/{pokemon_name}*")
+        target_paths = glob.glob(
+            f"template_images/labeled_pokemon_templates/{pokemon_name}*"
+        )
         for i, path in enumerate(target_paths):
             if not glob.glob(f"experimental/imgs/{pokemon_name}"):
                 os.mkdir(f"experimental/imgs/{pokemon_name}")

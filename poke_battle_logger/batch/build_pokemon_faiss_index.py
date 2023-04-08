@@ -16,9 +16,9 @@ def main() -> None:
         img = cv2.imread(path)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img2 = np.zeros_like(img)
-        img2[:,:,0] = gray
-        img2[:,:,1] = gray
-        img2[:,:,2] = gray
+        img2[:, :, 0] = gray
+        img2[:, :, 1] = gray
+        img2[:, :, 2] = gray
         vec0 = vtr.vectorize(img2)
 
         vectors[path.split("/")[-1].split(".")[0]] = vec0

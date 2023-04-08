@@ -7,12 +7,12 @@ from rich.logging import RichHandler
 from tqdm.auto import tqdm
 
 from poke_battle_logger.batch.data_builder import DataBuilder
+from poke_battle_logger.batch.extractor import Extractor
 from poke_battle_logger.batch.frame_compressor import (
     frame_compress,
     message_frame_compress,
 )
 from poke_battle_logger.batch.frame_detector import FrameDetector
-from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.sqlite_handler import SQLiteHandler
 
 logging.basicConfig(
@@ -32,7 +32,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     video = cv2.VideoCapture(f"video/{video_id}.mp4")
 
     frame_detector = FrameDetector(lang)
-    pokemon_extractor = PokemonExtractor(lang)
+    extractor = Extractor(lang)
     sqlite_handler = SQLiteHandler()
 
     first_ranking_frames = []
@@ -94,7 +94,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     first_ranking_frame_number = first_ranking_frames[-1]
     video.set(cv2.CAP_PROP_POS_FRAMES, first_ranking_frame_number - 1)
     _, _first_ranking_frame = video.read()
-    rank_numbers[first_ranking_frame_number] = pokemon_extractor.extract_first_rank_number(
+    rank_numbers[first_ranking_frame_number] = extractor.extract_first_rank_number(
         _first_ranking_frame
     )
 
@@ -104,7 +104,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
         ranking_frame_number = ranking_frame_numbers[-5]
         video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
         _, _ranking_frame = video.read()
-        rank_numbers[ranking_frame_number] = pokemon_extractor.extract_rank_number(
+        rank_numbers[ranking_frame_number] = extractor.extract_rank_number(
             _ranking_frame
         )
 
@@ -149,7 +149,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
         video.set(cv2.CAP_PROP_POS_FRAMES, _select_done_frame_number - 1)
         _, _select_done_frame = video.read()
 
-        _pokemon_select_order = pokemon_extractor.extract_pokemon_select_numbers(
+        _pokemon_select_order = extractor.extract_pokemon_select_numbers(
             _select_done_frame
         )
         pokemon_select_order[_select_done_frame_number] = _pokemon_select_order
@@ -169,7 +169,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
             your_pokemon_names,
             opponent_pokemon_names,
             _is_exist_unknown_pokemon,
-        ) = pokemon_extractor.extract_pre_battle_pokemons(_standing_by_frame)
+        ) = extractor.extract_pre_battle_pokemons(_standing_by_frame)
         pre_battle_pokemons[_standing_by_frame_number] = {
             "your_pokemon_names": your_pokemon_names,
             "opponent_pokemon_names": opponent_pokemon_names,
@@ -189,7 +189,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
             your_pokemon_name,
             opponent_pokemon_name,
             _is_exist_unknown_pokemon,
-        ) = pokemon_extractor.extract_pokemon_name_in_battle(_level_50_frame)
+        ) = extractor.extract_pokemon_name_in_battle(_level_50_frame)
 
         battle_pokemons.append(
             {
@@ -216,9 +216,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
                 _win_or_lost_frame_number = win_or_lost_frame_numbers[-1] - idx
                 video.set(cv2.CAP_PROP_POS_FRAMES, _win_or_lost_frame_number - 1)
                 _, _win_or_lost_frame = video.read()
-                _win_or_lost_result = pokemon_extractor.extract_win_or_lost(
-                    _win_or_lost_frame
-                )
+                _win_or_lost_result = extractor.extract_win_or_lost(_win_or_lost_frame)
                 _win_or_lost_results.append(_win_or_lost_result)
 
             _win_or_lost_results = [v for v in _win_or_lost_results if v != "unknown"]
@@ -237,7 +235,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
         message_frame_number = message_frame_numbers[-1]
         video.set(cv2.CAP_PROP_POS_FRAMES, message_frame_number - 1)
         _, _message_frame = video.read()
-        _message = pokemon_extractor.extract_message(_message_frame)
+        _message = extractor.extract_message(_message_frame)
         if _message is not None:
             messages[message_frame_number] = _message
 

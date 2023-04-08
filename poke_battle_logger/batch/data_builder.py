@@ -218,7 +218,9 @@ class DataBuilder:
 
         for i in range(len(self.battle_start_end_frame_numbers)):
             start_frame = self.battle_start_end_frame_numbers[i][0]
-            created_at, second_from_frame_number = self._get_start_time(self.video_id, start_frame)
+            created_at, second_from_frame_number = self._get_start_time(
+                self.video_id, start_frame
+            )
             battle_id = self._get_battle_id(created_at)
 
             battles.append(
@@ -253,8 +255,13 @@ class DataBuilder:
             if len(self.filled_win_or_lost) == len(self.rank_numbers):
                 _win_or_lose = list(self.filled_win_or_lost.values())[i]
             # 最初に rank が表示された時
-            elif len(self.modified_win_or_lose_frames_from_rank) == len(self.rank_numbers) - 1:
-                _win_or_lose = list(self.modified_win_or_lose_frames_from_rank.values())[i]
+            elif (
+                len(self.modified_win_or_lose_frames_from_rank)
+                == len(self.rank_numbers) - 1
+            ):
+                _win_or_lose = list(
+                    self.modified_win_or_lose_frames_from_rank.values()
+                )[i]
             else:
                 raise Exception("win or lost is not valid")
 

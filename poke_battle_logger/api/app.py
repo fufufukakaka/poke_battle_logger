@@ -2,10 +2,11 @@ import logging
 import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
-from pydantic import BaseModel
+
 import pandas as pd
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from rich.logging import RichHandler
 
 from poke_battle_logger.sqlite_handler import SQLiteHandler
@@ -52,9 +53,9 @@ async def get_pokemon_name_to_no(pokemon_name: str) -> int:
 
 
 @app.get("/api/v1/recent_battle_summary")
-async def get_recent_battle_summary(trainer_id: str) -> Dict[
-    str, Union[float, int, str, List[Dict[str, Union[str, int]]]]
-]:
+async def get_recent_battle_summary(
+    trainer_id: str,
+) -> Dict[str, Union[float, int, str, List[Dict[str, Union[str, int]]]]]:
     is_exist = sqlite_handler.check_trainer_id_exists(trainer_id)
     if not is_exist:
         return {
@@ -82,18 +83,25 @@ async def get_recent_battle_summary(trainer_id: str) -> Dict[
 
 @app.get("/api/v1/analytics")
 async def get_analytics(
-    trainer_id: str, season: int,
+    trainer_id: str,
+    season: int,
 ) -> Dict[str, Union[List[float], List[int], List[Dict[str, Union[str, int, float]]]]]:
     if season == 0:
         win_rate_transition = sqlite_handler.get_win_rate_transitions_all(trainer_id)
         next_rank_transition = sqlite_handler.get_next_rank_transitions_all(trainer_id)
-        your_pokemon_stats_summary = sqlite_handler.get_your_pokemon_stats_summary_all(trainer_id)
+        your_pokemon_stats_summary = sqlite_handler.get_your_pokemon_stats_summary_all(
+            trainer_id
+        )
         opponent_pokemon_stats_summary = (
             sqlite_handler.get_opponent_pokemon_stats_summary_all(trainer_id)
         )
     elif season > 0:
-        win_rate_transition = sqlite_handler.get_win_rate_transitions_season(season, trainer_id)
-        next_rank_transition = sqlite_handler.get_next_rank_transitions_season(season, trainer_id)
+        win_rate_transition = sqlite_handler.get_win_rate_transitions_season(
+            season, trainer_id
+        )
+        next_rank_transition = sqlite_handler.get_next_rank_transitions_season(
+            season, trainer_id
+        )
         your_pokemon_stats_summary = (
             sqlite_handler.get_your_pokemon_stats_summary_season(season, trainer_id)
         )
@@ -112,7 +120,8 @@ async def get_analytics(
 
 @app.get("/api/v1/battle_log")
 async def get_battle_log(
-    trainer_id: str, season: int,
+    trainer_id: str,
+    season: int,
 ) -> List[Dict[str, Union[str, int, float]]]:
     if season == 0:
         battle_log = sqlite_handler.get_battle_log_all(trainer_id)

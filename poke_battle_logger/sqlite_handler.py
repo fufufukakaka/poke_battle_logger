@@ -104,7 +104,9 @@ class SQLiteHandler:
     def insert_battle_id(self, battles):
         with self.db:
             for _battle in battles:
-                Battle.create(battle_id=_battle["battle_id"], trainer_id=_battle["trainer_id"])
+                Battle.create(
+                    battle_id=_battle["battle_id"], trainer_id=_battle["trainer_id"]
+                )
 
     def insert_battle_summary(self, battle_summary):
         with self.db:
@@ -139,7 +141,7 @@ class SQLiteHandler:
                         "NFC", _battle_summary["opponent_pokemon_3"]
                     ),
                     video=_battle_summary["video"],
-                    memo=""
+                    memo="",
                 )
 
     def insert_battle_pokemon_team(self, battle_pokemon_team):
@@ -356,7 +358,9 @@ class SQLiteHandler:
             )
         return latest_lose_pokemon
 
-    def get_win_rate_transitions_season(self, season: int, trainer_id: str) -> List[float]:
+    def get_win_rate_transitions_season(
+        self, season: int, trainer_id: str
+    ) -> List[float]:
         sql = f"""
         with season_start_end as (
             select
@@ -489,7 +493,9 @@ class SQLiteHandler:
         ]
         return win_rate_transitions
 
-    def get_next_rank_transitions_season(self, season: int, trainer_id: str) -> List[int]:
+    def get_next_rank_transitions_season(
+        self, season: int, trainer_id: str
+    ) -> List[int]:
         sql = f"""
         with target_trainer as (
             select
@@ -583,7 +589,9 @@ class SQLiteHandler:
         ]
         return next_rank_transitions
 
-    def get_recent_battle_history(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
+    def get_recent_battle_history(
+        self, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         with target_trainer as (
             select
@@ -639,7 +647,11 @@ class SQLiteHandler:
     def get_your_pokemon_stats_summary_all(
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
-        sql = open("sql/your_pokemon_stats_summary.sql").read().format(trainer_id=trainer_id)
+        sql = (
+            open("sql/your_pokemon_stats_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
 
         with self.db:
             stats = self.db.execute_sql(sql).fetchall()
@@ -693,7 +705,11 @@ class SQLiteHandler:
     def get_opponent_pokemon_stats_summary_all(
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
-        sql = open("sql/opponent_pokemon_stats_summary.sql").read().format(trainer_id=trainer_id)
+        sql = (
+            open("sql/opponent_pokemon_stats_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
 
         with self.db:
             stats = self.db.execute_sql(sql).fetchall()
@@ -806,7 +822,7 @@ class SQLiteHandler:
                     "opponent_pokemon_select2": opponent_pokemon_2,
                     "opponent_pokemon_select3": opponent_pokemon_3,
                     "memo": memo,
-                    "video": video
+                    "video": video,
                 }
                 for (
                     battle_id,
@@ -904,7 +920,7 @@ class SQLiteHandler:
                     "opponent_pokemon_select2": opponent_pokemon_2,
                     "opponent_pokemon_select3": opponent_pokemon_3,
                     "memo": memo,
-                    "video": video
+                    "video": video,
                 }
                 for (
                     battle_id,
@@ -920,7 +936,7 @@ class SQLiteHandler:
                     opponent_pokemon_2,
                     opponent_pokemon_3,
                     memo,
-                    video
+                    video,
                 ) in battle_logs
             ]
         return battle_logs_dict

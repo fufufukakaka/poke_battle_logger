@@ -134,7 +134,10 @@ class PokemonNameWindowExtractor:
         _name_results = []
 
         # 濃いときと薄いときで2回テンプレートマッチングを行う
-        for threshold_value in [POKEMON_NAME_WINDOW_THRESHOLD_VALUE1, POKEMON_NAME_WINDOW_THRESHOLD_VALUE2]:
+        for threshold_value in [
+            POKEMON_NAME_WINDOW_THRESHOLD_VALUE1,
+            POKEMON_NAME_WINDOW_THRESHOLD_VALUE2,
+        ]:
             max_value = 255
             gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
             _, name_window2 = cv2.threshold(
@@ -146,7 +149,9 @@ class PokemonNameWindowExtractor:
                 )
                 if _lang == "chi_sim":
                     _name_results.append(_name)
-                    results.append(self._search_name_by_edit_distance(self.zh_list, _name))
+                    results.append(
+                        self._search_name_by_edit_distance(self.zh_list, _name)
+                    )
                 elif _lang == "chi_tra":
                     _name_results.append(_name)
                     results.append(
@@ -154,10 +159,14 @@ class PokemonNameWindowExtractor:
                     )
                 elif _lang == "eng":
                     _name_results.append(_name)
-                    results.append(self._search_name_by_edit_distance(self.en_list, _name))
+                    results.append(
+                        self._search_name_by_edit_distance(self.en_list, _name)
+                    )
                 elif _lang == "fra":
                     _name_results.append(_name)
-                    results.append(self._search_name_by_edit_distance(self.fr_list, _name))
+                    results.append(
+                        self._search_name_by_edit_distance(self.fr_list, _name)
+                    )
                 elif _lang == "jpn":
                     _name_results.append(self._normalize_japanese_ocr_name(_name))
                     results.append(
@@ -167,13 +176,19 @@ class PokemonNameWindowExtractor:
                     )
                 elif _lang == "kor":
                     _name_results.append(_name)
-                    results.append(self._search_name_by_edit_distance(self.ko_list, _name))
+                    results.append(
+                        self._search_name_by_edit_distance(self.ko_list, _name)
+                    )
                 elif _lang == "spa":
                     _name_results.append(_name)
-                    results.append(self._search_name_by_edit_distance(self.es_list, _name))
+                    results.append(
+                        self._search_name_by_edit_distance(self.es_list, _name)
+                    )
                 elif _lang == "deu":
                     _name_results.append(_name)
-                    results.append(self._search_name_by_edit_distance(self.de_list, _name))
+                    results.append(
+                        self._search_name_by_edit_distance(self.de_list, _name)
+                    )
                 else:
                     continue
         results_exclude_None = [v for v in results if v is not None]

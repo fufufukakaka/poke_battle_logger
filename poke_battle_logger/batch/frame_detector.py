@@ -2,6 +2,12 @@ import cv2
 
 from config.config import (
     FIRST_RANKING_WINDOW,
+    JAPANESE_LEVEL_50_TEMPLATE_PATH,
+    JAPANESE_LOST_TEMPLATE_PATH,
+    JAPANESE_RANKING_TEMPLATE_PATH,
+    JAPANESE_SELECT_DONE_TEMPLATE_PATH,
+    JAPANESE_STANDING_BY_TEMPLATE_PATH,
+    JAPANESE_WIN_TEMPLATE_PATH,
     LEVEL_50_TEMPLATE_PATH,
     LEVEL_50_WINDOW,
     LOST_TEMPLATE_PATH,
@@ -19,12 +25,6 @@ from config.config import (
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     WIN_TEMPLATE_PATH,
-    JAPANESE_LEVEL_50_TEMPLATE_PATH,
-    JAPANESE_RANKING_TEMPLATE_PATH,
-    JAPANESE_SELECT_DONE_TEMPLATE_PATH,
-    JAPANESE_STANDING_BY_TEMPLATE_PATH,
-    JAPANESE_WIN_TEMPLATE_PATH,
-    JAPANESE_LOST_TEMPLATE_PATH,
 )
 
 
@@ -49,12 +49,16 @@ class FrameDetector:
             gray_lost_template = cv2.imread(LOST_TEMPLATE_PATH, 0)
             gray_select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH, 0)
         elif self.lang == "ja":
-            gray_standing_by_template = cv2.imread(JAPANESE_STANDING_BY_TEMPLATE_PATH, 0)
+            gray_standing_by_template = cv2.imread(
+                JAPANESE_STANDING_BY_TEMPLATE_PATH, 0
+            )
             gray_level_50_template = cv2.imread(JAPANESE_LEVEL_50_TEMPLATE_PATH, 0)
             gray_ranking_template = cv2.imread(JAPANESE_RANKING_TEMPLATE_PATH, 0)
             gray_win_template = cv2.imread(JAPANESE_WIN_TEMPLATE_PATH, 0)
             gray_lost_template = cv2.imread(JAPANESE_LOST_TEMPLATE_PATH, 0)
-            gray_select_done_template = cv2.imread(JAPANESE_SELECT_DONE_TEMPLATE_PATH, 0)
+            gray_select_done_template = cv2.imread(
+                JAPANESE_SELECT_DONE_TEMPLATE_PATH, 0
+            )
         else:
             raise ValueError("Invalid language")
 
@@ -92,7 +96,10 @@ class FrameDetector:
             gray_level_50_area, self.gray_level_50_template, cv2.TM_CCOEFF_NORMED
         )
         _, thresh = cv2.threshold(gray_level_50_area, 200, 255, cv2.THRESH_BINARY)
-        return cv2.countNonZero(thresh) > 100 and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        return (
+            cv2.countNonZero(thresh) > 100
+            and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        )
 
     def is_first_ranking_frame(self, frame):
         gray_ranking_area = cv2.cvtColor(

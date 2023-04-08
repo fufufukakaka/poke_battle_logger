@@ -55,9 +55,17 @@ WIN_TEMPLATE_PATH = "template_images/general_templates/win.png"
 LOST_TEMPLATE_PATH = "template_images/general_templates/lost.png"
 SELECT_DONE_TEMPLATE_PATH = "template_images/general_templates/select_done.png"
 
-JAPANESE_STANDING_BY_TEMPLATE_PATH = "template_images/japanese_general_templates/standing_by.png"
-JAPANESE_LEVEL_50_TEMPLATE_PATH = "template_images/japanese_general_templates/level_50.png"
-JAPANESE_RANKING_TEMPLATE_PATH = "template_images/japanese_general_templates/ranking.png"
+JAPANESE_STANDING_BY_TEMPLATE_PATH = (
+    "template_images/japanese_general_templates/standing_by.png"
+)
+JAPANESE_LEVEL_50_TEMPLATE_PATH = (
+    "template_images/japanese_general_templates/level_50.png"
+)
+JAPANESE_RANKING_TEMPLATE_PATH = (
+    "template_images/japanese_general_templates/ranking.png"
+)
 JAPANESE_WIN_TEMPLATE_PATH = "template_images/japanese_general_templates/win.png"
 JAPANESE_LOST_TEMPLATE_PATH = "template_images/japanese_general_templates/lost.png"
-JAPANESE_SELECT_DONE_TEMPLATE_PATH = "template_images/japanese_general_templates/select_done.png"
+JAPANESE_SELECT_DONE_TEMPLATE_PATH = (
+    "template_images/japanese_general_templates/select_done.png"
+)
