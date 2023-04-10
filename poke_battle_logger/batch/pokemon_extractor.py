@@ -84,7 +84,7 @@ class PokemonExtractor:
         pokemon_image3 = Image.fromarray(pokemon_image2)
         results = cast(List[PokemonClassifierResult], self.classifier_pipe(pokemon_image3))
 
-        if results[0]["score"] > 0.5:
+        if results[0]["score"] > 0.3:
             return results[0]["label"], False
         else:
             # テンプレートマッチングで検出する

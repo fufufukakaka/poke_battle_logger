@@ -130,7 +130,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     rank_frames = list(rank_numbers.keys())
     for i in range(len(compressed_standing_by_frames)):
         _standing_by_frames = compressed_standing_by_frames[i]
-        _standing_by_frame = _standing_by_frames[-10]
+        _standing_by_frame = _standing_by_frames[-1]
 
         # チーム選択からの場合(最初の順位表示なし)
         if len(compressed_standing_by_frames) == len(rank_numbers):
@@ -163,7 +163,9 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     is_exist_unknown_pokemon_list1 = []
     for i in range(len(compressed_standing_by_frames)):
         _standing_by_frames = compressed_standing_by_frames[i]
-        _standing_by_frame_number = _standing_by_frames[-10]
+        if len(_standing_by_frames) == 1:
+            continue
+        _standing_by_frame_number = _standing_by_frames[-1]
 
         video.set(cv2.CAP_PROP_POS_FRAMES, _standing_by_frame_number - 1)
         _, _standing_by_frame = video.read()
