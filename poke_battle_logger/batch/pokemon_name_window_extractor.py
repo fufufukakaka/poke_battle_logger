@@ -202,7 +202,6 @@ class PokemonNameWindowExtractor:
             _is_unknown = False
             return _most_common_name[0][0], _is_unknown
         else:
-            import pdb;pdb.set_trace()
             # search by template matching
             _name, _is_unknown = self._search_name_window_by_template_matching(
                 gray_name_window, name_window

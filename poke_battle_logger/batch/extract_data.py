@@ -83,7 +83,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     logger.info("Compressing frame array...")
     compressed_first_ranking_frames = frame_compress(first_ranking_frames)
     compressed_select_done_frames = frame_compress(select_done_frames)
-    compressed_standing_by_frames = frame_compress(standing_by_frames)
+    compressed_standing_by_frames = frame_compress(standing_by_frames, ignore_short_frames=True)
     compressed_level_50_frames = frame_compress(level_50_frames)
     compressed_ranking_frames = frame_compress(ranking_frames)
     compressed_win_or_lost_frames = frame_compress(win_or_lost_frames)

@@ -1,7 +1,7 @@
 FRAME_SEQUENCE_THRESHOLD = 100
 
 
-def frame_compress(target_frames, frame_threshold=FRAME_SEQUENCE_THRESHOLD):
+def frame_compress(target_frames, frame_threshold=FRAME_SEQUENCE_THRESHOLD, ignore_short_frames=False):
     # フレームを連続区間で分割する
     compressed_frame_results = []
     temp = []
@@ -11,7 +11,13 @@ def frame_compress(target_frames, frame_threshold=FRAME_SEQUENCE_THRESHOLD):
             i < len(target_frames) - 1
             and target_frames[i + 1] - target_frames[i] > frame_threshold
         ):
-            compressed_frame_results.append(temp)
+            if ignore_short_frames:
+                if len(temp) > 1:
+                    compressed_frame_results.append(temp)
+                else:
+                    pass
+            else:
+                compressed_frame_results.append(temp)
             temp = []
     compressed_frame_results.append(temp)
     return compressed_frame_results
