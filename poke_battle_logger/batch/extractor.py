@@ -15,7 +15,6 @@ from config.config import (FAISS_POKEMON_SCORE_THRESHOLD,
                            FIRST_RANKING_NUMBER_WINDOW, MESSAGE_WINDOW,
                            OPPONENT_POKEMON_NAME_WINDOW,
                            OPPONENT_PRE_POKEMON_POSITION,
-                           POKEMON_NAME_WINDOW_THRESHOLD_VALUE,
                            POKEMON_POSITIONS, POKEMON_SELECT_NUMBER_WINDOW1,
                            POKEMON_SELECT_NUMBER_WINDOW2,
                            POKEMON_SELECT_NUMBER_WINDOW3,
@@ -35,8 +34,7 @@ pytesseract.pytesseract.tesseract_cmd = r"/opt/brew/bin/tesseract"
 
 class Extractor:
     """
-    6vs6 の見せ合い画面でのポケモン検出と
-    対戦中でのポケモン検出を行う
+    対戦中でのポケモン検出及びその他細々した検出を行う
 
     TODO: やっていることが増えすぎたので、いずれ複数の小さなクラスに分割する
     """
@@ -279,7 +277,7 @@ class Extractor:
                 WIN_LOST_WINDOW[0] : WIN_LOST_WINDOW[1],
                 WIN_LOST_WINDOW[2] : WIN_LOST_WINDOW[3],
             ],
-            cv2.COLOR_RGB2GRAY,
+            cv2.COLOR_BGR2GRAY,
         )
         win_res = cv2.matchTemplate(
             win_lost_image, self.win_window_template, cv2.TM_CCOEFF_NORMED

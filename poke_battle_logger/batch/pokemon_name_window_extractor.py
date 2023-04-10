@@ -125,7 +125,11 @@ class PokemonNameWindowExtractor:
         """
         OCRで読み取った日本語の名前から特殊文字を削除する
         """
-        return self.non_CJK_patterns.sub(r"", text)
+        _text = self.non_CJK_patterns.sub(r"", text)
+        if _text == "八八ダクカミ":
+            return "ハバタクカミ"
+        else:
+            return _text
 
     def extract_pokemon_name_in_battle(
         self, name_window: np.ndarray
@@ -198,6 +202,7 @@ class PokemonNameWindowExtractor:
             _is_unknown = False
             return _most_common_name[0][0], _is_unknown
         else:
+            import pdb;pdb.set_trace()
             # search by template matching
             _name, _is_unknown = self._search_name_window_by_template_matching(
                 gray_name_window, name_window

@@ -26,6 +26,7 @@ cloudpickle = "^2.2.1"
 httpx = "^0.23.3"
 editdistance = "^0.6.2"
 transformers = "^4.27.4"
+python-dotenv = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 pysen = "^0.10.3"

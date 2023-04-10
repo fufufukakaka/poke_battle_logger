@@ -1,39 +1,41 @@
 import glob
+import os
 import time
-from typing import Tuple
-
+from dataclasses import dataclass
+from typing import List, Tuple, cast
+from PIL import Image
 import cv2
 import numpy as np
-import torch
-from transformers import AutoFeatureExtractor, AutoModelForImageClassification
+from dotenv import load_dotenv
+from transformers import pipeline
 
-from config.config import (
-    OPPONENT_PRE_POKEMON_POSITION,
-    POKEMON_POSITIONS,
-    POKEMON_TEMPLATE_MATCHING_THRESHOLD,
-    YOUR_POKEMON_NAME_WINDOW,
-    YOUR_PRE_POKEMON_POSITION,
-)
-from poke_battle_logger.batch.pokemon_name_window_extractor import (
-    PokemonNameWindowExtractor,
-)
+from config.config import (OPPONENT_PRE_POKEMON_POSITION, POKEMON_POSITIONS,
+                           POKEMON_TEMPLATE_MATCHING_THRESHOLD,
+                           YOUR_PRE_POKEMON_POSITION)
+from poke_battle_logger.batch.pokemon_name_window_extractor import \
+    PokemonNameWindowExtractor
 
-MODEL_NAME = "fufufukakaka/autotrain-pokemon-image-classification-2-47828116910"
+load_dotenv()
+
+MODEL_NAME = "fufufukakaka/autotrain-pokemon-image-classification-3-47925116995"
 
 
-class Extractor:
+
+@dataclass
+class PokemonClassifierResult:
+    label: str
+    score: float
+
+
+class PokemonExtractor:
     """
     6vs6 の見せ合い画面でのポケモン検出
     """
 
-    def __init__(self, lang: str = "en") -> None:
-        self.lang = lang
+    def __init__(self) -> None:
         self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
-        self.pokemon_image_extractor = AutoFeatureExtractor.from_pretrained(MODEL_NAME)
-        self.pokemon_image_classifier = AutoModelForImageClassification.from_pretrained(
-            MODEL_NAME
-        )
+        self.classifier_pipe = pipeline(task="image-classification", model=MODEL_NAME, use_auth_token=os.getenv('HF_ACCESS_TOKEN'))
 
     def _setup_pre_battle_pokemon_templates(self):
         pre_battle_pokemon_template_paths = glob.glob(
@@ -78,21 +80,20 @@ class Extractor:
         autotrain model でポケモンを特定する
         """
 
-        encoding = self.pokemon_image_extractor(pokemon_image, return_tensors="pt")
-        with torch.no_grad():
-            outputs = self.pokemon_image_classifier(**encoding)
-            logits = outputs.logits
+        pokemon_image2 = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2RGB)
+        pokemon_image3 = Image.fromarray(pokemon_image2)
+        results = cast(List[PokemonClassifierResult], self.classifier_pipe(pokemon_image3))
 
-        predicted_class_idx = logits.argmax(-1).item()
-        predicted_score = logits.softmax(-1)[0, predicted_class_idx].item()
-        pokemon_label = self.pokemon_image_classifier.config.id2label[
-            predicted_class_idx
-        ]
-
-        if predicted_score > 0.5:
-            return pokemon_label, False
+        if results[0]["score"] > 0.5:
+            return results[0]["label"], False
         else:
             # テンプレートマッチングで検出する
+            cv2.imwrite(
+                "template_images/unknown_pokemon_templates/"
+                + str(time.time())
+                + ".png",
+                pokemon_image,
+            )
             return self._search_pokemon_by_template_matching(pokemon_image)
 
     def _get_pokemons(self, frame):
