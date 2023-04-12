@@ -128,6 +128,8 @@ class PokemonNameWindowExtractor:
         _text = self.non_CJK_patterns.sub(r"", text)
         if _text == "八八ダクカミ":
             return "ハバタクカミ"
+        elif _text == "八ツサム":
+            return "ハッサム"
         else:
             return _text
 

@@ -3,10 +3,11 @@ import os
 import time
 from dataclasses import dataclass
 from typing import List, Tuple, cast
-from PIL import Image
+
 import cv2
 import numpy as np
 from dotenv import load_dotenv
+from PIL import Image
 from transformers import pipeline
 
 from config.config import (OPPONENT_PRE_POKEMON_POSITION, POKEMON_POSITIONS,
@@ -17,8 +18,7 @@ from poke_battle_logger.batch.pokemon_name_window_extractor import \
 
 load_dotenv()
 
-MODEL_NAME = "fufufukakaka/autotrain-pokemon-image-classification-4-48291117472"
-
+MODEL_NAME = "fufufukakaka/pokemon_image_classifier"
 
 
 @dataclass
@@ -84,7 +84,7 @@ class PokemonExtractor:
         pokemon_image3 = Image.fromarray(pokemon_image2)
         results = cast(List[PokemonClassifierResult], self.classifier_pipe(pokemon_image3))
 
-        if results[0]["score"] > 0.3:
+        if results[0]["score"] > 0.2:
             return results[0]["label"], False
         else:
             # テンプレートマッチングで検出する
