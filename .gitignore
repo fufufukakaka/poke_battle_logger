@@ -135,3 +135,4 @@ raw
 .credentials
 *.db
 experimental/imgs/*/*.png
+notebook/pokemon_image_classifier

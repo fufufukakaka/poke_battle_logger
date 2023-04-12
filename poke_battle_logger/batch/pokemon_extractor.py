@@ -17,7 +17,7 @@ from poke_battle_logger.batch.pokemon_name_window_extractor import \
 
 load_dotenv()
 
-MODEL_NAME = "fufufukakaka/autotrain-pokemon-image-classification-3-47925116995"
+MODEL_NAME = "fufufukakaka/autotrain-pokemon-image-classification-4-48291117472"
 
 
 
