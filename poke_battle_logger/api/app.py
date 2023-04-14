@@ -1,7 +1,7 @@
 import logging
 import unicodedata
 from logging import getLogger
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 from fastapi import FastAPI
@@ -50,6 +50,11 @@ async def hello_revision() -> str:
 @app.get("/api/v1/pokemon_name_to_no")
 async def get_pokemon_name_to_no(pokemon_name: str) -> int:
     return pokemon_japanese_to_no_dict[pokemon_name]
+
+
+@app.get("/api/v1/battle_counts")
+async def get_battle_counts(trainer_id: str) -> List[Tuple[str, int]]:
+    return sqlite_handler.get_battle_counts(trainer_id)
 
 
 @app.get("/api/v1/recent_battle_summary")
