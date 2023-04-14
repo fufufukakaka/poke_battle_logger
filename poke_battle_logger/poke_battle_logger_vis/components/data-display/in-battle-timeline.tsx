@@ -1,6 +1,6 @@
 import { Chrono } from "react-chrono";
 import PokemonIcon from "../atoms/pokemon-icon";
-import { Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 
 interface InBattleTimelineProps {
   in_battle_log: {
@@ -15,9 +15,10 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log }) =>
   return (
     <Chrono
       mode="VERTICAL"
+      cardHeight={100}
     >
       {in_battle_log.map((log) => (
-        <div key={log.turn}>
+        <Box key={log.turn}>
           <h3>Turn: {log.turn}</h3>
           <Flex alignItems={"flex-end"}>
             <PokemonIcon
@@ -30,7 +31,7 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log }) =>
               boxSize={'50px'}
             />
           </Flex>
-        </div>
+        </Box>
       ))}
     </Chrono>
   );
