@@ -1,7 +1,5 @@
 import {
-  Card,
   Heading,
-  CardBody,
   Flex,
   Text,
   Badge,
@@ -15,14 +13,24 @@ import {
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
   ModalBody,
   ModalCloseButton,
-  AspectRatio,
 } from '@chakra-ui/react';
 import { TimeIcon } from '@chakra-ui/icons';
 import PokemonIcon from '../atoms/pokemon-icon';
 import ReactPlayer from 'react-player/youtube'
+import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+  Box,
+} from '@chakra-ui/react'
+import InBattleTimeline from '../data-display/in-battle-timeline'
+import useSWR from 'swr';
+import axios from 'axios';
 
 interface BattleLogDetailModalProps {
     isOpen: boolean;
@@ -42,6 +50,12 @@ interface BattleLogDetailModalProps {
   memo: string;
   video: string;
 }
+
+const fetcher = async (url: string) => {
+  const results = await axios.get(url);
+  // results.data は BattleLogProps の配列
+  return await results.data;
+};
 
 const BattleLogDetailModal: React.FunctionComponent<
   BattleLogDetailModalProps
@@ -63,6 +77,12 @@ const BattleLogDetailModal: React.FunctionComponent<
   memo,
   video,
 }) => {
+
+  const { data, error, isLoading } = useSWR(
+    `http://127.0.0.1:8000/api/v1/in_battle_log?battle_id=${battle_id}`,
+    fetcher
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
       <ModalOverlay />
@@ -70,7 +90,21 @@ const BattleLogDetailModal: React.FunctionComponent<
         <ModalHeader>対戦詳細</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-        <ReactPlayer url={video} controls={true} width={"100%"}/>
+          <Accordion allowToggle>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex='1' textAlign='left'>
+                    Movie
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <ReactPlayer url={video} controls={true} width={"100%"}/>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
           <Text>
             <TimeIcon boxSize={4} margin={'5px'} />
             {battle_created_at}
@@ -84,54 +118,73 @@ const BattleLogDetailModal: React.FunctionComponent<
             → 👑 {next_rank}
           </Text>
           <Divider margin={'5px'} />
-          <Heading size={'xs'}>ShowDown</Heading>
-          <Flex>
-            {your_pokemon_team.split(',').map((pokemon_name) => (
-              <PokemonIcon
-                key={pokemon_name}
-                pokemon_name={pokemon_name}
-                boxSize={'40px'}
-              />
-            ))}
-          </Flex>
-          <Text>VS</Text>
-          <Flex>
-            {opponent_pokemon_team.split(',').map((pokemon_name) => (
-              <PokemonIcon
-                key={pokemon_name}
-                pokemon_name={pokemon_name}
-                boxSize={'40px'}
-              />
-            ))}
-          </Flex>
-          <Divider margin={'5px'} />
-          <Heading size={'xs'}>Selection</Heading>
-          <Flex>
-            <PokemonIcon pokemon_name={your_pokemon_select1} boxSize={'50px'} />
-            <PokemonIcon pokemon_name={your_pokemon_select2} boxSize={'50px'} />
-            <PokemonIcon pokemon_name={your_pokemon_select3} boxSize={'50px'} />
-          </Flex>
-          <Text>VS</Text>
-          <Flex>
-            <PokemonIcon
-              pokemon_name={opponent_pokemon_select1}
-              boxSize={'50px'}
+          <Tabs position="relative" variant="unstyled">
+            <TabList>
+              <Tab>Selection</Tab>
+              <Tab>In-Battle</Tab>
+            </TabList>
+            <TabIndicator
+              mt="-1.5px"
+              height="2px"
+              bg="blue.500"
+              borderRadius="1px"
             />
-            <PokemonIcon
-              pokemon_name={opponent_pokemon_select2}
-              boxSize={'50px'}
-            />
-            <PokemonIcon
-              pokemon_name={opponent_pokemon_select3}
-              boxSize={'50px'}
-            />
-          </Flex>
-          <Divider margin={'5px'} />
-          <Heading size={'xs'}>📝 Memo</Heading>
-          <Editable defaultValue={memo}>
-            <EditablePreview />
-            <EditableTextarea />
-          </Editable>
+            <TabPanels>
+              <TabPanel>
+              <Heading size={'xs'}>ShowDown</Heading>
+                <Flex>
+                  {your_pokemon_team.split(',').map((pokemon_name) => (
+                    <PokemonIcon
+                      key={pokemon_name}
+                      pokemon_name={pokemon_name}
+                      boxSize={'40px'}
+                    />
+                  ))}
+                </Flex>
+                <Text>VS</Text>
+                <Flex>
+                  {opponent_pokemon_team.split(',').map((pokemon_name) => (
+                    <PokemonIcon
+                      key={pokemon_name}
+                      pokemon_name={pokemon_name}
+                      boxSize={'40px'}
+                    />
+                  ))}
+                </Flex>
+                <Divider margin={'5px'} />
+                <Heading size={'xs'}>Selection</Heading>
+                <Flex>
+                  <PokemonIcon pokemon_name={your_pokemon_select1} boxSize={'50px'} />
+                  <PokemonIcon pokemon_name={your_pokemon_select2} boxSize={'50px'} />
+                  <PokemonIcon pokemon_name={your_pokemon_select3} boxSize={'50px'} />
+                </Flex>
+                <Text>VS</Text>
+                <Flex>
+                  <PokemonIcon
+                    pokemon_name={opponent_pokemon_select1}
+                    boxSize={'50px'}
+                  />
+                  <PokemonIcon
+                    pokemon_name={opponent_pokemon_select2}
+                    boxSize={'50px'}
+                  />
+                  <PokemonIcon
+                    pokemon_name={opponent_pokemon_select3}
+                    boxSize={'50px'}
+                  />
+                </Flex>
+                <Divider margin={'5px'} />
+                <Heading size={'xs'}>📝 Memo</Heading>
+                <Editable defaultValue={memo}>
+                  <EditablePreview />
+                  <EditableTextarea />
+                </Editable>
+              </TabPanel>
+              <TabPanel>
+                {data ? <InBattleTimeline in_battle_log={data}/> : null}
+              </TabPanel>
+            </TabPanels>
+          </Tabs>
         </ModalBody>
       </ModalContent>
     </Modal>

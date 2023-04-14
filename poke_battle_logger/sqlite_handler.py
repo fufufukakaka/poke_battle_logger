@@ -1002,3 +1002,28 @@ class SQLiteHandler:
                 ],
             )
         return list(summary.to_dict(orient="index").values())
+
+    def get_in_battle_log(self, battle_id: str):
+        sql = f"""
+        select
+            turn,
+            frame_number,
+            your_pokemon_name,
+            opponent_pokemon_name
+        from
+            inbattlepokemonlog
+        where
+            battle_id = "{battle_id}"
+        """
+        with self.db:
+            stats = self.db.execute_sql(sql).fetchall()
+            summary = pd.DataFrame(
+                stats,
+                columns=[
+                    "turn",
+                    "frame_number",
+                    "your_pokemon_name",
+                    "opponent_pokemon_name"
+                ],
+            )
+        return list(summary.to_dict(orient="index").values())
