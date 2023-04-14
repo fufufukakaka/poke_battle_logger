@@ -1,7 +1,7 @@
 import logging
 import unicodedata
 from logging import getLogger
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union
 
 import pandas as pd
 from fastapi import FastAPI
@@ -71,6 +71,7 @@ async def get_recent_battle_summary(
     latest_win_pokemon = sqlite_handler.get_latest_win_pokemon(trainer_id)
     latest_lose_pokemon = sqlite_handler.get_latest_lose_pokemon(trainer_id)
     recent_battle_history = sqlite_handler.get_recent_battle_history(trainer_id)
+    battle_counts = sqlite_handler.get_battle_counts(trainer_id)
 
     return {
         "win_rate": win_rate,
@@ -78,6 +79,7 @@ async def get_recent_battle_summary(
         "latest_win_pokemon": latest_win_pokemon,
         "latest_lose_pokemon": latest_lose_pokemon,
         "recent_battle_history": recent_battle_history,
+        "battle_counts": battle_counts,
     }
 
 

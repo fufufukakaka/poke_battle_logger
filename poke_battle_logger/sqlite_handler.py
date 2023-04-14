@@ -963,3 +963,42 @@ class SQLiteHandler:
         """
         with self.db:
             self.db.execute_sql(sql)
+
+    def get_battle_counts(self, trainer_id: str):
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        )
+        select
+            strftime('%Y-%m-%d',created_at) as battle_date, count(1)
+        from
+            battlesummary
+        where
+            battle_id in (
+                select
+                    battle_id from target_trainer_battles)
+        group by battle_date
+        """
+        with self.db:
+            stats = self.db.execute_sql(sql).fetchall()
+            summary = pd.DataFrame(
+                stats,
+                columns=[
+                    "battle_date",
+                    "battle_count",
+                ],
+            )
+        return list(summary.to_dict(orient="index").values())
