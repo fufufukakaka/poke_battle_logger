@@ -134,6 +134,11 @@ async def get_battle_log(
     return battle_log
 
 
+@app.get("/api/v1/in_battle_log")
+async def get_in_battle_log(battle_id: str):
+    return sqlite_handler.get_in_battle_log(battle_id)
+
+
 @app.get("/api/v1/pokemon_image_url")
 async def get_pokemon_image_url(
     pokemon_name: str,
