@@ -1,7 +1,5 @@
 import {
-  Card,
   Heading,
-  CardBody,
   Flex,
   Text,
   Badge,
@@ -30,6 +28,9 @@ import {
   AccordionIcon,
   Box,
 } from '@chakra-ui/react'
+import InBattleTimeline from '../data-display/in-battle-timeline'
+import useSWR from 'swr';
+import axios from 'axios';
 
 interface BattleLogDetailModalProps {
     isOpen: boolean;
@@ -49,6 +50,12 @@ interface BattleLogDetailModalProps {
   memo: string;
   video: string;
 }
+
+const fetcher = async (url: string) => {
+  const results = await axios.get(url);
+  // results.data は BattleLogProps の配列
+  return await results.data;
+};
 
 const BattleLogDetailModal: React.FunctionComponent<
   BattleLogDetailModalProps
@@ -70,6 +77,12 @@ const BattleLogDetailModal: React.FunctionComponent<
   memo,
   video,
 }) => {
+
+  const { data, error, isLoading } = useSWR(
+    `http://127.0.0.1:8000/api/v1/in_battle_log?battle_id=${battle_id}`,
+    fetcher
+  );
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
       <ModalOverlay />
@@ -168,7 +181,7 @@ const BattleLogDetailModal: React.FunctionComponent<
                 </Editable>
               </TabPanel>
               <TabPanel>
-                <p>対戦中の動き</p>
+                {data ? <InBattleTimeline in_battle_log={data}/> : null}
               </TabPanel>
             </TabPanels>
           </Tabs>
