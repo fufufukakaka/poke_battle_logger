@@ -17,6 +17,8 @@ import useSWR from "swr";
 import axios from "axios"
 import { withAuthenticationRequired, useAuth0 } from '@auth0/auth0-react';
 import { useEffect } from "react";
+import CalendarHeatmap from "react-calendar-heatmap";
+import "react-calendar-heatmap/dist/styles.css";
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
@@ -31,6 +33,10 @@ interface DashBoardProps {
     win_or_lose: string;
     your_pokemon_1: string;
   }[];
+  battle_counts: {
+    battle_date: string;
+    battle_count: number;
+  }
 }
 
 export const fetcher = async (url: string) => {
@@ -59,6 +65,17 @@ export const fetcher = async (url: string) => {
         })
       ),
     ],
+    battle_counts: [
+      ...results.data.battle_counts.map(
+        (battle: {
+          battle_date: string;
+          battle_count: number;
+        }) => ({
+          date: battle.battle_date,
+          count: Number(battle.battle_count),
+        })
+      ),
+    ]
   }
   return data;
 }
@@ -67,6 +84,9 @@ const Dashboard: React.FC<DashBoardProps> = ({
 }) => {
   // ここで useEffect して新しいユーザだった場合、User テーブルに書き込む
   // まだ対戦履歴がないユーザだった場合は、「記録してみよう」的な文言を出す
+
+  const oneYearAgo = new Date();
+  oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
   const { isAuthenticated, user } = useAuth0();
   const { data, error, isLoading } = useSWR(
@@ -98,6 +118,30 @@ const Dashboard: React.FC<DashBoardProps> = ({
               latest_win_pokemon={data.latest_win_pokemon}
               win_rate={Number(data.win_rate.toFixed(4))}
             />
+            <Divider />
+            <Heading size="md" padding={'5px'}>活動履歴</Heading>
+            <Box>
+            <CalendarHeatmap
+              startDate={oneYearAgo}
+              endDate={new Date()}
+              values={data.battle_counts}
+              showWeekdayLabels={true}
+              showMonthLabels={true}
+              classForValue={(value) => {
+                if (!value) {
+                  return 'color-empty';
+                } else if (value.count < 2) {
+                  return `color-github-1`;
+                } else if (value.count < 4) {
+                  return `color-github-2`;
+                } else if (value.count < 6) {
+                  return `color-github-3`;
+                } else {
+                  return `color-github-4`;
+                }
+              }}
+            />
+            </Box>
             <Divider />
             <Heading size="md" padding={'5px'}>
               最近の対戦履歴

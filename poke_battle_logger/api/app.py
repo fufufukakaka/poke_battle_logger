@@ -52,11 +52,6 @@ async def get_pokemon_name_to_no(pokemon_name: str) -> int:
     return pokemon_japanese_to_no_dict[pokemon_name]
 
 
-@app.get("/api/v1/battle_counts")
-async def get_battle_counts(trainer_id: str) -> List[Tuple[str, int]]:
-    return sqlite_handler.get_battle_counts(trainer_id)
-
-
 @app.get("/api/v1/recent_battle_summary")
 async def get_recent_battle_summary(
     trainer_id: str,
@@ -76,6 +71,7 @@ async def get_recent_battle_summary(
     latest_win_pokemon = sqlite_handler.get_latest_win_pokemon(trainer_id)
     latest_lose_pokemon = sqlite_handler.get_latest_lose_pokemon(trainer_id)
     recent_battle_history = sqlite_handler.get_recent_battle_history(trainer_id)
+    battle_counts = sqlite_handler.get_battle_counts(trainer_id)
 
     return {
         "win_rate": win_rate,
@@ -83,6 +79,7 @@ async def get_recent_battle_summary(
         "latest_win_pokemon": latest_win_pokemon,
         "latest_lose_pokemon": latest_lose_pokemon,
         "recent_battle_history": recent_battle_history,
+        "battle_counts": battle_counts,
     }
 
 

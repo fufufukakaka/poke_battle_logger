@@ -994,4 +994,11 @@ class SQLiteHandler:
         """
         with self.db:
             stats = self.db.execute_sql(sql).fetchall()
-        return stats
+            summary = pd.DataFrame(
+                stats,
+                columns=[
+                    "battle_date",
+                    "battle_count",
+                ],
+            )
+        return list(summary.to_dict(orient="index").values())
