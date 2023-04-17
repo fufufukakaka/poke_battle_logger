@@ -39,10 +39,27 @@ const fetcher = async (url: string) => {
 const BattleLogs: React.FC = () => {
   const { user } = useAuth0();
   const season = useContext(SeasonContext);
-  const { data, error, isLoading } = useSWR(
+  const { data, error, isLoading, mutate } = useSWR(
     `http://127.0.0.1:8000/api/v1/battle_log?season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
     fetcher
   );
+
+  const saveMemo = async (battle_id: string, memo: string) => {
+    await axios.post(
+      'http://127.0.0.1:8000/api/v1/update_memo',
+      {
+        battle_id: battle_id,
+        memo: memo,
+      }
+    )
+    mutate(data.map((battle: BattleLogProps) => {
+      if (battle.battle_id === battle_id) {
+        return {...battle, memo: memo}
+      }
+      return battle
+    })
+    )
+  };
 
   if (isLoading) return <p>loading...</p>;
   if (error) return <p>error</p>;
@@ -74,6 +91,7 @@ const BattleLogs: React.FC = () => {
                 opponent_pokemon_select3={battle.opponent_pokemon_select3}
                 memo={battle.memo}
                 video={battle.video}
+                saveMemo={saveMemo}
               />
             ))}
           </SimpleGrid>

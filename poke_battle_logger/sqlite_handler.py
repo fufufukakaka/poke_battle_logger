@@ -1027,3 +1027,15 @@ class SQLiteHandler:
                 ],
             )
         return list(summary.to_dict(orient="index").values())
+
+    def update_memo(self, battle_id: str, memo: str):
+        sql = f"""
+        update
+            battlesummary
+        set
+            memo = '{memo}'
+        where
+            battle_id = '{battle_id}'
+        """
+        with self.db:
+            self.db.execute_sql(sql)

@@ -11,23 +11,32 @@ import imgsim
 import numpy as np
 import pytesseract
 
-from config.config import (FAISS_POKEMON_SCORE_THRESHOLD,
-                           FIRST_RANKING_NUMBER_WINDOW, MESSAGE_WINDOW,
-                           OPPONENT_POKEMON_NAME_WINDOW,
-                           OPPONENT_PRE_POKEMON_POSITION,
-                           POKEMON_POSITIONS, POKEMON_SELECT_NUMBER_WINDOW1,
-                           POKEMON_SELECT_NUMBER_WINDOW2,
-                           POKEMON_SELECT_NUMBER_WINDOW3,
-                           POKEMON_SELECT_NUMBER_WINDOW4,
-                           POKEMON_SELECT_NUMBER_WINDOW5,
-                           POKEMON_SELECT_NUMBER_WINDOW6, POKEMON_SELECT_WINDOW_THRESHOLD_VALUE,
-                           POKEMON_TEMPLATE_MATCHING_THRESHOLD,
-                           RANKING_NUMBER_WINDOW, TEMPLATE_MATCHING_THRESHOLD,
-                           WIN_LOST_WINDOW,
-                           WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
-                           YOUR_POKEMON_NAME_WINDOW, YOUR_PRE_POKEMON_POSITION)
+from config.config import (
+    FAISS_POKEMON_SCORE_THRESHOLD,
+    FIRST_RANKING_NUMBER_WINDOW,
+    MESSAGE_WINDOW,
+    OPPONENT_POKEMON_NAME_WINDOW,
+    OPPONENT_PRE_POKEMON_POSITION,
+    POKEMON_POSITIONS,
+    POKEMON_SELECT_NUMBER_WINDOW1,
+    POKEMON_SELECT_NUMBER_WINDOW2,
+    POKEMON_SELECT_NUMBER_WINDOW3,
+    POKEMON_SELECT_NUMBER_WINDOW4,
+    POKEMON_SELECT_NUMBER_WINDOW5,
+    POKEMON_SELECT_NUMBER_WINDOW6,
+    POKEMON_SELECT_WINDOW_THRESHOLD_VALUE,
+    POKEMON_TEMPLATE_MATCHING_THRESHOLD,
+    RANKING_NUMBER_WINDOW,
+    TEMPLATE_MATCHING_THRESHOLD,
+    WIN_LOST_WINDOW,
+    WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
+    YOUR_POKEMON_NAME_WINDOW,
+    YOUR_PRE_POKEMON_POSITION,
+)
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
-    EDIT_DISTANCE_THRESHOLD, PokemonNameWindowExtractor)
+    EDIT_DISTANCE_THRESHOLD,
+    PokemonNameWindowExtractor,
+)
 
 pytesseract.pytesseract.tesseract_cmd = r"/opt/brew/bin/tesseract"
 
@@ -240,11 +249,7 @@ class Extractor:
                     )
                 else:
                     raise ValueError("lang must be en or ja")
-                _recognized_order_str = (
-                    _recognized_order_str.replace(" ", "")
-                    .replace("\n", "")
-                    .replace("|", "")
-                )
+                _recognized_order_str = re.sub(r'[^\w]', '', _recognized_order_str)
 
                 _order_str = self.order_str[i]
                 ed_score = editdistance.eval(_recognized_order_str, _order_str) / (

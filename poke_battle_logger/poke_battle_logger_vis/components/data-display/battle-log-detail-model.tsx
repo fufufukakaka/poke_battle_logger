@@ -31,6 +31,7 @@ import {
 import InBattleTimeline from '../data-display/in-battle-timeline'
 import useSWR from 'swr';
 import axios from 'axios';
+import { useState } from 'react';
 
 interface BattleLogDetailModalProps {
     isOpen: boolean;
@@ -49,6 +50,7 @@ interface BattleLogDetailModalProps {
   opponent_pokemon_select3: string;
   memo: string;
   video: string;
+  saveMemo: (battle_id: string, memo: string) => void;
 }
 
 const fetcher = async (url: string) => {
@@ -76,12 +78,15 @@ const BattleLogDetailModal: React.FunctionComponent<
   opponent_pokemon_select3,
   memo,
   video,
+  saveMemo,
 }) => {
 
   const { data, error, isLoading } = useSWR(
     `http://127.0.0.1:8000/api/v1/in_battle_log?battle_id=${battle_id}`,
     fetcher
-  );
+  )
+
+  const [inputText, setInputText] = useState<string>(memo ? memo : 'input memo here')
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
@@ -175,7 +180,7 @@ const BattleLogDetailModal: React.FunctionComponent<
                 </Flex>
                 <Divider margin={'5px'} />
                 <Heading size={'xs'}>📝 Memo</Heading>
-                <Editable defaultValue={memo}>
+                <Editable defaultValue={memo} onChange={value => (setInputText(value))} value={inputText} onSubmit={value => saveMemo(battle_id, value)}>
                   <EditablePreview />
                   <EditableTextarea />
                 </Editable>

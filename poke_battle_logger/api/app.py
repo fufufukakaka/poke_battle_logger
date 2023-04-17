@@ -180,3 +180,14 @@ async def save_new_trainer(
         logger.info("trainer_id does not exist")
         sqlite_handler.save_new_trainer(user.trainer_id)
         return f"save new user: {user.trainer_id}"
+
+
+class MemoModel(BaseModel):
+    battle_id: str
+    memo: str
+
+
+@app.post("/api/v1/update_memo")
+async def update_memo(request: MemoModel) -> str:
+    sqlite_handler.update_memo(request.battle_id, request.memo)
+    return "update memo"

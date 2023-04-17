@@ -32,6 +32,7 @@ interface BattleLogCardProps {
   opponent_pokemon_select3: string;
   memo: string;
   video: string;
+  saveMemo: (battle_id: string, memo: string) => void;
 }
 
 const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
@@ -48,7 +49,8 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
   opponent_pokemon_select2,
   opponent_pokemon_select3,
   memo,
-  video
+  video,
+  saveMemo
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -71,6 +73,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
       opponent_pokemon_select3={opponent_pokemon_select3}
       memo={memo}
       video={video}
+      saveMemo={saveMemo}
     />
     <Card>
       <CardBody>

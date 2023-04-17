@@ -94,7 +94,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     # 開始時のランクを検出(OCR)
     logger.info("Extracting first ranking...")
     rank_numbers = {}
-    first_ranking_frame_number = compressed_first_ranking_frames[0][-1]
+    first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
     video.set(cv2.CAP_PROP_POS_FRAMES, first_ranking_frame_number - 1)
     _, _first_ranking_frame = video.read()
     rank_numbers[first_ranking_frame_number] = extractor.extract_first_rank_number(
@@ -147,7 +147,7 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     pokemon_select_order = {}
     for i in range(len(compressed_select_done_frames)):
         _select_done_frames = compressed_select_done_frames[i]
-        _select_done_frame_number = _select_done_frames[-1]
+        _select_done_frame_number = _select_done_frames[-5]
 
         video.set(cv2.CAP_PROP_POS_FRAMES, _select_done_frame_number - 1)
         _, _select_done_frame = video.read()
