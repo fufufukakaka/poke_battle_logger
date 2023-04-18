@@ -258,8 +258,7 @@ class Extractor:
                 res = cv2.matchTemplate(window, template, cv2.TM_CCOEFF_NORMED)
                 score = cv2.minMaxLoc(res)[1]
                 if (
-                    score > TEMPLATE_MATCHING_THRESHOLD
-                    and ed_score <= EDIT_DISTANCE_THRESHOLD
+                    ed_score == 0 or (score > TEMPLATE_MATCHING_THRESHOLD and ed_score <= EDIT_DISTANCE_THRESHOLD)
                 ):
                     pokemon_select_order_score.append([k, i, score])
 
