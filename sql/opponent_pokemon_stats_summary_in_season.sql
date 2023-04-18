@@ -2,31 +2,35 @@ with season_start_end as (
     select start_datetime,
         end_datetime
     from season
-    where season = {season}
+    where season = { season }
 ),
 target_battles as (
     select battle_id
     from battlesummary
 ),
 target_battle_summary as (
-select * from battlesummary
-where
-    battle_id in (
-        select
-            battle_id from target_battles)
-    and created_at between(
-        select
-            start_datetime from season_start_end)
-    and(
-        select
-            end_datetime from season_start_end)
+    select *
+    from battlesummary
+    where battle_id in (
+            select battle_id
+            from target_battles
+        )
+        and created_at between(
+            select start_datetime
+            from season_start_end
+        )
+        and(
+            select end_datetime
+            from season_start_end
+        )
 ),
 target_battle_pokemon_team as (
-select * from battlepokemonteam
-where
-    battle_id in (
-        select
-            battle_id from target_battle_summary)
+    select *
+    from battlepokemonteam
+    where battle_id in (
+            select battle_id
+            from target_battle_summary
+        )
 ),
 battle_count as (
     select count(1) as counts
@@ -131,8 +135,8 @@ joins as (
             from battle_count
         ) as battle_count
     from in_team_count
+        left join in_battle_count on in_battle_count.pokemon_name = in_team_count.pokemon_name
         left join in_battle_lose_count on in_battle_lose_count.pokemon_name = in_team_count.pokemon_name
-        left join in_battle_count on in_battle_count.pokemon_name = in_battle_lose_count.pokemon_name
         left join head_battle_count on in_team_count.pokemon_name = head_battle_count.pokemon_name
 )
 select pokemon_name,

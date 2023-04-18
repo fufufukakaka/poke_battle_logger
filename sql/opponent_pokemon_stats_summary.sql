@@ -128,7 +128,7 @@ joins as (
         ) as battle_count
     from in_team_count
         left join in_battle_lose_count on in_battle_lose_count.pokemon_name = in_team_count.pokemon_name
-        left join in_battle_count on in_battle_count.pokemon_name = in_battle_lose_count.pokemon_name
+        left join in_battle_count on in_battle_count.pokemon_name = in_team_count.pokemon_name
         left join head_battle_count on in_team_count.pokemon_name = head_battle_count.pokemon_name
 )
 select pokemon_name,
