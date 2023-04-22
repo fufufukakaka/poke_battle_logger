@@ -11,7 +11,7 @@ interface videoFormat {
 
 const ProcessVideoPage = () => {
   const [progress, setProgress] = useState(0);
-  const [jobStatusList, setJobStatusList] = useState<string[]>(["idle"]);
+  const [jobStatusList, setJobStatusList] = useState<string[]>(["INFO: idle"]);
   const [videoId, setVideoId] = useState("");
   const [videoFormat, setVideoFormat] = useState<videoFormat | undefined>(undefined);
   const [langInVideo, setLangInVideo] = useState('en')
@@ -29,7 +29,7 @@ const ProcessVideoPage = () => {
 
   const handleExtractJob = async () => {
     setShowSpinner(true)
-    const socket = new WebSocket(`ws://127.0.0.1:8000/api/v1/dummy_job?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
+    const socket = new WebSocket(`ws://127.0.0.1:8000/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setProgress(data.progress);
