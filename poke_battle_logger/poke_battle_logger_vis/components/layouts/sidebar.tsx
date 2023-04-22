@@ -18,6 +18,7 @@ import { MdCatchingPokemon } from 'react-icons/md';
 import { MdLogout } from 'react-icons/md';
 import { TbAnalyzeFilled } from 'react-icons/tb';
 import { useAuth0 } from '@auth0/auth0-react';
+import { PlusSquareIcon } from '@chakra-ui/icons';
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
@@ -87,6 +88,14 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
         marginTop="5px"
       >
         対戦ログ一覧
+      </NavItem>
+      <NavItem
+        key={'process_video'}
+        icon={PlusSquareIcon}
+        href={'/process_video'}
+        marginTop="5px"
+      >
+        対戦データの登録
       </NavItem>
       <Flex
         align="center"
