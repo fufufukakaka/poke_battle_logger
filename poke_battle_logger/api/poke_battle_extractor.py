@@ -96,40 +96,40 @@ class PokeBattleExtractor:
         await websocket_for_status.send_json(status_json)
 
         total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
-        with tqdm(total=total_frames) as progress_bar:
-            for i in range(total_frames):
-                ret, frame = video.read()
-                if ret:
-                    # first ranking
-                    if frame_detector.is_first_ranking_frame(frame):
-                        first_ranking_frames.append(i)
+        for i in range(total_frames):
+            ret, frame = video.read()
+            if ret:
+                # first ranking
+                if frame_detector.is_first_ranking_frame(frame):
+                    first_ranking_frames.append(i)
 
-                    # select done
-                    if frame_detector.is_select_done_frame(frame):
-                        select_done_frames.append(i)
+                # select done
+                if frame_detector.is_select_done_frame(frame):
+                    select_done_frames.append(i)
 
-                    # standing_by
-                    if frame_detector.is_standing_by_frame(frame):
-                        standing_by_frames.append(i)
+                # standing_by
+                if frame_detector.is_standing_by_frame(frame):
+                    standing_by_frames.append(i)
 
-                    # level_50
-                    if frame_detector.is_level_50_frame(frame):
-                        level_50_frames.append(i)
+                # level_50
+                if frame_detector.is_level_50_frame(frame):
+                    level_50_frames.append(i)
 
-                    # ranking
-                    if frame_detector.is_ranking_frame(frame):
-                        ranking_frames.append(i)
+                # ranking
+                if frame_detector.is_ranking_frame(frame):
+                    ranking_frames.append(i)
 
-                    # win_or_lost
-                    if frame_detector.is_win_or_lost_frame(frame):
-                        win_or_lost_frames.append(i)
+                # win_or_lost
+                if frame_detector.is_win_or_lost_frame(frame):
+                    win_or_lost_frames.append(i)
 
-                    # message window
-                    if frame_detector.is_message_window_frame(frame):
-                        message_window_frames.append(i)
-                else:
-                    continue
-                status_json["progress"] = progress_bar.n
+                # message window
+                if frame_detector.is_message_window_frame(frame):
+                    message_window_frames.append(i)
+            else:
+                continue
+            if i % 100 == 0:
+                status_json["progress"] = int((i / total_frames) * 100)
                 await websocket_for_status.send_json(status_json)
 
         # compress
