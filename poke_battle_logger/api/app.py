@@ -1,13 +1,17 @@
+import asyncio
 import logging
 import unicodedata
 from logging import getLogger
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Union
 
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rich.logging import RichHandler
+from tqdm.auto import tqdm
+import yt_dlp
+from poke_battle_logger.api.poke_battle_extractor import PokeBattleExtractor
 
 from poke_battle_logger.sqlite_handler import SQLiteHandler
 
@@ -40,6 +44,11 @@ pokemon_japanese_to_no_dict = dict(
 pokemon_japanese_to_english_dict = dict(
     zip(pokemon_name_df["Japanese"], pokemon_name_df["English"])
 )
+
+
+def get_trainer_id_in_DB(trainer_id: str) -> int:
+    trainer_id_in_DB = sqlite_handler.get_trainer_id_in_DB(trainer_id)
+    return trainer_id_in_DB
 
 
 @app.get("/hello")
@@ -191,3 +200,99 @@ class MemoModel(BaseModel):
 async def update_memo(request: MemoModel) -> str:
     sqlite_handler.update_memo(request.battle_id, request.memo)
     return "update memo"
+
+
+@app.get("/api/v1/check_video_format")
+async def check_video_format(
+    video_id: str,
+) -> Dict[str, bool]:
+    """
+    Youtube の動画 ID を受け取って、以下の項目をチェックする
+    - 動画が存在するか
+    - 1080p の動画か
+    - 30fps の動画か
+    """
+    # 動画が存在するか
+    URL = f'https://www.youtube.com/watch?v={video_id}'
+    try:
+        ydl_opts = {}
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(URL, download=False)
+            sanitize_info = ydl.sanitize_info(info)
+            if sanitize_info is None:
+                return {
+                    "isValid": False,
+                    "is1080p": False,
+                    "is30fps": False,
+                }
+            else:
+                # 1080p の動画か
+                is_1080p = False
+                _resolution = sanitize_info["resolution"]
+                if _resolution == "1920x1080":
+                    is_1080p = True
+
+                # 30fps の動画か
+                is_30fps = False
+                _fps = sanitize_info["fps"]
+                if _fps == "30":
+                    is_30fps = True
+                return {
+                    "isValid": True,
+                    "is1080p": is_1080p,
+                    "is30fps": is_30fps,
+                }
+    except BaseException:
+        return {
+            "isValid": False,
+            "is1080p": False,
+            "is30fps": False,
+        }
+
+
+async def send_progress(websocket: WebSocket, total: int):
+    status = {
+        "message": ["INFO: start"],
+        "progress": total,
+    }
+    with tqdm(total=total) as progress_bar:
+        for i in range(total):
+            await asyncio.sleep(0.1)  # 重い処理の代わりに0.1秒待機
+            progress_bar.update(1)
+            status["progress"] = progress_bar.n
+            await websocket.send_json(status)
+
+    await asyncio.sleep(2)
+    status["message"].append("INFO: job1")
+    await websocket.send_json(status)
+
+    await asyncio.sleep(2)
+    status["message"].append("INFO: job2")
+    await websocket.send_json(status)
+
+    await asyncio.sleep(2)
+    status["message"].append("INFO: end")
+    await websocket.send_json(status)
+
+
+@app.websocket("/api/v1/dummy_job")
+async def websocket_endpoint(job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str):
+    trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
+    await job_progress_websocket.accept()
+    total = 100  # 進行状況の合計値
+    await send_progress(job_progress_websocket, total)
+    await job_progress_websocket.close()
+
+
+@app.websocket("/api/v1/extract_stats_from_video")
+async def extract_stats_from_video(job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str):
+    trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
+    poke_battle_extractor = PokeBattleExtractor(
+        video_id=videoId,
+        language=language,
+        trainer_id=trainer_id_in_DB,
+    )
+
+    await job_progress_websocket.accept()
+    await poke_battle_extractor.run(job_progress_websocket)
+    await job_progress_websocket.close()

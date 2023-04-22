@@ -35,6 +35,9 @@ build-pokemon-faiss-index: # build pokemon faiss index
 build-pokemon-multi-name-dict: # build pokemon multi name dict
 	$(PYTHON) poke_battle_logger/batch/build_pokemon_name_dict.py
 
+run_api:
+	poetry run uvicorn poke_battle_logger.api.app:app --reload
+
 ###########################################################################################################
 ## GENERAL TARGETS
 ###########################################################################################################

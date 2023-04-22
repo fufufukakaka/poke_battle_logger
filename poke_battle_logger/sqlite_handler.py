@@ -1039,3 +1039,16 @@ class SQLiteHandler:
         """
         with self.db:
             self.db.execute_sql(sql)
+
+    def get_trainer_id_in_DB(self, trainer_id: str) -> int:
+        sql = f"""
+        select
+            id
+        from
+            trainer
+        where
+            identity = '{trainer_id}'
+        """
+        with self.db:
+            trainer_id_in_DB: int = self.db.execute_sql(sql).fetchone()[0]
+        return trainer_id_in_DB
