@@ -1,20 +1,20 @@
 # PokeBattleLogger
 
-![app](docs/app.png)
+![app1](app1.png "title-1" =50%x) ![app2](app2.png "title-2" =50%x)
+![app3](app3.png "title-3" =50%x) ![app4](app4.png "title-4" =50%x)
 
 ポケモンSV のランクマッチ(マスターボール以上) の youtube 配信から、対戦データを抽出します。
 
 🚧 This app is Under Construction 🚧
 
-現在開発中です。
-
 ## Notification
 
-- 対応環境(2023/03/06 時点)
-  - 言語選択が英語の場合のみに対応しています。
+- 対応環境(2023/04/23 時点)
+  - 言語選択が英語・日本語の場合のみに対応しています。
+    - 日本語の場合、精度が若干下がります
   - 動画のサイズは 1080p: 1920 x 1080 のみに対応しています。
-- 必ず「続ける」or「対戦チームを変える」で順位を表示する必要があります。表示されていない場合、正常に動作しません。
-- また、バトルスタジアムから抜ける場合は動画を切って頂く必要があります。
+- 動画は次のような流れになっている必要があります。
+  - (スタート)バトルスタジアムを選択 → シングル・ダブルを選ぶ画面 → シングルを選択して対戦を開始 → 対戦終了 → 続ける or バトルチームを変更 でランクを表示 → ... → バトルチームを変更 を選んでランクを表示して、10秒ほど待ってから動画を終了
 - 何らかの理由で順位が変動しなかった試合についてはデータ抽出を行いません。
 
 ## Setup
@@ -39,19 +39,16 @@ poetry install
 
 tessdata は best を使います。
 
-## Batch
-
-Tesseract を用いるので、環境変数を設定する必要があります。Makefile に設定されているので、自分の環境に合わせて調整してください。
+## アプリケーションの起動
 
 ```
-make extract-data VIDEO_ID={your_pokemon_sv_rank_match_stream_id}
+make run_api
+make run-dashboard
 ```
-
-抽出したデータは sqlite に保存されます。
 
 ### For Unknown Pokemon Image
 
-`make extract-data` を実行した際、次のようなエラーが出ることがあります。
+UI から「対戦データの登録」で対戦データを登録しようとした際に、次のようなエラーが出ることがあります。
 
 ```
 Exception: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.
@@ -61,16 +58,4 @@ Exception: Unknown pokemon exists. Stop processing. Please annotate unknown poke
 これを各ポケモンごとに最低1枚、{正しいポケモン名}.png に画像ファイル名を変更して、`template_images/labeled_pokemon_templates` に移動させてください。
 同じ名前のファイルが既にある場合は、{正しいポケモン名}_{任意の番号}.png という名前にして被らないようにしてから移動させてください。
 
-その後、 `make build-pokemon-faiss-index` を実行することで、次回のバッチからは反映されるようになります。再度 `make extract-data` を実行してください。
-
-## Visualize App
-
-```
-make run-dashboard
-```
-
-### API
-
-```
-poetry run uvicorn poke_battle_logger.api.app:app
-```
+その後、 `make train-pokemon-image-classifier` を実行することで、次回のデータ登録からは反映されるようになります
