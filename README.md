@@ -1,7 +1,13 @@
 # PokeBattleLogger
 
-![app1](app1.png "title-1" =50%x) ![app2](app2.png "title-2" =50%x)
-![app3](app3.png "title-3" =50%x) ![app4](app4.png "title-4" =50%x)
+<div style="display:flex;">
+    <img src="docs/app1.png" style="flex:1;margin-right:10px;" width=45% height=45%>
+    <img src="docs/app2.png" style="flex:1;margin-left:10px;" width=45% height=45%>
+</div>
+<div style="display:flex;">
+    <img src="docs/app3.png" style="flex:1;margin-right:10px;" width=45% height=45%>
+    <img src="docs/app4.png" style="flex:1;margin-left:10px;" width=45% height=45%>
+</div>
 
 ポケモンSV のランクマッチ(マスターボール以上) の youtube 配信から、対戦データを抽出します。
 
