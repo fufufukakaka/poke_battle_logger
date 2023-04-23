@@ -1,23 +1,15 @@
 import glob
 import re
-import time
-from typing import List, Tuple
+from typing import List
 
-import cloudpickle
 import cv2
 import editdistance
-import faiss
-import imgsim
-import numpy as np
 import pytesseract
 
 from config.config import (
-    FAISS_POKEMON_SCORE_THRESHOLD,
     FIRST_RANKING_NUMBER_WINDOW,
     MESSAGE_WINDOW,
     OPPONENT_POKEMON_NAME_WINDOW,
-    OPPONENT_PRE_POKEMON_POSITION,
-    POKEMON_POSITIONS,
     POKEMON_SELECT_NUMBER_WINDOW1,
     POKEMON_SELECT_NUMBER_WINDOW2,
     POKEMON_SELECT_NUMBER_WINDOW3,
@@ -25,13 +17,11 @@ from config.config import (
     POKEMON_SELECT_NUMBER_WINDOW5,
     POKEMON_SELECT_NUMBER_WINDOW6,
     POKEMON_SELECT_WINDOW_THRESHOLD_VALUE,
-    POKEMON_TEMPLATE_MATCHING_THRESHOLD,
     RANKING_NUMBER_WINDOW,
     TEMPLATE_MATCHING_THRESHOLD,
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     YOUR_POKEMON_NAME_WINDOW,
-    YOUR_PRE_POKEMON_POSITION,
 )
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
     EDIT_DISTANCE_THRESHOLD,
@@ -50,7 +40,6 @@ class Extractor:
 
     def __init__(self, lang: str = "en") -> None:
         self.lang = lang
-        self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
         (
             self.win_window_template,
@@ -62,35 +51,6 @@ class Extractor:
             self.third_template,
         ) = self._setup_pokemon_select_window_templates()
         self.message_window_templates = self._setup_message_window_templates()
-        self.setup_trained_pokemon_faiss_index()
-
-    def _setup_pre_battle_pokemon_templates(self):
-        pre_battle_pokemon_template_paths = glob.glob(
-            "template_images/labeled_pokemon_templates/*.png"
-        )
-        pre_battle_pokemon_templates = {}
-        for path in pre_battle_pokemon_template_paths:
-            _gray_image = cv2.imread(path, 0)
-            pre_battle_pokemon_templates[
-                path.split("/")[-1].split(".")[0]
-            ] = _gray_image
-        return pre_battle_pokemon_templates
-
-    def setup_trained_pokemon_faiss_index(self) -> None:
-        """
-        model/pokemon_image_faiss/pokemon_faiss_index が事前に学習した faiss_index となっている。
-        これを読み込む。
-
-        また、model/pokemon_image_faiss/pokemon_faiss_index_vector_index が事前に学習した index のキーとなっている。
-        これを読み込み、ポケモン名を返せるようにする
-        """
-        self.faiss_index = faiss.read_index(
-            "model/pokemon_image_faiss/pokemon_faiss_index"
-        )
-        self.vector_index = cloudpickle.load(
-            open("model/pokemon_image_faiss/pokemon_faiss_index_vector_index", "rb")
-        )
-        self.vtr = imgsim.Vectorizer()
 
     def _setup_pokemon_select_window_templates(self):
         if self.lang == "en":
@@ -155,53 +115,17 @@ class Extractor:
             message_window_templates[path.split("/")[-1].split(".")[0]] = thresh
         return message_window_templates
 
-    def _search_pokemon_by_template_matching(self, pokemon_image) -> Tuple[str, bool]:
-        """
-        テンプレートマッチングでポケモンを検出する
-        ベクトル検索でポケモンを検出する
-        """
-        score_results = {}
-        gray_pokemon_image = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2GRAY)
+    def _get_pokemon_name_window(self, frame):
+        your_pokemon_name_window = frame[
+            YOUR_POKEMON_NAME_WINDOW[0] : YOUR_POKEMON_NAME_WINDOW[1],
+            YOUR_POKEMON_NAME_WINDOW[2] : YOUR_POKEMON_NAME_WINDOW[3],
+        ]
+        opponent_pokemon_name_window = frame[
+            OPPONENT_POKEMON_NAME_WINDOW[0] : OPPONENT_POKEMON_NAME_WINDOW[1],
+            OPPONENT_POKEMON_NAME_WINDOW[2] : OPPONENT_POKEMON_NAME_WINDOW[3],
+        ]
 
-        for pokemon_name, template in self.pre_battle_pokemon_templates.items():
-            res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
-            score = cv2.minMaxLoc(res)[1]
-            if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
-                score_results[pokemon_name] = score
-        if len(score_results) == 0:
-            # save image for annotation(name is timestamp)
-            cv2.imwrite(
-                "template_images/unknown_pokemon_templates/"
-                + str(time.time())
-                + ".png",
-                pokemon_image,
-            )
-            return "unknown_pokemon", True
-        return max(score_results, key=score_results.get), False
-
-    def _search_pokemon_by_faiss(self, pokemon_image: np.ndarray) -> Tuple[str, bool]:
-        """
-        ベクトル検索でポケモンを検出する
-        """
-
-        results = []
-
-        gray = cv2.cvtColor(pokemon_image, cv2.COLOR_RGB2GRAY)
-        img2 = np.zeros_like(pokemon_image)
-        img2[:,:,0] = gray
-        img2[:,:,1] = gray
-        img2[:,:,2] = gray
-        vec = self.vtr.vectorize(img2)
-        vec = np.reshape(vec, (1, vec.shape[0]))
-        scores, indexes = self.faiss_index.search(vec, 10)
-        for score, idx in zip(scores[0], indexes[0]):
-            if score < FAISS_POKEMON_SCORE_THRESHOLD:
-                results.append(self.vector_index[idx].split("_")[0])
-        if len(results) > 0:
-            return results[0], False
-        else:
-            # テンプレートマッチングで検出する
-            return self._search_pokemon_by_template_matching(pokemon_image)
+        return your_pokemon_name_window, opponent_pokemon_name_window
 
     def _search_pokemon_select_window_by_template_matching(
         self,
@@ -299,123 +223,6 @@ class Extractor:
             return "lose"
         else:
             return "unknown"
-
-    def _get_pokemons(self, frame):
-        """
-        6vs6 の見せあい
-        """
-
-        opponent_pokemon_1 = frame[
-            POKEMON_POSITIONS[0][0] : POKEMON_POSITIONS[0][1],
-            OPPONENT_PRE_POKEMON_POSITION[0] : OPPONENT_PRE_POKEMON_POSITION[1],
-        ]
-        opponent_pokemon_2 = frame[
-            POKEMON_POSITIONS[1][0] : POKEMON_POSITIONS[1][1],
-            OPPONENT_PRE_POKEMON_POSITION[0] : OPPONENT_PRE_POKEMON_POSITION[1],
-        ]
-        opponent_pokemon_3 = frame[
-            POKEMON_POSITIONS[2][0] : POKEMON_POSITIONS[2][1],
-            OPPONENT_PRE_POKEMON_POSITION[0] : OPPONENT_PRE_POKEMON_POSITION[1],
-        ]
-        opponent_pokemon_4 = frame[
-            POKEMON_POSITIONS[3][0] : POKEMON_POSITIONS[3][1],
-            OPPONENT_PRE_POKEMON_POSITION[0] : OPPONENT_PRE_POKEMON_POSITION[1],
-        ]
-        opponent_pokemon_5 = frame[
-            POKEMON_POSITIONS[4][0] : POKEMON_POSITIONS[4][1],
-            OPPONENT_PRE_POKEMON_POSITION[0] : OPPONENT_PRE_POKEMON_POSITION[1],
-        ]
-        opponent_pokemon_6 = frame[
-            POKEMON_POSITIONS[5][0] : POKEMON_POSITIONS[5][1],
-            OPPONENT_PRE_POKEMON_POSITION[0] : OPPONENT_PRE_POKEMON_POSITION[1],
-        ]
-        opponent_pokemons = [
-            opponent_pokemon_1,
-            opponent_pokemon_2,
-            opponent_pokemon_3,
-            opponent_pokemon_4,
-            opponent_pokemon_5,
-            opponent_pokemon_6,
-        ]
-
-        your_pokemon_1 = frame[
-            POKEMON_POSITIONS[0][0] : POKEMON_POSITIONS[0][1],
-            YOUR_PRE_POKEMON_POSITION[0] : YOUR_PRE_POKEMON_POSITION[1],
-        ]
-        your_pokemon_2 = frame[
-            POKEMON_POSITIONS[1][0] : POKEMON_POSITIONS[1][1],
-            YOUR_PRE_POKEMON_POSITION[0] : YOUR_PRE_POKEMON_POSITION[1],
-        ]
-        your_pokemon_3 = frame[
-            POKEMON_POSITIONS[2][0] : POKEMON_POSITIONS[2][1],
-            YOUR_PRE_POKEMON_POSITION[0] : YOUR_PRE_POKEMON_POSITION[1],
-        ]
-        your_pokemon_4 = frame[
-            POKEMON_POSITIONS[3][0] : POKEMON_POSITIONS[3][1],
-            YOUR_PRE_POKEMON_POSITION[0] : YOUR_PRE_POKEMON_POSITION[1],
-        ]
-        your_pokemon_5 = frame[
-            POKEMON_POSITIONS[4][0] : POKEMON_POSITIONS[4][1],
-            YOUR_PRE_POKEMON_POSITION[0] : YOUR_PRE_POKEMON_POSITION[1],
-        ]
-        your_pokemon_6 = frame[
-            POKEMON_POSITIONS[5][0] : POKEMON_POSITIONS[5][1],
-            YOUR_PRE_POKEMON_POSITION[0] : YOUR_PRE_POKEMON_POSITION[1],
-        ]
-        your_pokemons = [
-            your_pokemon_1,
-            your_pokemon_2,
-            your_pokemon_3,
-            your_pokemon_4,
-            your_pokemon_5,
-            your_pokemon_6,
-        ]
-
-        return your_pokemons, opponent_pokemons
-
-    # ポケモンの名前を切り取る
-    def _get_pokemon_name_window(self, frame):
-        your_pokemon_name_window = frame[
-            YOUR_POKEMON_NAME_WINDOW[0] : YOUR_POKEMON_NAME_WINDOW[1],
-            YOUR_POKEMON_NAME_WINDOW[2] : YOUR_POKEMON_NAME_WINDOW[3],
-        ]
-        opponent_pokemon_name_window = frame[
-            OPPONENT_POKEMON_NAME_WINDOW[0] : OPPONENT_POKEMON_NAME_WINDOW[1],
-            OPPONENT_POKEMON_NAME_WINDOW[2] : OPPONENT_POKEMON_NAME_WINDOW[3],
-        ]
-
-        return your_pokemon_name_window, opponent_pokemon_name_window
-
-    def extract_pre_battle_pokemons(self, frame):
-        """
-        対戦前のポケモンをパターンマッチングで抽出する
-        """
-        is_exist_unknown_pokemon = False
-        your_pokemons, opponent_pokemons = self._get_pokemons(frame)
-
-        is_exist_unknown_pokemon_list = []
-        # search by template matching
-        your_pokemon_names = []
-        for pokemon_image in your_pokemons:
-            pokemon_name, _is_exist_unknown_pokemon = self._search_pokemon_by_faiss(
-                pokemon_image
-            )
-            is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
-            your_pokemon_names.append(pokemon_name)
-
-        opponent_pokemon_names = []
-        for pokemon_image in opponent_pokemons:
-            pokemon_name, _is_exist_unknown_pokemon = self._search_pokemon_by_faiss(
-                pokemon_image
-            )
-            is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
-            opponent_pokemon_names.append(pokemon_name)
-
-        # True を一つでも含んでいたら
-        if is_exist_unknown_pokemon_list.count(True) > 0:
-            is_exist_unknown_pokemon = True
-
-        return your_pokemon_names, opponent_pokemon_names, is_exist_unknown_pokemon
 
     def extract_pokemon_select_numbers(self, frame):
         """
