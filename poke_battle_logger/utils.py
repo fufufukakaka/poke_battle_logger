@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from pytube import YouTube
 from pytube.exceptions import RegexMatchError

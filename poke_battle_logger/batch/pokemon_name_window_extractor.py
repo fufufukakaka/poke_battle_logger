@@ -2,7 +2,6 @@ import collections
 import glob
 import re
 import time
-import unicodedata
 from typing import List, Optional, Tuple
 
 import cv2

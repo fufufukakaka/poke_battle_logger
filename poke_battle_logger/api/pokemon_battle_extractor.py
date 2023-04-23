@@ -19,7 +19,7 @@ from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.database.database_handler import SQLiteHandler
 
 
-class PokeBattleExtractor:
+class PokemonBattleExtractor:
     """
     API でポケモンの対戦動画から情報を抽出するクラス
     """

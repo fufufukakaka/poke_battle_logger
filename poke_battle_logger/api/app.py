@@ -12,7 +12,7 @@ from pydantic import BaseModel
 from rich.logging import RichHandler
 from tqdm.auto import tqdm
 
-from poke_battle_logger.api.poke_battle_extractor import PokeBattleExtractor
+from poke_battle_logger.api.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import SQLiteHandler
 
 logging.basicConfig(
@@ -279,7 +279,6 @@ async def send_progress(websocket: WebSocket, total: int):
 async def websocket_endpoint(
     job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
 ):
-    trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
     await job_progress_websocket.accept()
     total = 100  # 進行状況の合計値
     await send_progress(job_progress_websocket, total)
@@ -291,7 +290,7 @@ async def extract_stats_from_video(
     job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
 ):
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
-    poke_battle_extractor = PokeBattleExtractor(
+    poke_battle_extractor = PokemonBattleExtractor(
         video_id=videoId,
         language=language,
         trainer_id=trainer_id_in_DB,
