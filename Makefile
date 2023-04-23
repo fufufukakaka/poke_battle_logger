@@ -9,7 +9,7 @@ export DOCKER=docker
 export PRINT_HELP_PYSCRIPT
 export PYTHON=poetry run python
 export PYTHONPATH=$PYTHONPATH:$(pwd)
-export IMAGE_NAME=$(PROJECT_NAME)-image
+export SERVER_IMAGE_NAME=$(PROJECT_NAME)-image-server
 export CONTAINER_NAME=$(PROJECT_NAME)-container
 export SERVER_DOCKERFILE=docker/server/Dockerfile
 export JUPYTER_HOST_PORT=8080
@@ -55,16 +55,16 @@ lint: ## check style with pysen
 	poetry run pysen run lint
 
 test-in-docker: ## run test cases in tests directory in docker
-	$(DOCKER) run --rm $(IMAGE_NAME) make test
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make test
 
 lint-in-docker: ## check style with flake8 in docker
-	$(DOCKER) run --rm $(IMAGE_NAME) make lint
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make lint
 
 jupyter: ## start Jupyter Notebook server
 	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
 
 init-docker-server: ## initialize docker image
-	$(DOCKER) build -t $(IMAGE_NAME) -f $(SERVER_DOCKERFILE) .
+	$(DOCKER) build -t $(SERVER_IMAGE_NAME) -f $(SERVER_DOCKERFILE) .
 
 create-container-no-mount: ## create docker container for development
 	$(DOCKER) run --rm -it -p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
