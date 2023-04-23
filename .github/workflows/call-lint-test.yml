@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  lint_and_test:
+  lint_and_test_python:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@master
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
       - name: build test
-        run: make init-docker
+        run: make init-docker-server
       - name: lint-in-docker
         run: make lint-in-docker
       - name: test-in-docker

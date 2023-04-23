@@ -11,7 +11,7 @@ export PYTHON=poetry run python
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 export IMAGE_NAME=$(PROJECT_NAME)-image
 export CONTAINER_NAME=$(PROJECT_NAME)-container
-export DOCKERFILE=docker/Dockerfile
+export SERVER_DOCKERFILE=docker/server/Dockerfile
 export JUPYTER_HOST_PORT=8080
 export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
@@ -63,8 +63,8 @@ lint-in-docker: ## check style with flake8 in docker
 jupyter: ## start Jupyter Notebook server
 	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
 
-init-docker: ## initialize docker image
-	$(DOCKER) build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
+init-docker-server: ## initialize docker image
+	$(DOCKER) build -t $(IMAGE_NAME) -f $(SERVER_DOCKERFILE) .
 
 create-container-no-mount: ## create docker container for development
 	$(DOCKER) run --rm -it -p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
@@ -73,9 +73,3 @@ create-container-no-mount: ## create docker container for development
 create-container-mount: ## create docker container for development
 	$(DOCKER) run --rm -it -v $(PWD):/work -p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
     --name $(CONTAINER_NAME) --memory=64g --cpus="16" $(IMAGE_NAME) /bin/bash
-
-clean-model:
-	rm -rf model/*.json model/*.pth
-
-cloud-build:
-	gcloud builds submit --config=cloudbuild.yaml --substitutions=_TAG=$(IMAGE_TAG)
