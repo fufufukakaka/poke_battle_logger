@@ -8,6 +8,8 @@ import {
   Th,
   Td,
   chakra,
+  Input,
+  VStack,
 } from '@chakra-ui/react';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import {
@@ -30,9 +32,26 @@ export function DataTable<Data extends object>({
   columns,
 }: DataTableProps<Data>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [searchText, setSearchText] = React.useState('');
+
+  const filteredData = React.useMemo(() => {
+    const filterData = (data: Data[], searchText: string): Data[] => {
+      if (!searchText) return data;
+
+      return data.filter((row) => {
+        if (row.hasOwnProperty('pokemon_name')) {
+          const pokemonName = row['pokemon_name'] as unknown as string;
+          return pokemonName.toLowerCase().startsWith(searchText.toLowerCase());
+        }
+        return false;
+      });
+    }
+    return filterData(data, searchText);
+  }, [data, searchText]);
+
   const table = useReactTable({
     columns,
-    data,
+    data: filteredData,
     getCoreRowModel: getCoreRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
@@ -42,7 +61,13 @@ export function DataTable<Data extends object>({
   });
 
   return (
-    <Table>
+    <VStack>
+      <Input
+        placeholder="ポケモン名を入力して検索"
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+      <Table>
       <Thead>
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
@@ -107,5 +132,6 @@ export function DataTable<Data extends object>({
         ))}
       </Tbody>
     </Table>
+    </VStack>
   );
 }
