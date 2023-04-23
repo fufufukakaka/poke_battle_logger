@@ -2,7 +2,7 @@ import glob
 import os
 import time
 from dataclasses import dataclass
-from typing import List, Tuple, cast
+from typing import Dict, List, Tuple, cast
 
 import cv2
 import numpy as np
@@ -45,7 +45,7 @@ class PokemonExtractor:
             use_auth_token=os.getenv("HF_ACCESS_TOKEN"),
         )
 
-    def _setup_pre_battle_pokemon_templates(self):
+    def _setup_pre_battle_pokemon_templates(self) -> Dict[str, np.ndarray]:
         pre_battle_pokemon_template_paths = glob.glob(
             "template_images/labeled_pokemon_templates/*.png"
         )
@@ -57,7 +57,9 @@ class PokemonExtractor:
             ] = _gray_image
         return pre_battle_pokemon_templates
 
-    def _search_pokemon_by_template_matching(self, pokemon_image) -> Tuple[str, bool]:
+    def _search_pokemon_by_template_matching(
+        self, pokemon_image: np.ndarray
+    ) -> Tuple[str, bool]:
         """
         テンプレートマッチングでポケモンを検出する
         ベクトル検索でポケモンを検出する
@@ -79,7 +81,7 @@ class PokemonExtractor:
                 pokemon_image,
             )
             return "unknown_pokemon", True
-        return max(score_results, key=score_results.get), False
+        return max(score_results, key=score_results.get), False  # type: ignore
 
     def _search_pokemon_by_transformers(
         self, pokemon_image: np.ndarray
@@ -93,9 +95,10 @@ class PokemonExtractor:
         results = cast(
             List[PokemonClassifierResult], self.classifier_pipe(pokemon_image3)
         )
+        _top_result = results[0]
 
-        if results[0]["score"] > 0.2:
-            return results[0]["label"], False
+        if _top_result.score > 0.2:
+            return _top_result.label, False
         else:
             # テンプレートマッチングで検出する
             cv2.imwrite(
@@ -106,7 +109,9 @@ class PokemonExtractor:
             )
             return self._search_pokemon_by_template_matching(pokemon_image)
 
-    def _get_pokemons(self, frame):
+    def _get_pokemons(
+        self, frame: np.ndarray
+    ) -> Tuple[List[np.ndarray], List[np.ndarray]]:
         """
         6vs6 の見せあい
         """
@@ -179,16 +184,18 @@ class PokemonExtractor:
 
         return your_pokemons, opponent_pokemons
 
-    def extract_pre_battle_pokemons(self, frame):
+    def extract_pre_battle_pokemons(
+        self, frame: np.ndarray
+    ) -> Tuple[List[str], List[str], bool]:
         """
         対戦前のポケモンを抽出する
         """
         is_exist_unknown_pokemon = False
         your_pokemons, opponent_pokemons = self._get_pokemons(frame)
 
-        is_exist_unknown_pokemon_list = []
+        is_exist_unknown_pokemon_list: List[bool] = []
         # search by template matching
-        your_pokemon_names = []
+        your_pokemon_names: List[str] = []
         for pokemon_image in your_pokemons:
             (
                 pokemon_name,
@@ -197,7 +204,7 @@ class PokemonExtractor:
             is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
             your_pokemon_names.append(pokemon_name)
 
-        opponent_pokemon_names = []
+        opponent_pokemon_names: List[str] = []
         for pokemon_image in opponent_pokemons:
             (
                 pokemon_name,

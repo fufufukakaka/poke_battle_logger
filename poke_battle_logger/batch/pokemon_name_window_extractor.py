@@ -2,7 +2,7 @@ import collections
 import glob
 import re
 import time
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, cast
 
 import cv2
 import editdistance
@@ -69,7 +69,7 @@ class PokemonNameWindowExtractor:
         self.zh_HK_list = multi_lang_names["zh_HK"].values.tolist()
         self.zh_list = multi_lang_names["zh"].values.tolist()
 
-    def _setup_battle_pokemon_name_window_templates(self):
+    def _setup_battle_pokemon_name_window_templates(self) -> Dict[str, np.ndarray]:
         battle_pokemon_name_window_template_paths = glob.glob(
             "template_images/labeled_pokemon_name_window_templates/*.png"
         )
@@ -102,7 +102,7 @@ class PokemonNameWindowExtractor:
                 pokemon_name_window_image,
             )
             return "unknown_pokemon", True
-        return max(score_results, key=score_results.get), False
+        return max(score_results, key=score_results.get), False  # type: ignore
 
     def _search_name_by_edit_distance(
         self, name_list: List[str], target: str
@@ -117,7 +117,7 @@ class PokemonNameWindowExtractor:
                 scores[self.ja_list[idx]] = _score
         if len(scores) == 0:
             return None
-        min_score_name = min(scores, key=scores.get)
+        min_score_name = cast(str, min(scores, key=scores.get))  # type: ignore
         return min_score_name
 
     def _normalize_japanese_ocr_name(self, text: str) -> str:

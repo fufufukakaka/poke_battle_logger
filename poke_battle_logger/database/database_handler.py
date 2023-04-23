@@ -1,7 +1,7 @@
 import os
 import random
 import unicodedata
-from typing import Dict, List, Union
+from typing import Dict, List, Tuple, Union, cast
 
 import pandas as pd
 from peewee import (
@@ -11,6 +11,14 @@ from peewee import (
     PostgresqlDatabase,
     SqliteDatabase,
     TextField,
+)
+
+from poke_battle_logger.types import Battle as BattleType
+from poke_battle_logger.types import (
+    BattleLog,
+    InBattlePokemon,
+    Message,
+    PreBattlePokemon,
 )
 
 
@@ -37,17 +45,17 @@ pokemon_japanese_to_no_dict = dict(
 )
 
 
-class BaseModel(Model):
+class BaseModel(Model):  # type: ignore
     class Meta:
         database = build_db_connection()
 
 
-class Battle(BaseModel):
+class Battle(BaseModel):  # type: ignore
     battle_id = TextField(unique=True)
     trainer_id = IntegerField()
 
 
-class BattleSummary(BaseModel):
+class BattleSummary(BaseModel):  # type: ignore
     battle_id = ForeignKeyField(Battle, backref="battleSummarys")
     created_at = TextField()
     win_or_lose = TextField()
@@ -64,7 +72,7 @@ class BattleSummary(BaseModel):
     memo = TextField()
 
 
-class InBattlePokemonLog(BaseModel):
+class InBattlePokemonLog(BaseModel):  # type: ignore
     battle_id = ForeignKeyField(Battle, backref="battlePokemonTeams")
     turn = IntegerField()
     frame_number = IntegerField()
@@ -72,33 +80,33 @@ class InBattlePokemonLog(BaseModel):
     opponent_pokemon_name = TextField()
 
 
-class MessageLog(BaseModel):
+class MessageLog(BaseModel):  # type: ignore
     battle_id = ForeignKeyField(Battle, backref="battleMessages")
     frame_number = IntegerField()
     message = TextField()
 
 
-class BattlePokemonTeam(BaseModel):
+class BattlePokemonTeam(BaseModel):  # type: ignore
     battle_id = ForeignKeyField(Battle, backref="inBattlePokemonLogs")
     team = TextField()
     pokemon_name = TextField()
 
 
-class Season(BaseModel):
+class Season(BaseModel):  # type: ignore
     season = IntegerField()
     start_datetime = TextField()
     end_datetime = TextField()
 
 
-class Trainer(BaseModel):
+class Trainer(BaseModel):  # type: ignore
     identity = TextField()
 
 
-class SQLiteHandler:
-    def __init__(self):
+class DatabaseHandler:
+    def __init__(self) -> None:
         self.db = build_db_connection()
 
-    def create_tables(self):
+    def create_tables(self) -> None:
         with self.db:
             if not Battle.table_exists():
                 self.db.create_tables([Battle])
@@ -126,82 +134,84 @@ class SQLiteHandler:
                         end_datetime="2023-04-01 09:00:00",
                     )
 
-    def insert_battle_id(self, battles):
+    def insert_battle_id(self, battles: List[BattleType]) -> None:
         with self.db:
             for _battle in battles:
-                Battle.create(
-                    battle_id=_battle["battle_id"], trainer_id=_battle["trainer_id"]
-                )
+                _battle_id = _battle.battle_id
+                _trainer_id = _battle.trainer_id
+                Battle.create(battle_id=_battle_id, trainer_id=_trainer_id)
 
-    def insert_battle_summary(self, battle_summary):
+    def insert_battle_summary(self, battle_summary: List[BattleLog]) -> None:
         with self.db:
             for _battle_summary in battle_summary:
                 BattleSummary.create(
-                    battle_id=_battle_summary["battle_id"],
-                    created_at=_battle_summary["created_at"],
-                    win_or_lose=_battle_summary["win_or_lose"],
-                    next_rank=_battle_summary["next_rank"],
-                    your_team=unicodedata.normalize(
-                        "NFC", _battle_summary["your_team"]
-                    ),
+                    battle_id=_battle_summary.battle_id,
+                    created_at=_battle_summary.created_at,
+                    win_or_lose=_battle_summary.win_or_lose,
+                    next_rank=_battle_summary.next_rank,
+                    your_team=unicodedata.normalize("NFC", _battle_summary.your_team),
                     opponent_team=unicodedata.normalize(
-                        "NFC", _battle_summary["opponent_team"]
+                        "NFC", _battle_summary.opponent_team
                     ),
                     your_pokemon_1=unicodedata.normalize(
-                        "NFC", _battle_summary["your_pokemon_1"]
+                        "NFC", _battle_summary.your_pokemon_1
                     ),
                     your_pokemon_2=unicodedata.normalize(
-                        "NFC", _battle_summary["your_pokemon_2"]
+                        "NFC", _battle_summary.your_pokemon_2
                     ),
                     your_pokemon_3=unicodedata.normalize(
-                        "NFC", _battle_summary["your_pokemon_3"]
+                        "NFC", _battle_summary.your_pokemon_3
                     ),
                     opponent_pokemon_1=unicodedata.normalize(
-                        "NFC", _battle_summary["opponent_pokemon_1"]
+                        "NFC", _battle_summary.opponent_pokemon_1
                     ),
                     opponent_pokemon_2=unicodedata.normalize(
-                        "NFC", _battle_summary["opponent_pokemon_2"]
+                        "NFC", _battle_summary.opponent_pokemon_2
                     ),
                     opponent_pokemon_3=unicodedata.normalize(
-                        "NFC", _battle_summary["opponent_pokemon_3"]
+                        "NFC", _battle_summary.opponent_pokemon_3
                     ),
-                    video=_battle_summary["video"],
+                    video=_battle_summary.video,
                     memo="",
                 )
 
-    def insert_battle_pokemon_team(self, battle_pokemon_team):
+    def insert_battle_pokemon_team(
+        self, battle_pokemon_team: List[PreBattlePokemon]
+    ) -> None:
         with self.db:
             for _battle_pokemon_team in battle_pokemon_team:
                 BattlePokemonTeam.create(
-                    battle_id=_battle_pokemon_team["battle_id"],
-                    team=_battle_pokemon_team["team"],
+                    battle_id=_battle_pokemon_team.battle_id,
+                    team=_battle_pokemon_team.team,
                     pokemon_name=unicodedata.normalize(
-                        "NFC", _battle_pokemon_team["pokemon_name"]
+                        "NFC", _battle_pokemon_team.pokemon_name
                     ),
                 )
 
-    def insert_in_battle_pokemon_log(self, in_battle_pokemon_log):
+    def insert_in_battle_pokemon_log(
+        self, in_battle_pokemon_log: List[InBattlePokemon]
+    ) -> None:
         with self.db:
             for _in_battle_pokemon_log in in_battle_pokemon_log:
                 InBattlePokemonLog.create(
-                    battle_id=_in_battle_pokemon_log["battle_id"],
-                    turn=_in_battle_pokemon_log["turn"],
-                    frame_number=_in_battle_pokemon_log["frame_number"],
+                    battle_id=_in_battle_pokemon_log.battle_id,
+                    turn=_in_battle_pokemon_log.turn,
+                    frame_number=_in_battle_pokemon_log.frame_number,
                     your_pokemon_name=unicodedata.normalize(
-                        "NFC", _in_battle_pokemon_log["your_pokemon_name"]
+                        "NFC", _in_battle_pokemon_log.your_pokemon_name
                     ),
                     opponent_pokemon_name=unicodedata.normalize(
-                        "NFC", _in_battle_pokemon_log["opponent_pokemon_name"]
+                        "NFC", _in_battle_pokemon_log.opponent_pokemon_name
                     ),
                 )
 
-    def insert_message_log(self, message_log):
+    def insert_message_log(self, message_log: List[Message]) -> None:
         with self.db:
             for _message_log in message_log:
                 MessageLog.create(
-                    battle_id=_message_log["battle_id"],
-                    frame_number=_message_log["frame_number"],
-                    message=_message_log["message"],
+                    battle_id=_message_log.battle_id,
+                    frame_number=_message_log.frame_number,
+                    message=_message_log.message,
                 )
 
     def get_latest_season_win_rate(self, trainer_id: str) -> float:
@@ -255,7 +265,7 @@ class SQLiteHandler:
             created_at
         """
         with self.db:
-            win_rate = self.db.execute_sql(sql).fetchone()[0]
+            win_rate = cast(float, self.db.execute_sql(sql).fetchone()[0])
         return win_rate
 
     def get_latest_season_rank(self, trainer_id: str) -> int:
@@ -304,7 +314,7 @@ class SQLiteHandler:
         limit 1
         """
         with self.db:
-            latest_season_rank = self.db.execute_sql(sql).fetchone()[0]
+            latest_season_rank = cast(int, self.db.execute_sql(sql).fetchone()[0])
         return latest_season_rank
 
     def get_latest_win_pokemon(self, trainer_id: str) -> str:
@@ -341,7 +351,7 @@ class SQLiteHandler:
         with self.db:
             latest_win_pokemons = self.db.execute_sql(sql).fetchone()
             # ランダムに1匹選ぶ
-            latest_win_pokemon = random.choice(latest_win_pokemons)
+            latest_win_pokemon = cast(str, random.choice(latest_win_pokemons))
         return latest_win_pokemon
 
     def get_latest_lose_pokemon(self, trainer_id: str) -> str:
@@ -378,8 +388,11 @@ class SQLiteHandler:
         with self.db:
             latest_lose_pokemons = self.db.execute_sql(sql).fetchone()
             # Unseen を除いてランダムに1匹選ぶ
-            latest_lose_pokemon = random.choice(
-                [pokemon for pokemon in latest_lose_pokemons if pokemon != "Unseen"]
+            latest_lose_pokemon = cast(
+                str,
+                random.choice(
+                    [pokemon for pokemon in latest_lose_pokemons if pokemon != "Unseen"]
+                ),
             )
         return latest_lose_pokemon
 
@@ -456,9 +469,11 @@ class SQLiteHandler:
                     created_at asc
         """
         with self.db:
-            win_rate_transitions = self.db.execute_sql(sql).fetchall()
+            _win_rate_transitions = cast(
+                List[Tuple[float]], self.db.execute_sql(sql).fetchall()
+            )
         win_rate_transitions = [
-            win_rate_transition[0] for win_rate_transition in win_rate_transitions
+            win_rate_transition[0] for win_rate_transition in _win_rate_transitions
         ]
         return win_rate_transitions
 
@@ -512,9 +527,11 @@ class SQLiteHandler:
                     created_at asc
         """
         with self.db:
-            win_rate_transitions = self.db.execute_sql(sql).fetchall()
-        win_rate_transitions = [
-            win_rate_transition[0] for win_rate_transition in win_rate_transitions
+            _win_rate_transitions: List[Tuple[float]] = self.db.execute_sql(
+                sql
+            ).fetchall()
+        win_rate_transitions: List[float] = [
+            win_rate_transition[0] for win_rate_transition in _win_rate_transitions
         ]
         return win_rate_transitions
 
@@ -569,9 +586,11 @@ class SQLiteHandler:
             created_at
         """
         with self.db:
-            next_rank_transitions = self.db.execute_sql(sql).fetchall()
+            _next_rank_transitions = cast(
+                List[Tuple[int]], self.db.execute_sql(sql).fetchall()
+            )
         next_rank_transitions = [
-            next_rank_transition[0] for next_rank_transition in next_rank_transitions
+            next_rank_transition[0] for next_rank_transition in _next_rank_transitions
         ]
         return next_rank_transitions
 
@@ -608,9 +627,11 @@ class SQLiteHandler:
             created_at
         """
         with self.db:
-            next_rank_transitions = self.db.execute_sql(sql).fetchall()
-        next_rank_transitions = [
-            next_rank_transition[0] for next_rank_transition in next_rank_transitions
+            _next_rank_transitions: List[Tuple[int]] = self.db.execute_sql(
+                sql
+            ).fetchall()
+        next_rank_transitions: List[int] = [
+            next_rank_transition[0] for next_rank_transition in _next_rank_transitions
         ]
         return next_rank_transitions
 
@@ -655,8 +676,8 @@ class SQLiteHandler:
         limit 5
         """
         with self.db:
-            recent_battle_history = self.db.execute_sql(sql).fetchall()
-            recent_battle_history_dict = [
+            _recent_battle_history = self.db.execute_sql(sql).fetchall()
+            recent_battle_history_dict: List[Dict[str, Union[str, int]]] = [
                 {
                     "battle_id": battle_id,
                     "created_at": created_at,
@@ -665,7 +686,7 @@ class SQLiteHandler:
                     "your_pokemon_1": your_pokemon_1,
                     "opponent_pokemon_1": opponent_pokemon_1,
                 }
-                for battle_id, created_at, win_or_lose, next_rank, your_pokemon_1, opponent_pokemon_1 in recent_battle_history
+                for battle_id, created_at, win_or_lose, next_rank, your_pokemon_1, opponent_pokemon_1 in _recent_battle_history
             ]
         return recent_battle_history_dict
 
@@ -785,7 +806,7 @@ class SQLiteHandler:
             )
         return list(summary.to_dict(orient="index").values())
 
-    def get_battle_log_all(self, trainer_id: str):
+    def get_battle_log_all(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         with target_trainer as (
             select
@@ -832,7 +853,7 @@ class SQLiteHandler:
         """
         with self.db:
             battle_logs = self.db.execute_sql(sql).fetchall()
-            battle_logs_dict = [
+            battle_logs_dict: List[Dict[str, Union[str, int]]] = [
                 {
                     "battle_id": battle_id,
                     "battle_created_at": created_at,
@@ -868,7 +889,9 @@ class SQLiteHandler:
             ]
         return battle_logs_dict
 
-    def get_battle_log_season(self, trainer_id: str, season: int):
+    def get_battle_log_season(
+        self, trainer_id: str, season: int
+    ) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         with target_trainer as (
             select
@@ -930,7 +953,7 @@ class SQLiteHandler:
         """
         with self.db:
             battle_logs = self.db.execute_sql(sql).fetchall()
-            battle_logs_dict = [
+            battle_logs_dict: List[Dict[str, Union[str, int]]] = [
                 {
                     "battle_id": battle_id,
                     "battle_created_at": created_at,
@@ -977,7 +1000,8 @@ class SQLiteHandler:
         """
         with self.db:
             count = self.db.execute_sql(sql).fetchone()[0]
-        return count > 0
+        _result = cast(bool, count > 0)
+        return _result
 
     def save_new_trainer(self, trainer_id: str) -> None:
         sql = f"""
@@ -989,7 +1013,7 @@ class SQLiteHandler:
         with self.db:
             self.db.execute_sql(sql)
 
-    def get_battle_counts(self, trainer_id: str):
+    def get_battle_counts(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         with target_trainer as (
             select
@@ -1026,9 +1050,13 @@ class SQLiteHandler:
                     "battle_count",
                 ],
             )
-        return list(summary.to_dict(orient="index").values())
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
 
-    def get_in_battle_log(self, battle_id: str):
+    def get_in_battle_log(self, battle_id: str) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         select
             turn,
@@ -1051,9 +1079,13 @@ class SQLiteHandler:
                     "opponent_pokemon_name",
                 ],
             )
-        return list(summary.to_dict(orient="index").values())
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
 
-    def update_memo(self, battle_id: str, memo: str):
+    def update_memo(self, battle_id: str, memo: str) -> None:
         sql = f"""
         update
             battlesummary

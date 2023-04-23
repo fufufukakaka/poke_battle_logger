@@ -1,11 +1,15 @@
+from typing import List
+
 FRAME_SEQUENCE_THRESHOLD = 100
 
 
 def frame_compress(
-    target_frames, frame_threshold=FRAME_SEQUENCE_THRESHOLD, ignore_short_frames=False
-):
+    target_frames: List[int],
+    frame_threshold: int = FRAME_SEQUENCE_THRESHOLD,
+    ignore_short_frames: bool = False,
+) -> List[List[int]]:
     # フレームを連続区間で分割する
-    compressed_frame_results = []
+    compressed_frame_results: List[List[int]] = []
     temp = []
     for i in range(len(target_frames)):
         temp.append(target_frames[i])
@@ -25,7 +29,9 @@ def frame_compress(
     return compressed_frame_results
 
 
-def message_frame_compress(target_frames, frame_threshold=3):
+def message_frame_compress(
+    target_frames: List[int], frame_threshold: int = 3
+) -> List[List[int]]:
     # フレームを連続区間で分割する
     message_frame_results = []
     temp2 = []

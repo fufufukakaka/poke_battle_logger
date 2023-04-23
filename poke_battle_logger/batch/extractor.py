@@ -1,9 +1,9 @@
-import glob
 import re
-from typing import List
+from typing import List, Optional, Tuple, cast
 
 import cv2
 import editdistance
+import numpy as np
 import pytesseract
 
 from config.config import (
@@ -50,9 +50,10 @@ class Extractor:
             self.second_template,
             self.third_template,
         ) = self._setup_pokemon_select_window_templates()
-        self.message_window_templates = self._setup_message_window_templates()
 
-    def _setup_pokemon_select_window_templates(self):
+    def _setup_pokemon_select_window_templates(
+        self,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
         if self.lang == "en":
             first_template = cv2.imread(
                 "template_images/general_templates/first.png", 0
@@ -80,7 +81,7 @@ class Extractor:
 
         return first_template, second_template, third_template
 
-    def _setup_win_lost_window_templates(self):
+    def _setup_win_lost_window_templates(self) -> Tuple[np.ndarray, np.ndarray]:
         if self.lang == "en":
             win_window_template = cv2.imread(
                 "template_images/general_templates/win.png", 0
@@ -100,22 +101,9 @@ class Extractor:
 
         return win_window_template, lost_window_template
 
-    def _setup_message_window_templates(self):
-        message_window_template_paths = glob.glob(
-            "template_images/message_templates/*.png"
-        )
-        message_window_templates = {}
-        for path in message_window_template_paths:
-            _image = cv2.imread(path, 0)
-            threshold_value = 200
-            max_value = 255
-            _, thresh = cv2.threshold(
-                _image, threshold_value, max_value, cv2.THRESH_BINARY
-            )
-            message_window_templates[path.split("/")[-1].split(".")[0]] = thresh
-        return message_window_templates
-
-    def _get_pokemon_name_window(self, frame):
+    def _get_pokemon_name_window(
+        self, frame: np.ndarray
+    ) -> Tuple[np.ndarray, np.ndarray]:
         your_pokemon_name_window = frame[
             YOUR_POKEMON_NAME_WINDOW[0] : YOUR_POKEMON_NAME_WINDOW[1],
             YOUR_POKEMON_NAME_WINDOW[2] : YOUR_POKEMON_NAME_WINDOW[3],
@@ -129,12 +117,12 @@ class Extractor:
 
     def _search_pokemon_select_window_by_template_matching(
         self,
-        select1_window,
-        select2_window,
-        select3_window,
-        select4_window,
-        select5_window,
-        select6_window,
+        select1_window: np.ndarray,
+        select2_window: np.ndarray,
+        select3_window: np.ndarray,
+        select4_window: np.ndarray,
+        select5_window: np.ndarray,
+        select6_window: np.ndarray,
     ) -> List[int]:
         """
         テンプレートマッチングで、ポケモンの選出順を検出する
@@ -192,12 +180,12 @@ class Extractor:
             pokemon_select_order.append(
                 max(
                     [score for score in pokemon_select_order_score if score[1] == i],
-                    key=lambda x: x[2],
+                    key=lambda x: x[2],  # type: ignore
                 )[0]
             )
         return pokemon_select_order
 
-    def _search_win_or_lost_by_template_matching(self, frame) -> str:
+    def _search_win_or_lost_by_template_matching(self, frame: np.ndarray) -> str:
         """
         テンプレートマッチングで勝敗を検出する
         """
@@ -225,7 +213,7 @@ class Extractor:
         else:
             return "unknown"
 
-    def extract_pokemon_select_numbers(self, frame):
+    def extract_pokemon_select_numbers(self, frame: np.ndarray) -> List[int]:
         """
         ポケモンの選択順をパターンマッチングで抽出する
         順番を返す e.g. -> [5,6,4]
@@ -286,7 +274,9 @@ class Extractor:
 
         return pokemon_select_number
 
-    def extract_pokemon_name_in_battle(self, frame):
+    def extract_pokemon_name_in_battle(
+        self, frame: np.ndarray
+    ) -> Tuple[str, str, bool]:
         """
         対戦中のポケモン名をパターンマッチングで抽出する
 
@@ -316,7 +306,7 @@ class Extractor:
 
         return your_pokemon_name, opponent_pokemon_name, is_exist_unknown_pokemon
 
-    def extract_win_or_lost(self, frame):
+    def extract_win_or_lost(self, frame: np.ndarray) -> str:
         """
         勝敗をパターンマッチングで抽出する
         """
@@ -324,7 +314,7 @@ class Extractor:
         result = self._search_win_or_lost_by_template_matching(frame)
         return result
 
-    def _detect_rank_number(self, image):
+    def _detect_rank_number(self, image: np.ndarray) -> int:
         """Detects text in the file."""
         if self.lang == "en":
             _lang = "eng"
@@ -332,20 +322,24 @@ class Extractor:
             _lang = "jpn"
         else:
             raise ValueError("lang must be en or ja")
-        text = pytesseract.image_to_string(image, lang=_lang, config="--psm 6")
+        text = cast(
+            str, pytesseract.image_to_string(image, lang=_lang, config="--psm 6")
+        )
 
         # 数字部分だけを取り出す
         _rank_text = text.split("No. ")[-1]
         _rank = int(re.sub(r"\D", "", _rank_text))
         return _rank
 
-    def _recognize_message(self, image):
+    def _recognize_message(self, image: np.ndarray) -> str:
         """Detects text in the file."""
-        text = pytesseract.image_to_string(image, lang="eng+jpn", config="--psm 6")
+        text = cast(
+            str, pytesseract.image_to_string(image, lang="eng+jpn", config="--psm 6")
+        )
 
         return text.replace("\n", "")
 
-    def extract_first_rank_number(self, frame):
+    def extract_first_rank_number(self, frame: np.ndarray) -> int:
         """
         (開始時の)ランクをOCRで抽出する
         """
@@ -361,7 +355,7 @@ class Extractor:
         rank_number = self._detect_rank_number(thresh)
         return rank_number
 
-    def extract_rank_number(self, frame):
+    def extract_rank_number(self, frame: np.ndarray) -> int:
         """
         ランクをOCRで抽出する
         """
@@ -377,7 +371,7 @@ class Extractor:
         rank_number = self._detect_rank_number(thresh)
         return rank_number
 
-    def extract_message(self, frame):
+    def extract_message(self, frame: np.ndarray) -> Optional[str]:
         """
         メッセージをOCRで認識する
         """
