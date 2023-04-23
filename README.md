@@ -45,6 +45,11 @@ poetry install
 
 tessdata は best を使います。
 
+### credentials
+
+`poke_battle_logger/poke_battle_logger_vis/.env.local` に以下を配置
+NEXT_PUBLIC_AUTH0_DOMAIN, NEXT_PUBLIC_AUTH0_CLIENT_ID
+
 ## アプリケーションの起動
 
 ```
