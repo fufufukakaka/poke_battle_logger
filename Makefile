@@ -48,14 +48,20 @@ run_api:
 test:
 	TESSDATA_PREFIX=$(TESSDATA_PREFIX) poetry run pytest -vvv
 
-jupyter: ## start Jupyter Notebook server
-	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
+format: ## format style with pysen
+	poetry run pysen run format
 
 lint: ## check style with pysen
 	poetry run pysen run lint
 
-format: ## format style with pysen
-	poetry run pysen run format
+test-in-docker: ## run test cases in tests directory in docker
+	$(DOCKER) run --rm $(IMAGE_NAME) make test
+
+lint-in-docker: ## check style with flake8 in docker
+	$(DOCKER) run --rm $(IMAGE_NAME) make lint
+
+jupyter: ## start Jupyter Notebook server
+	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
 
 init-docker: ## initialize docker image
 	$(DOCKER) build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
