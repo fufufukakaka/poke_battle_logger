@@ -2,7 +2,7 @@ import glob
 import os
 import time
 from dataclasses import dataclass
-from typing import Dict, List, Tuple, cast
+from typing import Dict, List, Tuple, Union, cast
 
 import cv2
 import numpy as np
@@ -93,12 +93,13 @@ class PokemonExtractor:
         pokemon_image2 = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2RGB)
         pokemon_image3 = Image.fromarray(pokemon_image2)
         results = cast(
-            List[PokemonClassifierResult], self.classifier_pipe(pokemon_image3)
+            List[Dict[str, Union[str, float]]], self.classifier_pipe(pokemon_image3)
         )
         _top_result = results[0]
-
-        if _top_result.score > 0.2:
-            return _top_result.label, False
+        _score = cast(float, _top_result["score"])
+        _label = cast(str, _top_result["label"])
+        if _score > 0.2:
+            return _label, False
         else:
             # テンプレートマッチングで検出する
             cv2.imwrite(
