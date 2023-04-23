@@ -36,7 +36,7 @@ build-pokemon-multi-name-dict: # build pokemon multi name dict
 	$(PYTHON) poke_battle_logger/batch/build_pokemon_name_dict.py
 
 run_dashboard:
-	cd poke_battle_logger/poke_battle_logger_vis && yarn run dev
+	cd poke_battle_logger_vis && yarn run dev
 
 run_api:
 	TESSDATA_PREFIX=$(TESSDATA_PREFIX) poetry run uvicorn poke_battle_logger.api.app:app --reload
