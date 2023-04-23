@@ -1,7 +1,9 @@
 FRAME_SEQUENCE_THRESHOLD = 100
 
 
-def frame_compress(target_frames, frame_threshold=FRAME_SEQUENCE_THRESHOLD, ignore_short_frames=False):
+def frame_compress(
+    target_frames, frame_threshold=FRAME_SEQUENCE_THRESHOLD, ignore_short_frames=False
+):
     # フレームを連続区間で分割する
     compressed_frame_results = []
     temp = []

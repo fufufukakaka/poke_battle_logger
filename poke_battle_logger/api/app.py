@@ -5,14 +5,14 @@ from logging import getLogger
 from typing import Dict, List, Union
 
 import pandas as pd
+import yt_dlp
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rich.logging import RichHandler
 from tqdm.auto import tqdm
-import yt_dlp
-from poke_battle_logger.api.poke_battle_extractor import PokeBattleExtractor
 
+from poke_battle_logger.api.poke_battle_extractor import PokeBattleExtractor
 from poke_battle_logger.database.database_handler import SQLiteHandler
 
 logging.basicConfig(
@@ -213,7 +213,7 @@ async def check_video_format(
     - 30fps の動画か
     """
     # 動画が存在するか
-    URL = f'https://www.youtube.com/watch?v={video_id}'
+    URL = f"https://www.youtube.com/watch?v={video_id}"
     try:
         ydl_opts = {}
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -276,7 +276,9 @@ async def send_progress(websocket: WebSocket, total: int):
 
 
 @app.websocket("/api/v1/dummy_job")
-async def websocket_endpoint(job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str):
+async def websocket_endpoint(
+    job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
+):
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
     await job_progress_websocket.accept()
     total = 100  # 進行状況の合計値
@@ -285,7 +287,9 @@ async def websocket_endpoint(job_progress_websocket: WebSocket, videoId: str, la
 
 
 @app.websocket("/api/v1/extract_stats_from_video")
-async def extract_stats_from_video(job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str):
+async def extract_stats_from_video(
+    job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
+):
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
     poke_battle_extractor = PokeBattleExtractor(
         video_id=videoId,

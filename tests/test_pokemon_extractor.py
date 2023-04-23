@@ -1,4 +1,5 @@
 import cv2
+
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 
 pokemon_extractor = PokemonExtractor()

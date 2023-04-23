@@ -8,12 +8,12 @@ from tqdm.auto import tqdm
 
 from poke_battle_logger.batch.data_builder import DataBuilder
 from poke_battle_logger.batch.extractor import Extractor
-from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.batch.frame_compressor import (
     frame_compress,
     message_frame_compress,
 )
 from poke_battle_logger.batch.frame_detector import FrameDetector
+from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.database.database_handler import SQLiteHandler
 
 logging.basicConfig(
@@ -83,7 +83,9 @@ def main(video_id: str, lang: str, trainer_id: str) -> None:
     logger.info("Compressing frame array...")
     compressed_first_ranking_frames = frame_compress(first_ranking_frames)
     compressed_select_done_frames = frame_compress(select_done_frames)
-    compressed_standing_by_frames = frame_compress(standing_by_frames, ignore_short_frames=True)
+    compressed_standing_by_frames = frame_compress(
+        standing_by_frames, ignore_short_frames=True
+    )
     compressed_level_50_frames = frame_compress(level_50_frames)
     compressed_ranking_frames = frame_compress(ranking_frames)
     compressed_win_or_lost_frames = frame_compress(win_or_lost_frames)

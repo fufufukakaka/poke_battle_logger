@@ -51,5 +51,6 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip && \
     python3 -m pip install --no-cache-dir poetry awscli
 RUN poetry config installer.parallel false
 RUN poetry install
+RUN poetry run pip install setuptools
 
 CMD ["/bin/bash"]

@@ -1,12 +1,13 @@
 import asyncio
+import concurrent.futures
 import re
-from collections import Counter
 import threading
+from collections import Counter
 
 import cv2
 import yt_dlp
 from fastapi import WebSocket
-import concurrent.futures
+
 from poke_battle_logger.batch.data_builder import DataBuilder
 from poke_battle_logger.batch.extractor import Extractor
 from poke_battle_logger.batch.frame_compressor import (
@@ -28,7 +29,9 @@ class PokeBattleExtractor:
         self.language = language
         self.trainer_id = trainer_id
 
-    def _download_video(self, status_json, websocket_for_status, download_complete_event):
+    def _download_video(
+        self, status_json, websocket_for_status, download_complete_event
+    ):
         def extract_percentage(percentage_str):
             ansi_escape = re.compile(r"\x1b[^m]*m")
             cleaned_str = ansi_escape.sub("", percentage_str)
@@ -54,7 +57,9 @@ class PokeBattleExtractor:
         yt_dlp_opts = {
             "format": "bestvideo[height<=1080][fps<=30][ext=mp4]",
             "outtmpl": f"video/{self.video_id}.mp4",
-            "progress_hooks": [lambda status: _progress_hook(status_json, status, websocket_for_status)],
+            "progress_hooks": [
+                lambda status: _progress_hook(status_json, status, websocket_for_status)
+            ],
             "quiet": True,
         }
 
@@ -71,7 +76,12 @@ class PokeBattleExtractor:
         download_complete_event = threading.Event()
 
         with concurrent.futures.ThreadPoolExecutor() as executor:
-            await asyncio.get_event_loop().run_in_executor(executor, lambda: self._download_video(status_json, websocket_for_status, download_complete_event))
+            await asyncio.get_event_loop().run_in_executor(
+                executor,
+                lambda: self._download_video(
+                    status_json, websocket_for_status, download_complete_event
+                ),
+            )
         download_complete_event.wait()
 
         status_json["message"].append("INFO: Read Video...")
@@ -137,7 +147,9 @@ class PokeBattleExtractor:
 
         compressed_first_ranking_frames = frame_compress(first_ranking_frames)
         compressed_select_done_frames = frame_compress(select_done_frames)
-        compressed_standing_by_frames = frame_compress(standing_by_frames, ignore_short_frames=True)
+        compressed_standing_by_frames = frame_compress(
+            standing_by_frames, ignore_short_frames=True
+        )
         compressed_level_50_frames = frame_compress(level_50_frames)
         compressed_ranking_frames = frame_compress(ranking_frames)
         compressed_win_or_lost_frames = frame_compress(win_or_lost_frames)
@@ -168,7 +180,9 @@ class PokeBattleExtractor:
             )
 
         # 順位が変動しなかった場合、その値を rank_numbers から削除する
-        status_json["message"].append("INFO: Removing unchanged ranking from rank_numbers...")
+        status_json["message"].append(
+            "INFO: Removing unchanged ranking from rank_numbers..."
+        )
         await websocket_for_status.send_json(status_json)
         rank_frames = list(rank_numbers.keys())
         for i in range(len(rank_numbers) - 1):
@@ -182,7 +196,9 @@ class PokeBattleExtractor:
                 del rank_numbers[_ranking_frame_number]
 
         # 対戦の始点と終点を定義する
-        status_json["message"].append("INFO: Defining battle start and end frame numbers...")
+        status_json["message"].append(
+            "INFO: Defining battle start and end frame numbers..."
+        )
         await websocket_for_status.send_json(status_json)
         battle_start_end_frame_numbers = []
         rank_frames = list(rank_numbers.keys())
@@ -198,7 +214,9 @@ class PokeBattleExtractor:
                 _ranking_frame = rank_frames[i + 1]
 
             if _standing_by_frame < _ranking_frame:
-                battle_start_end_frame_numbers.append([_standing_by_frame, _ranking_frame])
+                battle_start_end_frame_numbers.append(
+                    [_standing_by_frame, _ranking_frame]
+                )
 
         # ポケモンの選出順を抽出する
         status_json["message"].append("INFO: Extracting pokemon select order...")
@@ -267,7 +285,9 @@ class PokeBattleExtractor:
             is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
-            status_json["message"].append("ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.")
+            status_json["message"].append(
+                "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons."
+            )
             await websocket_for_status.send_json(status_json)
             return
 
@@ -283,10 +303,14 @@ class PokeBattleExtractor:
                     _win_or_lost_frame_number = win_or_lost_frame_numbers[-1] - idx
                     video.set(cv2.CAP_PROP_POS_FRAMES, _win_or_lost_frame_number - 1)
                     _, _win_or_lost_frame = video.read()
-                    _win_or_lost_result = extractor.extract_win_or_lost(_win_or_lost_frame)
+                    _win_or_lost_result = extractor.extract_win_or_lost(
+                        _win_or_lost_frame
+                    )
                     _win_or_lost_results.append(_win_or_lost_result)
 
-                _win_or_lost_results = [v for v in _win_or_lost_results if v != "unknown"]
+                _win_or_lost_results = [
+                    v for v in _win_or_lost_results if v != "unknown"
+                ]
                 win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
                 if len(_win_or_lost_results) == 0:
                     win_or_lost[win_or_lost_frame_number] = "unknown"

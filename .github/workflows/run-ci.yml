@@ -1,0 +1,9 @@
+name: Run Test CI
+on:
+  pull_request:
+
+jobs:
+  lint-and-test:
+    uses: ./.github/workflows/call-lint-test.yml
+    with:
+      ref: "refs/pull/${{ github.event.pull_request.number }}/head"

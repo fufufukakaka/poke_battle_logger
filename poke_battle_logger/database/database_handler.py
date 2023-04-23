@@ -1048,7 +1048,7 @@ class SQLiteHandler:
                     "turn",
                     "frame_number",
                     "your_pokemon_name",
-                    "opponent_pokemon_name"
+                    "opponent_pokemon_name",
                 ],
             )
         return list(summary.to_dict(orient="index").values())

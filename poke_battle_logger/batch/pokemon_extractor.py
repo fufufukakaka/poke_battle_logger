@@ -10,11 +10,15 @@ from dotenv import load_dotenv
 from PIL import Image
 from transformers import pipeline
 
-from config.config import (OPPONENT_PRE_POKEMON_POSITION, POKEMON_POSITIONS,
-                           POKEMON_TEMPLATE_MATCHING_THRESHOLD,
-                           YOUR_PRE_POKEMON_POSITION)
-from poke_battle_logger.batch.pokemon_name_window_extractor import \
-    PokemonNameWindowExtractor
+from config.config import (
+    OPPONENT_PRE_POKEMON_POSITION,
+    POKEMON_POSITIONS,
+    POKEMON_TEMPLATE_MATCHING_THRESHOLD,
+    YOUR_PRE_POKEMON_POSITION,
+)
+from poke_battle_logger.batch.pokemon_name_window_extractor import (
+    PokemonNameWindowExtractor,
+)
 
 load_dotenv()
 
@@ -35,7 +39,11 @@ class PokemonExtractor:
     def __init__(self) -> None:
         self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
-        self.classifier_pipe = pipeline(task="image-classification", model=MODEL_NAME, use_auth_token=os.getenv('HF_ACCESS_TOKEN'))
+        self.classifier_pipe = pipeline(
+            task="image-classification",
+            model=MODEL_NAME,
+            use_auth_token=os.getenv("HF_ACCESS_TOKEN"),
+        )
 
     def _setup_pre_battle_pokemon_templates(self):
         pre_battle_pokemon_template_paths = glob.glob(
@@ -82,7 +90,9 @@ class PokemonExtractor:
 
         pokemon_image2 = cv2.cvtColor(pokemon_image, cv2.COLOR_BGR2RGB)
         pokemon_image3 = Image.fromarray(pokemon_image2)
-        results = cast(List[PokemonClassifierResult], self.classifier_pipe(pokemon_image3))
+        results = cast(
+            List[PokemonClassifierResult], self.classifier_pipe(pokemon_image3)
+        )
 
         if results[0]["score"] > 0.2:
             return results[0]["label"], False
