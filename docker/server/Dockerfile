@@ -39,7 +39,6 @@ ENV LANG=C.UTF-8
 WORKDIR /work
 
 COPY poke_battle_logger ./poke_battle_logger
-COPY scripts ./scripts
 COPY tests ./tests
 COPY sql ./sql
 COPY config ./config
