@@ -26,6 +26,7 @@ datasets = "^2.11.0"
 huggingface-hub = "^0.13.4"
 websockets = "^11.0.2"
 psycopg2-binary = "^2.9.6"
+torch = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 pysen = "^0.10.3"

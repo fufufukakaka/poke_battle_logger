@@ -45,6 +45,9 @@ run_api:
 ## GENERAL TARGETS
 ###########################################################################################################
 
+test:
+	TESSDATA_PREFIX=$(TESSDATA_PREFIX) poetry run pytest -vvv
+
 jupyter: ## start Jupyter Notebook server
 	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
 
