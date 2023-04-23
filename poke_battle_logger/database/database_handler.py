@@ -1,11 +1,36 @@
+import os
 import random
 import unicodedata
 from typing import Dict, List, Union
 
 import pandas as pd
-from peewee import ForeignKeyField, IntegerField, Model, SqliteDatabase, TextField
+from peewee import (
+    ForeignKeyField,
+    IntegerField,
+    Model,
+    PostgresqlDatabase,
+    SqliteDatabase,
+    TextField,
+)
 
-db = SqliteDatabase("poke_battle_logger.db")
+
+def build_db_connection() -> Union[SqliteDatabase, PostgresqlDatabase]:
+    env = os.environ.get("ENV", "local")
+    if env == "local":
+        db = SqliteDatabase("poke_battle_logger.db")
+    elif env == "production":
+        db = PostgresqlDatabase(
+            os.environ.get("POSTGRES_DB", "postgres"),
+            user=os.environ.get("POSTGRES_USER", "postgres"),
+            password=os.environ.get("POSTGRES_PASSWORD", "postgres"),
+            host=os.environ.get("POSTGRES_HOST", "localhost"),
+            port=os.environ.get("POSTGRES_PORT", 5432),
+        )
+    else:
+        raise ValueError("ENV must be local or production")
+    return db
+
+
 pokemon_name_df = pd.read_csv("data/pokemon_names.csv")
 pokemon_japanese_to_no_dict = dict(
     zip(pokemon_name_df["Japanese"], pokemon_name_df["No."])
@@ -14,7 +39,7 @@ pokemon_japanese_to_no_dict = dict(
 
 class BaseModel(Model):
     class Meta:
-        database = db
+        database = build_db_connection()
 
 
 class Battle(BaseModel):
@@ -71,7 +96,7 @@ class Trainer(BaseModel):
 
 class SQLiteHandler:
     def __init__(self):
-        self.db = SqliteDatabase("poke_battle_logger.db")
+        self.db = build_db_connection()
 
     def create_tables(self):
         with self.db:

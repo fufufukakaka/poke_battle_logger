@@ -15,7 +15,7 @@ export DOCKERFILE=docker/Dockerfile
 export JUPYTER_HOST_PORT=8080
 export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
-export ENV=staging
+export ENV=local
 export TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 
 ###########################################################################################################
@@ -35,8 +35,11 @@ build-pokemon-faiss-index: # build pokemon faiss index
 build-pokemon-multi-name-dict: # build pokemon multi name dict
 	$(PYTHON) poke_battle_logger/batch/build_pokemon_name_dict.py
 
+run_dashboard:
+	cd poke_battle_logger/poke_battle_logger_vis && yarn run dev
+
 run_api:
-	poetry run uvicorn poke_battle_logger.api.app:app --reload
+	TESSDATA_PREFIX=$(TESSDATA_PREFIX) poetry run uvicorn poke_battle_logger.api.app:app --reload
 
 ###########################################################################################################
 ## GENERAL TARGETS

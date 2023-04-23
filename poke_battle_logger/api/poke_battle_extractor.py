@@ -6,7 +6,6 @@ import threading
 import cv2
 import yt_dlp
 from fastapi import WebSocket
-from tqdm.auto import tqdm
 import concurrent.futures
 from poke_battle_logger.batch.data_builder import DataBuilder
 from poke_battle_logger.batch.extractor import Extractor
@@ -16,7 +15,7 @@ from poke_battle_logger.batch.frame_compressor import (
 )
 from poke_battle_logger.batch.frame_detector import FrameDetector
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
-from poke_battle_logger.sqlite_handler import SQLiteHandler
+from poke_battle_logger.database.database_handler import SQLiteHandler
 
 
 class PokeBattleExtractor:

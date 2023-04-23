@@ -14,7 +14,7 @@ from poke_battle_logger.batch.frame_compressor import (
     message_frame_compress,
 )
 from poke_battle_logger.batch.frame_detector import FrameDetector
-from poke_battle_logger.sqlite_handler import SQLiteHandler
+from poke_battle_logger.database.database_handler import SQLiteHandler
 
 logging.basicConfig(
     level=logging.INFO,

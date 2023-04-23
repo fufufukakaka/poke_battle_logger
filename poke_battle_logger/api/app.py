@@ -13,7 +13,7 @@ from tqdm.auto import tqdm
 import yt_dlp
 from poke_battle_logger.api.poke_battle_extractor import PokeBattleExtractor
 
-from poke_battle_logger.sqlite_handler import SQLiteHandler
+from poke_battle_logger.database.database_handler import SQLiteHandler
 
 logging.basicConfig(
     level=logging.INFO,

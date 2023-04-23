@@ -32,6 +32,7 @@ scikit-learn = "^1.2.2"
 huggingface-hub = "^0.13.4"
 gensim = "^4.3.1"
 websockets = "^11.0.2"
+psycopg2-binary = "^2.9.6"
 
 [tool.poetry.dev-dependencies]
 pysen = "^0.10.3"
