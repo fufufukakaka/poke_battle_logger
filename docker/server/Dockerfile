@@ -4,22 +4,11 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y \
     && apt-get -y install build-essential \
-    $$ wget unzip bc libleptonica-dev git
-
-# Packages to complie Tesseract
-RUN apt-get install -y --reinstall make && \
-    apt-get install -y g++ autoconf automake libtool pkg-config \
-     libpng-dev libjpeg62-turbo-dev libtiff5-dev libicu-dev \
-     libpango1.0-dev autoconf-archive
+    $$ wget unzip tesseract-ocr
 
 RUN apt-get install -y poppler-utils
 
-RUN mkdir src && cd /app/src && \
-    wget https://github.com/tesseract-ocr/tesseract/archive/5.3.1.zip && \
-    unzip 5.3.1.zip && \
-    cd /app/src/tesseract-5.3.1 && ./autogen.sh && ./configure && make && make install && ldconfig && \
-    make training && make training-install && \
-    cd /usr/local/share/tessdata && \
+RUN cd /usr/local/share/tessdata && \
     wget https://github.com/tesseract-ocr/tessdata_best/raw/master/chi_tra.traineddata \
     wget https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata \
     wget https://github.com/tesseract-ocr/tessdata_best/raw/master/fra.traineddata \
