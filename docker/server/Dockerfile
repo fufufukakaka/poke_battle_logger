@@ -4,8 +4,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y \
     && apt-get -y install build-essential \
-    $$ wget unzip bc libleptonica-dev git \
-    && rm -rf /var/lib/apt/lists
+    $$ wget unzip bc libleptonica-dev git
 
 # Packages to complie Tesseract
 RUN apt-get install -y --reinstall make && \
