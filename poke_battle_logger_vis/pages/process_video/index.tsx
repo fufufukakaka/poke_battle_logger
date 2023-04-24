@@ -2,6 +2,7 @@ import { Alert, AlertIcon, Spinner, Badge, Box, Button, Container, Progress, Sta
 import React, { useState } from "react";
 import axios from 'axios';
 import { useAuth0 } from "@auth0/auth0-react";
+import { ServerHostWebsocket } from "../util"
 
 interface videoFormat {
     isValid: boolean;
@@ -23,7 +24,7 @@ const ProcessVideoPage = () => {
   };
 
   const handleOnClick = async () => {
-    const checkResult: {"data": videoFormat} = await axios.get("api/check_video_format?videoId=" + videoId);
+    const checkResult: {"data": videoFormat} = await axios.get(`${ServerHostWebsocket}/api/check_video_format?videoId=${videoId}`);
     setVideoFormat(checkResult.data)
   };
 
