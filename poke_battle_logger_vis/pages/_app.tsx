@@ -4,7 +4,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import Layout from '../components/layouts/layout';
 import Login from '../pages/login/index';
 import { Auth0Provider } from '@auth0/auth0-react';
-import { Auth0Domain, Auto0ClientId, ServerHost } from './util'
+import { Auth0Domain, Auto0ClientId, Auth0CallbackURL } from './util'
 
 export const SeasonContext = createContext(0);
 
@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
       domain={Auth0Domain}
       clientId={Auto0ClientId}
       authorizationParams={{
-        redirect_uri: ServerHost,
+        redirect_uri: Auth0CallbackURL,
       }}
     >
       <ChakraProvider>

@@ -52,7 +52,7 @@ const ProcessVideoPage = () => {
             <VStack justify={"start"} align={"start"}>
             <Text>Youtube の動画(1080p: 30fps) のID を入力してください</Text>
             <InputGroup size='sm'>
-                <InputLeftAddon children={'https://www.youtube.com/watch?v='} />
+                <InputLeftAddon>{'https://www.youtube.com/watch?v='}</InputLeftAddon>
                 <Input placeholder='videoId' value={videoId} onChange={(e) => handleOnChange(e.target.value)}/>
             </InputGroup>
             <Button colorScheme='blue' onClick={() => handleOnClick()}>Check Format</Button>
