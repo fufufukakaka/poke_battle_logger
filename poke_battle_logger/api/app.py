@@ -1,19 +1,21 @@
 import asyncio
+import dataclasses
 import logging
 import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
 
 import pandas as pd
+import yt_dlp
 from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rich.logging import RichHandler
 from tqdm.auto import tqdm
-import yt_dlp
-from poke_battle_logger.api.poke_battle_extractor import PokeBattleExtractor
 
-from poke_battle_logger.database.database_handler import SQLiteHandler
+from poke_battle_logger.api.pokemon_battle_extractor import PokemonBattleExtractor
+from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.types import StatusByWebsocket
 
 logging.basicConfig(
     level=logging.INFO,
@@ -36,18 +38,18 @@ app.add_middleware(
 )
 
 
-sqlite_handler = SQLiteHandler()
+database_handler: DatabaseHandler = DatabaseHandler()
 pokemon_name_df = pd.read_csv("data/pokemon_names.csv")
-pokemon_japanese_to_no_dict = dict(
+pokemon_japanese_to_no_dict: Dict[str, int] = dict(
     zip(pokemon_name_df["Japanese"], pokemon_name_df["No."])
 )
-pokemon_japanese_to_english_dict = dict(
+pokemon_japanese_to_english_dict: Dict[str, str] = dict(
     zip(pokemon_name_df["Japanese"], pokemon_name_df["English"])
 )
 
 
 def get_trainer_id_in_DB(trainer_id: str) -> int:
-    trainer_id_in_DB = sqlite_handler.get_trainer_id_in_DB(trainer_id)
+    trainer_id_in_DB = database_handler.get_trainer_id_in_DB(trainer_id)
     return trainer_id_in_DB
 
 
@@ -65,7 +67,7 @@ async def get_pokemon_name_to_no(pokemon_name: str) -> int:
 async def get_recent_battle_summary(
     trainer_id: str,
 ) -> Dict[str, Union[float, int, str, List[Dict[str, Union[str, int]]]]]:
-    is_exist = sqlite_handler.check_trainer_id_exists(trainer_id)
+    is_exist = database_handler.check_trainer_id_exists(trainer_id)
     if not is_exist:
         return {
             "win_rate": 0.0,
@@ -75,12 +77,12 @@ async def get_recent_battle_summary(
             "recent_battle_history": [],
         }
 
-    win_rate = sqlite_handler.get_latest_season_win_rate(trainer_id)
-    latest_rank = sqlite_handler.get_latest_season_rank(trainer_id)
-    latest_win_pokemon = sqlite_handler.get_latest_win_pokemon(trainer_id)
-    latest_lose_pokemon = sqlite_handler.get_latest_lose_pokemon(trainer_id)
-    recent_battle_history = sqlite_handler.get_recent_battle_history(trainer_id)
-    battle_counts = sqlite_handler.get_battle_counts(trainer_id)
+    win_rate = database_handler.get_latest_season_win_rate(trainer_id)
+    latest_rank = database_handler.get_latest_season_rank(trainer_id)
+    latest_win_pokemon = database_handler.get_latest_win_pokemon(trainer_id)
+    latest_lose_pokemon = database_handler.get_latest_lose_pokemon(trainer_id)
+    recent_battle_history = database_handler.get_recent_battle_history(trainer_id)
+    battle_counts = database_handler.get_battle_counts(trainer_id)
 
     return {
         "win_rate": win_rate,
@@ -98,26 +100,30 @@ async def get_analytics(
     season: int,
 ) -> Dict[str, Union[List[float], List[int], List[Dict[str, Union[str, int, float]]]]]:
     if season == 0:
-        win_rate_transition = sqlite_handler.get_win_rate_transitions_all(trainer_id)
-        next_rank_transition = sqlite_handler.get_next_rank_transitions_all(trainer_id)
-        your_pokemon_stats_summary = sqlite_handler.get_your_pokemon_stats_summary_all(
+        win_rate_transition = database_handler.get_win_rate_transitions_all(trainer_id)
+        next_rank_transition = database_handler.get_next_rank_transitions_all(
             trainer_id
         )
+        your_pokemon_stats_summary = (
+            database_handler.get_your_pokemon_stats_summary_all(trainer_id)
+        )
         opponent_pokemon_stats_summary = (
-            sqlite_handler.get_opponent_pokemon_stats_summary_all(trainer_id)
+            database_handler.get_opponent_pokemon_stats_summary_all(trainer_id)
         )
     elif season > 0:
-        win_rate_transition = sqlite_handler.get_win_rate_transitions_season(
+        win_rate_transition = database_handler.get_win_rate_transitions_season(
             season, trainer_id
         )
-        next_rank_transition = sqlite_handler.get_next_rank_transitions_season(
+        next_rank_transition = database_handler.get_next_rank_transitions_season(
             season, trainer_id
         )
         your_pokemon_stats_summary = (
-            sqlite_handler.get_your_pokemon_stats_summary_season(season, trainer_id)
+            database_handler.get_your_pokemon_stats_summary_season(season, trainer_id)
         )
         opponent_pokemon_stats_summary = (
-            sqlite_handler.get_opponent_pokemon_stats_summary_season(season, trainer_id)
+            database_handler.get_opponent_pokemon_stats_summary_season(
+                season, trainer_id
+            )
         )
     else:
         raise ValueError("season must be 0 or positive")
@@ -133,19 +139,19 @@ async def get_analytics(
 async def get_battle_log(
     trainer_id: str,
     season: int,
-) -> List[Dict[str, Union[str, int, float]]]:
+) -> List[Dict[str, Union[str, int]]]:
     if season == 0:
-        battle_log = sqlite_handler.get_battle_log_all(trainer_id)
+        battle_log = database_handler.get_battle_log_all(trainer_id)
     elif season > 0:
-        battle_log = sqlite_handler.get_battle_log_season(trainer_id, season)
+        battle_log = database_handler.get_battle_log_season(trainer_id, season)
     else:
         raise ValueError("season must be 0 or positive")
     return battle_log
 
 
 @app.get("/api/v1/in_battle_log")
-async def get_in_battle_log(battle_id: str):
-    return sqlite_handler.get_in_battle_log(battle_id)
+async def get_in_battle_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+    return database_handler.get_in_battle_log(battle_id)
 
 
 @app.get("/api/v1/pokemon_image_url")
@@ -182,12 +188,12 @@ async def save_new_trainer(
     - trainer_id が存在する場合は何もしない
     """
     # check if trainer_id exists
-    if sqlite_handler.check_trainer_id_exists(user.trainer_id):
+    if database_handler.check_trainer_id_exists(user.trainer_id):
         logger.info("trainer_id already exists")
         return "trainer_id already exists"
     else:
         logger.info("trainer_id does not exist")
-        sqlite_handler.save_new_trainer(user.trainer_id)
+        database_handler.save_new_trainer(user.trainer_id)
         return f"save new user: {user.trainer_id}"
 
 
@@ -198,7 +204,7 @@ class MemoModel(BaseModel):
 
 @app.post("/api/v1/update_memo")
 async def update_memo(request: MemoModel) -> str:
-    sqlite_handler.update_memo(request.battle_id, request.memo)
+    database_handler.update_memo(request.battle_id, request.memo)
     return "update memo"
 
 
@@ -213,10 +219,9 @@ async def check_video_format(
     - 30fps の動画か
     """
     # 動画が存在するか
-    URL = f'https://www.youtube.com/watch?v={video_id}'
+    URL = f"https://www.youtube.com/watch?v={video_id}"
     try:
-        ydl_opts = {}
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL({}) as ydl:
             info = ydl.extract_info(URL, download=False)
             sanitize_info = ydl.sanitize_info(info)
             if sanitize_info is None:
@@ -250,44 +255,37 @@ async def check_video_format(
         }
 
 
-async def send_progress(websocket: WebSocket, total: int):
-    status = {
-        "message": ["INFO: start"],
-        "progress": total,
-    }
+async def send_progress(websocket: WebSocket, total: int):  # type: ignore
+    status = StatusByWebsocket(
+        message=["INFO: start"],
+        progress=total,
+    )
     with tqdm(total=total) as progress_bar:
         for i in range(total):
             await asyncio.sleep(0.1)  # 重い処理の代わりに0.1秒待機
             progress_bar.update(1)
-            status["progress"] = progress_bar.n
-            await websocket.send_json(status)
+            status.progress = progress_bar.n
+            await websocket.send_json(dataclasses.asdict(status))
 
     await asyncio.sleep(2)
-    status["message"].append("INFO: job1")
-    await websocket.send_json(status)
+    status.message.append("INFO: job1")
+    await websocket.send_json(dataclasses.asdict(status))
 
     await asyncio.sleep(2)
-    status["message"].append("INFO: job2")
-    await websocket.send_json(status)
+    status.message.append("INFO: job2")
+    await websocket.send_json(dataclasses.asdict(status))
 
     await asyncio.sleep(2)
-    status["message"].append("INFO: end")
-    await websocket.send_json(status)
-
-
-@app.websocket("/api/v1/dummy_job")
-async def websocket_endpoint(job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str):
-    trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
-    await job_progress_websocket.accept()
-    total = 100  # 進行状況の合計値
-    await send_progress(job_progress_websocket, total)
-    await job_progress_websocket.close()
+    status.message.append("INFO: end")
+    await websocket.send_json(dataclasses.asdict(status))
 
 
 @app.websocket("/api/v1/extract_stats_from_video")
-async def extract_stats_from_video(job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str):
+async def extract_stats_from_video(  # type: ignore
+    job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
+):
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
-    poke_battle_extractor = PokeBattleExtractor(
+    poke_battle_extractor = PokemonBattleExtractor(
         video_id=videoId,
         language=language,
         trainer_id=trainer_id_in_DB,

@@ -1,4 +1,7 @@
+from typing import Tuple, cast
+
 import cv2
+import numpy as np
 
 from config.config import (
     FIRST_RANKING_WINDOW,
@@ -40,7 +43,9 @@ class FrameDetector:
             self.gray_done_template,
         ) = self.setup_templates()
 
-    def setup_templates(self):
+    def setup_templates(
+        self,
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         if self.lang == "en":
             gray_standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH, 0)
             gray_level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH, 0)
@@ -71,7 +76,7 @@ class FrameDetector:
             gray_select_done_template,
         )
 
-    def is_standing_by_frame(self, frame):
+    def is_standing_by_frame(self, frame: np.ndarray) -> bool:
         gray_standing_by_area = cv2.cvtColor(
             frame[
                 STANDING_BY_WINDOW[0] : STANDING_BY_WINDOW[1],
@@ -82,9 +87,10 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_standing_by_area, self.gray_standing_by_template, cv2.TM_CCOEFF_NORMED
         )
-        return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        return _result
 
-    def is_level_50_frame(self, frame):
+    def is_level_50_frame(self, frame: np.ndarray) -> bool:
         gray_level_50_area = cv2.cvtColor(
             frame[
                 LEVEL_50_WINDOW[0] : LEVEL_50_WINDOW[1],
@@ -96,12 +102,16 @@ class FrameDetector:
             gray_level_50_area, self.gray_level_50_template, cv2.TM_CCOEFF_NORMED
         )
         _, thresh = cv2.threshold(gray_level_50_area, 200, 255, cv2.THRESH_BINARY)
-        return (
-            cv2.countNonZero(thresh) > 100
-            and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        _res = cast(
+            bool,
+            (
+                cv2.countNonZero(thresh) > 100
+                and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+            ),
         )
+        return _res
 
-    def is_first_ranking_frame(self, frame):
+    def is_first_ranking_frame(self, frame: np.ndarray) -> bool:
         gray_ranking_area = cv2.cvtColor(
             frame[
                 FIRST_RANKING_WINDOW[0] : FIRST_RANKING_WINDOW[1],
@@ -112,9 +122,10 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_ranking_area, self.gray_ranking_template, cv2.TM_CCOEFF_NORMED
         )
-        return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        return _result
 
-    def is_ranking_frame(self, frame):
+    def is_ranking_frame(self, frame: np.ndarray) -> bool:
         gray_ranking_area = cv2.cvtColor(
             frame[
                 RANKING_WINDOW[0] : RANKING_WINDOW[1],
@@ -125,9 +136,10 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_ranking_area, self.gray_ranking_template, cv2.TM_CCOEFF_NORMED
         )
-        return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        return _result
 
-    def is_win_or_lost_frame(self, frame) -> bool:
+    def is_win_or_lost_frame(self, frame: np.ndarray) -> bool:
         gray_win_lost_area = cv2.cvtColor(
             frame[
                 WIN_LOST_WINDOW[0] : WIN_LOST_WINDOW[1],
@@ -141,12 +153,14 @@ class FrameDetector:
         result_lost = cv2.matchTemplate(
             gray_win_lost_area, self.gray_lost_template, cv2.TM_CCOEFF_NORMED
         )
-        return (
+        _result = cast(
+            bool,
             cv2.minMaxLoc(result_win)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
-            or cv2.minMaxLoc(result_lost)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
+            or cv2.minMaxLoc(result_lost)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
         )
+        return _result
 
-    def is_select_done_frame(self, frame):
+    def is_select_done_frame(self, frame: np.ndarray) -> bool:
         gray_select_done_area = cv2.cvtColor(
             frame[
                 POKEMON_SELECT_DONE_WINDOW[0] : POKEMON_SELECT_DONE_WINDOW[1],
@@ -157,9 +171,10 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_select_done_area, self.gray_done_template, cv2.TM_CCOEFF_NORMED
         )
-        return cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        return _result
 
-    def is_message_window_frame(self, frame):
+    def is_message_window_frame(self, frame: np.ndarray) -> bool:
         gray = cv2.cvtColor(
             frame[
                 POKEMON_MESSAGE_WINDOW[0] : POKEMON_MESSAGE_WINDOW[1],
@@ -180,5 +195,5 @@ class FrameDetector:
         mser = cv2.MSER_create()
         regions, _ = mser.detectRegions(thresh)
         is_exist_text = len(regions) >= 2
-
-        return is_message & is_exist_text
+        _result = cast(bool, is_message & is_exist_text)
+        return _result

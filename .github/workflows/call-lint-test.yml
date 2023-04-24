@@ -1,0 +1,28 @@
+name: Lint and Test
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        required: true
+        type: string
+
+jobs:
+  lint_and_test_python:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-python@v4
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+      - name: Install dependencies
+        run: poetry install --no-interaction --no-root
+      - name: build test
+        run: make init-docker-server
+      - name: lint-in-docker
+        run: make lint-in-docker
+      - name: test-in-docker
+        run: make test-in-docker

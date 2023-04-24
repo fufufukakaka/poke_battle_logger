@@ -4,26 +4,25 @@
 ###########################################################################################################
 ## VARIABLES
 ###########################################################################################################
+export PROJECT_NAME=poke_battle_logger
 export TARGET=
 export DOCKER=docker
 export PRINT_HELP_PYSCRIPT
 export PYTHON=poetry run python
 export PYTHONPATH=$PYTHONPATH:$(pwd)
-export IMAGE_NAME=$(PROJECT_NAME)-image
+export SERVER_IMAGE_NAME=$(PROJECT_NAME)-image-server
 export CONTAINER_NAME=$(PROJECT_NAME)-container
-export DOCKERFILE=docker/Dockerfile
+export SERVER_DOCKERFILE=docker/server/Dockerfile
 export JUPYTER_HOST_PORT=8080
 export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
 export ENV=local
-export TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"
 ###########################################################################################################
 
 extract-data: # extract battle data from video file
-	TESSDATA_PREFIX=$(TESSDATA_PREFIX) \
 	$(PYTHON) poke_battle_logger/batch/extract_data.py \
 	--video_id $(VIDEO_ID) \
 	--trainer_id $(TRAINER_ID) \
@@ -36,26 +35,35 @@ build-pokemon-multi-name-dict: # build pokemon multi name dict
 	$(PYTHON) poke_battle_logger/batch/build_pokemon_name_dict.py
 
 run_dashboard:
-	cd poke_battle_logger/poke_battle_logger_vis && yarn run dev
+	cd poke_battle_logger_vis && yarn run dev
 
 run_api:
-	TESSDATA_PREFIX=$(TESSDATA_PREFIX) poetry run uvicorn poke_battle_logger.api.app:app --reload
+	poetry run uvicorn poke_battle_logger.api.app:app --reload
 
 ###########################################################################################################
 ## GENERAL TARGETS
 ###########################################################################################################
 
-jupyter: ## start Jupyter Notebook server
-	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
-
-lint: ## check style with pysen
-	poetry run pysen run lint
+test:
+	poetry run pytest -vvv
 
 format: ## format style with pysen
 	poetry run pysen run format
 
-init-docker: ## initialize docker image
-	$(DOCKER) build -t $(IMAGE_NAME) -f $(DOCKERFILE) .
+lint: ## check style with pysen
+	poetry run pysen run lint
+
+test-in-docker: ## run test cases in tests directory in docker
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make test
+
+lint-in-docker: ## check style with flake8 in docker
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make lint
+
+jupyter: ## start Jupyter Notebook server
+	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
+
+init-docker-server: ## initialize docker image
+	$(DOCKER) build -t $(SERVER_IMAGE_NAME) -f $(SERVER_DOCKERFILE) .
 
 create-container-no-mount: ## create docker container for development
 	$(DOCKER) run --rm -it -p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
@@ -64,9 +72,3 @@ create-container-no-mount: ## create docker container for development
 create-container-mount: ## create docker container for development
 	$(DOCKER) run --rm -it -v $(PWD):/work -p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
     --name $(CONTAINER_NAME) --memory=64g --cpus="16" $(IMAGE_NAME) /bin/bash
-
-clean-model:
-	rm -rf model/*.json model/*.pth
-
-cloud-build:
-	gcloud builds submit --config=cloudbuild.yaml --substitutions=_TAG=$(IMAGE_TAG)

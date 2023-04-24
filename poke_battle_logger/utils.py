@@ -1,11 +1,12 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from typing import Optional
 
 from pytube import YouTube
 from pytube.exceptions import RegexMatchError
 from pytube.helpers import regex_search
 
 
-def publish_date(watch_html: str):
+def publish_date(watch_html: str) -> Optional[datetime]:
     """https://github.com/pytube/pytube/issues/1269
 
     Extract publish date
@@ -33,9 +34,11 @@ def publish_date(watch_html: str):
             return None
 
 
-def get_youtube_url_with_timestamp(video_url, battle_started_at):
+def get_youtube_url_with_timestamp(video_url: str, battle_started_at: datetime) -> str:
     yt = YouTube(video_url)
     video_started_at = publish_date(yt.watch_html)
+    if video_started_at is None:
+        return video_url
     timestamp = battle_started_at - video_started_at
     youtube_url_with_timestamp = f"{video_url}&t={timestamp}"
     return youtube_url_with_timestamp
