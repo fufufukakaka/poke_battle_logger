@@ -11,6 +11,7 @@ RUN apt-get update -y \
 
 RUN apt-get install -y poppler-utils
 
+RUN mkdir /usr/local/share/tessdata
 RUN cd /usr/local/share/tessdata && \
     wget https://github.com/tesseract-ocr/tessdata_best/raw/master/chi_tra.traineddata \
     wget https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata \
