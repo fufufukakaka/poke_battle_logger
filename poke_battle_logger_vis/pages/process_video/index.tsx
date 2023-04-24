@@ -86,7 +86,7 @@ const ProcessVideoPage = () => {
                     {
                         jobStatusList.map((status, index) => {
                             return (
-                                <Stack direction='row'>
+                                <Stack key={index} direction='row'>
                                     {/* もし status が INFO から始まるなら success, ERROR から始まるなら error にする */}
                                     {/* <Alert key={index} status='success' variant='subtle' marginTop={"10px"}>
                                         <AlertIcon />
