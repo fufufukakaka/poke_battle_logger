@@ -17,14 +17,12 @@ export JUPYTER_HOST_PORT=8080
 export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
 export ENV=local
-export TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"
 ###########################################################################################################
 
 extract-data: # extract battle data from video file
-	TESSDATA_PREFIX=$(TESSDATA_PREFIX) \
 	$(PYTHON) poke_battle_logger/batch/extract_data.py \
 	--video_id $(VIDEO_ID) \
 	--trainer_id $(TRAINER_ID) \
@@ -40,14 +38,14 @@ run_dashboard:
 	cd poke_battle_logger_vis && yarn run dev
 
 run_api:
-	TESSDATA_PREFIX=$(TESSDATA_PREFIX) poetry run uvicorn poke_battle_logger.api.app:app --reload
+	poetry run uvicorn poke_battle_logger.api.app:app --reload
 
 ###########################################################################################################
 ## GENERAL TARGETS
 ###########################################################################################################
 
 test:
-	TESSDATA_PREFIX=$(TESSDATA_PREFIX) poetry run pytest -vvv
+	poetry run pytest -vvv
 
 format: ## format style with pysen
 	poetry run pysen run format
