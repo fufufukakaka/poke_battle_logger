@@ -4,7 +4,10 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y \
     && apt-get -y install build-essential \
-    $$ wget unzip tesseract-ocr
+    && apt-get -y install libpq-dev \
+    && apt-get -y install libtesseract-dev \
+    && apt-get -y install tesseract-ocr \
+    && apt-get -y install wget
 
 RUN apt-get install -y poppler-utils
 
