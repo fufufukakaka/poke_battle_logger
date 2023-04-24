@@ -19,6 +19,7 @@ import { withAuthenticationRequired, useAuth0 } from '@auth0/auth0-react';
 import { useEffect } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
+import { ServerHost } from './util'
 
 interface DashBoardProps {
   latest_lose_pokemon: string;
@@ -90,13 +91,13 @@ const Dashboard: React.FC<DashBoardProps> = ({
 
   const { isAuthenticated, user } = useAuth0();
   const { data, error, isLoading } = useSWR(
-    `http://127.0.0.1:8000/api/v1/recent_battle_summary?trainer_id=${user?.sub?.replace("|", "_")}`,
+    `${ServerHost}/api/v1/recent_battle_summary?trainer_id=${user?.sub?.replace("|", "_")}`,
     fetcher
   )
 
   useEffect(() => {
     if (isAuthenticated && user && user.sub) {
-      axios.post("http://127.0.0.1:8000/api/v1/save_new_trainer", {
+      axios.post(`${ServerHost}/api/v1/save_new_trainer`, {
         trainer_id: user.sub.replace("|", "_"),
     })
   }}, [isAuthenticated, user])

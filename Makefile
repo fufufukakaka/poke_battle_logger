@@ -17,6 +17,7 @@ export JUPYTER_HOST_PORT=8080
 export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
 export ENV=local
+export LOCAL_TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"
@@ -40,12 +41,18 @@ run_dashboard:
 run_api:
 	poetry run uvicorn poke_battle_logger.api.app:app --reload
 
+run_api_local:
+	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) poetry run uvicorn poke_battle_logger.api.app:app --reload
+
 ###########################################################################################################
 ## GENERAL TARGETS
 ###########################################################################################################
 
 test:
 	poetry run pytest -vvv
+
+test_local:
+	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) poetry run pytest -vvv
 
 format: ## format style with pysen
 	poetry run pysen run format
