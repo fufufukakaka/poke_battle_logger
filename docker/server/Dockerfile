@@ -8,7 +8,8 @@ RUN apt-get update -y \
     && apt-get -y install libtesseract-dev \
     && apt-get -y install tesseract-ocr \
     && apt-get -y install wget \
-    && apt-get -y install unzip
+    && apt-get -y install unzip \
+    && apt-get -y install libgl1-mesa-glx ffmpeg libsm6 libxext6
 
 RUN apt-get install -y poppler-utils
 
