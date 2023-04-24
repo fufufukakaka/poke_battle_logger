@@ -13,14 +13,13 @@ RUN apt-get install -y poppler-utils
 
 RUN mkdir /usr/local/share/tessdata
 RUN cd /usr/local/share/tessdata && \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/chi_tra.traineddata \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/eng.traineddata \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/fra.traineddata \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/ita.traineddata \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/jpn.traineddata \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/kor.traineddata \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/spa.traineddata \
-    wget https://github.com/tesseract-ocr/tessdata_best/raw/master/deu.traineddata
+    wget https://github.com/tesseract-ocr/tessdata_best/archive/refs/tags/4.1.0.zip
+
+RUN cd /usr/local/share/tessdata && \
+    unzip 4.1.0.zip && \
+    mv tessdata_best-4.1.0/* . && \
+    rm -rf tessdata_best-4.1.0 && \
+    rm 4.1.0.zip
 
 # Setting the data prefix
 ENV TESSDATA_PREFIX=/usr/local/share/tessdata
