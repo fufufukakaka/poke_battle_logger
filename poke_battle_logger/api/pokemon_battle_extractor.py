@@ -50,14 +50,14 @@ class PokemonBattleExtractor:
         ) -> None:
             if status["status"] == "downloading":
                 if "INFO: Downloading video..." not in status_json.message:
-                    status_json.message.append("INFO: Downloading video...")
+                    status_json.message.insert(0, "INFO: Downloading video...")
                 status_json.progress = int(extract_percentage(status["_percent_str"]))
                 new_loop = asyncio.new_event_loop()
                 new_loop.run_until_complete(
                     websocket.send_json(dataclasses.asdict(status_json))
                 )
             elif status["status"] == "finished":
-                status_json.message.append("INFO: Download complete")
+                status_json.message.insert(0, "INFO: Download complete")
                 status_json.progress = 100
                 new_loop = asyncio.new_event_loop()
                 new_loop.run_until_complete(
@@ -97,7 +97,7 @@ class PokemonBattleExtractor:
             )
         download_complete_event.wait()
 
-        status_json.message.append("INFO: Read Video...")
+        status_json.message.insert(0, "INFO: Read Video...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
 
@@ -114,7 +114,7 @@ class PokemonBattleExtractor:
         win_or_lost_frames = []
         message_window_frames = []
 
-        status_json.message.append("INFO: Detecting frames...")
+        status_json.message.insert(0, "INFO: Detecting frames...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
 
         total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -155,7 +155,7 @@ class PokemonBattleExtractor:
                 await websocket_for_status.send_json(dataclasses.asdict(status_json))
 
         # compress
-        status_json.message.append("INFO: Compressing frame array...")
+        status_json.message.insert(0, "INFO: Compressing frame array...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
 
         compressed_first_ranking_frames = frame_compress(first_ranking_frames)
@@ -171,7 +171,7 @@ class PokemonBattleExtractor:
         )
 
         # 開始時のランクを検出(OCR)
-        status_json.message.append("INFO: Extracting first ranking...")
+        status_json.message.insert(0, "INFO: Extracting first ranking...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         rank_numbers = {}
         first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
@@ -182,7 +182,7 @@ class PokemonBattleExtractor:
         )
 
         # ランクを検出(OCR)
-        status_json.message.append("INFO: Extracting ranking...")
+        status_json.message.insert(0, "INFO: Extracting ranking...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         for ranking_frame_numbers in compressed_ranking_frames:
             ranking_frame_number = ranking_frame_numbers[-5]
@@ -193,8 +193,8 @@ class PokemonBattleExtractor:
             )
 
         # 順位が変動しなかった場合、その値を rank_numbers から削除する
-        status_json.message.append(
-            "INFO: Removing unchanged ranking from rank_numbers..."
+        status_json.message.insert(
+            0, "INFO: Removing unchanged ranking from rank_numbers..."
         )
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         rank_frames = list(rank_numbers.keys())
@@ -209,8 +209,8 @@ class PokemonBattleExtractor:
                 del rank_numbers[_ranking_frame_number]
 
         # 対戦の始点と終点を定義する
-        status_json.message.append(
-            "INFO: Defining battle start and end frame numbers..."
+        status_json.message.insert(
+            0, "INFO: Defining battle start and end frame numbers..."
         )
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         battle_start_end_frame_numbers: List[Tuple[int, int]] = []
@@ -227,12 +227,10 @@ class PokemonBattleExtractor:
                 _ranking_frame = rank_frames[i + 1]
 
             if _standing_by_frame_number < _ranking_frame:
-                battle_start_end_frame_numbers.append(
-                    (_standing_by_frame_number, _ranking_frame)
-                )
+                battle_start_end_frame_numbers.append((_standing_by_frame_number, _ranking_frame))
 
         # ポケモンの選出順を抽出する
-        status_json.message.append("INFO: Extracting pokemon select order...")
+        status_json.message.insert(0, "INFO: Extracting pokemon select order...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         pokemon_select_order = {}
         for i in range(len(compressed_select_done_frames)):
@@ -248,7 +246,7 @@ class PokemonBattleExtractor:
             pokemon_select_order[_select_done_frame_number] = _pokemon_select_order
 
         # 6vs6のポケモンを抽出する
-        status_json.message.append("INFO: Extracting pre-battle pokemons...")
+        status_json.message.insert(0, "INFO: Extracting pre-battle pokemons...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         pre_battle_pokemons: Dict[int, Dict[str, List[str]]] = {}
         is_exist_unknown_pokemon_list1 = []
@@ -274,7 +272,7 @@ class PokemonBattleExtractor:
             is_exist_unknown_pokemon_list1.append(_is_exist_unknown_pokemon)
 
         # 対戦中のポケモンを抽出する
-        status_json.message.append("INFO: Extracting in-battle pokemons...")
+        status_json.message.insert(0, "INFO: Extracting in-battle pokemons...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         battle_pokemons: List[Dict[str, Union[str, int]]] = []
         is_exist_unknown_pokemon_list2 = []
@@ -294,20 +292,20 @@ class PokemonBattleExtractor:
                     "frame_number": _level_50_frame_number,
                     "your_pokemon_name": your_pokemon_name,
                     "opponent_pokemon_name": opponent_pokemon_name,
-                }
+                },
             )
             is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
             status_json.message.append(
-                "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons."
+                "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
             )
             await websocket_for_status.send_json(dataclasses.asdict(status_json))
             return
 
         # 勝ち負けを検出
         # 間違いやすいので、周辺最大10フレームを見て判断する。全て unknown の時は弾く
-        status_json.message.append("INFO: Extracting win or lost...")
+        status_json.message.insert(0, "INFO: Extracting win or lost...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         win_or_lost = {}
         for win_or_lost_frame_numbers in compressed_win_or_lost_frames:
@@ -334,7 +332,7 @@ class PokemonBattleExtractor:
                 win_or_lost[win_or_lost_frame_number] = win_or_lost_result
 
         # メッセージの文字認識(OCR)
-        status_json.message.append("INFO: Extracting message...")
+        status_json.message.insert(0, "INFO: Extracting message...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         messages = {}
         for message_frame_numbers in compressed_message_window_frames:
@@ -346,7 +344,7 @@ class PokemonBattleExtractor:
                 messages[message_frame_number] = _message
 
         # build formatted data
-        status_json.message.append("INFO: Build Formatted Data...")
+        status_json.message.insert(0, "INFO: Build Formatted Data...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         data_builder = DataBuilder(
             trainer_id=self.trainer_id,
@@ -369,7 +367,7 @@ class PokemonBattleExtractor:
         ) = data_builder.build()
 
         # insert data to database
-        status_json.message.append("INFO: Insert Data to Database...")
+        status_json.message.insert(0, "INFO: Insert Data to Database...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         database_handler.create_tables()
         database_handler.insert_battle_id(battles)
@@ -378,7 +376,7 @@ class PokemonBattleExtractor:
         database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
         database_handler.insert_message_log(modified_messages)
 
-        status_json.message.append("INFO: Finish Processing!!!")
+        status_json.message.insert(0, "INFO: Finish Processing!!!")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
 
         return
