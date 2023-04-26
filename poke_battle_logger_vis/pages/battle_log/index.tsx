@@ -12,7 +12,7 @@ import { useContext } from 'react';
 import { SeasonContext } from '../_app';
 import BattleLogCard from '@/components/data-display/battle-log-card';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
-import { ServerHost } from '../util'
+import { ServerHost } from '../../util'
 
 interface BattleLogProps {
   battle_id: string;

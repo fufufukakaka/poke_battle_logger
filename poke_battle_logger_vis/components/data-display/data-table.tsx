@@ -22,12 +22,21 @@ import {
 } from '@tanstack/react-table';
 import PokemonIcon from '../atoms/pokemon-icon';
 
-export type DataTableProps<Data extends object> = {
+type PokemonStat = {
+  pokemon_name: string;
+  in_team_rate: number;
+  in_battle_rate: number;
+  head_battle_rate: number;
+  in_battle_win_rate: number;
+  in_battle_lose_rate: number;
+}
+
+export type DataTableProps<Data extends object & PokemonStat> = {
   data: Data[];
   columns: ColumnDef<Data, any>[];
 };
 
-export function DataTable<Data extends object>({
+export function DataTable<Data extends object & PokemonStat>({
   data,
   columns,
 }: DataTableProps<Data>) {
@@ -40,7 +49,7 @@ export function DataTable<Data extends object>({
 
       return data.filter((row) => {
         if (row.hasOwnProperty('pokemon_name')) {
-          const pokemonName = row['pokemon_name'] as unknown as string;
+          const pokemonName = row['pokemon_name'] as string;
           return pokemonName.toLowerCase().startsWith(searchText.toLowerCase());
         }
         return false;
@@ -116,8 +125,8 @@ export function DataTable<Data extends object>({
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       <div>
                         <PokemonIcon
-                          key={cell.getValue()}
-                          pokemon_name={cell.getValue()}
+                          key={cell.getValue() as string}
+                          pokemon_name={cell.getValue() as string}
                           boxSize={'60px'}
                         />
                       </div>

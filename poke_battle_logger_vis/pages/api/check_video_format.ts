@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import axios from "axios"
-import { ServerHost } from '../util'
+import { ServerHost } from '../../util'
 
 
 const getCheckVideoFormatHandler = async (req: NextApiRequest, res: NextApiResponse) => {

@@ -2,7 +2,7 @@ import { Alert, AlertIcon, Spinner, Badge, Box, Button, Container, Progress, Sta
 import React, { useState } from "react";
 import axios from 'axios';
 import { useAuth0 } from "@auth0/auth0-react";
-import { ServerHostWebsocket } from "../util"
+import { ServerHost, ServerHostWebsocket } from "../../util"
 
 interface videoFormat {
     isValid: boolean;
@@ -24,13 +24,13 @@ const ProcessVideoPage = () => {
   };
 
   const handleOnClick = async () => {
-    const checkResult: {"data": videoFormat} = await axios.get(`${ServerHostWebsocket}/api/check_video_format?videoId=${videoId}`);
+    const checkResult: {"data": videoFormat} = await axios.get(`${ServerHost}/api/v1/check_video_format?videoId=${videoId}`);
     setVideoFormat(checkResult.data)
   };
 
   const handleExtractJob = async () => {
     setShowSpinner(true)
-    const socket = new WebSocket(`ws://127.0.0.1:8000/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
+    const socket = new WebSocket(`${ServerHostWebsocket}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setProgress(data.progress);

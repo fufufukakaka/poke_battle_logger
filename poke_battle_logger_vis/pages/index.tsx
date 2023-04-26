@@ -19,7 +19,7 @@ import { withAuthenticationRequired, useAuth0 } from '@auth0/auth0-react';
 import { useEffect } from "react";
 import CalendarHeatmap from "react-calendar-heatmap";
 import "react-calendar-heatmap/dist/styles.css";
-import { ServerHost } from './util'
+import { ServerHost } from '../util'
 
 interface DashBoardProps {
   latest_lose_pokemon: string;

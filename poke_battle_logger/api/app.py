@@ -27,6 +27,7 @@ logger = getLogger(__name__)
 
 app = FastAPI()
 origins = [
+    "http://127.0.0.1:3000",
     "http://localhost:3000",
 ]
 app.add_middleware(
@@ -210,7 +211,7 @@ async def update_memo(request: MemoModel) -> str:
 
 @app.get("/api/v1/check_video_format")
 async def check_video_format(
-    video_id: str,
+    videoId: str,
 ) -> Dict[str, bool]:
     """
     Youtube の動画 ID を受け取って、以下の項目をチェックする
@@ -219,7 +220,7 @@ async def check_video_format(
     - 30fps の動画か
     """
     # 動画が存在するか
-    URL = f"https://www.youtube.com/watch?v={video_id}"
+    URL = f"https://www.youtube.com/watch?v={videoId}"
     try:
         with yt_dlp.YoutubeDL({}) as ydl:
             info = ydl.extract_info(URL, download=False)

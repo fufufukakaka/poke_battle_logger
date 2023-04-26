@@ -130,10 +130,9 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
         </Flex>
         <Divider margin={'5px'} />
         <Heading size={"xs"}>📝 Memo</Heading>
-        <Editable defaultValue={memo}>
-          <EditablePreview />
-          <EditableTextarea />
-        </Editable>
+        <Text>
+          {memo}
+        </Text>
       </CardBody>
       <CardFooter>
         <Button onClick={onOpen} variant='solid' colorScheme='blue'>

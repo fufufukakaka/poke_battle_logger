@@ -18,11 +18,11 @@ import { MdCatchingPokemon } from 'react-icons/md';
 import { MdLogout } from 'react-icons/md';
 import { TbAnalyzeFilled } from 'react-icons/tb';
 import { useAuth0 } from '@auth0/auth0-react';
-import { PlusSquareIcon } from '@chakra-ui/icons';
+import { AiOutlinePlusSquare } from 'react-icons/ai';
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
-  setSeason: React.Dispatch<React.SetStateAction<string>>;
+  setSeason: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
@@ -58,7 +58,7 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
         padding={'3px'}
         defaultValue="all"
         color="white"
-        onChange={(e) => setSeason(e.target.value)}
+        onChange={(e) => setSeason(Number(e.target.value))}
       >
         <option value={0}>全シーズン</option>
         <option value={3}>シーズン3</option>
@@ -91,7 +91,7 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
       </NavItem>
       <NavItem
         key={'process_video'}
-        icon={PlusSquareIcon}
+        icon={AiOutlinePlusSquare}
         href={'/process_video'}
         marginTop="5px"
       >

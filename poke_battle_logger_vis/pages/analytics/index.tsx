@@ -16,6 +16,7 @@ import { SeasonContext } from '../_app';
 import { DataTable } from '@/components/data-display/data-table';
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
+import { ServerHost } from "../../util"
 
 interface AnalyticsProps {
   win_rates: number[];
@@ -106,7 +107,16 @@ type OpponentPokemonStat = {
   in_battle_lose_rate: number;
 };
 
-const yourPokemonStatsColumnHelper = createColumnHelper<YourPokemonStat>();
+type PokemonStat = {
+  pokemon_name: string;
+  in_team_rate: number;
+  in_battle_rate: number;
+  head_battle_rate: number;
+  in_battle_win_rate: number;
+  in_battle_lose_rate: number;
+};
+
+const yourPokemonStatsColumnHelper = createColumnHelper<PokemonStat>();
 const yourPokemonStatsColumns = [
   yourPokemonStatsColumnHelper.accessor("pokemon_name", {
     cell: (info) => info.getValue(),
@@ -142,7 +152,7 @@ const yourPokemonStatsColumns = [
   })
 ];
 
-const opponentPokemonStatsColumnHelper = createColumnHelper<OpponentPokemonStat>();
+const opponentPokemonStatsColumnHelper = createColumnHelper<PokemonStat>();
 const opponentPokemonStatsColumns = [
   opponentPokemonStatsColumnHelper.accessor("pokemon_name", {
     cell: (info) => info.getValue(),
@@ -182,7 +192,7 @@ const Analytics: React.FC<AnalyticsProps> = () => {
   const { user } = useAuth0();
   const season = useContext(SeasonContext);
   const { data, error, isLoading } = useSWR(
-    `http://127.0.0.1:8000/api/v1/analytics?season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
+    `${ServerHost}/api/v1/analytics?season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
     fetcher
   )
 
