@@ -297,8 +297,8 @@ class PokemonBattleExtractor:
             is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
-            status_json.message.append(
-                "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
+            status_json.message.insert(
+                0, "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
             )
             await websocket_for_status.send_json(dataclasses.asdict(status_json))
             return
