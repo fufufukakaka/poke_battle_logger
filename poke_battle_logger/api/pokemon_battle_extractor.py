@@ -227,7 +227,9 @@ class PokemonBattleExtractor:
                 _ranking_frame = rank_frames[i + 1]
 
             if _standing_by_frame_number < _ranking_frame:
-                battle_start_end_frame_numbers.append((_standing_by_frame_number, _ranking_frame))
+                battle_start_end_frame_numbers.append(
+                    (_standing_by_frame_number, _ranking_frame)
+                )
 
         # ポケモンの選出順を抽出する
         status_json.message.insert(0, "INFO: Extracting pokemon select order...")
@@ -298,7 +300,8 @@ class PokemonBattleExtractor:
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
             status_json.message.insert(
-                0, "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
+                0,
+                "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
             )
             await websocket_for_status.send_json(dataclasses.asdict(status_json))
             return
