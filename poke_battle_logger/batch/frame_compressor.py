@@ -25,7 +25,8 @@ def frame_compress(
             else:
                 compressed_frame_results.append(temp)
             temp = []
-    compressed_frame_results.append(temp)
+    if len(temp) > 1:
+        compressed_frame_results.append(temp)
     return compressed_frame_results
 
 
