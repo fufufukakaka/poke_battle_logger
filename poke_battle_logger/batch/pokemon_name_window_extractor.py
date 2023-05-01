@@ -132,6 +132,16 @@ class PokemonNameWindowExtractor:
         else:
             return _text
 
+    def _normalize_korean_ocr_name(self, text: str) -> str:
+        """
+        OCRで読み取った韓国語の名前から特殊文字を削除し、誤りを訂正する
+        """
+        _text = text.replace("\n", "")
+        if _text == "딕루으수":
+            return "딩루"
+        else:
+            return _text
+
     def extract_pokemon_name_in_battle(
         self, name_window: np.ndarray
     ) -> Tuple[str, bool]:
@@ -182,7 +192,9 @@ class PokemonNameWindowExtractor:
                 elif _lang == "kor":
                     _name_results.append(_name)
                     results.append(
-                        self._search_name_by_edit_distance(self.ko_list, _name)
+                        self._search_name_by_edit_distance(
+                            self.ko_list, self._normalize_korean_ocr_name(_name)
+                        )
                     )
                 elif _lang == "spa":
                     _name_results.append(_name)
