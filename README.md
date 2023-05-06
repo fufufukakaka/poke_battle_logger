@@ -48,7 +48,13 @@ tessdata は best を使います。
 ### credentials
 
 `poke_battle_logger/poke_battle_logger_vis/.env.local` に以下を配置
-NEXT_PUBLIC_AUTH0_DOMAIN, NEXT_PUBLIC_AUTH0_CLIENT_ID
+- NEXT_PUBLIC_AUTH0_DOMAIN
+- NEXT_PUBLIC_AUTH0_CLIENT_ID
+
+また、テンプレート画像を GCS の所定の位置に事前に配備することが必要です(テンプレート画像は公開していません🙏)。
+GCS へのアクセス権限を持ったサービスアカウントの認証情報を json でダウンロードして以下に配備してください。
+
+`.credentials/google-cloud-credential.json`
 
 ## アプリケーションの起動
 

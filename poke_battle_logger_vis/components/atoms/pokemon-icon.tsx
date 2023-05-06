@@ -1,29 +1,31 @@
-import { Image, Skeleton } from '@chakra-ui/react';
-import axios from 'axios';
-import useSWR from 'swr';
+import { Image } from '@chakra-ui/react';
+import { pokemonJapaneseToEnglishDict } from '../../helper/pokemonJapaneseToEnglishDict'
 
 interface PokemonIconProps {
   pokemon_name: string;
   boxSize: string;
 }
 
-const fetcher = async (url: string) => {
-  const result = await axios.get(url);
-  return await result.data;
+const getPokemonImageUrl = (pokemon_name: string) => {
+  pokemon_name = pokemon_name.normalize("NFC");
+  if (pokemon_name === "Unseen") {
+    return "https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg";
+  }
+  if (pokemon_name in pokemonJapaneseToEnglishDict) {
+    pokemon_name = pokemonJapaneseToEnglishDict[pokemon_name];
+  }
+  pokemon_name = pokemon_name.toLowerCase().replace(" ", "-");
+  return `https://img.pokemondb.net/sprites/scarlet-violet/normal/${pokemon_name}.png`;
 };
 
 const PokemonIcon: React.FC<PokemonIconProps> = ({ pokemon_name, boxSize }) => {
-  const { data, error, isLoading } = useSWR(
-    'http://127.0.0.1:8000/api/v1/pokemon_image_url?pokemon_name=' +
-      pokemon_name,
-    fetcher
-  );
-  if (isLoading) return <Skeleton />;
-  if (error) return <Skeleton />;
-  if (!data) return <Skeleton />;
-
   return (
-    <Image src={data} alt={pokemon_name} boxSize={boxSize} align={'center'}/>
+    <Image
+      src={getPokemonImageUrl(pokemon_name)}
+      alt={pokemon_name}
+      boxSize={boxSize}
+      align={'center'}
+    />
   );
 };
 

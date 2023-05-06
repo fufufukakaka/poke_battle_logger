@@ -3,7 +3,7 @@ import dataclasses
 import logging
 import unicodedata
 from logging import getLogger
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import pandas as pd
 import yt_dlp
@@ -140,7 +140,7 @@ async def get_analytics(
 async def get_battle_log(
     trainer_id: str,
     season: int,
-) -> List[Dict[str, Union[str, int]]]:
+) -> List[Dict[str, Union[str, int, Optional[str]]]]:
     if season == 0:
         battle_log = database_handler.get_battle_log_all(trainer_id)
     elif season > 0:
