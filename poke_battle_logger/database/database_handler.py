@@ -241,6 +241,21 @@ class DatabaseHandler:
             order by
                 season desc
             limit 1
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                created_at between(
+                    select
+                        start_datetime from latest_season_start_end)
+                and(
+                    select
+                        end_datetime from latest_season_start_end)
+                and battle_id in(
+                    select
+                        battle_id from target_trainer_battles)
+            order by
+                created_at
         )
         select
             CAST(sum(
@@ -250,19 +265,7 @@ class DatabaseHandler:
                         0
                     end) as float) / count(1) as win_rate
         from
-            battlesummary
-        where
-            created_at between(
-                select
-                    start_datetime from latest_season_start_end)
-            and(
-                select
-                    end_datetime from latest_season_start_end)
-            and battle_id in(
-                select
-                    battle_id from target_trainer_battles)
-        order by
-            created_at
+            target_battle_summary
         """
         with self.db:
             win_rate = cast(float, self.db.execute_sql(sql).fetchone()[0])
@@ -806,7 +809,7 @@ class DatabaseHandler:
             )
         return list(summary.to_dict(orient="index").values())
 
-    def get_battle_log_all(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
+    def get_battle_log_all(self, trainer_id: str, page: int, size: int) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         with target_trainer as (
             select
@@ -850,6 +853,7 @@ class DatabaseHandler:
             target_battle_summary
         order by
             created_at desc
+        limit {size} offset {size * (page - 1)}
         """
         with self.db:
             battle_logs = self.db.execute_sql(sql).fetchall()
@@ -889,8 +893,42 @@ class DatabaseHandler:
             ]
         return battle_logs_dict
 
+    def get_battle_log_all_count(self, trainer_id: str) -> int:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+        )
+        select
+            count(1)
+        from
+            target_battle_summary
+        """
+        with self.db:
+            battle_log_count = self.db.execute_sql(sql).fetchall()[0]
+        return battle_log_count
+
     def get_battle_log_season(
-        self, trainer_id: str, season: int
+        self, trainer_id: str, season: int, page: int, size: int
     ) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         with target_trainer as (
@@ -950,6 +988,7 @@ class DatabaseHandler:
             target_battle_summary
         order by
             created_at desc
+        limit {size} offset {size * (page - 1)}
         """
         with self.db:
             battle_logs = self.db.execute_sql(sql).fetchall()
@@ -988,6 +1027,57 @@ class DatabaseHandler:
                 ) in battle_logs
             ]
         return battle_logs_dict
+
+    def get_battle_log_season_count(
+        self, trainer_id: str, season: int
+    ) -> int:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        ),
+        season_start_end as (
+            select
+                start_datetime,
+                end_datetime
+            from
+                season
+            where
+                season = {season}
+        ),
+        target_battle_summary as (
+            select * from battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+                and created_at between(
+                    select
+                        start_datetime from season_start_end)
+                and(
+                    select
+                        end_datetime from season_start_end)
+        )
+        select
+            count(1)
+        from
+            target_battle_summary
+        """
+        with self.db:
+            battle_log_count = self.db.execute_sql(sql).fetchall()[0]
+        return battle_log_count
 
     def check_trainer_id_exists(self, trainer_id: str) -> bool:
         sql = f"""
@@ -1030,17 +1120,23 @@ class DatabaseHandler:
                 battle
             where
                 trainer_id in (select id from target_trainer)
+        ),
+        date_counts as (
+            select
+                to_char(created_at::timestamp, 'YYYY-MM-DD') as battle_date, count(1) as count
+            from
+                battlesummary
+            where
+                battle_id in (
+                    select
+                        battle_id from target_trainer_battles)
+            GROUP BY to_char(created_at::timestamp, 'YYYY-MM-DD')
         )
-        select
-            strftime('%Y-%m-%d',created_at) as battle_date, count(1)
-        from
-            battlesummary
-        where
-            battle_id in (
-                select
-                    battle_id from target_trainer_battles)
+        select battle_date, sum(count)
+        from date_counts
         group by battle_date
         """
+
         with self.db:
             stats = self.db.execute_sql(sql).fetchall()
             summary = pd.DataFrame(

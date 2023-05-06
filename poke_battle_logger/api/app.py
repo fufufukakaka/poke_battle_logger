@@ -140,14 +140,30 @@ async def get_analytics(
 async def get_battle_log(
     trainer_id: str,
     season: int,
+    page: int,
+    size: int,
 ) -> List[Dict[str, Union[str, int]]]:
     if season == 0:
-        battle_log = database_handler.get_battle_log_all(trainer_id)
+        battle_log = database_handler.get_battle_log_all(trainer_id, page, size)
     elif season > 0:
-        battle_log = database_handler.get_battle_log_season(trainer_id, season)
+        battle_log = database_handler.get_battle_log_season(trainer_id, season, page, size)
     else:
         raise ValueError("season must be 0 or positive")
     return battle_log
+
+
+@app.get("/api/v1/battle_log_count")
+async def get_battle_log_count(
+    trainer_id: str,
+    season: int,
+) -> int:
+    if season == 0:
+        battle_log_count = database_handler.get_battle_log_all_count(trainer_id)
+    elif season > 0:
+        battle_log_count = database_handler.get_battle_log_season_count(trainer_id, season)
+    else:
+        raise ValueError("season must be 0 or positive")
+    return battle_log_count
 
 
 @app.get("/api/v1/in_battle_log")
