@@ -140,7 +140,7 @@ async def get_analytics(
 async def get_battle_log(
     trainer_id: str,
     season: int,
-) -> List[Dict[str, Union[str, int, Optional[str]]]]:
+) -> List[Dict[str, Union[str, int]]]:
     if season == 0:
         battle_log = database_handler.get_battle_log_all(trainer_id)
     elif season > 0:
