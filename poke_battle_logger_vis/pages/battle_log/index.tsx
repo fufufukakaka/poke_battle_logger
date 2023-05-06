@@ -7,11 +7,10 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import useSWR from 'swr';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SeasonContext } from '../_app';
 import BattleLogCard from '@/components/data-display/battle-log-card';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
-import { ServerHost } from '../../util'
 import PaginationController from '@/components/navigation/pagination-controller';
 import axiosInstance from '../../helper/axios'
 
@@ -45,14 +44,14 @@ const BattleLogs: React.FC = () => {
   const { user } = useAuth0();
   const season = useContext(SeasonContext);
 
-  const { data, error, isLoading, mutate } = useSWR(
-    `${ServerHost}/api/v1/battle_log?page=${currentPage}&size=${pageSize}&season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
+  const { data, error, mutate, isLoading } = useSWR(
+    `/api/v1/battle_log?trainer_id=${user?.sub?.replace("|", "_")}&season=${season}&page=${currentPage}&size=${pageSize}`,
     fetcher
   );
 
   const saveMemo = async (battle_id: string, memo: string) => {
     await axiosInstance.post(
-      `${ServerHost}/api/v1/update_memo`,
+      `api/v1/update_memo`,
       {
         battle_id: battle_id,
         memo: memo,
@@ -87,7 +86,7 @@ const BattleLogs: React.FC = () => {
         </HStack>
         <Box flex="1" p="4" bg="white">
           <SimpleGrid columns={3} spacing={10}>
-            {data.map((battle: BattleLogProps) => (
+            {data ? data.map((battle: BattleLogProps) => (
               <BattleLogCard
                 key={battle.battle_id}
                 battle_id={battle.battle_id}
@@ -107,7 +106,7 @@ const BattleLogs: React.FC = () => {
                 saveMemo={saveMemo}
                 isLoading={isLoading}
               />
-            ))}
+            )) : null }
           </SimpleGrid>
         </Box>
       </Container>
