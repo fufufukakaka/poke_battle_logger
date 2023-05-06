@@ -18,6 +18,7 @@ export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
 export ENV=local
 export LOCAL_TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
+export LOCAL_GOOGLE_APPLICATION_CREDENTIALS=.credentials/google-cloud-credential.json
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"
@@ -39,10 +40,18 @@ run_dashboard:
 	cd poke_battle_logger_vis && yarn run dev
 
 run_api:
-	poetry run uvicorn poke_battle_logger.api.app:app --reload
+	poetry run uvicorn poke_battle_logger.api.app:app
 
 run_api_local:
-	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) poetry run uvicorn poke_battle_logger.api.app:app --reload
+	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) \
+	GOOGLE_APPLICATION_CREDENTIALS=$(LOCAL_GOOGLE_APPLICATION_CREDENTIALS) \
+	poetry run uvicorn poke_battle_logger.api.app:API_CONTAINER_PORT
+
+run_api_local_use_postgres:
+	ENV=production \
+	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) \
+	GOOGLE_APPLICATION_CREDENTIALS=$(LOCAL_GOOGLE_APPLICATION_CREDENTIALS) \
+	poetry run uvicorn poke_battle_logger.api.app:app
 
 ###########################################################################################################
 ## GENERAL TARGETS

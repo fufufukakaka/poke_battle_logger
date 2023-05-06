@@ -244,7 +244,7 @@ class DatabaseHandler:
         )
         select
             CAST(sum(
-                    case when win_or_lose = "win" then
+                    case when win_or_lose = 'win' then
                         1
                     else
                         0
@@ -340,7 +340,7 @@ class DatabaseHandler:
         from
             battlesummary
         where
-            win_or_lose = "win"
+            win_or_lose = 'win'
             and battle_id in (
                 select
                     battle_id from target_trainer_battles)
@@ -377,7 +377,7 @@ class DatabaseHandler:
         from
             battlesummary
         where
-            win_or_lose = "lose"
+            win_or_lose = 'lose'
             and battle_id in (
                 select
                     battle_id from target_trainer_battles)
@@ -1066,7 +1066,7 @@ class DatabaseHandler:
         from
             inbattlepokemonlog
         where
-            battle_id = "{battle_id}"
+            battle_id = '{battle_id}'
         """
         with self.db:
             stats = self.db.execute_sql(sql).fetchall()
