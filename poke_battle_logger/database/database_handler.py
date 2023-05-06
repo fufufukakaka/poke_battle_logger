@@ -924,7 +924,7 @@ class DatabaseHandler:
             target_battle_summary
         """
         with self.db:
-            battle_log_count = self.db.execute_sql(sql).fetchall()[0]
+            battle_log_count = self.db.execute_sql(sql).fetchone()[0]
         return battle_log_count
 
     def get_battle_log_season(
@@ -1076,7 +1076,7 @@ class DatabaseHandler:
             target_battle_summary
         """
         with self.db:
-            battle_log_count = self.db.execute_sql(sql).fetchall()[0]
+            battle_log_count = self.db.execute_sql(sql).fetchone()[0]
         return battle_log_count
 
     def check_trainer_id_exists(self, trainer_id: str) -> bool:

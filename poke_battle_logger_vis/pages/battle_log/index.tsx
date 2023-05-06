@@ -44,6 +44,11 @@ const BattleLogs: React.FC = () => {
   const { user } = useAuth0();
   const season = useContext(SeasonContext);
 
+  const { data: battleCountData, error: battleCountError } = useSWR(
+    `/api/v1/battle_log_count?trainer_id=${user?.sub?.replace("|", "_")}&season=${season}`,
+    fetcher
+  );
+
   const { data, error, mutate, isLoading } = useSWR(
     `/api/v1/battle_log?trainer_id=${user?.sub?.replace("|", "_")}&season=${season}&page=${currentPage}&size=${pageSize}`,
     fetcher
@@ -66,11 +71,10 @@ const BattleLogs: React.FC = () => {
     )
   };
 
-  if (error) return <p>error</p>;
-  if (!isLoading && !data) return <p>no data</p>;
+  if (error || battleCountError) return <p>error</p>;
+  if (!isLoading && (!data || !battleCountData)) return <p>no data</p>;
 
-
-  let maxPage = 10;
+  let maxPage = battleCountData ? Math.ceil(battleCountData / pageSize) : 10;
 
   return (
     <Box bg="gray.50" minH="100vh">
