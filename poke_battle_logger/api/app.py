@@ -3,7 +3,7 @@ import dataclasses
 import logging
 import unicodedata
 from logging import getLogger
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 import pandas as pd
 import yt_dlp
