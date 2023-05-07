@@ -16,7 +16,7 @@ from tqdm.auto import tqdm
 from poke_battle_logger.api.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.types import StatusByWebsocket
+from poke_battle_logger.types import ImageLabel, StatusByWebsocket
 
 logging.basicConfig(
     level=logging.INFO,
@@ -323,11 +323,6 @@ async def extract_stats_from_video(  # type: ignore
     await job_progress_websocket.close()
 
 
-class ImageLabel(BaseModel):
-    pokemon_image_file_on_gcs: str
-    pokemon_label: str
-
-
 @app.post("/api/v1/set_label_to_unknown_pokemon_images")
 async def set_label_to_unknown_pokemon_images(image_labels: List[ImageLabel]):
     gcs_handler = GCSHandler()
@@ -336,4 +331,4 @@ async def set_label_to_unknown_pokemon_images(image_labels: List[ImageLabel]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    return {"message": "Labels have been processed"}
+    return {"message": "Unknown Pokemon Image Labels are set successfully"}

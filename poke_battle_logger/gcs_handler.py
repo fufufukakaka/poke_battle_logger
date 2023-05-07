@@ -3,8 +3,9 @@ import os
 from typing import List
 
 from google.cloud import storage
+from pydantic import BaseModel
 
-from poke_battle_logger.api.app import ImageLabel
+from poke_battle_logger.types import ImageLabel
 
 
 class GCSHandler:
