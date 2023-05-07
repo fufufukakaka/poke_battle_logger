@@ -6,11 +6,23 @@ import Login from '../pages/login/index';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { Auth0Domain, Auto0ClientId, Auth0CallbackURL } from '../util'
 
-export const SeasonContext = createContext(0);
+// get season from local storage
+let initialSeason = 0
+if (typeof window !== "undefined") {
+  initialSeason = Number(localStorage.getItem('season'));
+}
+export const SeasonContext = createContext(initialSeason);
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [season, setSeason] = useState(0);
+  const [season, setSeason] = useState(initialSeason);
   const hideSidebar = Component === Login;
+
+  const setSeasonHandler = (season: number) => {
+    // set local storage
+    localStorage.setItem('season', season.toString());
+    // set state
+    setSeason(season);
+  };
 
   return (
     <Auth0Provider
@@ -22,7 +34,7 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <ChakraProvider>
         <SeasonContext.Provider value={season}>
-          <Layout setSeason={setSeason} hideSidebar={hideSidebar}>
+          <Layout setSeason={setSeasonHandler} hideSidebar={hideSidebar}>
             <Component {...pageProps} />
           </Layout>
         </SeasonContext.Provider>

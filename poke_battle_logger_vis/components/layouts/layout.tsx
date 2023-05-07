@@ -14,7 +14,7 @@ export default function Layout({
   hideSidebar,
   children,
 }: {
-  setSeason: React.Dispatch<React.SetStateAction<number>>;
+  setSeason: (season: number) => void;
   hideSidebar: boolean;
   children: ReactNode;
 }) {

@@ -22,7 +22,7 @@ import { AiOutlinePlusSquare } from 'react-icons/ai';
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
-  setSeason: React.Dispatch<React.SetStateAction<number>>;
+  setSeason: (season: number) => void;
 }
 
 const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
