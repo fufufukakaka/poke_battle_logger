@@ -1,9 +1,11 @@
 // pages/index.tsx
-import { Box, Container, HStack, Heading, Image, Text, Divider, VStack } from "@chakra-ui/react";
+import { Box, Container, HStack, Heading, Image, Text, Divider, VStack, SimpleGrid, Button } from "@chakra-ui/react";
 import React from "react";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import useSWR from "swr";
 import { getImageUrlClient } from "@/helper/getImageURLClient";
+import Select from 'react-select'
+import { reactSelectOptions } from "@/helper/pokemonJapaneseToEnglishDict";
 
 
 type Image = {
@@ -53,16 +55,24 @@ const AnnotatePokemonImagesPage = () => {
         </HStack>
         <Box flex="1" p="4" bg="white">
             <VStack justify={"start"} align={"start"}>
-              <Text>ここにたくさん画像が並びます</Text>
+              <Text>検出ができなかったポケモン画像一覧</Text>
+              <Text>適切な名前を与えて「Submit」してください。以降の対戦データ抽出で利用されます。</Text>
             </VStack>
         </Box>
         <Divider />
         <Box flex="1" p="4" bg="white">
-            <VStack justify={"start"} align={"start"}>
+          <SimpleGrid columns={4} spacing={10}>
             {imageURLList.map((imageURL, index) => (
-              <Image key={index} src={imageURL} alt={`Image ${index}`} />
+              <VStack key={index}>
+                <Image src={imageURL} alt={`Image ${index}`} />
+                <Select options={reactSelectOptions} />
+              </VStack>
             ))}
-            </VStack>
+            </SimpleGrid>
+        </Box>
+        <Divider />
+        <Box flex="1" p="4" bg="white">
+            <Button colorScheme='blue'>Submit</Button>
         </Box>
       </Container>
     </Box>
