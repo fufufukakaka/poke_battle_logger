@@ -809,7 +809,9 @@ class DatabaseHandler:
             )
         return list(summary.to_dict(orient="index").values())
 
-    def get_battle_log_all(self, trainer_id: str, page: int, size: int) -> List[Dict[str, Union[str, int]]]:
+    def get_battle_log_all(
+        self, trainer_id: str, page: int, size: int
+    ) -> List[Dict[str, Union[str, int]]]:
         sql = f"""
         with target_trainer as (
             select
@@ -924,7 +926,7 @@ class DatabaseHandler:
             target_battle_summary
         """
         with self.db:
-            battle_log_count = self.db.execute_sql(sql).fetchone()[0]
+            battle_log_count = cast(int, self.db.execute_sql(sql).fetchone()[0])
         return battle_log_count
 
     def get_battle_log_season(
@@ -1028,9 +1030,7 @@ class DatabaseHandler:
             ]
         return battle_logs_dict
 
-    def get_battle_log_season_count(
-        self, trainer_id: str, season: int
-    ) -> int:
+    def get_battle_log_season_count(self, trainer_id: str, season: int) -> int:
         sql = f"""
         with target_trainer as (
             select
@@ -1076,7 +1076,7 @@ class DatabaseHandler:
             target_battle_summary
         """
         with self.db:
-            battle_log_count = self.db.execute_sql(sql).fetchone()[0]
+            battle_log_count = cast(int, self.db.execute_sql(sql).fetchone()[0])
         return battle_log_count
 
     def check_trainer_id_exists(self, trainer_id: str) -> bool:

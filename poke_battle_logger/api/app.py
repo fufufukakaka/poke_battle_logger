@@ -146,7 +146,9 @@ async def get_battle_log(
     if season == 0:
         battle_log = database_handler.get_battle_log_all(trainer_id, page, size)
     elif season > 0:
-        battle_log = database_handler.get_battle_log_season(trainer_id, season, page, size)
+        battle_log = database_handler.get_battle_log_season(
+            trainer_id, season, page, size
+        )
     else:
         raise ValueError("season must be 0 or positive")
     return battle_log
@@ -160,7 +162,9 @@ async def get_battle_log_count(
     if season == 0:
         battle_log_count = database_handler.get_battle_log_all_count(trainer_id)
     elif season > 0:
-        battle_log_count = database_handler.get_battle_log_season_count(trainer_id, season)
+        battle_log_count = database_handler.get_battle_log_season_count(
+            trainer_id, season
+        )
     else:
         raise ValueError("season must be 0 or positive")
     return battle_log_count
