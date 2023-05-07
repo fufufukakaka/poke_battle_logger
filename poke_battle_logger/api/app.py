@@ -305,6 +305,8 @@ async def send_progress(websocket: WebSocket, total: int):  # type: ignore
 async def extract_stats_from_video(  # type: ignore
     job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
 ):
+    # template 画像を GCS からダウンロードする
+
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
     poke_battle_extractor = PokemonBattleExtractor(
         video_id=videoId,
