@@ -82,7 +82,7 @@ const BattleLogDetailModal: React.FunctionComponent<
 }) => {
 
   const { data, error, isLoading } = useSWR(
-    `http://127.0.0.1:8000/api/v1/in_battle_log?battle_id=${battle_id}`,
+    isOpen ? `http://127.0.0.1:8000/api/v1/in_battle_log?battle_id=${battle_id}` : null,
     fetcher
   )
 

@@ -1,32 +1,31 @@
 with target_trainer as (
-select
-    id
-from
-    trainer
-where
-    identity = '{trainer_id}'
+    select id
+    from trainer
+    where identity = '{trainer_id}'
 ),
 target_trainer_battles as (
-select
-    battle_id
-from
-    battle
-where
-    trainer_id in (select id from target_trainer)
+    select battle_id
+    from battle
+    where trainer_id in (
+            select id
+            from target_trainer
+        )
 ),
 target_battle_pokemon_team as (
-select * from battlepokemonteam
-where
-    battle_id in (
-        select
-            battle_id from target_trainer_battles)
+    select *
+    from battlepokemonteam
+    where battle_id in (
+            select battle_id
+            from target_trainer_battles
+        )
 ),
 target_battle_summary as (
-select * from battlesummary
-where
-    battle_id in (
-        select
-            battle_id from target_trainer_battles)
+    select *
+    from battlesummary
+    where battle_id in (
+            select battle_id
+            from target_trainer_battles
+        )
 ),
 battle_count as (
     select count(1) as counts
@@ -118,10 +117,10 @@ head_battle_count as (
 ),
 joins as (
     select in_team_count.pokemon_name,
-        ifnull(head_battle_count.counts, 0) as head_battle_count,
-        ifnull(in_battle_lose_count.counts, 0) as in_battle_lose_count,
-        ifnull(in_battle_count.counts, 0) as in_battle_count,
-        ifnull(in_team_count.counts, 0) as in_team_count,
+        coalesce(head_battle_count.counts, 0) as head_battle_count,
+        coalesce(in_battle_lose_count.counts, 0) as in_battle_lose_count,
+        coalesce(in_battle_count.counts, 0) as in_battle_count,
+        coalesce(in_team_count.counts, 0) as in_team_count,
         (
             select counts
             from battle_count
@@ -132,13 +131,22 @@ joins as (
         left join head_battle_count on in_team_count.pokemon_name = head_battle_count.pokemon_name
 )
 select pokemon_name,
-    (in_team_count * 1.0 / battle_count) as in_team_rate,
-    ifnull(in_battle_count * 1.0 / in_team_count, 0.0) as in_battle_rate,
-    ifnull(
-        in_battle_lose_count * 1.0 / in_battle_count,
+    coalesce(
+        in_team_count * 1.0 / NULLIF(battle_count, 0),
+        0.0
+    ) as in_team_rate,
+    coalesce(
+        in_battle_count * 1.0 / NULLIF(in_team_count, 0),
+        0.0
+    ) as in_battle_rate,
+    coalesce(
+        in_battle_lose_count * 1.0 / NULLIF(in_battle_count, 0),
         0.0
     ) as in_battle_lose_rate,
-    ifnull(head_battle_count * 1.0 / in_battle_count, 0.0) as head_battle_rate,
+    coalesce(
+        head_battle_count * 1.0 / NULLIF(in_battle_count, 0),
+        0.0
+    ) as head_battle_rate,
     in_team_count,
     in_battle_count,
     in_battle_lose_count,

@@ -6,11 +6,9 @@ import {
   Text,
   Badge,
   Divider,
-  Editable,
-  EditableTextarea,
-  EditablePreview,
   CardFooter,
   Button,
+  Skeleton,
 } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react'
 import { TimeIcon } from '@chakra-ui/icons';
@@ -33,6 +31,7 @@ interface BattleLogCardProps {
   memo: string;
   video: string;
   saveMemo: (battle_id: string, memo: string) => void;
+  isLoading: boolean;
 }
 
 const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
@@ -50,7 +49,8 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
   opponent_pokemon_select3,
   memo,
   video,
-  saveMemo
+  saveMemo,
+  isLoading
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -76,6 +76,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
       saveMemo={saveMemo}
     />
     <Card>
+      <Skeleton isLoaded={!isLoading}>
       <CardBody>
         <Text>
           <TimeIcon boxSize={4} margin={'5px'} />
@@ -139,6 +140,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
           詳細を確認する
         </Button>
       </CardFooter>
+      </Skeleton>
     </Card>
     </>
   );

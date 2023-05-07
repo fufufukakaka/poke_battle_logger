@@ -7,12 +7,12 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import useSWR from 'swr';
-import axios from 'axios';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { SeasonContext } from '../_app';
 import BattleLogCard from '@/components/data-display/battle-log-card';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
-import { ServerHost } from '../../util'
+import PaginationController from '@/components/navigation/pagination-controller';
+import axiosInstance from '../../helper/axios'
 
 interface BattleLogProps {
   battle_id: string;
@@ -32,22 +32,31 @@ interface BattleLogProps {
 }
 
 const fetcher = async (url: string) => {
-  const results = await axios.get(url);
+  const results = await axiosInstance.get(url);
   // results.data は BattleLogProps の配列
   return await results.data;
 };
 
 const BattleLogs: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(6);
+
   const { user } = useAuth0();
   const season = useContext(SeasonContext);
-  const { data, error, isLoading, mutate } = useSWR(
-    `${ServerHost}/api/v1/battle_log?season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
+
+  const { data: battleCountData, error: battleCountError } = useSWR(
+    `/api/v1/battle_log_count?trainer_id=${user?.sub?.replace("|", "_")}&season=${season}`,
+    fetcher
+  );
+
+  const { data, error, mutate, isLoading } = useSWR(
+    `/api/v1/battle_log?trainer_id=${user?.sub?.replace("|", "_")}&season=${season}&page=${currentPage}&size=${pageSize}`,
     fetcher
   );
 
   const saveMemo = async (battle_id: string, memo: string) => {
-    await axios.post(
-      `${ServerHost}/api/v1/update_memo`,
+    await axiosInstance.post(
+      `api/v1/update_memo`,
       {
         battle_id: battle_id,
         memo: memo,
@@ -62,9 +71,10 @@ const BattleLogs: React.FC = () => {
     )
   };
 
-  if (isLoading) return <p>loading...</p>;
-  if (error) return <p>error</p>;
-  if (!data) return <p>no data</p>;
+  if (error || battleCountError) return <p>error</p>;
+  if (!isLoading && (!data || !battleCountData)) return <p>no data</p>;
+
+  let maxPage = battleCountData ? Math.ceil(battleCountData / pageSize) : 10;
 
   return (
     <Box bg="gray.50" minH="100vh">
@@ -72,10 +82,15 @@ const BattleLogs: React.FC = () => {
         <HStack spacing={0}>
           <Heading padding={'5px'}>対戦一覧</Heading>
           <Image src="./n426.gif" alt="フワライド" boxSize="50px" />
+          <PaginationController
+            maxPage={maxPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </HStack>
         <Box flex="1" p="4" bg="white">
           <SimpleGrid columns={3} spacing={10}>
-            {data.map((battle: BattleLogProps) => (
+            {data ? data.map((battle: BattleLogProps) => (
               <BattleLogCard
                 key={battle.battle_id}
                 battle_id={battle.battle_id}
@@ -93,8 +108,9 @@ const BattleLogs: React.FC = () => {
                 memo={battle.memo}
                 video={battle.video}
                 saveMemo={saveMemo}
+                isLoading={isLoading}
               />
-            ))}
+            )) : null }
           </SimpleGrid>
         </Box>
       </Container>
