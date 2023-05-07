@@ -10,10 +10,12 @@ import SideBar from './sidebar';
 import MobileNav from '../atoms/MobileNav';
 
 export default function Layout({
+  season,
   setSeason,
   hideSidebar,
   children,
 }: {
+  season: number;
   setSeason: (season: number) => void;
   hideSidebar: boolean;
   children: ReactNode;
@@ -31,6 +33,7 @@ export default function Layout({
             onClose={() => onClose}
             display={{ base: 'none', md: 'block' }}
             setSeason={setSeason}
+            season={season}
           />
           <Drawer
             autoFocus={false}
@@ -42,7 +45,7 @@ export default function Layout({
             size="full"
           >
             <DrawerContent>
-              <SideBar onClose={onClose} setSeason={setSeason} />
+              <SideBar season={season} onClose={onClose} setSeason={setSeason} />
             </DrawerContent>
           </Drawer>
           <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />

@@ -34,7 +34,7 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <ChakraProvider>
         <SeasonContext.Provider value={season}>
-          <Layout setSeason={setSeasonHandler} hideSidebar={hideSidebar}>
+          <Layout season={season} setSeason={setSeasonHandler} hideSidebar={hideSidebar}>
             <Component {...pageProps} />
           </Layout>
         </SeasonContext.Provider>

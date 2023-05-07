@@ -23,9 +23,10 @@ import { AiOutlinePlusSquare } from 'react-icons/ai';
 interface SidebarProps extends BoxProps {
   onClose: () => void;
   setSeason: (season: number) => void;
+  season: number;
 }
 
-const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
+const SideBar = ({ onClose, setSeason, season, ...rest }: SidebarProps) => {
   const { user, isAuthenticated, logout } = useAuth0();
   return (
     <Box
@@ -56,8 +57,8 @@ const SideBar = ({ onClose, setSeason, ...rest }: SidebarProps) => {
       </Flex>
       <Select
         padding={'3px'}
-        defaultValue="all"
         color="white"
+        value={season}
         onChange={(e) => setSeason(Number(e.target.value))}
       >
         <option value={0}>全シーズン</option>
