@@ -59,6 +59,11 @@ async def hello_revision() -> str:
     return "hello poke_battle_logger API"
 
 
+@app.get("/api/v1/get_trainer_id_in_DB")
+async def get_trainer_id_in_DB_api(trainer_id: str) -> int:
+    return get_trainer_id_in_DB(trainer_id)
+
+
 @app.get("/api/v1/pokemon_name_to_no")
 async def get_pokemon_name_to_no(pokemon_name: str) -> int:
     return pokemon_japanese_to_no_dict[pokemon_name]
