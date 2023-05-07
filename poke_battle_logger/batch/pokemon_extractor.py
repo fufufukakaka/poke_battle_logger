@@ -1,9 +1,8 @@
 import glob
 import os
-import time
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Union, cast
-
+import datetime
 import cv2
 import numpy as np
 from dotenv import load_dotenv
@@ -73,11 +72,10 @@ class PokemonExtractor:
             if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
-            # save image for annotation(name is timestamp)
+            # save image for annotation(name is YYYYMMDDHHMMSS)
+            name = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             cv2.imwrite(
-                "template_images/unknown_pokemon_templates/"
-                + str(time.time())
-                + ".png",
+                f"template_images/unknown_pokemon_templates/{name}.png",
                 pokemon_image,
             )
             return "unknown_pokemon", True
@@ -101,13 +99,6 @@ class PokemonExtractor:
         if _score > 0.2:
             return _label, False
         else:
-            # テンプレートマッチングで検出する
-            cv2.imwrite(
-                "template_images/unknown_pokemon_templates/"
-                + str(time.time())
-                + ".png",
-                pokemon_image,
-            )
             return self._search_pokemon_by_template_matching(pokemon_image)
 
     def _get_pokemons(

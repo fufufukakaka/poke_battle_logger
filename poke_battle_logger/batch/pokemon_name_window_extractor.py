@@ -1,7 +1,7 @@
 import collections
+import datetime
 import glob
 import re
-import time
 from typing import Dict, List, Optional, Tuple, cast
 
 import cv2
@@ -94,11 +94,10 @@ class PokemonNameWindowExtractor:
             if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
-            # save image for annotation(name is timestamp)
+            # save image for annotation(name is YYYYMMDDHHMMSS)
+            name = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             cv2.imwrite(
-                "template_images/unknown_pokemon_name_window_templates/"
-                + str(time.time())
-                + ".png",
+                "template_images/unknown_pokemon_name_window_templates/" + name + ".png",
                 pokemon_name_window_image,
             )
             return "unknown_pokemon", True
@@ -148,13 +147,14 @@ class PokemonNameWindowExtractor:
         results = []
         _name_results = []
 
+        max_value = 255
+        gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
+
         # 濃いときと薄いときで2回テンプレートマッチングを行う
         for threshold_value in [
             POKEMON_NAME_WINDOW_THRESHOLD_VALUE1,
             POKEMON_NAME_WINDOW_THRESHOLD_VALUE2,
         ]:
-            max_value = 255
-            gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
             _, name_window2 = cv2.threshold(
                 gray_name_window, threshold_value, max_value, cv2.THRESH_BINARY
             )
