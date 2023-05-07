@@ -71,13 +71,14 @@ class PokemonNameWindowExtractor:
 
     def _setup_battle_pokemon_name_window_templates(self) -> Dict[str, np.ndarray]:
         battle_pokemon_name_window_template_paths = glob.glob(
-            "template_images/labeled_pokemon_name_window_templates/*.png"
+            "template_images/labeled_pokemon_name_window_templates/*/*.png"
         )
         battle_pokemon_name_window_templates = {}
         for path in battle_pokemon_name_window_template_paths:
             _gray_image = cv2.imread(path, 0)
+            _pokemon_name = path.split("/")[-2]
             battle_pokemon_name_window_templates[
-                path.split("/")[-1].split(".")[0]
+                _pokemon_name
             ] = _gray_image
         return battle_pokemon_name_window_templates
 

@@ -1,8 +1,9 @@
+import datetime
 import glob
 import os
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Union, cast
-import datetime
+
 import cv2
 import numpy as np
 from dotenv import load_dotenv
@@ -51,8 +52,9 @@ class PokemonExtractor:
         pre_battle_pokemon_templates = {}
         for path in pre_battle_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
+            _pokemon_name = path.split("/")[-2]
             pre_battle_pokemon_templates[
-                path.split("/")[-1].split(".")[0]
+                _pokemon_name
             ] = _gray_image
         return pre_battle_pokemon_templates
 
