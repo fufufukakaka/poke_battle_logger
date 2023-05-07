@@ -53,9 +53,7 @@ class PokemonExtractor:
         for path in pre_battle_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
             _pokemon_name = path.split("/")[-2]
-            pre_battle_pokemon_templates[
-                _pokemon_name
-            ] = _gray_image
+            pre_battle_pokemon_templates[_pokemon_name] = _gray_image
         return pre_battle_pokemon_templates
 
     def _search_pokemon_by_template_matching(

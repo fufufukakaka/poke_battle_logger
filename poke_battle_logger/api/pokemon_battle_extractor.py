@@ -301,8 +301,12 @@ class PokemonBattleExtractor:
             is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
-            self.gcs_handler.upload_unknown_pokemon_templates_to_gcs(trainer_id=self.trainer_id)
-            self.gcs_handler.upload_unknown_pokemon_name_window_templates_to_gcs(trainer_id=self.trainer_id)
+            self.gcs_handler.upload_unknown_pokemon_templates_to_gcs(
+                trainer_id=self.trainer_id
+            )
+            self.gcs_handler.upload_unknown_pokemon_name_window_templates_to_gcs(
+                trainer_id=self.trainer_id
+            )
             status_json.message.insert(
                 0,
                 "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",

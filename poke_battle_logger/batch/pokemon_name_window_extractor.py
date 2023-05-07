@@ -77,9 +77,7 @@ class PokemonNameWindowExtractor:
         for path in battle_pokemon_name_window_template_paths:
             _gray_image = cv2.imread(path, 0)
             _pokemon_name = path.split("/")[-2]
-            battle_pokemon_name_window_templates[
-                _pokemon_name
-            ] = _gray_image
+            battle_pokemon_name_window_templates[_pokemon_name] = _gray_image
         return battle_pokemon_name_window_templates
 
     def _search_name_window_by_template_matching(
@@ -98,7 +96,9 @@ class PokemonNameWindowExtractor:
             # save image for annotation(name is YYYYMMDDHHMMSS)
             name = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             cv2.imwrite(
-                "template_images/unknown_pokemon_name_window_templates/" + name + ".png",
+                "template_images/unknown_pokemon_name_window_templates/"
+                + name
+                + ".png",
                 pokemon_name_window_image,
             )
             return "unknown_pokemon", True
