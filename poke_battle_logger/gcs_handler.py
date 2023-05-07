@@ -1,7 +1,10 @@
 import glob
 import os
+from typing import List
 
 from google.cloud import storage
+
+from poke_battle_logger.api.app import ImageLabel
 
 
 class GCSHandler:
@@ -39,3 +42,19 @@ class GCSHandler:
             blob.upload_from_filename(path)
             # delete local file
             os.remove(path)
+
+    def _move_file(self, src_path: str, dest_path: str):
+        source_blob = self.bucket.blob(src_path)
+        _ = self.bucket.copy_blob(source_blob, self.bucket, dest_path)
+        source_blob.delete()
+
+    def set_label_unknown_pokemon_images(self, image_labels: List[ImageLabel]):
+        for image_label in image_labels:
+            # Create the destination directory
+            dest_dir = f"pokemon_templates/users/1/labeled_pokemon_templates/{image_label.pokemon_label}"
+            dest_path = (
+                f"{dest_dir}/{os.path.basename(image_label.pokemon_image_file_on_gcs)}"
+            )
+
+            # Move the file
+            self._move_file(image_label.pokemon_image_file_on_gcs, dest_path)

@@ -1,11 +1,11 @@
-// pages/index.tsx
 import { Box, Container, HStack, Heading, Image, Text, Divider, VStack, SimpleGrid, Button } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import useSWR from "swr";
 import { getImageUrlClient } from "@/helper/getImageURLClient";
 import Select from 'react-select'
 import { reactSelectOptions } from "@/helper/pokemonJapaneseToEnglishDict";
+import { useToast } from "@chakra-ui/react";
 
 
 type Image = {
@@ -22,17 +22,17 @@ const fetcher = async (url: string) => {
 const URLfetcher = async (url: string) => {
     const res = await fetch(url);
     const data = await res.json();
-    const imageList = data.imageList as string[];
+    const imageFileList = data.imageList as string[];
 
     const imageURLList = await Promise.all(
-      imageList.map(async (fileName) => {
+        imageFileList.map(async (fileName) => {
         const url = await getImageUrlClient(fileName);
         return url;
       })
     );
 
-    return imageURLList;
-  }
+    return {imageURLList, imageFileList}
+};
 
 const AnnotatePokemonImagesPage = () => {
   const { user } = useAuth0();
@@ -41,10 +41,57 @@ const AnnotatePokemonImagesPage = () => {
   const trainerIdInDB = dataTrainerIdInDB;
 
   const { data, error } = useSWR(trainerIdInDB ? `/api/unknown_pokemon_images?trainer_id=${trainerIdInDB}` : null, URLfetcher);
-  const imageURLList = data || [];
+  const imageDataList = data;
+
+  const [imageLabels, setImageLabels] = useState<{ pokemon_image_file_on_gcs: string; pokemon_label: string; }[]>([]);
+  const toast = useToast();
 
   if (error) return <div>Error loading images</div>;
-  if (!data) return <div>Loading...</div>;
+  if (!imageDataList) return <div>Loading...</div>;
+
+  const handleSelectChange = (index: number, option: any) => {
+    const updatedLabels = [...imageLabels];
+    updatedLabels[index] = {
+      pokemon_image_file_on_gcs: imageDataList.imageFileList[index],
+      pokemon_label: option.value,
+    };
+    setImageLabels(updatedLabels);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("/api/set_label_to_unknown_pokemon_images", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(imageLabels),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast({
+          title: "Success",
+          description: data.message,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        const data = await response.json();
+        throw new Error(data.detail);
+      }
+    } catch (error) {
+      const typedError = error as any;
+      toast({
+        title: "Error",
+        description: typedError.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <Box bg="gray.50" minH="100vh">
@@ -61,18 +108,29 @@ const AnnotatePokemonImagesPage = () => {
         </Box>
         <Divider />
         <Box flex="1" p="4" bg="white">
+          <Heading padding={'5px'} size={'md'}>ポケモン選出画像</Heading>
           <SimpleGrid columns={4} spacing={10}>
-            {imageURLList.map((imageURL, index) => (
+            {imageDataList.imageURLList.map((imageURL, index) => (
               <VStack key={index}>
                 <Image src={imageURL} alt={`Image ${index}`} />
-                <Select options={reactSelectOptions} />
+                <Select
+                  options={reactSelectOptions}
+                  onChange={(option) => handleSelectChange(index, option)}
+                />
               </VStack>
             ))}
             </SimpleGrid>
         </Box>
         <Divider />
         <Box flex="1" p="4" bg="white">
-            <Button colorScheme='blue'>Submit</Button>
+          <Heading padding={'5px'} size={'md'}>ポケモンウィンドウ名画像</Heading>
+        </Box>
+        <Divider />
+        <Box flex="1" p="4" bg="white">
+            {imageLabels.length === imageDataList.imageURLList.length ?
+                <Button colorScheme='blue' onClick={handleSubmit}>Submit</Button>
+                : <Text>全ての画像にラベルを付与してください</Text>
+            }
         </Box>
       </Container>
     </Box>
