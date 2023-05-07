@@ -20,6 +20,7 @@ from poke_battle_logger.batch.frame_compressor import (
 from poke_battle_logger.batch.frame_detector import FrameDetector
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.gcs_handler import GCSHandler
 from poke_battle_logger.types import StatusByWebsocket
 
 
@@ -32,6 +33,7 @@ class PokemonBattleExtractor:
         self.video_id = video_id
         self.language = language
         self.trainer_id = trainer_id
+        self.gcs_handler = GCSHandler()
 
     def _download_video(
         self,
@@ -299,6 +301,12 @@ class PokemonBattleExtractor:
             is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
+            self.gcs_handler.upload_unknown_pokemon_templates_to_gcs(
+                trainer_id=self.trainer_id
+            )
+            self.gcs_handler.upload_unknown_pokemon_name_window_templates_to_gcs(
+                trainer_id=self.trainer_id
+            )
             status_json.message.insert(
                 0,
                 "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",

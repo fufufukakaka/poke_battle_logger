@@ -1,7 +1,7 @@
 import collections
+import datetime
 import glob
 import re
-import time
 from typing import Dict, List, Optional, Tuple, cast
 
 import cv2
@@ -71,14 +71,13 @@ class PokemonNameWindowExtractor:
 
     def _setup_battle_pokemon_name_window_templates(self) -> Dict[str, np.ndarray]:
         battle_pokemon_name_window_template_paths = glob.glob(
-            "template_images/labeled_pokemon_name_window_templates/*.png"
+            "template_images/labeled_pokemon_name_window_templates/*/*.png"
         )
         battle_pokemon_name_window_templates = {}
         for path in battle_pokemon_name_window_template_paths:
             _gray_image = cv2.imread(path, 0)
-            battle_pokemon_name_window_templates[
-                path.split("/")[-1].split(".")[0]
-            ] = _gray_image
+            _pokemon_name = path.split("/")[-2]
+            battle_pokemon_name_window_templates[_pokemon_name] = _gray_image
         return battle_pokemon_name_window_templates
 
     def _search_name_window_by_template_matching(
@@ -94,10 +93,11 @@ class PokemonNameWindowExtractor:
             if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
-            # save image for annotation(name is timestamp)
+            # save image for annotation(name is YYYYMMDDHHMMSS)
+            name = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             cv2.imwrite(
                 "template_images/unknown_pokemon_name_window_templates/"
-                + str(time.time())
+                + name
                 + ".png",
                 pokemon_name_window_image,
             )
@@ -148,13 +148,14 @@ class PokemonNameWindowExtractor:
         results = []
         _name_results = []
 
+        max_value = 255
+        gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
+
         # 濃いときと薄いときで2回テンプレートマッチングを行う
         for threshold_value in [
             POKEMON_NAME_WINDOW_THRESHOLD_VALUE1,
             POKEMON_NAME_WINDOW_THRESHOLD_VALUE2,
         ]:
-            max_value = 255
-            gray_name_window = cv2.cvtColor(name_window, cv2.COLOR_RGB2GRAY)
             _, name_window2 = cv2.threshold(
                 gray_name_window, threshold_value, max_value, cv2.THRESH_BINARY
             )

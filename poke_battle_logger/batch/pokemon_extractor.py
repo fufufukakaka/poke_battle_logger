@@ -1,6 +1,6 @@
+import datetime
 import glob
 import os
-import time
 from dataclasses import dataclass
 from typing import Dict, List, Tuple, Union, cast
 
@@ -52,9 +52,8 @@ class PokemonExtractor:
         pre_battle_pokemon_templates = {}
         for path in pre_battle_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
-            pre_battle_pokemon_templates[
-                path.split("/")[-1].split(".")[0]
-            ] = _gray_image
+            _pokemon_name = path.split("/")[-2]
+            pre_battle_pokemon_templates[_pokemon_name] = _gray_image
         return pre_battle_pokemon_templates
 
     def _search_pokemon_by_template_matching(
@@ -73,11 +72,10 @@ class PokemonExtractor:
             if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
                 score_results[pokemon_name] = score
         if len(score_results) == 0:
-            # save image for annotation(name is timestamp)
+            # save image for annotation(name is YYYYMMDDHHMMSS)
+            name = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
             cv2.imwrite(
-                "template_images/unknown_pokemon_templates/"
-                + str(time.time())
-                + ".png",
+                f"template_images/unknown_pokemon_templates/{name}.png",
                 pokemon_image,
             )
             return "unknown_pokemon", True
@@ -101,13 +99,6 @@ class PokemonExtractor:
         if _score > 0.2:
             return _label, False
         else:
-            # テンプレートマッチングで検出する
-            cv2.imwrite(
-                "template_images/unknown_pokemon_templates/"
-                + str(time.time())
-                + ".png",
-                pokemon_image,
-            )
             return self._search_pokemon_by_template_matching(pokemon_image)
 
     def _get_pokemons(
