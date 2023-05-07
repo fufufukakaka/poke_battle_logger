@@ -2,7 +2,7 @@ with season_start_end as (
 	select start_datetime,
 		end_datetime
 	from season
-	where season = { season }
+	where season = {season}
 ),
 target_trainer as (
 	select id
