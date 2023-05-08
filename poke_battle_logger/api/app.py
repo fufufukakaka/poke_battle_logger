@@ -326,7 +326,9 @@ async def extract_stats_from_video(  # type: ignore
 
 
 @app.post("/api/v1/set_label_to_unknown_pokemon_images")
-async def set_label_to_unknown_pokemon_images(image_labels: List[ImageLabel]):
+async def set_label_to_unknown_pokemon_images(
+    image_labels: List[ImageLabel],
+) -> Dict[str, str]:
     gcs_handler = GCSHandler()
     try:
         gcs_handler.set_label_unknown_pokemon_images(image_labels)

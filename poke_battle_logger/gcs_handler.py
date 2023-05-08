@@ -14,7 +14,9 @@ class GCSHandler:
         self.bucket = self.client.get_bucket(self.bucket_name)
 
     def download_pokemon_templates(self, trainer_id: int) -> None:
-        source_folder_prefix = f"pokemon_templates/users/{trainer_id}/labeled_pokemon_templates/"
+        source_folder_prefix = (
+            f"pokemon_templates/users/{trainer_id}/labeled_pokemon_templates/"
+        )
         destination_folder_prefix = "template_images/user_labeled_pokemon_templates/"
 
         # List all the folders in the source folder
@@ -65,12 +67,12 @@ class GCSHandler:
             # delete local file
             os.remove(path)
 
-    def _move_file(self, src_path: str, dest_path: str):
+    def _move_file(self, src_path: str, dest_path: str) -> None:
         source_blob = self.bucket.blob(src_path)
         _ = self.bucket.copy_blob(source_blob, self.bucket, dest_path)
         source_blob.delete()
 
-    def set_label_unknown_pokemon_images(self, image_labels: List[ImageLabel]):
+    def set_label_unknown_pokemon_images(self, image_labels: List[ImageLabel]) -> None:
         for image_label in image_labels:
             # Create the destination directory
             dest_dir = f"pokemon_templates/users/1/labeled_pokemon_templates/{image_label.pokemon_label}"
