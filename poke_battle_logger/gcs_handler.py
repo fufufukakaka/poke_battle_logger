@@ -3,7 +3,6 @@ import os
 from typing import List
 
 from google.cloud import storage
-from pydantic import BaseModel
 
 from poke_battle_logger.types import ImageLabel
 
@@ -13,6 +12,28 @@ class GCSHandler:
         self.bucket_name = "poke_battle_logger_templates"
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(self.bucket_name)
+
+    def download_pokemon_templates(self, trainer_id: int) -> None:
+        source_folder_prefix = f"pokemon_templates/users/{trainer_id}/labeled_pokemon_templates/"
+        destination_folder_prefix = "template_images/user_labeled_pokemon_templates/"
+
+        # List all the folders in the source folder
+        blobs = self.bucket.list_blobs(prefix=source_folder_prefix)
+
+        # Download each file and save it to the local destination folder
+        for blob in blobs:
+            if blob.name.endswith("/"):
+                continue
+
+            source_path_parts = blob.name.split("/")
+            pokemon_name = source_path_parts[-2]
+            file_name = source_path_parts[-1]
+
+            destination_folder = os.path.join(destination_folder_prefix, pokemon_name)
+            os.makedirs(destination_folder, exist_ok=True)
+
+            local_path = os.path.join(destination_folder, file_name)
+            blob.download_to_filename(local_path)
 
     def upload_unknown_pokemon_templates_to_gcs(self, trainer_id: int) -> None:
         """

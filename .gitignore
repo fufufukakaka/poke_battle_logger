@@ -137,3 +137,4 @@ raw
 *.db
 experimental/imgs/*/*.png
 notebook/pokemon_image_classifier
+template_images/user_labeled_pokemon_templates

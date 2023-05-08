@@ -311,7 +311,9 @@ async def send_progress(websocket: WebSocket, total: int):  # type: ignore
 async def extract_stats_from_video(  # type: ignore
     job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
 ):
+    gcs_handler = GCSHandler()
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
+    gcs_handler.download_pokemon_templates(trainer_id_in_DB)
     poke_battle_extractor = PokemonBattleExtractor(
         video_id=videoId,
         language=language,
