@@ -19,7 +19,7 @@ import { MdLogout } from 'react-icons/md';
 import { TbAnalyzeFilled } from 'react-icons/tb';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AiOutlinePlusSquare } from 'react-icons/ai';
-import { AttachmentIcon } from '@chakra-ui/icons';
+import { BiImages } from 'react-icons/bi';
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
@@ -102,7 +102,7 @@ const SideBar = ({ onClose, setSeason, season, ...rest }: SidebarProps) => {
       </NavItem>
       <NavItem
         key={'annotate_pokemon_images'}
-        icon={AttachmentIcon}
+        icon={BiImages}
         href={'/annotate_pokemon_images'}
         marginTop="5px"
       >
