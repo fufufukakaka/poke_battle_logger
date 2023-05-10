@@ -14,7 +14,7 @@ const getPokemonImageUrl = (pokemon_name: string) => {
   if (pokemon_name in pokemonJapaneseToEnglishDict) {
     pokemon_name = pokemonJapaneseToEnglishDict[pokemon_name];
   }
-  pokemon_name = pokemon_name.toLowerCase().replace(" ", "-");
+  pokemon_name = pokemon_name.toLowerCase().replaceAll(" ", "-");
   return `https://img.pokemondb.net/sprites/scarlet-violet/normal/${pokemon_name}.png`;
 };
 
