@@ -16,7 +16,7 @@ from tqdm.auto import tqdm
 from poke_battle_logger.api.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.types import ImageLabel, StatusByWebsocket
+from poke_battle_logger.types import ImageLabel, NameWindowImageLabel, StatusByWebsocket
 
 logging.basicConfig(
     level=logging.INFO,
@@ -328,7 +328,7 @@ async def extract_stats_from_video(  # type: ignore
 
 @app.post("/api/v1/set_label_to_unknown_pokemon_images")
 async def set_label_to_unknown_pokemon_images(
-    trainer_id: str,
+    trainer_id: int,
     image_labels: List[ImageLabel],
 ) -> Dict[str, str]:
     """
@@ -346,14 +346,16 @@ async def set_label_to_unknown_pokemon_images(
 @app.post("/api/v1/set_label_to_unknown_pokemon_name_window_images")
 async def set_label_to_unknown_pokemon_name_window_images(
     trainer_id: int,
-    image_labels: List[ImageLabel],
+    image_labels: List[NameWindowImageLabel],
 ) -> Dict[str, str]:
     """
     trainer_id は DB 上での ID に変換済のものが入力される
     """
     gcs_handler = GCSHandler()
     try:
-        gcs_handler.set_label_unknown_pokemon_name_window_images(trainer_id, image_labels)
+        gcs_handler.set_label_unknown_pokemon_name_window_images(
+            trainer_id, image_labels
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

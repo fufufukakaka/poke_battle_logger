@@ -59,3 +59,8 @@ class InBattlePokemon:
 class ImageLabel(BaseModel):
     pokemon_image_file_on_gcs: str
     pokemon_label: str
+
+
+class NameWindowImageLabel(BaseModel):
+    pokemon_name_window_image_file_on_gcs: str
+    pokemon_label: str

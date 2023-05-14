@@ -4,7 +4,7 @@ from typing import List
 
 from google.cloud import storage
 
-from poke_battle_logger.types import ImageLabel
+from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
 
 class GCSHandler:
@@ -38,10 +38,10 @@ class GCSHandler:
             blob.download_to_filename(local_path)
 
     def download_pokemon_name_window_templates(self, trainer_id: int) -> None:
-        source_folder_prefix = (
-            f"pokemon_name_window_templates/users/{trainer_id}/labeled_pokemon_name_window_templates/"
+        source_folder_prefix = f"pokemon_name_window_templates/users/{trainer_id}/labeled_pokemon_name_window_templates/"
+        destination_folder_prefix = (
+            "template_images/user_labeled_pokemon_name_window_templates/"
         )
-        destination_folder_prefix = "template_images/user_labeled_pokemon_name_window_templates/"
 
         # List all the folders in the source folder
         blobs = self.bucket.list_blobs(prefix=source_folder_prefix)
@@ -96,7 +96,9 @@ class GCSHandler:
         _ = self.bucket.copy_blob(source_blob, self.bucket, dest_path)
         source_blob.delete()
 
-    def set_label_unknown_pokemon_images(self, trainer_id_in_DB: int, image_labels: List[ImageLabel]) -> None:
+    def set_label_unknown_pokemon_images(
+        self, trainer_id_in_DB: int, image_labels: List[ImageLabel]
+    ) -> None:
         for image_label in image_labels:
             # Create the destination directory
             dest_dir = f"pokemon_templates/users/{trainer_id_in_DB}/labeled_pokemon_templates/{image_label.pokemon_label}"
@@ -107,13 +109,15 @@ class GCSHandler:
             # Move the file
             self._move_file(image_label.pokemon_image_file_on_gcs, dest_path)
 
-    def set_label_unknown_pokemon_name_window_images(self, trainer_id_in_DB: int, image_labels: List[ImageLabel]) -> None:
+    def set_label_unknown_pokemon_name_window_images(
+        self, trainer_id_in_DB: int, image_labels: List[NameWindowImageLabel]
+    ) -> None:
         for image_label in image_labels:
             # Create the destination directory
             dest_dir = f"pokemon_name_window_templates/users/{trainer_id_in_DB}/labeled_pokemon_name_window_templates/{image_label.pokemon_label}"
-            dest_path = (
-                f"{dest_dir}/{os.path.basename(image_label.pokemon_name_window_image_file_on_gcs)}"
-            )
+            dest_path = f"{dest_dir}/{os.path.basename(image_label.pokemon_name_window_image_file_on_gcs)}"
 
             # Move the file
-            self._move_file(image_label.pokemon_name_window_image_file_on_gcs, dest_path)
+            self._move_file(
+                image_label.pokemon_name_window_image_file_on_gcs, dest_path
+            )
