@@ -47,13 +47,22 @@ class PokemonExtractor:
 
     def _setup_pre_battle_pokemon_templates(self) -> Dict[str, np.ndarray]:
         pre_battle_pokemon_template_paths = glob.glob(
-            "template_images/labeled_pokemon_templates/*.png"
+            "template_images/labeled_pokemon_templates/*/*.png"
         )
         pre_battle_pokemon_templates = {}
         for path in pre_battle_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
             _pokemon_name = path.split("/")[-2]
             pre_battle_pokemon_templates[_pokemon_name] = _gray_image
+
+        user_labeled_pokemon_template_paths = glob.glob(
+            "template_images/user_labeled_pokemon_templates/*/*.png"
+        )
+        for path in user_labeled_pokemon_template_paths:
+            _gray_image = cv2.imread(path, 0)
+            _pokemon_name = path.split("/")[-2]
+            pre_battle_pokemon_templates[_pokemon_name] = _gray_image
+
         return pre_battle_pokemon_templates
 
     def _search_pokemon_by_template_matching(

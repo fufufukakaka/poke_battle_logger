@@ -1022,3 +1022,8 @@ export const pokemonJapaneseToEnglishDict: PokemonJapaneseToEnglishDict = {
   "パルデアケンタロス炎": "Tauros Paldean Fire",
   "パルデアケンタロス格闘": "Tauros Paldean"
 }
+
+export const reactSelectOptions = Object.keys(pokemonJapaneseToEnglishDict).map(key => ({
+  value: key,
+  label: key
+}));

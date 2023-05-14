@@ -1,6 +1,8 @@
 import dataclasses
 from typing import List
 
+from pydantic import BaseModel
+
 
 @dataclasses.dataclass
 class StatusByWebsocket:
@@ -52,3 +54,13 @@ class InBattlePokemon:
     frame_number: int
     your_pokemon_name: str
     opponent_pokemon_name: str
+
+
+class ImageLabel(BaseModel):
+    pokemon_image_file_on_gcs: str
+    pokemon_label: str
+
+
+class NameWindowImageLabel(BaseModel):
+    pokemon_name_window_image_file_on_gcs: str
+    pokemon_label: str

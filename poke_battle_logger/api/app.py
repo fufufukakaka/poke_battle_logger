@@ -7,7 +7,7 @@ from typing import Dict, List, Union
 
 import pandas as pd
 import yt_dlp
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, HTTPException, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from rich.logging import RichHandler
@@ -15,7 +15,8 @@ from tqdm.auto import tqdm
 
 from poke_battle_logger.api.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
-from poke_battle_logger.types import StatusByWebsocket
+from poke_battle_logger.gcs_handler import GCSHandler
+from poke_battle_logger.types import ImageLabel, NameWindowImageLabel, StatusByWebsocket
 
 logging.basicConfig(
     level=logging.INFO,
@@ -57,6 +58,11 @@ def get_trainer_id_in_DB(trainer_id: str) -> int:
 @app.get("/hello")
 async def hello_revision() -> str:
     return "hello poke_battle_logger API"
+
+
+@app.get("/api/v1/get_trainer_id_in_DB")
+async def get_trainer_id_in_DB_api(trainer_id: str) -> int:
+    return get_trainer_id_in_DB(trainer_id)
 
 
 @app.get("/api/v1/pokemon_name_to_no")
@@ -305,7 +311,10 @@ async def send_progress(websocket: WebSocket, total: int):  # type: ignore
 async def extract_stats_from_video(  # type: ignore
     job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
 ):
+    gcs_handler = GCSHandler()
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
+    gcs_handler.download_pokemon_templates(trainer_id_in_DB)
+    gcs_handler.download_pokemon_name_window_templates(trainer_id_in_DB)
     poke_battle_extractor = PokemonBattleExtractor(
         video_id=videoId,
         language=language,
@@ -315,3 +324,39 @@ async def extract_stats_from_video(  # type: ignore
     await job_progress_websocket.accept()
     await poke_battle_extractor.run(job_progress_websocket)
     await job_progress_websocket.close()
+
+
+@app.post("/api/v1/set_label_to_unknown_pokemon_images")
+async def set_label_to_unknown_pokemon_images(
+    trainer_id: int,
+    image_labels: List[ImageLabel],
+) -> Dict[str, str]:
+    """
+    trainer_id は DB 上での ID に変換済のものが入力される
+    """
+    gcs_handler = GCSHandler()
+    try:
+        gcs_handler.set_label_unknown_pokemon_images(trainer_id, image_labels)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Unknown pokemon image labels are set successfully"}
+
+
+@app.post("/api/v1/set_label_to_unknown_pokemon_name_window_images")
+async def set_label_to_unknown_pokemon_name_window_images(
+    trainer_id: int,
+    image_labels: List[NameWindowImageLabel],
+) -> Dict[str, str]:
+    """
+    trainer_id は DB 上での ID に変換済のものが入力される
+    """
+    gcs_handler = GCSHandler()
+    try:
+        gcs_handler.set_label_unknown_pokemon_name_window_images(
+            trainer_id, image_labels
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Unknown pokemon name window image labels are set successfully"}

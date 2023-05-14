@@ -1,7 +1,7 @@
 import { Alert, AlertIcon, Spinner, Badge, Box, Button, Container, Progress, Stack, HStack, Heading, Image, Text, InputGroup, InputLeftAddon, Input, Divider, VStack, Radio, RadioGroup } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from 'axios';
-import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { ServerHost, ServerHostWebsocket } from "../../util"
 
 interface videoFormat {
@@ -108,4 +108,4 @@ const ProcessVideoPage = () => {
   );
 };
 
-export default ProcessVideoPage;
+export default withAuthenticationRequired(ProcessVideoPage);

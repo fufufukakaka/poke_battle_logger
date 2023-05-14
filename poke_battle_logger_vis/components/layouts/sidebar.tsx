@@ -19,6 +19,7 @@ import { MdLogout } from 'react-icons/md';
 import { TbAnalyzeFilled } from 'react-icons/tb';
 import { useAuth0 } from '@auth0/auth0-react';
 import { AiOutlinePlusSquare } from 'react-icons/ai';
+import { BiImages } from 'react-icons/bi';
 
 interface SidebarProps extends BoxProps {
   onClose: () => void;
@@ -98,6 +99,14 @@ const SideBar = ({ onClose, setSeason, season, ...rest }: SidebarProps) => {
         marginTop="5px"
       >
         対戦データの登録
+      </NavItem>
+      <NavItem
+        key={'annotate_pokemon_images'}
+        icon={BiImages}
+        href={'/annotate_pokemon_images'}
+        marginTop="5px"
+      >
+        画像のラベリング
       </NavItem>
       <Flex
         align="center"
