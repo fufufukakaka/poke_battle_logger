@@ -51,7 +51,7 @@ tessdata は best を使います。
 - NEXT_PUBLIC_AUTH0_DOMAIN
 - NEXT_PUBLIC_AUTH0_CLIENT_ID
 
-また、テンプレート画像を GCS の所定の位置に事前に配備することが必要です(テンプレート画像は公開していません🙏)。
+また、検出に失敗した際、そのテンプレート画像を GCS に送信しています。
 GCS へのアクセス権限を持ったサービスアカウントの認証情報を json でダウンロードして以下に配備してください。
 
 `.credentials/google-cloud-credential.json`
