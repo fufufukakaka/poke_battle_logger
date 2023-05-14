@@ -106,7 +106,6 @@ class PokemonBattleExtractor:
         frame_detector = FrameDetector(self.language)
         extractor = Extractor(self.language)
         pokemon_extractor = PokemonExtractor()
-        database_handler = DatabaseHandler()
 
         first_ranking_frames = []
         select_done_frames = []
@@ -380,6 +379,7 @@ class PokemonBattleExtractor:
         # insert data to database
         status_json.message.insert(0, "INFO: Insert Data to Database...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        database_handler = DatabaseHandler()
         database_handler.create_tables()
         database_handler.insert_battle_id(battles)
         database_handler.insert_battle_summary(battle_logs)

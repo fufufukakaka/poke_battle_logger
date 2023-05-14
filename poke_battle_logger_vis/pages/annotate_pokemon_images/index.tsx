@@ -42,12 +42,16 @@ const AnnotatePokemonImagesPage = () => {
 
   const { data, error } = useSWR(trainerIdInDB ? `/api/unknown_pokemon_images?trainer_id=${trainerIdInDB}` : null, URLfetcher);
   const imageDataList = data;
-
   const [imageLabels, setImageLabels] = useState<{ pokemon_image_file_on_gcs: string; pokemon_label: string; }[]>([]);
+
+  const { data: nameWindowData, error: nameWindowError } = useSWR(trainerIdInDB ? `/api/unknown_pokemon_name_window_images?trainer_id=${trainerIdInDB}` : null, URLfetcher);
+  const nameWindowImageDataList = data;
+  const [nameWindowImageLabels, setNameWindowImageLabels] = useState<{ pokemon_name_window_image_file_on_gcs: string; pokemon_name_window_label: string; }[]>([]);
+
   const toast = useToast();
 
-  if (error) return <div>Error loading images</div>;
-  if (!imageDataList) return <div>Loading...</div>;
+  if (error || nameWindowError) return <div>Error loading images</div>;
+  if (!imageDataList || !nameWindowImageDataList) return <div>Loading...</div>;
 
   const handleSelectChange = (index: number, option: any) => {
     const updatedLabels = [...imageLabels];
@@ -93,6 +97,50 @@ const AnnotatePokemonImagesPage = () => {
     }
   };
 
+  const handleNameWindowSelectChange = (index: number, option: any) => {
+    const updatedLabels = [...nameWindowImageLabels];
+    updatedLabels[index] = {
+      pokemon_name_window_image_file_on_gcs: nameWindowImageDataList.imageFileList[index],
+      pokemon_name_window_label: option.value,
+    };
+    setNameWindowImageLabels(updatedLabels);
+  };
+
+  const handleNameWindowSubmit = async () => {
+    try {
+      const response = await fetch("/api/set_label_to_unknown_pokemon_name_window_images", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(nameWindowImageLabels),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        toast({
+          title: "Success",
+          description: data.message,
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        const data = await response.json();
+        throw new Error(data.detail);
+      }
+    } catch (error) {
+      const typedError = error as any;
+      toast({
+        title: "Error",
+        description: typedError.message,
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
   return (
     <Box bg="gray.50" minH="100vh">
       <Container maxW="container.xl" py="8">
@@ -109,8 +157,8 @@ const AnnotatePokemonImagesPage = () => {
         <Divider />
         <Box flex="1" p="4" bg="white">
           <Heading padding={'5px'} size={'md'}>ポケモン選出画像</Heading>
-          <SimpleGrid columns={4} spacing={10}>
-            {imageDataList.imageURLList.map((imageURL, index) => (
+            <SimpleGrid columns={4} spacing={10}>
+              {imageDataList.imageURLList.map((imageURL, index) => (
               <VStack key={index}>
                 <Image src={imageURL} alt={`Image ${index}`} />
                 <Select
@@ -118,18 +166,36 @@ const AnnotatePokemonImagesPage = () => {
                   onChange={(option) => handleSelectChange(index, option)}
                 />
               </VStack>
-            ))}
+              ))}
             </SimpleGrid>
         </Box>
         <Divider />
         <Box flex="1" p="4" bg="white">
-          <Heading padding={'5px'} size={'md'}>ポケモンウィンドウ名画像</Heading>
+            {imageLabels.length === 0 ? <Text>ラベルが付与されていないポケモン画像はありません</Text> : imageLabels.length === imageDataList.imageURLList.length ?
+                <Button colorScheme='blue' onClick={handleSubmit}>Pokemon Image Submit</Button>
+                : <Text>全てのポケモン画像にラベルを付与してください</Text>
+            }
         </Box>
         <Divider />
         <Box flex="1" p="4" bg="white">
-            {imageLabels.length === imageDataList.imageURLList.length ?
-                <Button colorScheme='blue' onClick={handleSubmit}>Submit</Button>
-                : <Text>全ての画像にラベルを付与してください</Text>
+          <Heading padding={'5px'} size={'md'}>ポケモンウィンドウ名画像</Heading>
+          <SimpleGrid columns={4} spacing={10}>
+              {nameWindowImageDataList.imageURLList.map((imageURL, index) => (
+              <VStack key={index}>
+                <Image src={imageURL} alt={`NameWindowImage ${index}`} />
+                <Select
+                  options={reactSelectOptions}
+                  onChange={(option) => handleNameWindowSelectChange(index, option)}
+                />
+              </VStack>
+              ))}
+            </SimpleGrid>
+        </Box>
+        <Divider />
+        <Box flex="1" p="4" bg="white">
+            {nameWindowImageLabels.length == 0 ? <Text>ラベルが付与されていないウィンドウ画像はありません</Text> : nameWindowImageLabels.length === nameWindowImageDataList.imageURLList.length ?
+                <Button colorScheme='blue' onClick={handleNameWindowSubmit}>Pokemon Name Window Image Submit</Button>
+                : <Text>全てのウィンドウ画像にラベルを付与してください</Text>
             }
         </Box>
       </Container>
