@@ -69,7 +69,10 @@ const AnnotatePokemonImagesPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(imageLabels),
+        body: JSON.stringify({
+          trainer_id: trainerIdInDB,
+          image_labels: imageLabels,
+        }),
       });
 
       if (response.ok) {
@@ -113,7 +116,10 @@ const AnnotatePokemonImagesPage = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(nameWindowImageLabels),
+        body: JSON.stringify({
+          trainer_id: trainerIdInDB,
+          image_labels: nameWindowImageLabels,
+        }),
       });
 
       if (response.ok) {

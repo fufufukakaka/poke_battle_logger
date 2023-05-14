@@ -78,6 +78,15 @@ class PokemonNameWindowExtractor:
             _gray_image = cv2.imread(path, 0)
             _pokemon_name = path.split("/")[-2]
             battle_pokemon_name_window_templates[_pokemon_name] = _gray_image
+
+        user_labeled_pokemon_name_window_template_paths = glob.glob(
+            "template_images/user_labeled_pokemon_name_window_templates/*/*.png"
+        )
+        for path in user_labeled_pokemon_name_window_template_paths:
+            _gray_image = cv2.imread(path, 0)
+            _pokemon_name = path.split("/")[-2]
+            battle_pokemon_name_window_templates[_pokemon_name] = _gray_image
+
         return battle_pokemon_name_window_templates
 
     def _search_name_window_by_template_matching(

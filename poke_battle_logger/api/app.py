@@ -314,6 +314,7 @@ async def extract_stats_from_video(  # type: ignore
     gcs_handler = GCSHandler()
     trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
     gcs_handler.download_pokemon_templates(trainer_id_in_DB)
+    gcs_handler.download_pokemon_name_window_templates(trainer_id_in_DB)
     poke_battle_extractor = PokemonBattleExtractor(
         video_id=videoId,
         language=language,
@@ -327,12 +328,33 @@ async def extract_stats_from_video(  # type: ignore
 
 @app.post("/api/v1/set_label_to_unknown_pokemon_images")
 async def set_label_to_unknown_pokemon_images(
+    trainer_id: str,
     image_labels: List[ImageLabel],
 ) -> Dict[str, str]:
+    """
+    trainer_id は DB 上での ID に変換済のものが入力される
+    """
     gcs_handler = GCSHandler()
     try:
-        gcs_handler.set_label_unknown_pokemon_images(image_labels)
+        gcs_handler.set_label_unknown_pokemon_images(trainer_id, image_labels)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-    return {"message": "Unknown Pokemon Image Labels are set successfully"}
+    return {"message": "Unknown pokemon image labels are set successfully"}
+
+
+@app.post("/api/v1/set_label_to_unknown_pokemon_name_window_images")
+async def set_label_to_unknown_pokemon_name_window_images(
+    trainer_id: int,
+    image_labels: List[ImageLabel],
+) -> Dict[str, str]:
+    """
+    trainer_id は DB 上での ID に変換済のものが入力される
+    """
+    gcs_handler = GCSHandler()
+    try:
+        gcs_handler.set_label_unknown_pokemon_name_window_images(trainer_id, image_labels)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+    return {"message": "Unknown pokemon name window image labels are set successfully"}
