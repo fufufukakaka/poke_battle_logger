@@ -40,7 +40,6 @@ app.add_middleware(
 )
 
 
-database_handler: DatabaseHandler = DatabaseHandler()
 pokemon_name_df = pd.read_csv("data/pokemon_names.csv")
 pokemon_japanese_to_no_dict: Dict[str, int] = dict(
     zip(pokemon_name_df["Japanese"], pokemon_name_df["No."])
@@ -51,6 +50,7 @@ pokemon_japanese_to_english_dict: Dict[str, str] = dict(
 
 
 def get_trainer_id_in_DB(trainer_id: str) -> int:
+    database_handler: DatabaseHandler = DatabaseHandler()
     trainer_id_in_DB = database_handler.get_trainer_id_in_DB(trainer_id)
     return trainer_id_in_DB
 
@@ -74,6 +74,7 @@ async def get_pokemon_name_to_no(pokemon_name: str) -> int:
 async def get_recent_battle_summary(
     trainer_id: str,
 ) -> Dict[str, Union[float, int, str, List[Dict[str, Union[str, int]]]]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
     is_exist = database_handler.check_trainer_id_exists(trainer_id)
     if not is_exist:
         return {
@@ -106,6 +107,7 @@ async def get_analytics(
     trainer_id: str,
     season: int,
 ) -> Dict[str, Union[List[float], List[int], List[Dict[str, Union[str, int, float]]]]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
     if season == 0:
         win_rate_transition = database_handler.get_win_rate_transitions_all(trainer_id)
         next_rank_transition = database_handler.get_next_rank_transitions_all(
@@ -149,6 +151,7 @@ async def get_battle_log(
     page: int,
     size: int,
 ) -> List[Dict[str, Union[str, int]]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
     if season == 0:
         battle_log = database_handler.get_battle_log_all(trainer_id, page, size)
     elif season > 0:
@@ -165,6 +168,7 @@ async def get_battle_log_count(
     trainer_id: str,
     season: int,
 ) -> int:
+    database_handler: DatabaseHandler = DatabaseHandler()
     if season == 0:
         battle_log_count = database_handler.get_battle_log_all_count(trainer_id)
     elif season > 0:
@@ -178,6 +182,7 @@ async def get_battle_log_count(
 
 @app.get("/api/v1/in_battle_log")
 async def get_in_battle_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
     return database_handler.get_in_battle_log(battle_id)
 
 
@@ -215,6 +220,7 @@ async def save_new_trainer(
     - trainer_id が存在する場合は何もしない
     """
     # check if trainer_id exists
+    database_handler: DatabaseHandler = DatabaseHandler()
     if database_handler.check_trainer_id_exists(user.trainer_id):
         logger.info("trainer_id already exists")
         return "trainer_id already exists"
@@ -231,6 +237,7 @@ class MemoModel(BaseModel):
 
 @app.post("/api/v1/update_memo")
 async def update_memo(request: MemoModel) -> str:
+    database_handler: DatabaseHandler = DatabaseHandler()
     database_handler.update_memo(request.battle_id, request.memo)
     return "update memo"
 

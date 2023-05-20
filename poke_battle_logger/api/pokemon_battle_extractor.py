@@ -380,7 +380,6 @@ class PokemonBattleExtractor:
         status_json.message.insert(0, "INFO: Insert Data to Database...")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
         database_handler = DatabaseHandler()
-        database_handler.create_tables()
         database_handler.insert_battle_id(battles)
         database_handler.insert_battle_summary(battle_logs)
         database_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)

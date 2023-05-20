@@ -135,84 +135,89 @@ class DatabaseHandler:
                     )
 
     def insert_battle_id(self, battles: List[BattleType]) -> None:
-        with self.db:
-            for _battle in battles:
-                _battle_id = _battle.battle_id
-                _trainer_id = _battle.trainer_id
-                Battle.create(battle_id=_battle_id, trainer_id=_trainer_id)
+        self.db.connect()
+        for _battle in battles:
+            _battle_id = _battle.battle_id
+            _trainer_id = _battle.trainer_id
+            Battle.create(battle_id=_battle_id, trainer_id=_trainer_id)
+        self.db.close()
 
     def insert_battle_summary(self, battle_summary: List[BattleLog]) -> None:
-        with self.db:
-            for _battle_summary in battle_summary:
-                BattleSummary.create(
-                    battle_id=_battle_summary.battle_id,
-                    created_at=_battle_summary.created_at,
-                    win_or_lose=_battle_summary.win_or_lose,
-                    next_rank=_battle_summary.next_rank,
-                    your_team=unicodedata.normalize("NFC", _battle_summary.your_team),
-                    opponent_team=unicodedata.normalize(
-                        "NFC", _battle_summary.opponent_team
-                    ),
-                    your_pokemon_1=unicodedata.normalize(
-                        "NFC", _battle_summary.your_pokemon_1
-                    ),
-                    your_pokemon_2=unicodedata.normalize(
-                        "NFC", _battle_summary.your_pokemon_2
-                    ),
-                    your_pokemon_3=unicodedata.normalize(
-                        "NFC", _battle_summary.your_pokemon_3
-                    ),
-                    opponent_pokemon_1=unicodedata.normalize(
-                        "NFC", _battle_summary.opponent_pokemon_1
-                    ),
-                    opponent_pokemon_2=unicodedata.normalize(
-                        "NFC", _battle_summary.opponent_pokemon_2
-                    ),
-                    opponent_pokemon_3=unicodedata.normalize(
-                        "NFC", _battle_summary.opponent_pokemon_3
-                    ),
-                    video=_battle_summary.video,
-                    memo="",
-                )
+        self.db.connect()
+        for _battle_summary in battle_summary:
+            BattleSummary.create(
+                battle_id=_battle_summary.battle_id,
+                created_at=_battle_summary.created_at,
+                win_or_lose=_battle_summary.win_or_lose,
+                next_rank=_battle_summary.next_rank,
+                your_team=unicodedata.normalize("NFC", _battle_summary.your_team),
+                opponent_team=unicodedata.normalize(
+                    "NFC", _battle_summary.opponent_team
+                ),
+                your_pokemon_1=unicodedata.normalize(
+                    "NFC", _battle_summary.your_pokemon_1
+                ),
+                your_pokemon_2=unicodedata.normalize(
+                    "NFC", _battle_summary.your_pokemon_2
+                ),
+                your_pokemon_3=unicodedata.normalize(
+                    "NFC", _battle_summary.your_pokemon_3
+                ),
+                opponent_pokemon_1=unicodedata.normalize(
+                    "NFC", _battle_summary.opponent_pokemon_1
+                ),
+                opponent_pokemon_2=unicodedata.normalize(
+                    "NFC", _battle_summary.opponent_pokemon_2
+                ),
+                opponent_pokemon_3=unicodedata.normalize(
+                    "NFC", _battle_summary.opponent_pokemon_3
+                ),
+                video=_battle_summary.video,
+                memo="",
+            )
+        self.db.close()
 
     def insert_battle_pokemon_team(
         self, battle_pokemon_team: List[PreBattlePokemon]
     ) -> None:
-        with self.db:
-            for _battle_pokemon_team in battle_pokemon_team:
-                BattlePokemonTeam.create(
-                    battle_id=_battle_pokemon_team.battle_id,
-                    team=_battle_pokemon_team.team,
-                    pokemon_name=unicodedata.normalize(
-                        "NFC", _battle_pokemon_team.pokemon_name
-                    ),
-                )
+        self.db.connect()
+        for _battle_pokemon_team in battle_pokemon_team:
+            BattlePokemonTeam.create(
+                battle_id=_battle_pokemon_team.battle_id,
+                team=_battle_pokemon_team.team,
+                pokemon_name=unicodedata.normalize(
+                    "NFC", _battle_pokemon_team.pokemon_name
+                ),
+            )
+        self.db.close()
 
     def insert_in_battle_pokemon_log(
         self, in_battle_pokemon_log: List[InBattlePokemon]
     ) -> None:
-        with self.db:
-            for _in_battle_pokemon_log in in_battle_pokemon_log:
-                InBattlePokemonLog.create(
-                    battle_id=_in_battle_pokemon_log.battle_id,
-                    turn=_in_battle_pokemon_log.turn,
-                    frame_number=_in_battle_pokemon_log.frame_number,
-                    your_pokemon_name=unicodedata.normalize(
-                        "NFC", _in_battle_pokemon_log.your_pokemon_name
-                    ),
-                    opponent_pokemon_name=unicodedata.normalize(
-                        "NFC", _in_battle_pokemon_log.opponent_pokemon_name
-                    ),
-                )
+        self.db.connect()
+        for _in_battle_pokemon_log in in_battle_pokemon_log:
+            InBattlePokemonLog.create(
+                battle_id=_in_battle_pokemon_log.battle_id,
+                turn=_in_battle_pokemon_log.turn,
+                frame_number=_in_battle_pokemon_log.frame_number,
+                your_pokemon_name=unicodedata.normalize(
+                    "NFC", _in_battle_pokemon_log.your_pokemon_name
+                ),
+                opponent_pokemon_name=unicodedata.normalize(
+                    "NFC", _in_battle_pokemon_log.opponent_pokemon_name
+                ),
+            )
+        self.db.close()
 
     def insert_message_log(self, message_log: List[Message]) -> None:
-        with self.db:
-            for _message_log in message_log:
-                MessageLog.create(
-                    battle_id=_message_log.battle_id,
-                    frame_number=_message_log.frame_number,
-                    message=_message_log.message,
-                )
+        self.db.connect()
+        for _message_log in message_log:
+            MessageLog.create(
+                battle_id=_message_log.battle_id,
+                frame_number=_message_log.frame_number,
+                message=_message_log.message,
+            )
+        self.db.close()
 
     def get_latest_season_win_rate(self, trainer_id: str) -> float:
         sql = f"""
@@ -267,8 +272,9 @@ class DatabaseHandler:
         from
             target_battle_summary
         """
-        with self.db:
-            win_rate = cast(float, self.db.execute_sql(sql).fetchone()[0])
+        self.db.connect()
+        win_rate = cast(float, self.db.execute_sql(sql).fetchone()[0])
+        self.db.close()
         return win_rate
 
     def get_latest_season_rank(self, trainer_id: str) -> int:
@@ -316,8 +322,9 @@ class DatabaseHandler:
             created_at desc
         limit 1
         """
-        with self.db:
-            latest_season_rank = cast(int, self.db.execute_sql(sql).fetchone()[0])
+        self.db.connect()
+        latest_season_rank = cast(int, self.db.execute_sql(sql).fetchone()[0])
+        self.db.close()
         return latest_season_rank
 
     def get_latest_win_pokemon(self, trainer_id: str) -> str:
@@ -351,10 +358,11 @@ class DatabaseHandler:
             created_at desc
         limit 1
         """
-        with self.db:
-            latest_win_pokemons = self.db.execute_sql(sql).fetchone()
-            # ランダムに1匹選ぶ
-            latest_win_pokemon = cast(str, random.choice(latest_win_pokemons))
+        self.db.connect()
+        latest_win_pokemons = self.db.execute_sql(sql).fetchone()
+        self.db.close()
+        # ランダムに1匹選ぶ
+        latest_win_pokemon = cast(str, random.choice(latest_win_pokemons))
         return latest_win_pokemon
 
     def get_latest_lose_pokemon(self, trainer_id: str) -> str:
@@ -388,15 +396,16 @@ class DatabaseHandler:
             created_at desc
         limit 1
         """
-        with self.db:
-            latest_lose_pokemons = self.db.execute_sql(sql).fetchone()
-            # Unseen を除いてランダムに1匹選ぶ
-            latest_lose_pokemon = cast(
-                str,
-                random.choice(
-                    [pokemon for pokemon in latest_lose_pokemons if pokemon != "Unseen"]
-                ),
-            )
+        self.db.connect()
+        latest_lose_pokemons = self.db.execute_sql(sql).fetchone()
+        self.db.close()
+        # Unseen を除いてランダムに1匹選ぶ
+        latest_lose_pokemon = cast(
+            str,
+            random.choice(
+                [pokemon for pokemon in latest_lose_pokemons if pokemon != "Unseen"]
+            ),
+        )
         return latest_lose_pokemon
 
     def get_win_rate_transitions_season(
@@ -471,10 +480,11 @@ class DatabaseHandler:
                 order by
                     created_at asc
         """
-        with self.db:
-            _win_rate_transitions = cast(
-                List[Tuple[float]], self.db.execute_sql(sql).fetchall()
-            )
+        self.db.connect()
+        _win_rate_transitions = cast(
+            List[Tuple[float]], self.db.execute_sql(sql).fetchall()
+        )
+        self.db.close()
         win_rate_transitions = [
             win_rate_transition[0] for win_rate_transition in _win_rate_transitions
         ]
@@ -529,10 +539,11 @@ class DatabaseHandler:
                 order by
                     created_at asc
         """
-        with self.db:
-            _win_rate_transitions: List[Tuple[float]] = self.db.execute_sql(
-                sql
-            ).fetchall()
+        self.db.connect()
+        _win_rate_transitions: List[Tuple[float]] = self.db.execute_sql(
+            sql
+        ).fetchall()
+        self.db.close()
         win_rate_transitions: List[float] = [
             win_rate_transition[0] for win_rate_transition in _win_rate_transitions
         ]
@@ -588,10 +599,11 @@ class DatabaseHandler:
         order by
             created_at
         """
-        with self.db:
-            _next_rank_transitions = cast(
-                List[Tuple[int]], self.db.execute_sql(sql).fetchall()
-            )
+        self.db.connect()
+        _next_rank_transitions = cast(
+            List[Tuple[int]], self.db.execute_sql(sql).fetchall()
+        )
+        self.db.close()
         next_rank_transitions = [
             next_rank_transition[0] for next_rank_transition in _next_rank_transitions
         ]
@@ -629,10 +641,11 @@ class DatabaseHandler:
         order by
             created_at
         """
-        with self.db:
-            _next_rank_transitions: List[Tuple[int]] = self.db.execute_sql(
-                sql
-            ).fetchall()
+        self.db.connect()
+        _next_rank_transitions: List[Tuple[int]] = self.db.execute_sql(
+            sql
+        ).fetchall()
+        self.db.close()
         next_rank_transitions: List[int] = [
             next_rank_transition[0] for next_rank_transition in _next_rank_transitions
         ]
@@ -678,19 +691,21 @@ class DatabaseHandler:
             created_at desc
         limit 5
         """
-        with self.db:
-            _recent_battle_history = self.db.execute_sql(sql).fetchall()
-            recent_battle_history_dict: List[Dict[str, Union[str, int]]] = [
-                {
-                    "battle_id": battle_id,
-                    "created_at": created_at,
-                    "win_or_lose": win_or_lose,
-                    "next_rank": next_rank,
-                    "your_pokemon_1": your_pokemon_1,
-                    "opponent_pokemon_1": opponent_pokemon_1,
-                }
-                for battle_id, created_at, win_or_lose, next_rank, your_pokemon_1, opponent_pokemon_1 in _recent_battle_history
-            ]
+        self.db.connect()
+        _recent_battle_history = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+
+        recent_battle_history_dict: List[Dict[str, Union[str, int]]] = [
+            {
+                "battle_id": battle_id,
+                "created_at": created_at,
+                "win_or_lose": win_or_lose,
+                "next_rank": next_rank,
+                "your_pokemon_1": your_pokemon_1,
+                "opponent_pokemon_1": opponent_pokemon_1,
+            }
+            for battle_id, created_at, win_or_lose, next_rank, your_pokemon_1, opponent_pokemon_1 in _recent_battle_history
+        ]
         return recent_battle_history_dict
 
     def get_your_pokemon_stats_summary_all(
@@ -702,24 +717,25 @@ class DatabaseHandler:
             .format(trainer_id=trainer_id)
         )
 
-        with self.db:
-            stats = self.db.execute_sql(sql).fetchall()
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
 
-            # merge as pandas
-            summary = pd.DataFrame(
-                stats,
-                columns=[
-                    "pokemon_name",
-                    "in_team_rate",
-                    "in_battle_rate",
-                    "in_battle_win_rate",
-                    "head_battle_rate",
-                    "in_team_count",
-                    "in_battle_count",
-                    "in_battle_win_count",
-                    "head_battle_count",
-                ],
-            )
+        # merge as pandas
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "pokemon_name",
+                "in_team_rate",
+                "in_battle_rate",
+                "in_battle_win_rate",
+                "head_battle_rate",
+                "in_team_count",
+                "in_battle_count",
+                "in_battle_win_count",
+                "head_battle_count",
+            ],
+        )
         return list(summary.to_dict(orient="index").values())
 
     def get_your_pokemon_stats_summary_season(
@@ -731,24 +747,25 @@ class DatabaseHandler:
             .format(trainer_id=trainer_id, season=season)
         )
 
-        with self.db:
-            stats = self.db.execute_sql(sql).fetchall()
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
 
-            # merge as pandas
-            summary = pd.DataFrame(
-                stats,
-                columns=[
-                    "pokemon_name",
-                    "in_team_rate",
-                    "in_battle_rate",
-                    "in_battle_win_rate",
-                    "head_battle_rate",
-                    "in_team_count",
-                    "in_battle_count",
-                    "in_battle_win_count",
-                    "head_battle_count",
-                ],
-            )
+        # merge as pandas
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "pokemon_name",
+                "in_team_rate",
+                "in_battle_rate",
+                "in_battle_win_rate",
+                "head_battle_rate",
+                "in_team_count",
+                "in_battle_count",
+                "in_battle_win_count",
+                "head_battle_count",
+            ],
+        )
         return list(summary.to_dict(orient="index").values())
 
     def get_opponent_pokemon_stats_summary_all(
@@ -760,24 +777,25 @@ class DatabaseHandler:
             .format(trainer_id=trainer_id)
         )
 
-        with self.db:
-            stats = self.db.execute_sql(sql).fetchall()
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
 
-            # merge as pandas
-            summary = pd.DataFrame(
-                stats,
-                columns=[
-                    "pokemon_name",
-                    "in_team_rate",
-                    "in_battle_rate",
-                    "in_battle_lose_rate",
-                    "head_battle_rate",
-                    "in_team_count",
-                    "in_battle_count",
-                    "in_battle_win_count",
-                    "head_battle_count",
-                ],
-            )
+        # merge as pandas
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "pokemon_name",
+                "in_team_rate",
+                "in_battle_rate",
+                "in_battle_lose_rate",
+                "head_battle_rate",
+                "in_team_count",
+                "in_battle_count",
+                "in_battle_win_count",
+                "head_battle_count",
+            ],
+        )
         return list(summary.to_dict(orient="index").values())
 
     def get_opponent_pokemon_stats_summary_season(
@@ -789,24 +807,25 @@ class DatabaseHandler:
             .format(trainer_id=trainer_id, season=season)
         )
 
-        with self.db:
-            stats = self.db.execute_sql(sql).fetchall()
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
 
-            # merge as pandas
-            summary = pd.DataFrame(
-                stats,
-                columns=[
-                    "pokemon_name",
-                    "in_team_rate",
-                    "in_battle_rate",
-                    "in_battle_lose_rate",
-                    "head_battle_rate",
-                    "in_team_count",
-                    "in_battle_count",
-                    "in_battle_win_count",
-                    "head_battle_count",
-                ],
-            )
+        # merge as pandas
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "pokemon_name",
+                "in_team_rate",
+                "in_battle_rate",
+                "in_battle_lose_rate",
+                "head_battle_rate",
+                "in_team_count",
+                "in_battle_count",
+                "in_battle_win_count",
+                "head_battle_count",
+            ],
+        )
         return list(summary.to_dict(orient="index").values())
 
     def get_battle_log_all(
@@ -857,42 +876,43 @@ class DatabaseHandler:
             created_at desc
         limit {size} offset {size * (page - 1)}
         """
-        with self.db:
-            battle_logs = self.db.execute_sql(sql).fetchall()
-            battle_logs_dict: List[Dict[str, Union[str, int]]] = [
-                {
-                    "battle_id": battle_id,
-                    "battle_created_at": created_at,
-                    "win_or_lose": win_or_lose,
-                    "next_rank": next_rank,
-                    "your_pokemon_team": your_team,
-                    "opponent_pokemon_team": opponent_team,
-                    "your_pokemon_select1": your_pokemon_1,
-                    "your_pokemon_select2": your_pokemon_2,
-                    "your_pokemon_select3": your_pokemon_3,
-                    "opponent_pokemon_select1": opponent_pokemon_1,
-                    "opponent_pokemon_select2": opponent_pokemon_2,
-                    "opponent_pokemon_select3": opponent_pokemon_3,
-                    "memo": memo,
-                    "video": video,
-                }
-                for (
-                    battle_id,
-                    created_at,
-                    win_or_lose,
-                    next_rank,
-                    your_team,
-                    opponent_team,
-                    your_pokemon_1,
-                    your_pokemon_2,
-                    your_pokemon_3,
-                    opponent_pokemon_1,
-                    opponent_pokemon_2,
-                    opponent_pokemon_3,
-                    memo,
-                    video,
-                ) in battle_logs
-            ]
+        self.db.connect()
+        battle_logs = self.db.execute_sql(sql).fetchall()
+        battle_logs_dict: List[Dict[str, Union[str, int]]] = [
+            {
+                "battle_id": battle_id,
+                "battle_created_at": created_at,
+                "win_or_lose": win_or_lose,
+                "next_rank": next_rank,
+                "your_pokemon_team": your_team,
+                "opponent_pokemon_team": opponent_team,
+                "your_pokemon_select1": your_pokemon_1,
+                "your_pokemon_select2": your_pokemon_2,
+                "your_pokemon_select3": your_pokemon_3,
+                "opponent_pokemon_select1": opponent_pokemon_1,
+                "opponent_pokemon_select2": opponent_pokemon_2,
+                "opponent_pokemon_select3": opponent_pokemon_3,
+                "memo": memo,
+                "video": video,
+            }
+            for (
+                battle_id,
+                created_at,
+                win_or_lose,
+                next_rank,
+                your_team,
+                opponent_team,
+                your_pokemon_1,
+                your_pokemon_2,
+                your_pokemon_3,
+                opponent_pokemon_1,
+                opponent_pokemon_2,
+                opponent_pokemon_3,
+                memo,
+                video,
+            ) in battle_logs
+        ]
+        self.db.close()
         return battle_logs_dict
 
     def get_battle_log_all_count(self, trainer_id: str) -> int:
@@ -925,8 +945,9 @@ class DatabaseHandler:
         from
             target_battle_summary
         """
-        with self.db:
-            battle_log_count = cast(int, self.db.execute_sql(sql).fetchone()[0])
+        self.db.connect()
+        battle_log_count = cast(int, self.db.execute_sql(sql).fetchone()[0])
+        self.db.close()
         return battle_log_count
 
     def get_battle_log_season(
@@ -992,42 +1013,43 @@ class DatabaseHandler:
             created_at desc
         limit {size} offset {size * (page - 1)}
         """
-        with self.db:
-            battle_logs = self.db.execute_sql(sql).fetchall()
-            battle_logs_dict: List[Dict[str, Union[str, int]]] = [
-                {
-                    "battle_id": battle_id,
-                    "battle_created_at": created_at,
-                    "win_or_lose": win_or_lose,
-                    "next_rank": next_rank,
-                    "your_pokemon_team": your_team,
-                    "opponent_pokemon_team": opponent_team,
-                    "your_pokemon_select1": your_pokemon_1,
-                    "your_pokemon_select2": your_pokemon_2,
-                    "your_pokemon_select3": your_pokemon_3,
-                    "opponent_pokemon_select1": opponent_pokemon_1,
-                    "opponent_pokemon_select2": opponent_pokemon_2,
-                    "opponent_pokemon_select3": opponent_pokemon_3,
-                    "memo": memo,
-                    "video": video,
-                }
-                for (
-                    battle_id,
-                    created_at,
-                    win_or_lose,
-                    next_rank,
-                    your_team,
-                    opponent_team,
-                    your_pokemon_1,
-                    your_pokemon_2,
-                    your_pokemon_3,
-                    opponent_pokemon_1,
-                    opponent_pokemon_2,
-                    opponent_pokemon_3,
-                    memo,
-                    video,
-                ) in battle_logs
-            ]
+        self.db.connect()
+        battle_logs = self.db.execute_sql(sql).fetchall()
+        battle_logs_dict: List[Dict[str, Union[str, int]]] = [
+            {
+                "battle_id": battle_id,
+                "battle_created_at": created_at,
+                "win_or_lose": win_or_lose,
+                "next_rank": next_rank,
+                "your_pokemon_team": your_team,
+                "opponent_pokemon_team": opponent_team,
+                "your_pokemon_select1": your_pokemon_1,
+                "your_pokemon_select2": your_pokemon_2,
+                "your_pokemon_select3": your_pokemon_3,
+                "opponent_pokemon_select1": opponent_pokemon_1,
+                "opponent_pokemon_select2": opponent_pokemon_2,
+                "opponent_pokemon_select3": opponent_pokemon_3,
+                "memo": memo,
+                "video": video,
+            }
+            for (
+                battle_id,
+                created_at,
+                win_or_lose,
+                next_rank,
+                your_team,
+                opponent_team,
+                your_pokemon_1,
+                your_pokemon_2,
+                your_pokemon_3,
+                opponent_pokemon_1,
+                opponent_pokemon_2,
+                opponent_pokemon_3,
+                memo,
+                video,
+            ) in battle_logs
+        ]
+        self.db.close()
         return battle_logs_dict
 
     def get_battle_log_season_count(self, trainer_id: str, season: int) -> int:
@@ -1075,8 +1097,9 @@ class DatabaseHandler:
         from
             target_battle_summary
         """
-        with self.db:
-            battle_log_count = cast(int, self.db.execute_sql(sql).fetchone()[0])
+        self.db.connect()
+        battle_log_count = cast(int, self.db.execute_sql(sql).fetchone()[0])
+        self.db.close()
         return battle_log_count
 
     def check_trainer_id_exists(self, trainer_id: str) -> bool:
@@ -1088,8 +1111,9 @@ class DatabaseHandler:
         where
             identity = '{trainer_id}'
         """
-        with self.db:
-            count = self.db.execute_sql(sql).fetchone()[0]
+        self.db.connect()
+        count = self.db.execute_sql(sql).fetchone()[0]
+        self.db.close()
         _result = cast(bool, count > 0)
         return _result
 
@@ -1100,8 +1124,9 @@ class DatabaseHandler:
         values
             ('{trainer_id}')
         """
-        with self.db:
-            self.db.execute_sql(sql)
+        self.db.connect()
+        self.db.execute_sql(sql)
+        self.db.close()
 
     def get_battle_counts(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
         sql = f"""

@@ -138,3 +138,4 @@ raw
 experimental/imgs/*/*.png
 notebook/pokemon_image_classifier
 template_images/user_labeled_pokemon_templates
+template_images/user_labeled_pokemon_name_window_templates
