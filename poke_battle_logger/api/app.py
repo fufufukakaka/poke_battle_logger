@@ -7,8 +7,10 @@ from typing import Dict, List, Union
 
 import pandas as pd
 import yt_dlp
-from fastapi import FastAPI, HTTPException, WebSocket
+from fastapi import FastAPI, HTTPException, Request, WebSocket, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from rich.logging import RichHandler
 from tqdm.auto import tqdm
@@ -54,6 +56,10 @@ def get_trainer_id_in_DB(trainer_id: str) -> int:
     trainer_id_in_DB = database_handler.get_trainer_id_in_DB(trainer_id)
     return trainer_id_in_DB
 
+@app.exception_handler(RequestValidationError)
+async def handler(request:Request, exc:RequestValidationError):
+    print(exc)
+    return JSONResponse(content={}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 @app.get("/hello")
 async def hello_revision() -> str:
@@ -333,27 +339,37 @@ async def extract_stats_from_video(  # type: ignore
     await job_progress_websocket.close()
 
 
+class SetLabelRequest(BaseModel):
+    trainer_id: int
+    image_labels: List[ImageLabel]
+
+
 @app.post("/api/v1/set_label_to_unknown_pokemon_images")
 async def set_label_to_unknown_pokemon_images(
-    trainer_id: int,
-    image_labels: List[ImageLabel],
+    request: SetLabelRequest,
+    # trainer_id: int,
+    # image_labels: List[ImageLabel],
 ) -> Dict[str, str]:
     """
     trainer_id は DB 上での ID に変換済のものが入力される
     """
     gcs_handler = GCSHandler()
     try:
-        gcs_handler.set_label_unknown_pokemon_images(trainer_id, image_labels)
+        gcs_handler.set_label_unknown_pokemon_images(request.trainer_id, request.image_labels)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"message": "Unknown pokemon image labels are set successfully"}
 
 
+class SetNameWindowLabelRequest(BaseModel):
+    trainer_id: int
+    image_labels: List[NameWindowImageLabel]
+
+
 @app.post("/api/v1/set_label_to_unknown_pokemon_name_window_images")
 async def set_label_to_unknown_pokemon_name_window_images(
-    trainer_id: int,
-    image_labels: List[NameWindowImageLabel],
+    request: SetNameWindowLabelRequest,
 ) -> Dict[str, str]:
     """
     trainer_id は DB 上での ID に変換済のものが入力される
@@ -361,7 +377,7 @@ async def set_label_to_unknown_pokemon_name_window_images(
     gcs_handler = GCSHandler()
     try:
         gcs_handler.set_label_unknown_pokemon_name_window_images(
-            trainer_id, image_labels
+            request.trainer_id, request.image_labels
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
