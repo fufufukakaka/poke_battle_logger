@@ -708,7 +708,7 @@ class DatabaseHandler:
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
-            open("database/sql/your_pokemon_stats_summary.sql")
+            open("poke_battle_logger/database/sql/your_pokemon_stats_summary.sql")
             .read()
             .format(trainer_id=trainer_id)
         )
@@ -738,7 +738,7 @@ class DatabaseHandler:
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
-            open("database/sql/your_pokemon_stats_summary_in_season.sql")
+            open("poke_battle_logger/database/sql/your_pokemon_stats_summary_in_season.sql")
             .read()
             .format(trainer_id=trainer_id, season=season)
         )
@@ -768,7 +768,7 @@ class DatabaseHandler:
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
-            open("database/sql/opponent_pokemon_stats_summary.sql")
+            open("poke_battle_logger/database/sql/opponent_pokemon_stats_summary.sql")
             .read()
             .format(trainer_id=trainer_id)
         )
@@ -798,7 +798,7 @@ class DatabaseHandler:
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
-            open("database/sql/opponent_pokemon_stats_summary_in_season.sql")
+            open("poke_battle_logger/database/sql/opponent_pokemon_stats_summary_in_season.sql")
             .read()
             .format(trainer_id=trainer_id, season=season)
         )
@@ -1232,7 +1232,7 @@ class DatabaseHandler:
         return trainer_id_in_DB
 
     def get_in_battle_message_log(self, battle_id: str) -> List[Dict[str, Union[str, int]]]:
-        sql = open("database/sql/in_battle_message_log.sql").read().format(
+        sql = open("poke_battle_logger/database/sql/in_battle_message_log.sql").read().format(
             battle_id=battle_id
         )
         self.db.connect()
