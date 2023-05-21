@@ -45,7 +45,7 @@ const AnnotatePokemonImagesPage = () => {
   const [imageLabels, setImageLabels] = useState<{ pokemon_image_file_on_gcs: string; pokemon_label: string; }[]>([]);
 
   const { data: nameWindowData, error: nameWindowError } = useSWR(trainerIdInDB ? `/api/unknown_pokemon_name_window_images?trainer_id=${trainerIdInDB}` : null, URLfetcher);
-  const nameWindowImageDataList = data;
+  const nameWindowImageDataList = nameWindowData;
   const [nameWindowImageLabels, setNameWindowImageLabels] = useState<{ pokemon_name_window_image_file_on_gcs: string; pokemon_name_window_label: string; }[]>([]);
 
   const toast = useToast();
