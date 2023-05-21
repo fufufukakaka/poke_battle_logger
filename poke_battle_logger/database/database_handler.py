@@ -540,9 +540,7 @@ class DatabaseHandler:
                     created_at asc
         """
         self.db.connect()
-        _win_rate_transitions: List[Tuple[float]] = self.db.execute_sql(
-            sql
-        ).fetchall()
+        _win_rate_transitions: List[Tuple[float]] = self.db.execute_sql(sql).fetchall()
         self.db.close()
         win_rate_transitions: List[float] = [
             win_rate_transition[0] for win_rate_transition in _win_rate_transitions
@@ -642,9 +640,7 @@ class DatabaseHandler:
             created_at
         """
         self.db.connect()
-        _next_rank_transitions: List[Tuple[int]] = self.db.execute_sql(
-            sql
-        ).fetchall()
+        _next_rank_transitions: List[Tuple[int]] = self.db.execute_sql(sql).fetchall()
         self.db.close()
         next_rank_transitions: List[int] = [
             next_rank_transition[0] for next_rank_transition in _next_rank_transitions

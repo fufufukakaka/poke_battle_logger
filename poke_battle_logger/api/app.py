@@ -56,10 +56,12 @@ def get_trainer_id_in_DB(trainer_id: str) -> int:
     trainer_id_in_DB = database_handler.get_trainer_id_in_DB(trainer_id)
     return trainer_id_in_DB
 
+
 @app.exception_handler(RequestValidationError)
-async def handler(request:Request, exc:RequestValidationError):
+async def handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     print(exc)
     return JSONResponse(content={}, status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+
 
 @app.get("/hello")
 async def hello_revision() -> str:
@@ -355,7 +357,9 @@ async def set_label_to_unknown_pokemon_images(
     """
     gcs_handler = GCSHandler()
     try:
-        gcs_handler.set_label_unknown_pokemon_images(request.trainer_id, request.image_labels)
+        gcs_handler.set_label_unknown_pokemon_images(
+            request.trainer_id, request.image_labels
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
