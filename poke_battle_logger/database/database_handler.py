@@ -738,7 +738,9 @@ class DatabaseHandler:
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
-            open("poke_battle_logger/database/sql/your_pokemon_stats_summary_in_season.sql")
+            open(
+                "poke_battle_logger/database/sql/your_pokemon_stats_summary_in_season.sql"
+            )
             .read()
             .format(trainer_id=trainer_id, season=season)
         )
@@ -798,7 +800,9 @@ class DatabaseHandler:
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         sql = (
-            open("poke_battle_logger/database/sql/opponent_pokemon_stats_summary_in_season.sql")
+            open(
+                "poke_battle_logger/database/sql/opponent_pokemon_stats_summary_in_season.sql"
+            )
             .read()
             .format(trainer_id=trainer_id, season=season)
         )
@@ -1231,17 +1235,27 @@ class DatabaseHandler:
         self.db.connect()
         return trainer_id_in_DB
 
-    def get_in_battle_message_log(self, battle_id: str) -> List[Dict[str, Union[str, int]]]:
-        sql = open("poke_battle_logger/database/sql/in_battle_message_log.sql").read().format(
-            battle_id=battle_id
+    def get_in_battle_message_log(
+        self, battle_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open("poke_battle_logger/database/sql/in_battle_message_log.sql")
+            .read()
+            .format(battle_id=battle_id)
         )
         self.db.connect()
         stats = self.db.execute_sql(sql).fetchall()
         self.db.close()
-        summary = pd.DataFrame(stats, columns=[
-            "turn",
-            "frame_number",
-            "message",
-        ])
-        _res = cast(List[Dict[str, Union[str, int]]], list(summary.to_dict(orient="index").values()))
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "turn",
+                "frame_number",
+                "message",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
         return _res
