@@ -1232,7 +1232,7 @@ class DatabaseHandler:
         """
         self.db.connect()
         trainer_id_in_DB: int = self.db.execute_sql(sql).fetchone()[0]
-        self.db.connect()
+        self.db.close()
         return trainer_id_in_DB
 
     def get_in_battle_message_log(

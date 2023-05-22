@@ -130,17 +130,37 @@ class DataBuilder:
             opponent_team_rotom_names = [
                 v for v in _pre_battle_opponent_pokemons if "ロトム" in v
             ]
-            opponent_team_rotom_name = "None"
+            opponent_team_rotom_name = "ロトム"
             if len(opponent_team_rotom_names) == 1:
                 opponent_team_rotom_name = opponent_team_rotom_names[0].split("_")[0]
+            # 自チームについても同様に処理する
+            your_team_rotom_names = [
+                v for v in list(self.pre_battle_pokemons.values())[i][
+                    "your_pokemon_names"
+                ]
+                if "ロトム" in v
+            ]
+            your_team_rotom_name = "ロトム"
+            if len(your_team_rotom_names) == 1:
+                your_team_rotom_name = your_team_rotom_names[0].split("_")[0]
 
             # team にいるケンタロスを見つける(ケンタロスは必ず1体しかいない)
             opponent_team_tauros_names = [
                 v for v in _pre_battle_opponent_pokemons if "ケンタロス" in v
             ]
-            opponent_team_tauros_name = "None"
+            opponent_team_tauros_name = "ケンタロス"
             if len(opponent_team_tauros_names) == 1:
                 opponent_team_tauros_name = opponent_team_tauros_names[0].split("_")[0]
+            # 自チームについても同様に処理する
+            your_team_tauros_names = [
+                v for v in list(self.pre_battle_pokemons.values())[i][
+                    "your_pokemon_names"
+                ]
+                if "ケンタロス" in v
+            ]
+            your_team_tauros_name = "ケンタロス"
+            if len(your_team_tauros_names) == 1:
+                your_team_tauros_name = your_team_tauros_names[0].split("_")[0]
 
             _pre_battle_your_pokemons = list(self.pre_battle_pokemons.values())[i][
                 "your_pokemon_names"
@@ -154,15 +174,20 @@ class DataBuilder:
 
             _battle_pokemon_opponent_combinations: List[str] = []
             for _b_p in _battle_pokemons:
+                _your = cast(str, _b_p["your_pokemon_name"])
                 _opponent = cast(str, _b_p["opponent_pokemon_name"])
 
                 # ロトムなら修正する
                 if _opponent == "ロトム":
                     _opponent = opponent_team_rotom_name
+                if _your == "ロトム":
+                    _your = your_team_rotom_name
 
                 # ケンタロスなら修正する
                 if _opponent == "ケンタロス":
                     _opponent = opponent_team_tauros_name
+                if _your == "ケンタロス":
+                    _your = your_team_tauros_name
 
                 if (
                     len(_battle_pokemon_opponent_combinations) < 3
