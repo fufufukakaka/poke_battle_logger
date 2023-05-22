@@ -33,7 +33,6 @@ WORKDIR /work
 
 COPY poke_battle_logger ./poke_battle_logger
 COPY tests ./tests
-COPY sql ./sql
 COPY config ./config
 COPY data ./data
 COPY template_images ./template_images

@@ -34,8 +34,8 @@ import axios from 'axios';
 import { useState } from 'react';
 
 interface BattleLogDetailModalProps {
-    isOpen: boolean;
-    onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
   battle_id: string;
   battle_created_at: string;
   win_or_lose: string;
@@ -55,15 +55,14 @@ interface BattleLogDetailModalProps {
 
 const fetcher = async (url: string) => {
   const results = await axios.get(url);
-  // results.data は BattleLogProps の配列
   return await results.data;
 };
 
 const BattleLogDetailModal: React.FunctionComponent<
   BattleLogDetailModalProps
 > = ({
-    isOpen,
-    onClose,
+  isOpen,
+  onClose,
   battle_id,
   battle_created_at,
   win_or_lose,
@@ -85,7 +84,10 @@ const BattleLogDetailModal: React.FunctionComponent<
     isOpen ? `http://127.0.0.1:8000/api/v1/in_battle_log?battle_id=${battle_id}` : null,
     fetcher
   )
-
+  const { data: messageData, error: messageDataError, isLoading: messageDataIsLoading } = useSWR(
+    isOpen ? `/api/get_in_battle_message_log?battle_id=${battle_id}` : null,
+    fetcher
+  )
   const [inputText, setInputText] = useState<string>(memo ? memo : 'input memo here')
 
   return (
@@ -186,7 +188,7 @@ const BattleLogDetailModal: React.FunctionComponent<
                 </Editable>
               </TabPanel>
               <TabPanel>
-                {data ? <InBattleTimeline in_battle_log={data}/> : null}
+                {!error && !isLoading && data && messageData ? <InBattleTimeline in_battle_log={data} message_log={messageData}/> : null}
               </TabPanel>
             </TabPanels>
           </Tabs>

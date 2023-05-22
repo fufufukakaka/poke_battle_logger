@@ -194,6 +194,12 @@ async def get_in_battle_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
     return database_handler.get_in_battle_log(battle_id)
 
 
+@app.get("/api/v1/in_battle_message_log")
+async def get_in_battle_message_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
+    return database_handler.get_in_battle_message_log(battle_id)
+
+
 @app.get("/api/v1/pokemon_image_url")
 async def get_pokemon_image_url(
     pokemon_name: str,
