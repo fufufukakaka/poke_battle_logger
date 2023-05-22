@@ -1,6 +1,6 @@
 import { Chrono } from "react-chrono";
 import PokemonIcon from "../atoms/pokemon-icon";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Spinner } from "@chakra-ui/react";
 import {
   Badge,
   ListItem,
@@ -9,7 +9,7 @@ import {
   FormControl,
   FormLabel,
 } from '@chakra-ui/react'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface InBattleTimelineProps {
   in_battle_log: {
@@ -27,6 +27,20 @@ interface InBattleTimelineProps {
 
 const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log, message_log }) => {
   const [showMessage, setShowMessage] = useState(false);
+  const [renderKey, setRenderKey] = useState(Date.now());
+  const [loading, setLoading] = useState(false); // New state for loading
+
+  const toggleShowMessage = () => {
+    setShowMessage(!showMessage);
+    setLoading(true); // Set loading to true before re-rendering
+    setRenderKey(Date.now());
+  };
+
+  useEffect(() => {
+    if (loading) {
+      setLoading(false); // Set loading to false after re-rendering
+    }
+  }, [loading, renderKey]); // React on renderKey change
 
   return (
     <>
@@ -34,9 +48,13 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log, mess
         <FormLabel htmlFor='show-message' mb='0'>
           <Badge colorScheme='purple'>BETA</Badge> Show Battle Log Message
         </FormLabel>
-        <Switch id='show-message' onChange={(e) => setShowMessage(!showMessage)} />
+        <Switch id='show-message' onChange={toggleShowMessage} />
       </FormControl>
+      {loading ? (
+        <Spinner /> // Display the spinner when loading
+      ) : (
       <Chrono
+        key={renderKey}
         mode="VERTICAL"
         cardHeight={100}
         allowDynamicUpdate={true}
@@ -55,16 +73,17 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log, mess
                 boxSize={'50px'}
               />
             </Flex>
-            <OrderedList>
+            {showMessage ? (<OrderedList>
               {
                 (message_log.filter((message) => Number(message.turn) === Number(log.turn)).map((message) => (
                   <ListItem key={message.frame_number}>{message.message}</ListItem>
                 )))
               }
-            </OrderedList>
+            </OrderedList>) : null}
           </Box>
         ))}
       </Chrono>
+      )}
     </>
   );
 };
