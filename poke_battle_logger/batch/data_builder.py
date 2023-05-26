@@ -212,6 +212,8 @@ class DataBuilder:
         def determine_unknown_outcomes(
             win_or_lost: Dict[int, str], modified_win_or_lose_frames: Dict[int, str]
         ) -> Dict[int, str]:
+            if len(win_or_lost) == 0:
+                return modified_win_or_lose_frames
             for modified_frame, outcome in modified_win_or_lose_frames.items():
                 closest_frame = min(win_or_lost, key=lambda x: abs(x - modified_frame))
                 win_or_lost[closest_frame] = outcome
@@ -237,6 +239,7 @@ class DataBuilder:
                 self.modified_win_or_lose_frames_from_rank[rank_frames[i]] = "win"
             else:
                 self.modified_win_or_lose_frames_from_rank[rank_frames[i]] = "lose"
+
         _filled_win_or_lost = determine_unknown_outcomes(
             self.win_or_lost, self.modified_win_or_lose_frames_from_rank
         )
