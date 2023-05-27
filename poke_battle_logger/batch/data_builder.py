@@ -401,33 +401,33 @@ class DataBuilder:
             # in-battle
             in_battle_log = self.compressed_battle_pokemons[i]
             for idx, _in_battle_log in enumerate(in_battle_log):
+                in_battle_your_pokemon_name = cast(
+                    str, _in_battle_log["your_pokemon_name"]
+                )
+                in_battle_opponent_pokemon_name = cast(
+                    str, _in_battle_log["opponent_pokemon_name"]
+                )
                 # フォルムチェンジを考慮する
-                if (
-                    _in_battle_log["your_pokemon_name"]
-                    in self.form_change_pokemon_names
-                ):
+                if in_battle_your_pokemon_name in self.form_change_pokemon_names:
                     _your_pokemon_name = self.form_change_pokemon_names[
-                        _in_battle_log["your_pokemon_name"]
+                        in_battle_your_pokemon_name
                     ][i]
                 else:
-                    _your_pokemon_name = _in_battle_log["your_pokemon_name"]
-                if (
-                    _in_battle_log["opponent_pokemon_name"]
-                    in self.form_change_pokemon_names
-                ):
+                    _your_pokemon_name = in_battle_your_pokemon_name
+                if in_battle_opponent_pokemon_name in self.form_change_pokemon_names:
                     _opponent_pokemon_name = self.form_change_pokemon_names[
-                        _in_battle_log["opponent_pokemon_name"]
+                        in_battle_opponent_pokemon_name
                     ][i]
                 else:
-                    _opponent_pokemon_name = _in_battle_log["opponent_pokemon_name"]
+                    _opponent_pokemon_name = in_battle_opponent_pokemon_name
 
                 modified_in_battle_pokemons.append(
                     InBattlePokemon(
                         battle_id=battle_id,
                         turn=idx + 1,
                         frame_number=cast(int, _in_battle_log["frame_number"]),
-                        your_pokemon_name=cast(str, _your_pokemon_name),
-                        opponent_pokemon_name=cast(str, _opponent_pokemon_name),
+                        your_pokemon_name=_your_pokemon_name,
+                        opponent_pokemon_name=_opponent_pokemon_name,
                     )
                 )
 
