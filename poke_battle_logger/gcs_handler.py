@@ -114,7 +114,7 @@ class GCSHandler:
     ) -> None:
         for image_label in image_labels:
             # Create the destination directory
-            dest_dir = f"pokemon_name_window_templates/users/{trainer_id_in_DB}/labeled_pokemon_name_window_templates/{image_label.pokemon_label}"
+            dest_dir = f"pokemon_name_window_templates/users/{trainer_id_in_DB}/labeled_pokemon_name_window_templates/{image_label.pokemon_name_window_label}"
             dest_path = f"{dest_dir}/{os.path.basename(image_label.pokemon_name_window_image_file_on_gcs)}"
 
             # Move the file
