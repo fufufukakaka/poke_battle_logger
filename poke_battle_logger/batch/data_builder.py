@@ -135,7 +135,8 @@ class DataBuilder:
                 opponent_team_rotom_name = opponent_team_rotom_names[0].split("_")[0]
             # 自チームについても同様に処理する
             your_team_rotom_names = [
-                v for v in list(self.pre_battle_pokemons.values())[i][
+                v
+                for v in list(self.pre_battle_pokemons.values())[i][
                     "your_pokemon_names"
                 ]
                 if "ロトム" in v
@@ -153,7 +154,8 @@ class DataBuilder:
                 opponent_team_tauros_name = opponent_team_tauros_names[0].split("_")[0]
             # 自チームについても同様に処理する
             your_team_tauros_names = [
-                v for v in list(self.pre_battle_pokemons.values())[i][
+                v
+                for v in list(self.pre_battle_pokemons.values())[i][
                     "your_pokemon_names"
                 ]
                 if "ケンタロス" in v
