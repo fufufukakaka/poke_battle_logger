@@ -120,7 +120,16 @@ class DataBuilder:
             self.compressed_messages.append(_messages)
 
     def _build_battle_pokemon_combinations(self) -> None:
+        """
+        3体が何だったのか、対戦中のフォルムチェンジを修正してまとめる関数
+        """
         battle_pokemon_combinations = []
+
+        # 試合数の長さだけリストを持つ
+        form_change_pokemon_names: Dict[str, List[str]] = {
+            "ロトム": [],
+            "ケンタロス": [],
+        }
         for i, _battle_pokemons in enumerate(self.compressed_battle_pokemons):
             _pre_battle_opponent_pokemons = list(self.pre_battle_pokemons.values())[i][
                 "opponent_pokemon_names"
@@ -175,6 +184,10 @@ class DataBuilder:
                 )
 
             _battle_pokemon_opponent_combinations: List[str] = []
+
+            form_change_pokemon_names["ロトム"].append(opponent_team_rotom_name)
+            form_change_pokemon_names["ケンタロス"].append(opponent_team_tauros_name)
+
             for _b_p in _battle_pokemons:
                 _your = cast(str, _b_p["your_pokemon_name"])
                 _opponent = cast(str, _b_p["opponent_pokemon_name"])
@@ -208,7 +221,9 @@ class DataBuilder:
                     "opponent": _battle_pokemon_opponent_combinations,
                 }
             )
+
         self.battle_pokemon_combinations = battle_pokemon_combinations
+        self.form_change_pokemon_names = form_change_pokemon_names
 
     def _build_modified_win_or_lose(self) -> None:
         def determine_unknown_outcomes(
@@ -386,17 +401,33 @@ class DataBuilder:
             # in-battle
             in_battle_log = self.compressed_battle_pokemons[i]
             for idx, _in_battle_log in enumerate(in_battle_log):
+                # フォルムチェンジを考慮する
+                if (
+                    _in_battle_log["your_pokemon_name"]
+                    in self.form_change_pokemon_names
+                ):
+                    _your_pokemon_name = self.form_change_pokemon_names[
+                        _in_battle_log["your_pokemon_name"]
+                    ][i]
+                else:
+                    _your_pokemon_name = _in_battle_log["your_pokemon_name"]
+                if (
+                    _in_battle_log["opponent_pokemon_name"]
+                    in self.form_change_pokemon_names
+                ):
+                    _opponent_pokemon_name = self.form_change_pokemon_names[
+                        _in_battle_log["opponent_pokemon_name"]
+                    ][i]
+                else:
+                    _opponent_pokemon_name = _in_battle_log["opponent_pokemon_name"]
+
                 modified_in_battle_pokemons.append(
                     InBattlePokemon(
                         battle_id=battle_id,
                         turn=idx + 1,
                         frame_number=cast(int, _in_battle_log["frame_number"]),
-                        your_pokemon_name=cast(
-                            str, _in_battle_log["your_pokemon_name"]
-                        ),
-                        opponent_pokemon_name=cast(
-                            str, _in_battle_log["opponent_pokemon_name"]
-                        ),
+                        your_pokemon_name=cast(str, _your_pokemon_name),
+                        opponent_pokemon_name=cast(str, _opponent_pokemon_name),
                     )
                 )
 
