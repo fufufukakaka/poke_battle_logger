@@ -386,6 +386,12 @@ class PokemonBattleExtractor:
         database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
         database_handler.insert_message_log(modified_messages)
 
+        # build fainted log
+        status_json.message.insert(0, "INFO: Build Fainted Log...")
+        await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        for _battle in battles:
+            database_handler.build_and_insert_fainted_log(_battle.battle_id)
+
         status_json.message.insert(0, "INFO: Finish Processing!!!")
         await websocket_for_status.send_json(dataclasses.asdict(status_json))
 

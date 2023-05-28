@@ -102,6 +102,14 @@ class Trainer(BaseModel):  # type: ignore
     identity = TextField()
 
 
+class FaintedLog(BaseModel):  # type: ignore
+    battle_id = TextField()
+    turn = IntegerField()
+    your_pokemon_name = TextField()
+    opponent_pokemon_name = TextField()
+    fainted_pokemon_side = TextField()
+
+
 class DatabaseHandler:
     def __init__(self) -> None:
         self.db = build_db_connection()
@@ -1259,3 +1267,35 @@ class DatabaseHandler:
             list(summary.to_dict(orient="index").values()),
         )
         return _res
+
+    def build_and_insert_fainted_log(self, battle_id: str) -> None:
+        sql = (
+            open("poke_battle_logger/database/sql/fainted_log.sql")
+            .read()
+            .format(battle_id=battle_id)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        fainted_log: List[Dict[str, Union[str, int]]] = pd.DataFrame(
+            stats,
+            columns=[
+                "battle_id",
+                "turn",
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "fainted_pokemon_side"
+            ],
+        ).to_json(orient="records")
+        for _fainted_log in fainted_log:
+            FaintedLog.create(
+                battle_id=_fainted_log["battle_id"],
+                turn=_fainted_log["turn"],
+                your_pokemon_name=unicodedata.normalize(
+                    "NFC", cast(str, _fainted_log["your_pokemon_name"])
+                ),
+                opponent_pokemon_name=unicodedata.normalize(
+                    "NFC", cast(str, _fainted_log["opponent_pokemon_name"])
+                ),
+                fainted_pokemon_side=_fainted_log["fainted_pokemon_side"]
+            )
+        self.db.close()
