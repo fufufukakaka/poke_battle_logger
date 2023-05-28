@@ -6,33 +6,22 @@ import {
   Divider,
   SimpleGrid,
   Heading,
+  Radio,
+  RadioGroup,
+  Stack,
 } from '@chakra-ui/react';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import TransitionChart from '../../components/data-display/transition-chart';
 import useSWR from 'swr';
 import axios from 'axios';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { SeasonContext } from '../_app';
-import { DataTable } from '@/components/data-display/data-table';
+import { PokemonSelectionDataTable } from '@/components/data-display/pokemon-selection-data-table';
+import { PokemonKnockOutDataTable } from '@/components/data-display/pokemon-knock-out-data-table';
 import { createColumnHelper } from "@tanstack/react-table";
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import { ServerHost } from "../../util"
 
-interface AnalyticsProps {
-  win_rates: number[];
-  next_ranks: number[];
-  your_pokemon_summary_result: {
-    head_battle_count: number;
-    head_battle_rate: number;
-    in_battle_count: number;
-    in_battle_rate: number;
-    in_battle_win_count: number;
-    in_battle_win_rate: number;
-    in_team_count: number;
-    in_team_rate: number;
-    pokemon_name: string;
-  }[];
-}
 
 const fetcher = async (url: string) => {
   const results = await axios.get(url);
@@ -88,23 +77,29 @@ const fetcher = async (url: string) => {
           in_team_rate: Number(summary.in_team_rate).toFixed(3),
         })
       ),
+    yourPokemonKnockOutSummary:
+      results.data.yourPokemonKnockOutSummary.map(
+        (summary: {
+          knock_out_count: number;
+          your_pokemon_name: string;
+          opponent_pokemon_name: string;
+        }) => ({
+          ...summary,
+          knock_out_count: Number(summary.knock_out_count),
+        })
+      ),
+    opponentPokemonKnockOutSummary:
+      results.data.opponentPokemonKnockOutSummary.map(
+        (summary: {
+          knock_out_count: number;
+          your_pokemon_name: string;
+          opponent_pokemon_name: string;
+        }) => ({
+          ...summary,
+          knock_out_count: Number(summary.knock_out_count),
+        })
+      ),
   };
-};
-
-type YourPokemonStat = {
-  pokemon_name: string;
-  in_team_rate: number;
-  in_battle_rate: number;
-  head_battle_rate: number;
-  in_battle_win_rate: number;
-};
-
-type OpponentPokemonStat = {
-  pokemon_name: string;
-  in_team_rate: number;
-  in_battle_rate: number;
-  head_battle_rate: number;
-  in_battle_lose_rate: number;
 };
 
 type PokemonStat = {
@@ -114,6 +109,12 @@ type PokemonStat = {
   head_battle_rate: number;
   in_battle_win_rate: number;
   in_battle_lose_rate: number;
+};
+
+type PokemonKnockOutStat = {
+  knock_out_count: number;
+  your_pokemon_name: string;
+  opponent_pokemon_name: string;
 };
 
 const yourPokemonStatsColumnHelper = createColumnHelper<PokemonStat>();
@@ -188,17 +189,57 @@ const opponentPokemonStatsColumns = [
   })
 ];
 
-const Analytics: React.FC<AnalyticsProps> = () => {
+const yourPokemonKnockOutStatsColumnHelper = createColumnHelper<PokemonKnockOutStat>();
+const yourPokemonKnockOutStatsColumns = [
+  yourPokemonKnockOutStatsColumnHelper.accessor("your_pokemon_name", {
+    cell: (info) => info.getValue(),
+    header: "自分のポケモン"
+  }),
+  yourPokemonKnockOutStatsColumnHelper.accessor("opponent_pokemon_name", {
+    cell: (info) => info.getValue(),
+    header: "倒した相手のポケモン"
+  }),
+  yourPokemonKnockOutStatsColumnHelper.accessor("knock_out_count", {
+    cell: (info) => info.getValue(),
+    header: "倒した数",
+    meta: {
+      isNumeric: true
+    }
+  })
+];
+
+const opponentPokemonKnockOutStatsColumnHelper = createColumnHelper<PokemonKnockOutStat>();
+const opponentPokemonKnockOutStatsColumns = [
+  opponentPokemonKnockOutStatsColumnHelper.accessor("your_pokemon_name", {
+    cell: (info) => info.getValue(),
+    header: "自分のポケモン"
+  }),
+  opponentPokemonKnockOutStatsColumnHelper.accessor("opponent_pokemon_name", {
+    cell: (info) => info.getValue(),
+    header: "倒された相手のポケモン"
+  }),
+  opponentPokemonKnockOutStatsColumnHelper.accessor("knock_out_count", {
+    cell: (info) => info.getValue(),
+    header: "倒された数",
+    meta: {
+      isNumeric: true
+    }
+  })
+];
+
+const Analytics: React.FC = () => {
   const { user } = useAuth0();
   const season = useContext(SeasonContext);
   const { data, error, isLoading } = useSWR(
     `${ServerHost}/api/v1/analytics?season=${season}&trainer_id=${user?.sub?.replace("|", "_")}`,
     fetcher
   )
+  const [selectedValue, setSelectedValue] = useState('1')
 
   if (isLoading) return <p>loading...</p>
   if (error) return <p>error</p>
   if (!data) return <p>no data</p>
+
 
   return (
     <Box bg="gray.50" minH="100vh">
@@ -225,9 +266,23 @@ const Analytics: React.FC<AnalyticsProps> = () => {
             />
           </SimpleGrid>
           <Divider marginY={'10px'} />
-          <Heading size="md" padding={'10px'}>
-            サマリー
-          </Heading>
+          <RadioGroup onChange={setSelectedValue} value={selectedValue}>
+            <Stack direction='row'>
+              <Radio value='1'>Selection Count</Radio>
+              <Radio value='2'>KnockOut Count</Radio>
+            </Stack>
+          </RadioGroup>
+          {selectedValue === '1' ? (
+            <Heading size="md" padding={'10px'}>
+              選出ログサマリー
+            </Heading>)
+            : selectedValue === '2' ? (
+              <Heading size="md" padding={'10px'}>
+                ノックアウトログサマリー
+              </Heading>
+            ) : null
+          }
+          {selectedValue === '1' ? (
           <Tabs>
             <TabList>
               <Tab>自分のポケモン</Tab>
@@ -235,13 +290,28 @@ const Analytics: React.FC<AnalyticsProps> = () => {
             </TabList>
             <TabPanels>
               <TabPanel>
-                <DataTable columns={yourPokemonStatsColumns} data={data.yourPokemonStatsSummary} />
+                <PokemonSelectionDataTable columns={yourPokemonStatsColumns} data={data.yourPokemonStatsSummary} />
               </TabPanel>
               <TabPanel>
-                <DataTable columns={opponentPokemonStatsColumns} data={data.opponentPokemonStatsSummary} />
+                <PokemonSelectionDataTable columns={opponentPokemonStatsColumns} data={data.opponentPokemonStatsSummary} />
               </TabPanel>
             </TabPanels>
-          </Tabs>
+          </Tabs> ) : selectedValue === '2' ? (
+            <Tabs>
+              <TabList>
+                <Tab>自分のポケモン</Tab>
+                <Tab>相手のポケモン</Tab>
+              </TabList>
+              <TabPanels>
+                <TabPanel>
+                  <PokemonKnockOutDataTable columns={yourPokemonKnockOutStatsColumns} data={data.yourPokemonKnockOutSummary} />
+                </TabPanel>
+                <TabPanel>
+                  <PokemonKnockOutDataTable columns={opponentPokemonKnockOutStatsColumns} data={data.opponentPokemonKnockOutSummary} />
+                </TabPanel>
+              </TabPanels>
+            </Tabs>) : null
+          }
         </Box>
       </Container>
     </Box>

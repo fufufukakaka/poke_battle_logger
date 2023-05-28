@@ -127,6 +127,12 @@ async def get_analytics(
         opponent_pokemon_stats_summary = (
             database_handler.get_opponent_pokemon_stats_summary_all(trainer_id)
         )
+        your_pokemon_defeat_summary = (
+            database_handler.get_your_pokemon_defeat_summary(trainer_id)
+        )
+        opponent_pokemon_defeat_summary = (
+            database_handler.get_opponent_pokemon_defeat_summary(trainer_id)
+        )
     elif season > 0:
         win_rate_transition = database_handler.get_win_rate_transitions_season(
             season, trainer_id
@@ -142,6 +148,14 @@ async def get_analytics(
                 season, trainer_id
             )
         )
+        your_pokemon_defeat_summary = (
+            database_handler.get_your_pokemon_defeat_summary_in_season(season, trainer_id)
+        )
+        opponent_pokemon_defeat_summary = (
+            database_handler.get_opponent_pokemon_defeat_summary_in_season(
+                season, trainer_id
+            )
+        )
     else:
         raise ValueError("season must be 0 or positive")
     return {
@@ -149,6 +163,8 @@ async def get_analytics(
         "nextRank": next_rank_transition,
         "yourPokemonStatsSummary": your_pokemon_stats_summary,
         "opponentPokemonStatsSummary": opponent_pokemon_stats_summary,
+        "yourPokemonKnockOutSummary": your_pokemon_defeat_summary,
+        "opponentPokemonKnockOutSummary": opponent_pokemon_defeat_summary,
     }
 
 

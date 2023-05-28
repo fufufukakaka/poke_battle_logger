@@ -1333,3 +1333,107 @@ class DatabaseHandler:
             list(summary.to_dict(orient="index").values()),
         )
         return _res
+
+    def get_your_pokemon_defeat_summary(
+        self, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open("poke_battle_logger/database/sql/your_pokemon_defeat_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_your_pokemon_defeat_summary_in_season(
+        self, season: int, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open(
+                "poke_battle_logger/database/sql/your_pokemon_defeat_summary_in_season.sql"
+            )
+            .read()
+            .format(trainer_id=trainer_id, season=season)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_opponent_pokemon_defeat_summary(
+        self, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open("poke_battle_logger/database/sql/opponent_pokemon_defeat_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_opponent_pokemon_defeat_summary_in_season(
+        self, season: int, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open(
+                "poke_battle_logger/database/sql/opponent_pokemon_defeat_summary_in_season.sql"
+            )
+            .read()
+            .format(trainer_id=trainer_id, season=season)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res

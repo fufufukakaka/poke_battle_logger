@@ -7,6 +7,8 @@ import {
   Editable,
   EditableTextarea,
   EditablePreview,
+  VStack,
+  HStack,
 } from '@chakra-ui/react';
 import {
   Modal,
@@ -53,6 +55,14 @@ interface BattleLogDetailModalProps {
   saveMemo: (battle_id: string, memo: string) => void;
 }
 
+interface FaintedLogProps {
+  battle_id: string;
+  turn: number;
+  your_pokemon_name: string;
+  opponent_pokemon_name: string;
+  fainted_pokemon_side: string;
+}
+
 const fetcher = async (url: string) => {
   const results = await axios.get(url);
   return await results.data;
@@ -88,6 +98,11 @@ const BattleLogDetailModal: React.FunctionComponent<
     isOpen ? `/api/get_in_battle_message_log?battle_id=${battle_id}` : null,
     fetcher
   )
+  const { data: faintedLogData, error: faintedLogDataError, isLoading: faintedLogDataIsLoading } = useSWR<FaintedLogProps[]>(
+    isOpen ? `/api/get_in_battle_fainted_log?battle_id=${battle_id}` : null,
+    fetcher
+  )
+
   const [inputText, setInputText] = useState<string>(memo ? memo : 'input memo here')
 
   return (
@@ -180,6 +195,33 @@ const BattleLogDetailModal: React.FunctionComponent<
                     boxSize={'50px'}
                   />
                 </Flex>
+                <Divider margin={'5px'} />
+                <Heading size={'xs'}>Fainted Log</Heading>
+                <VStack alignItems={'baseline'}>
+                  {faintedLogDataIsLoading ? (
+                    <Text>loading...</Text>
+                  // if not error
+                  ) : faintedLogDataError ? null : faintedLogData ? (
+                    faintedLogData.map((log) => (
+                      <Box key={log.turn}>
+                        <HStack>
+                          <PokemonIcon
+                            key={log.turn}
+                            pokemon_name={log.your_pokemon_name}
+                            boxSize={'50px'}
+                          />
+                          {log.fainted_pokemon_side === 'Your Pokemon Win' ? <Text>🏆:🥲</Text> : <Text>🥲:🏆</Text>}
+                          <PokemonIcon
+                            key={log.turn}
+                            pokemon_name={log.opponent_pokemon_name}
+                            boxSize={'50px'}
+                          />
+                        </HStack>
+                        <Text>Turn: {log.turn}</Text>
+                      </Box>
+                    ))
+                  ) : null}
+                </VStack>
                 <Divider margin={'5px'} />
                 <Heading size={'xs'}>📝 Memo</Heading>
                 <Editable defaultValue={memo} onChange={value => (setInputText(value))} value={inputText} onSubmit={value => saveMemo(battle_id, value)}>

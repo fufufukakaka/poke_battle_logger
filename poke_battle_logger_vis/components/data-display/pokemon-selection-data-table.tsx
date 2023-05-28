@@ -36,7 +36,7 @@ export type DataTableProps<Data extends object & PokemonStat> = {
   columns: ColumnDef<Data, any>[];
 };
 
-export function DataTable<Data extends object & PokemonStat>({
+export function PokemonSelectionDataTable<Data extends object & PokemonStat>({
   data,
   columns,
 }: DataTableProps<Data>) {
