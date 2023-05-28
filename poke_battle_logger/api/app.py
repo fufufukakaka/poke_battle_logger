@@ -393,3 +393,9 @@ async def set_label_to_unknown_pokemon_name_window_images(
         raise HTTPException(status_code=500, detail=str(e))
 
     return {"message": "Unknown pokemon name window image labels are set successfully"}
+
+
+@app.get("/api/v1/fainted_pokemon_log")
+async def get_fainted_pokemon_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
+    return database_handler.get_fainted_pokemon_log(battle_id)

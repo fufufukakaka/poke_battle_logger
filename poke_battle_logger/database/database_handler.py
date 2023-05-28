@@ -1283,7 +1283,7 @@ class DatabaseHandler:
                 "turn",
                 "your_pokemon_name",
                 "opponent_pokemon_name",
-                "fainted_pokemon_side"
+                "fainted_pokemon_side",
             ],
         ).to_json(orient="records")
         for _fainted_log in fainted_log:
@@ -1296,6 +1296,40 @@ class DatabaseHandler:
                 opponent_pokemon_name=unicodedata.normalize(
                     "NFC", cast(str, _fainted_log["opponent_pokemon_name"])
                 ),
-                fainted_pokemon_side=_fainted_log["fainted_pokemon_side"]
+                fainted_pokemon_side=_fainted_log["fainted_pokemon_side"],
             )
         self.db.close()
+
+    def get_fainted_pokemon_log(
+        self, battle_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = f"""
+        select
+            battle_id,
+            turn,
+            your_pokemon_name,
+            opponent_pokemon_name,
+            fainted_pokemon_side
+        from
+            faintedlog
+        where
+            battle_id = '{battle_id}'
+        """
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "battle_id",
+                "turn",
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "fainted_pokemon_side",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
