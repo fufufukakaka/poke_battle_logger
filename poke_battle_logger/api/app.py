@@ -114,7 +114,15 @@ async def get_recent_battle_summary(
 async def get_analytics(
     trainer_id: str,
     season: int,
-) -> Dict[str, Union[List[float], List[int], List[Dict[str, Union[str, int, float]]]]]:
+) -> Dict[
+    str,
+    Union[
+        List[float],
+        List[int],
+        List[Dict[str, Union[str, int, float]]],
+        List[Dict[str, Union[str, int]]],
+    ],
+]:
     database_handler: DatabaseHandler = DatabaseHandler()
     if season == 0:
         win_rate_transition = database_handler.get_win_rate_transitions_all(trainer_id)
@@ -127,8 +135,8 @@ async def get_analytics(
         opponent_pokemon_stats_summary = (
             database_handler.get_opponent_pokemon_stats_summary_all(trainer_id)
         )
-        your_pokemon_defeat_summary = (
-            database_handler.get_your_pokemon_defeat_summary(trainer_id)
+        your_pokemon_defeat_summary = database_handler.get_your_pokemon_defeat_summary(
+            trainer_id
         )
         opponent_pokemon_defeat_summary = (
             database_handler.get_opponent_pokemon_defeat_summary(trainer_id)
@@ -149,7 +157,9 @@ async def get_analytics(
             )
         )
         your_pokemon_defeat_summary = (
-            database_handler.get_your_pokemon_defeat_summary_in_season(season, trainer_id)
+            database_handler.get_your_pokemon_defeat_summary_in_season(
+                season, trainer_id
+            )
         )
         opponent_pokemon_defeat_summary = (
             database_handler.get_opponent_pokemon_defeat_summary_in_season(
