@@ -1,4 +1,4 @@
-from typing import Tuple, cast
+from typing import Tuple
 
 import cv2
 import numpy as np
@@ -87,7 +87,7 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_standing_by_area, self.gray_standing_by_template, cv2.TM_CCOEFF_NORMED
         )
-        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         return _result
 
     def is_level_50_frame(self, frame: np.ndarray) -> bool:
@@ -102,12 +102,9 @@ class FrameDetector:
             gray_level_50_area, self.gray_level_50_template, cv2.TM_CCOEFF_NORMED
         )
         _, thresh = cv2.threshold(gray_level_50_area, 200, 255, cv2.THRESH_BINARY)
-        _res = cast(
-            bool,
-            (
-                cv2.countNonZero(thresh) > 100
-                and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
-            ),
+        _res = (
+            cv2.countNonZero(thresh) > 100
+            and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         )
         return _res
 
@@ -122,7 +119,7 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_ranking_area, self.gray_ranking_template, cv2.TM_CCOEFF_NORMED
         )
-        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         return _result
 
     def is_ranking_frame(self, frame: np.ndarray) -> bool:
@@ -136,7 +133,7 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_ranking_area, self.gray_ranking_template, cv2.TM_CCOEFF_NORMED
         )
-        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         return _result
 
     def is_win_or_lost_frame(self, frame: np.ndarray) -> bool:
@@ -153,10 +150,9 @@ class FrameDetector:
         result_lost = cv2.matchTemplate(
             gray_win_lost_area, self.gray_lost_template, cv2.TM_CCOEFF_NORMED
         )
-        _result = cast(
-            bool,
+        _result = (
             cv2.minMaxLoc(result_win)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
-            or cv2.minMaxLoc(result_lost)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
+            or cv2.minMaxLoc(result_lost)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
         )
         return _result
 
@@ -171,7 +167,7 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_select_done_area, self.gray_done_template, cv2.TM_CCOEFF_NORMED
         )
-        _result = cast(bool, cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD)
+        _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         return _result
 
     def is_message_window_frame(self, frame: np.ndarray) -> bool:
@@ -192,8 +188,8 @@ class FrameDetector:
             and white_pixels < POKEMON_MESSAGE_WINDOW_MAX_WHITE_PIXELS
         )
 
-        mser = cv2.MSER_create()
+        mser = cv2.MSER.create()
         regions, _ = mser.detectRegions(thresh)
         is_exist_text = len(regions) >= 2
-        _result = cast(bool, is_message & is_exist_text)
+        _result = is_message & is_exist_text
         return _result
