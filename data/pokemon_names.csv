@@ -1009,13 +1009,37 @@ No.,Japanese,English
 1008,ミライドン,Miraidon
 1009,ウネルミナモ,Walking Wake
 1010,テツノイサハ,Iron Leaves
-9771,へイラッシャ,Dondozo
-4791,ウォッシュロトム,Rotom Wash
-4792,フロストロトム,Rotom Frost
-4793,ヒートロトム,Rotom Heat
-4794,スピンロトム,Rotom Fan
-4795,カットロトム,Rotom Mow
-7451,ルガルガンたそがれ,Lycanroc Dusk
-12801,パルデアケンタロス水,Tauros Paldean Water
-12803,パルデアケンタロス炎,Tauros Paldean Fire
-12803,パルデアケンタロス格闘,Tauros Paldean
+10001,へイラッシャ,Dondozo
+10002,ウォッシュロトム,Rotom Wash
+10003,フロストロトム,Rotom Frost
+10004,ヒートロトム,Rotom Heat
+10005,スピンロトム,Rotom Fan
+10006,カットロトム,Rotom Mow
+10007,ルガルガンたそがれ,Lycanroc Dusk
+10008,パルデアケンタロス水,Tauros Paldean Water
+10009,パルデアケンタロス炎,Tauros Paldean Fire
+10010,パルデアケンタロス格闘,Tauros Paldean
+10011,ヒスイドレディア,Lilligant Hisuian
+10012,ヒスイウォーグル,Braviary Hisuian
+10013,ヒスイダイケンキ,Samurott Hisuian
+10014,ヒスイバクフーン,Typhlosion Hisuian
+10015,ヒスイジュナイパー,Decidueye Hisuian
+10016,ヒスイヌメルゴン,Goodra Hisuian
+10017,ヒスイウインディ,Arcanine Hisuian
+10018,ヒスイマルマイン,Electrode Hisuian
+10019,ヒスイゾロアーク,Zoroark Hisuian
+10020,化身ランドロス,Landorus Incarnate
+10021,化身ボルトロス,Thundurus Incarnate
+10022,化身トルネロス,Tornadus Incarnate
+10023,化身ラブトロス,Enamorus Incarnate
+10024,霊獣ランドロス,Landorus Therian
+10025,霊獣ボルトロス,Thundurus Therian
+10026,霊獣トルネロス,Tornadus Therian
+10027,霊獣ラブトロス,Enamorus Therian
+10028,ガラルフリーザー,Articuno Galarian
+10029,ガラルサンダー,Zapdos Galarian
+10030,ガラルファイヤー,Moltres Galarian
+10031,ガラルヤドラン,Slowbro Galarian
+10032,ガラルヤドキング,Slowking Galarian
+10033,アローラペルシアン,Persian Alolan
+10034,アローラベトベトン,Muk Alolan

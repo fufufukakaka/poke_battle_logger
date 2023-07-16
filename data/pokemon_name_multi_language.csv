@@ -822,7 +822,7 @@ NAME_PkMn_GREEDENT,Greedent,ヨクバリス,Rongrigou,Schlaraffel,Greedent,Greed
 NAME_PkMn_ROOKIDEE,Rookidee,ココガラ,Minisange,Meikro,Rookidee,Rookidee,파라꼬,稚山雀,稚山雀
 NAME_PkMn_CORVISQUIRE,Corvisquire,アオガラス,Bleuseille,Kranoviz,Corvisquire,Corvisquire,파크로우,藍鴉,蓝鸦
 NAME_PkMn_CORVIKNIGHT,Corviknight,アーマーガア,Corvaillus,Krarmor,Corviknight,Corviknight,아머까오,鋼鎧鴉,钢铠鸦
-NAME_PkMn_BLIPBUG,Blipbug,サッチミシ,Larvadar,Sensect,Blipbug,Blipbug,두루지벌레,索偵蟲,索侦虫
+NAME_PkMn_BLIPBUG,Blipbug,サッチムシ,Larvadar,Sensect,Blipbug,Blipbug,두루지벌레,索偵蟲,索侦虫
 NAME_PkMn_DOTTLER,Dottler,レドームシ,Coléodôme,Keradar,Dottler,Dottler,레돔벌레,天罩蟲,天罩虫
 NAME_PkMn_ORBEETLE,Orbeetle,イオルブ,Astronelle,Maritellit,Orbeetle,Orbeetle,이올브,以歐路普,以欧路普
 NAME_PkMn_NICKIT,Nickit,クスネ,Goupilou,Kleptifux,Nickit,Nickit,훔처우,偷兒狐,狡小狐
@@ -881,7 +881,7 @@ NAME_PkMn_COPPERAJAH,Copperajah,ダイオウドウ,Pachyradjah,Patinaraja,Copper
 NAME_PkMn_DRACOZOLT,Dracozolt,パッチラゴン,Galvagon,Lectragon,Dracozolt,Dracozolt,파치래곤,雷鳥龍,雷鸟龙
 NAME_PkMn_ARCTOZOLT,Arctozolt,パッチルドン,Galvagla,Lecryodon,Arctozolt,Arctozolt,파치르돈,雷鳥海獸,雷鸟海兽
 NAME_PkMn_DRACOVISH,Dracovish,ウオノラゴン,Hydragon,Pescragon,Dracovish,Dracovish,어래곤,鰓魚龍,鳃鱼龙
-NAME_PkMn_ARCTOVISH,Arctovish,ウオノルドン,Hydragla,Pescryodon,Arctovish,Arctovish,어치르돈,鰓魚海獸,鳃鱼海兽
+NAME_PkMn_ARCTOVISH,Arctovish,ウオノラドン,Hydragla,Pescryodon,Arctovish,Arctovish,어치르돈,鰓魚海獸,鳃鱼海兽
 NAME_PkMn_DURALUDON,Duraludon,ジュラルドン,Duralugon,Duraludon,Duraludon,Duraludon,두랄루돈,鋁鋼龍,铝钢龙
 NAME_PkMn_DREEPY,Dreepy,ドラメシヤ,Fantyrm,Grolldra,Dreepy,Dreepy,드라꼰,多龍梅西亞,多龙梅西亚
 NAME_PkMn_DRAKLOAK,Drakloak,ドロンチ,Dispareptil,Phandra,Drakloak,Drakloak,드래런치,多龍奇,多龙奇
@@ -894,7 +894,7 @@ NAME_PkMn_URSHIFU,Urshifu,ウーラオス,Shifours,Wulaosu,Urshifu,Urshifu,우�
 NAME_PkMn_ZARUDE,Zarude,ザルード,Zarude,Zarude,Zarude,Zarude,자루도,薩戮德,萨戮德
 NAME_PkMn_REGIELEKI,Regieleki,レジエレキ,Regieleki,Regieleki,Regieleki,Regieleki,레지에레키,雷吉艾勒奇,雷吉艾勒奇
 NAME_PkMn_REGIDRAGO,Regidrago,レジドラゴ,Regidrago,Regidrago,Regidrago,Regidrago,레지드래고,雷吉鐸拉戈,雷吉铎拉戈
-NAME_PkMn_GLASTRIER,Glastrier,ブラザポス,Blizzeval,Polaross,Glastrier,Glastrier,블리자포스,雪暴馬,雪暴马
+NAME_PkMn_GLASTRIER,Glastrier,ブリザポス,Blizzeval,Polaross,Glastrier,Glastrier,블리자포스,雪暴馬,雪暴马
 NAME_PkMn_SPECTRIER,Spectrier,レイスポス,Spectreval,Phantoross,Spectrier,Spectrier,레이스포스,靈幽馬,灵幽马
 NAME_PkMn_CALYREX,Calyrex,バドレックス,Sylveroy,Coronospa,Calyrex,Calyrex,버드렉스,蕾冠王,蕾冠王
 NAME_PkMn_WYRDEER,Wyrdeer,アヤシシ,Cerbyllin,Damythir,Wyrdeer,Wyrdeer,신비록,詭角鹿,诡角鹿
