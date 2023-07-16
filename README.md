@@ -63,6 +63,10 @@ make run_api
 make run-dashboard
 ```
 
+```
+POSTGRES_DB={} POSTGRES_PASSWORD={} POSTGRES_USER={} POSTGRES_HOST={} POSTGRES_PORT={} make run_api_local_use_postgres
+```
+
 ### For Unknown Pokemon Image
 
 UI から「対戦データの登録」で対戦データを登録しようとした際に、次のようなエラーが出ることがあります。

@@ -102,6 +102,14 @@ class Trainer(BaseModel):  # type: ignore
     identity = TextField()
 
 
+class FaintedLog(BaseModel):  # type: ignore
+    battle_id = TextField()
+    turn = IntegerField()
+    your_pokemon_name = TextField()
+    opponent_pokemon_name = TextField()
+    fainted_pokemon_side = TextField()
+
+
 class DatabaseHandler:
     def __init__(self) -> None:
         self.db = build_db_connection()
@@ -1252,6 +1260,224 @@ class DatabaseHandler:
                 "turn",
                 "frame_number",
                 "message",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def build_and_insert_fainted_log(
+        self,
+        battle_id: str,
+        modified_in_battle_pokemons: List[InBattlePokemon],
+        modified_messages: List[Message],
+    ) -> None:
+        df_in_battle_pokemon = pd.DataFrame(
+            [obj.__dict__ for obj in modified_in_battle_pokemons]
+        )
+        df_messages = pd.DataFrame([obj.__dict__ for obj in modified_messages])
+        df_in_battle_pokemon = df_in_battle_pokemon.sort_values(
+            by=["battle_id", "turn"]
+        )
+        df_in_battle_pokemon["next_frame_number"] = df_in_battle_pokemon.groupby(
+            "battle_id"
+        )["frame_number"].shift(-1)
+
+        # Join the message log to the battle log
+        df_messages2 = pd.merge_asof(
+            df_messages.sort_values("frame_number"),
+            df_in_battle_pokemon.sort_values("frame_number"),
+            left_on="frame_number",
+            right_on="frame_number",
+            by="battle_id",
+            direction="backward",
+        )
+        df_messages2["fainted_pokemon_type"] = None
+        df_messages2.loc[
+            df_messages2.message.str.contains(".* fainted!"), "fainted_pokemon_type"
+        ] = "Your Pokemon Fainted"
+        df_messages2.loc[
+            df_messages2.message.str.contains("The opposing .* fainted!"),
+            "fainted_pokemon_type",
+        ] = "Opponent Pokemon Fainted"
+        # Keep only rows with fainted pokemon
+        df_messages2 = df_messages2.dropna(subset=["fainted_pokemon_type"])
+
+        # Join fainted pokemon messages to the battle log
+        df_in_battle_pokemon = df_in_battle_pokemon.merge(
+            df_messages2[["battle_id", "turn", "fainted_pokemon_type"]],
+            on=["battle_id", "turn"],
+            how="left",
+        )
+        # Add a 'fainted_pokemon_side' column
+        df_in_battle_pokemon["fainted_pokemon_side"] = "Unknown"
+        df_in_battle_pokemon.loc[
+            df_in_battle_pokemon.fainted_pokemon_type == "Your Pokemon Fainted",
+            "fainted_pokemon_side",
+        ] = "Opponent Pokemon Win"
+        df_in_battle_pokemon.loc[
+            df_in_battle_pokemon.fainted_pokemon_type == "Opponent Pokemon Fainted",
+            "fainted_pokemon_side",
+        ] = "Your Pokemon Win"
+        df_battle = df_in_battle_pokemon[df_in_battle_pokemon.battle_id == battle_id]
+        stats = df_battle.query("fainted_pokemon_side != 'Unknown'")
+
+        fainted_log: List[Dict[str, Union[str, int]]] = pd.DataFrame(
+            stats,
+            columns=[
+                "battle_id",
+                "turn",
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "fainted_pokemon_side",
+            ],
+        ).to_json(orient="records")
+        for _fainted_log in fainted_log:
+            FaintedLog.create(
+                battle_id=_fainted_log["battle_id"],
+                turn=_fainted_log["turn"],
+                your_pokemon_name=unicodedata.normalize(
+                    "NFC", cast(str, _fainted_log["your_pokemon_name"])
+                ),
+                opponent_pokemon_name=unicodedata.normalize(
+                    "NFC", cast(str, _fainted_log["opponent_pokemon_name"])
+                ),
+                fainted_pokemon_side=_fainted_log["fainted_pokemon_side"],
+            )
+        self.db.close()
+
+    def get_fainted_pokemon_log(
+        self, battle_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = f"""
+        select
+            battle_id,
+            turn,
+            your_pokemon_name,
+            opponent_pokemon_name,
+            fainted_pokemon_side
+        from
+            faintedlog
+        where
+            battle_id = '{battle_id}'
+        """
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "battle_id",
+                "turn",
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "fainted_pokemon_side",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_your_pokemon_defeat_summary(
+        self, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open("poke_battle_logger/database/sql/your_pokemon_defeat_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_your_pokemon_defeat_summary_in_season(
+        self, season: int, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open(
+                "poke_battle_logger/database/sql/your_pokemon_defeat_summary_in_season.sql"
+            )
+            .read()
+            .format(trainer_id=trainer_id, season=season)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_opponent_pokemon_defeat_summary(
+        self, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open("poke_battle_logger/database/sql/opponent_pokemon_defeat_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
+            ],
+        )
+        _res = cast(
+            List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_opponent_pokemon_defeat_summary_in_season(
+        self, season: int, trainer_id: str
+    ) -> List[Dict[str, Union[str, int]]]:
+        sql = (
+            open(
+                "poke_battle_logger/database/sql/opponent_pokemon_defeat_summary_in_season.sql"
+            )
+            .read()
+            .format(trainer_id=trainer_id, season=season)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+                "knock_out_count",
             ],
         )
         _res = cast(

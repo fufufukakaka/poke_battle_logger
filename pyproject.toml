@@ -29,18 +29,27 @@ psycopg2-binary = "^2.9.6"
 torch = "^2.0.0"
 scikit-learn = "^1.2.2"
 google-cloud-storage = "^2.9.0"
+setuptools = "^68.0.0"
 
-[tool.poetry.dev-dependencies]
-pysen = "^0.10.4"
-black = "^22.3.0"
-isort = "^5.10.1"
-flake8 = "^4.0.1"
-mypy = "^0.991"
+[[tool.poetry.source]]
+name = "default"
+url = "https://pypi.python.org/simple/"
+priority = "default"
+
+[[tool.poetry.source]]
+name = "torch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+priority = "explicit"
 
 [tool.poetry.group.dev.dependencies]
 jupyter = "^1.0.0"
 matplotlib = "^3.7.0"
 pytest = "^7.3.1"
+black = "^22.3.0"
+isort = "^5.10.1"
+flake8 = "^4.0.1"
+mypy = "^0.991"
+pysen = "^0.10.4"
 
 [tool.pysen]
 version = "0.10"
@@ -79,6 +88,7 @@ include_trailing_comma = true
 line_length = 88
 multi_line_output = 3
 use_parentheses = true
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
