@@ -1268,14 +1268,40 @@ class DatabaseHandler:
         )
         return _res
 
-    def build_and_insert_fainted_log(self, battle_id: str) -> None:
-        sql = (
-            open("poke_battle_logger/database/sql/fainted_log.sql")
-            .read()
-            .format(battle_id=battle_id)
+    def build_and_insert_fainted_log(self, battle_id: str, modified_in_battle_pokemons, modified_messages) -> None:
+        df_in_battle_pokemon = pd.DataFrame([obj.__dict__ for obj in modified_in_battle_pokemons])
+        df_messages = pd.DataFrame([obj.__dict__ for obj in modified_messages])
+        df_in_battle_pokemon = df_in_battle_pokemon.sort_values(by=['battle_id', 'turn'])
+        df_in_battle_pokemon['next_frame_number'] = df_in_battle_pokemon.groupby('battle_id')['frame_number'].shift(-1)
+
+        # Join the message log to the battle log
+        df_messages2 = pd.merge_asof(
+            df_messages.sort_values('frame_number'),
+            df_in_battle_pokemon.sort_values('frame_number'),
+            left_on='frame_number',
+            right_on='frame_number',
+            by='battle_id',
+            direction='backward'
         )
-        self.db.connect()
-        stats = self.db.execute_sql(sql).fetchall()
+        df_messages2['fainted_pokemon_type'] = None
+        df_messages2.loc[df_messages2.message.str.contains('.* fainted!'), 'fainted_pokemon_type'] = 'Your Pokemon Fainted'
+        df_messages2.loc[df_messages2.message.str.contains('The opposing .* fainted!'), 'fainted_pokemon_type'] = 'Opponent Pokemon Fainted'
+        # Keep only rows with fainted pokemon
+        df_messages2 = df_messages2.dropna(subset=['fainted_pokemon_type'])
+
+        # Join fainted pokemon messages to the battle log
+        df_in_battle_pokemon = df_in_battle_pokemon.merge(
+            df_messages2[['battle_id', 'turn', 'fainted_pokemon_type']],
+            on=['battle_id', 'turn'],
+            how='left'
+        )
+        # Add a 'fainted_pokemon_side' column
+        df_in_battle_pokemon['fainted_pokemon_side'] = 'Unknown'
+        df_in_battle_pokemon.loc[df_in_battle_pokemon.fainted_pokemon_type == 'Your Pokemon Fainted', 'fainted_pokemon_side'] = 'Opponent Pokemon Win'
+        df_in_battle_pokemon.loc[df_in_battle_pokemon.fainted_pokemon_type == 'Opponent Pokemon Fainted', 'fainted_pokemon_side'] = 'Your Pokemon Win'
+        df_battle = df_in_battle_pokemon[df_in_battle_pokemon.battle_id == battle_id]
+        stats = df_battle.query("fainted_pokemon_side != 'Unknown'")
+
         fainted_log: List[Dict[str, Union[str, int]]] = pd.DataFrame(
             stats,
             columns=[
