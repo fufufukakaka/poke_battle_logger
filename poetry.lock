@@ -108,6 +108,11 @@ yarl = ">=1.0,<2.0"
 [package.extras]
 speedups = ["Brotli", "aiodns", "cchardet"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "aiosignal"
 version = "1.3.1"
@@ -121,6 +126,11 @@ files = [
 
 [package.dependencies]
 frozenlist = ">=1.1.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "anyio"
@@ -143,6 +153,11 @@ doc = ["Sphinx", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-
 test = ["anyio[trio]", "coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "mock (>=4)", "psutil (>=5.9)", "pytest (>=7.0)", "pytest-mock (>=3.6.1)", "trustme", "uvloop (>=0.17)"]
 trio = ["trio (<0.22)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "appnope"
 version = "0.1.3"
@@ -153,6 +168,11 @@ files = [
     {file = "appnope-0.1.3-py2.py3-none-any.whl", hash = "sha256:265a455292d0bd8a72453494fa24df5a11eb18373a60c7c0430889f22548605e"},
     {file = "appnope-0.1.3.tar.gz", hash = "sha256:02bd91c4de869fbb1e1c50aafc4098827a7a54ab2f39d9dcba6c9547ed920e24"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "argon2-cffi"
@@ -172,6 +192,11 @@ argon2-cffi-bindings = "*"
 dev = ["cogapp", "coverage[toml] (>=5.0.2)", "furo", "hypothesis", "pre-commit", "pytest", "sphinx", "sphinx-notfound-page", "tomli"]
 docs = ["furo", "sphinx", "sphinx-notfound-page"]
 tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pytest"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "argon2-cffi-bindings"
@@ -210,6 +235,11 @@ cffi = ">=1.0.1"
 dev = ["cogapp", "pre-commit", "pytest", "wheel"]
 tests = ["pytest"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "arrow"
 version = "1.2.3"
@@ -223,6 +253,11 @@ files = [
 
 [package.dependencies]
 python-dateutil = ">=2.7.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "asttokens"
@@ -241,6 +276,11 @@ six = "*"
 [package.extras]
 test = ["astroid", "pytest"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "async-timeout"
 version = "4.0.2"
@@ -251,6 +291,11 @@ files = [
     {file = "async-timeout-4.0.2.tar.gz", hash = "sha256:2163e1640ddb52b7a8c80d0a67a08587e5d245cc9c553a74a847056bc2976b15"},
     {file = "async_timeout-4.0.2-py3-none-any.whl", hash = "sha256:8ca1e4fcf50d07413d66d1a5e416e42cfdf5851c981d679a09851a6853383b3c"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "attrs"
@@ -270,6 +315,11 @@ docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-
 tests = ["attrs[tests-no-zope]", "zope-interface"]
 tests-no-zope = ["cloudpickle", "hypothesis", "mypy (>=1.1.1)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "pytest-xdist[psutil]"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "backcall"
 version = "0.2.0"
@@ -280,6 +330,11 @@ files = [
     {file = "backcall-0.2.0-py2.py3-none-any.whl", hash = "sha256:fbbce6a29f263178a1f7915c1940bde0ec2b2a967566fe1c65c1dfb7422bd255"},
     {file = "backcall-0.2.0.tar.gz", hash = "sha256:5cbdbf27be5e7cfadb448baf0aa95508f91f2bbc6c6437cd9cd06e2a4c215e1e"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "beautifulsoup4"
@@ -298,6 +353,11 @@ soupsieve = ">1.2"
 [package.extras]
 html5lib = ["html5lib"]
 lxml = ["lxml"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "black"
@@ -333,6 +393,11 @@ d = ["aiohttp (>=3.7.4)"]
 jupyter = ["ipython (>=7.8.0)", "tokenize-rt (>=3.2.0)"]
 uvloop = ["uvloop (>=0.15.2)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "bleach"
 version = "6.0.0"
@@ -350,6 +415,11 @@ webencodings = "*"
 
 [package.extras]
 css = ["tinycss2 (>=1.1.0,<1.2)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "brotli"
@@ -442,6 +512,11 @@ files = [
     {file = "Brotli-1.0.9.zip", hash = "sha256:4d1b810aa0ed773f81dceda2cc7b403d01057458730e309856356d4ef4188438"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "brotlicffi"
 version = "1.0.9.2"
@@ -484,6 +559,11 @@ files = [
 [package.dependencies]
 cffi = ">=1.0.0"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "cachetools"
 version = "5.3.1"
@@ -495,6 +575,11 @@ files = [
     {file = "cachetools-5.3.1.tar.gz", hash = "sha256:dce83f2d9b4e1f732a8cd44af8e8fab2dbe46201467fc98b3ef8f269092bf62b"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "certifi"
 version = "2023.5.7"
@@ -505,6 +590,11 @@ files = [
     {file = "certifi-2023.5.7-py3-none-any.whl", hash = "sha256:c6c2e98f5c7869efca1f8916fed228dd91539f9f1b444c314c06eef02980c716"},
     {file = "certifi-2023.5.7.tar.gz", hash = "sha256:0f0d56dc5a6ad56fd4ba36484d6cc34451e1c6548c61daad8c320169f91eddc7"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "cffi"
@@ -581,6 +671,11 @@ files = [
 
 [package.dependencies]
 pycparser = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "charset-normalizer"
@@ -666,6 +761,11 @@ files = [
     {file = "charset_normalizer-3.2.0-py3-none-any.whl", hash = "sha256:8e098148dd37b4ce3baca71fb394c81dc5d9c7728c95df695d2dca218edf40e6"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "click"
 version = "8.1.5"
@@ -680,6 +780,11 @@ files = [
 [package.dependencies]
 colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "cloudpickle"
 version = "2.2.1"
@@ -691,6 +796,45 @@ files = [
     {file = "cloudpickle-2.2.1.tar.gz", hash = "sha256:d89684b8de9e34a2a43b3460fbca07d09d6e25ce858df4d5a44240403b6178f5"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "cmake"
+version = "3.26.4"
+description = "CMake is an open-source, cross-platform family of tools designed to build, test and package software"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cmake-3.26.4-py2.py3-none-macosx_10_10_universal2.macosx_10_10_x86_64.macosx_11_0_arm64.macosx_11_0_universal2.whl", hash = "sha256:230227bf99f36614de84cdc92ffce3a50eb2803020e946f8da945a08fcf766bf"},
+    {file = "cmake-3.26.4-py2.py3-none-manylinux2010_i686.manylinux_2_12_i686.whl", hash = "sha256:248a90816abfc10ff6e1109b54b8235c3e62f0ac92da16541753deb3b5ae063d"},
+    {file = "cmake-3.26.4-py2.py3-none-manylinux2010_x86_64.manylinux_2_12_x86_64.whl", hash = "sha256:1b92f9f59f48c803106dbdd6750b0f571a0500e25d3a62c42ba84bb7a9240d10"},
+    {file = "cmake-3.26.4-py2.py3-none-manylinux2014_aarch64.manylinux_2_17_aarch64.whl", hash = "sha256:3175442985558d5415b97f264a6a1bb0af5ecfe10e3f7510257b1ea66bd33848"},
+    {file = "cmake-3.26.4-py2.py3-none-manylinux2014_i686.manylinux_2_17_i686.whl", hash = "sha256:1d887be5f1a3f17559a78707a6bc0560f4f8cb93cebb9d823d90a63e68bae09b"},
+    {file = "cmake-3.26.4-py2.py3-none-manylinux2014_ppc64le.manylinux_2_17_ppc64le.whl", hash = "sha256:235d8eac93a28dcce5a1cd7130412885a2aa53d5735cb2230e0f26f589347b65"},
+    {file = "cmake-3.26.4-py2.py3-none-manylinux2014_s390x.manylinux_2_17_s390x.whl", hash = "sha256:05cfd76c637eb22058c95e2dc383cadd4e0615e2643e637bb498a6cc24825790"},
+    {file = "cmake-3.26.4-py2.py3-none-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:93015da6f1c0e1e5f2debf752f1803ea52d742d915ad674043d36e471f937507"},
+    {file = "cmake-3.26.4-py2.py3-none-musllinux_1_1_aarch64.whl", hash = "sha256:d726671ae7ae4aa6989e73d26b9f8f8e6af45163a26ea243949d72246566fdd8"},
+    {file = "cmake-3.26.4-py2.py3-none-musllinux_1_1_i686.whl", hash = "sha256:432837364aa6cab2826a72e8a4cdd3586f5ac9ce495217ccd59aa70f2bba8120"},
+    {file = "cmake-3.26.4-py2.py3-none-musllinux_1_1_ppc64le.whl", hash = "sha256:24110035aff586a04a6a6fcf4609270642e4f503c0620c962dff75b653f81414"},
+    {file = "cmake-3.26.4-py2.py3-none-musllinux_1_1_s390x.whl", hash = "sha256:3e280e81713408987b7053f5b922c9f94e45668ca6efff1f02846309ca0b5b0f"},
+    {file = "cmake-3.26.4-py2.py3-none-musllinux_1_1_x86_64.whl", hash = "sha256:c3b0e72750c0f6c0373242c1299bc4ffdbebdd5004966ae6df0b2e9845aa6990"},
+    {file = "cmake-3.26.4-py2.py3-none-win32.whl", hash = "sha256:e058e59154a1e490fb9425b420f87e28144292397607638d73e323509f7efae6"},
+    {file = "cmake-3.26.4-py2.py3-none-win_amd64.whl", hash = "sha256:b7a6946c345497c14064e0c9585b30f5aaebbefdfc0b245b6bb5a978eb4fc85f"},
+    {file = "cmake-3.26.4-py2.py3-none-win_arm64.whl", hash = "sha256:93a03bad17b9741acaff4a8651f8596496506602fa123e70fe67142f1b21ee2e"},
+    {file = "cmake-3.26.4.tar.gz", hash = "sha256:d45b30b9ce7280829888c78650177ab525df2b6785e1a5b3d82b4c147d828c0e"},
+]
+
+[package.extras]
+test = ["coverage (>=4.2)", "flake8 (>=3.0.4)", "path.py (>=11.5.0)", "pytest (>=3.0.3)", "pytest-cov (>=2.4.0)", "pytest-runner (>=2.9)", "pytest-virtualenv (>=1.7.0)", "scikit-build (>=0.10.0)", "setuptools (>=28.0.0)", "virtualenv (>=15.0.3)", "wheel"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "colorama"
 version = "0.4.6"
@@ -701,6 +845,11 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "colorlog"
@@ -715,6 +864,11 @@ files = [
 
 [package.dependencies]
 colorama = {version = "*", markers = "sys_platform == \"win32\""}
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "comm"
@@ -734,6 +888,11 @@ traitlets = ">=5.3"
 lint = ["black (>=22.6.0)", "mdformat (>0.7)", "mdformat-gfm (>=0.3.5)", "ruff (>=0.0.156)"]
 test = ["pytest"]
 typing = ["mypy (>=0.990)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "contourpy"
@@ -793,6 +952,11 @@ mypy = ["contourpy[bokeh,docs]", "docutils-stubs", "mypy (==1.2.0)", "types-Pill
 test = ["Pillow", "contourpy[test-no-images]", "matplotlib"]
 test-no-images = ["pytest", "pytest-cov", "wurlitzer"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "cycler"
 version = "0.11.0"
@@ -803,6 +967,11 @@ files = [
     {file = "cycler-0.11.0-py3-none-any.whl", hash = "sha256:3a27e95f763a428a739d2add979fa7494c912a32c17c4c38c4d5f082cad165a3"},
     {file = "cycler-0.11.0.tar.gz", hash = "sha256:9c87405839a19696e837b3b818fed3f5f69f16f1eec1a1ad77e043dcea9c772f"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "dacite"
@@ -816,6 +985,11 @@ files = [
 
 [package.extras]
 dev = ["black", "coveralls", "mypy", "pre-commit", "pylint", "pytest (>=5)", "pytest-benchmark", "pytest-cov"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "datasets"
@@ -859,6 +1033,11 @@ tests = ["Pillow (>=6.2.1)", "absl-py", "apache-beam (>=2.26.0,<2.44.0)", "elast
 torch = ["torch"]
 vision = ["Pillow (>=6.2.1)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "debugpy"
 version = "1.6.7"
@@ -886,6 +1065,11 @@ files = [
     {file = "debugpy-1.6.7.zip", hash = "sha256:c4c2f0810fa25323abfdfa36cbbbb24e5c3b1a42cb762782de64439c575d67f2"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "decorator"
 version = "5.1.1"
@@ -897,6 +1081,11 @@ files = [
     {file = "decorator-5.1.1.tar.gz", hash = "sha256:637996211036b6385ef91435e4fae22989472f9d571faba8927ba8253acbc330"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "defusedxml"
 version = "0.7.1"
@@ -907,6 +1096,11 @@ files = [
     {file = "defusedxml-0.7.1-py2.py3-none-any.whl", hash = "sha256:a352e7e428770286cc899e2542b6cdaedb2b4953ff269a210103ec58f6198a61"},
     {file = "defusedxml-0.7.1.tar.gz", hash = "sha256:1bb3032db185915b62d7c6209c5a8792be6a32ab2fedacc84e01b52c51aa3e69"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "dill"
@@ -921,6 +1115,11 @@ files = [
 
 [package.extras]
 graph = ["objgraph (>=1.7.2)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "editdistance"
@@ -1009,6 +1208,11 @@ files = [
     {file = "editdistance-0.6.2.tar.gz", hash = "sha256:97a722f5e859ed4c26da269e71a11995f23ac9c880618b8a2028373eb74283be"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "exceptiongroup"
 version = "1.1.2"
@@ -1023,6 +1227,11 @@ files = [
 [package.extras]
 test = ["pytest (>=6)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "executing"
 version = "1.2.0"
@@ -1036,6 +1245,11 @@ files = [
 
 [package.extras]
 tests = ["asttokens", "littleutils", "pytest", "rich"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "fastapi"
@@ -1058,6 +1272,11 @@ dev = ["pre-commit (>=2.17.0,<3.0.0)", "ruff (==0.0.138)", "uvicorn[standard] (>
 doc = ["mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1.1.2,<2.0.0)", "mkdocs-markdownextradata-plugin (>=0.1.7,<0.3.0)", "mkdocs-material (>=8.1.4,<9.0.0)", "pyyaml (>=5.3.1,<7.0.0)", "typer[all] (>=0.6.1,<0.8.0)"]
 test = ["anyio[trio] (>=3.2.1,<4.0.0)", "black (==22.10.0)", "coverage[toml] (>=6.5.0,<8.0)", "databases[sqlite] (>=0.3.2,<0.7.0)", "email-validator (>=1.1.1,<2.0.0)", "flask (>=1.1.2,<3.0.0)", "httpx (>=0.23.0,<0.24.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.982)", "orjson (>=3.2.1,<4.0.0)", "passlib[bcrypt] (>=1.7.2,<2.0.0)", "peewee (>=3.13.3,<4.0.0)", "pytest (>=7.1.3,<8.0.0)", "python-jose[cryptography] (>=3.3.0,<4.0.0)", "python-multipart (>=0.0.5,<0.0.6)", "pyyaml (>=5.3.1,<7.0.0)", "ruff (==0.0.138)", "sqlalchemy (>=1.3.18,<1.4.43)", "types-orjson (==3.6.2)", "types-ujson (==5.6.0.0)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0,<6.0.0)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "fastjsonschema"
 version = "2.17.1"
@@ -1071,6 +1290,11 @@ files = [
 
 [package.extras]
 devel = ["colorama", "json-spec", "jsonschema", "pylint", "pytest", "pytest-benchmark", "pytest-cache", "validictory"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "filelock"
@@ -1087,6 +1311,11 @@ files = [
 docs = ["furo (>=2023.5.20)", "sphinx (>=7.0.1)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
 testing = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "diff-cover (>=7.5)", "pytest (>=7.3.1)", "pytest-cov (>=4.1)", "pytest-mock (>=3.10)", "pytest-timeout (>=2.1)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "flake8"
 version = "4.0.1"
@@ -1102,6 +1331,11 @@ files = [
 mccabe = ">=0.6.0,<0.7.0"
 pycodestyle = ">=2.8.0,<2.9.0"
 pyflakes = ">=2.4.0,<2.5.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "fonttools"
@@ -1160,6 +1394,11 @@ ufo = ["fs (>=2.2.0,<3)"]
 unicode = ["unicodedata2 (>=15.0.0)"]
 woff = ["brotli (>=1.0.1)", "brotlicffi (>=0.8.0)", "zopfli (>=0.1.4)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "fqdn"
 version = "1.5.1"
@@ -1170,6 +1409,11 @@ files = [
     {file = "fqdn-1.5.1-py3-none-any.whl", hash = "sha256:3a179af3761e4df6eb2e026ff9e1a3033d3587bf980a0b1b2e1e5d08d7358014"},
     {file = "fqdn-1.5.1.tar.gz", hash = "sha256:105ed3677e767fb5ca086a0c1f4bb66ebc3c100be518f0e0d755d9eae164d89f"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "frozenlist"
@@ -1241,6 +1485,11 @@ files = [
     {file = "frozenlist-1.4.0.tar.gz", hash = "sha256:09163bdf0b2907454042edb19f887c6d33806adc71fbd54afc14908bfdc22251"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "fsspec"
 version = "2023.6.0"
@@ -1280,6 +1529,11 @@ smb = ["smbprotocol"]
 ssh = ["paramiko"]
 tqdm = ["tqdm"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "gitdb"
 version = "4.0.10"
@@ -1294,6 +1548,11 @@ files = [
 [package.dependencies]
 smmap = ">=3.0.1,<6"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "gitpython"
 version = "3.1.32"
@@ -1307,6 +1566,11 @@ files = [
 
 [package.dependencies]
 gitdb = ">=4.0.1,<5"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "google-api-core"
@@ -1329,6 +1593,11 @@ requests = ">=2.18.0,<3.0.0.dev0"
 grpc = ["grpcio (>=1.33.2,<2.0dev)", "grpcio (>=1.49.1,<2.0dev)", "grpcio-status (>=1.33.2,<2.0.dev0)", "grpcio-status (>=1.49.1,<2.0.dev0)"]
 grpcgcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
 grpcio-gcp = ["grpcio-gcp (>=0.2.2,<1.0.dev0)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "google-auth"
@@ -1355,6 +1624,11 @@ pyopenssl = ["cryptography (>=38.0.3)", "pyopenssl (>=20.0.0)"]
 reauth = ["pyu2f (>=0.1.5)"]
 requests = ["requests (>=2.20.0,<3.0.0.dev0)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "google-cloud-core"
 version = "2.3.3"
@@ -1372,6 +1646,11 @@ google-auth = ">=1.25.0,<3.0dev"
 
 [package.extras]
 grpc = ["grpcio (>=1.38.0,<2.0dev)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "google-cloud-storage"
@@ -1393,6 +1672,11 @@ requests = ">=2.18.0,<3.0.0dev"
 
 [package.extras]
 protobuf = ["protobuf (<5.0.0dev)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "google-crc32c"
@@ -1474,6 +1758,11 @@ files = [
 [package.extras]
 testing = ["pytest"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "google-resumable-media"
 version = "2.5.0"
@@ -1492,6 +1781,11 @@ google-crc32c = ">=1.0,<2.0dev"
 aiohttp = ["aiohttp (>=3.6.2,<4.0.0dev)"]
 requests = ["requests (>=2.18.0,<3.0.0dev)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "googleapis-common-protos"
 version = "1.59.1"
@@ -1509,6 +1803,11 @@ protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.1 || >4.21.1,<4
 [package.extras]
 grpc = ["grpcio (>=1.44.0,<2.0.0.dev0)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "h11"
 version = "0.14.0"
@@ -1519,6 +1818,11 @@ files = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
     {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "huggingface-hub"
@@ -1550,6 +1854,11 @@ testing = ["InquirerPy (==0.3.4)", "Jinja2", "Pillow", "jedi", "pytest", "pytest
 torch = ["torch"]
 typing = ["types-PyYAML", "types-requests", "types-simplejson", "types-toml", "types-tqdm", "types-urllib3"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "idna"
 version = "3.4"
@@ -1561,6 +1870,11 @@ files = [
     {file = "idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "iniconfig"
 version = "2.0.0"
@@ -1571,6 +1885,11 @@ files = [
     {file = "iniconfig-2.0.0-py3-none-any.whl", hash = "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"},
     {file = "iniconfig-2.0.0.tar.gz", hash = "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "ipykernel"
@@ -1604,6 +1923,11 @@ docs = ["myst-parser", "pydata-sphinx-theme", "sphinx", "sphinx-autodoc-typehint
 pyqt5 = ["pyqt5"]
 pyside6 = ["pyside6"]
 test = ["flaky", "ipyparallel", "pre-commit", "pytest (>=7.0)", "pytest-asyncio", "pytest-cov", "pytest-timeout"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "ipython"
@@ -1643,6 +1967,11 @@ qtconsole = ["qtconsole"]
 test = ["pytest (<7.1)", "pytest-asyncio", "testpath"]
 test-extra = ["curio", "matplotlib (!=3.2.0)", "nbformat", "numpy (>=1.21)", "pandas", "pytest (<7.1)", "pytest-asyncio", "testpath", "trio"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "ipython-genutils"
 version = "0.2.0"
@@ -1653,6 +1982,11 @@ files = [
     {file = "ipython_genutils-0.2.0-py2.py3-none-any.whl", hash = "sha256:72dd37233799e619666c9f639a9da83c34013a73e8bbc79a7a6348d93c61fab8"},
     {file = "ipython_genutils-0.2.0.tar.gz", hash = "sha256:eb2e116e75ecef9d4d228fdc66af54269afa26ab4463042e33785b887c628ba8"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "ipywidgets"
@@ -1675,6 +2009,11 @@ widgetsnbextension = ">=4.0.7,<4.1.0"
 [package.extras]
 test = ["ipykernel", "jsonschema", "pytest (>=3.6.0)", "pytest-cov", "pytz"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "isoduration"
 version = "20.11.0"
@@ -1688,6 +2027,11 @@ files = [
 
 [package.dependencies]
 arrow = ">=0.15.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "isort"
@@ -1705,6 +2049,11 @@ colors = ["colorama (>=0.4.3)"]
 pipfile-deprecated-finder = ["pip-shims (>=0.5.2)", "pipreqs", "requirementslib"]
 plugins = ["setuptools"]
 requirements-deprecated-finder = ["pip-api", "pipreqs"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "jedi"
@@ -1725,6 +2074,11 @@ docs = ["Jinja2 (==2.11.3)", "MarkupSafe (==1.1.1)", "Pygments (==2.8.1)", "alab
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["Django (<3.1)", "attrs", "colorama", "docopt", "pytest (<7.0.0)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "jinja2"
 version = "3.1.2"
@@ -1742,6 +2096,11 @@ MarkupSafe = ">=2.0"
 [package.extras]
 i18n = ["Babel (>=2.7)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "joblib"
 version = "1.3.1"
@@ -1753,6 +2112,11 @@ files = [
     {file = "joblib-1.3.1.tar.gz", hash = "sha256:1f937906df65329ba98013dc9692fe22a4c5e4a648112de500508b18a21b41e3"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "jsonpointer"
 version = "2.4"
@@ -1762,6 +2126,11 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, !=3.5.*, 
 files = [
     {file = "jsonpointer-2.4-py2.py3-none-any.whl", hash = "sha256:15d51bba20eea3165644553647711d150376234112651b4f1811022aecad7d7a"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "jsonschema"
@@ -1792,6 +2161,11 @@ webcolors = {version = ">=1.11", optional = true, markers = "extra == \"format-n
 format = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3987", "uri-template", "webcolors (>=1.11)"]
 format-nongpl = ["fqdn", "idna", "isoduration", "jsonpointer (>1.13)", "rfc3339-validator", "rfc3986-validator (>0.1.0)", "uri-template", "webcolors (>=1.11)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "jsonschema-specifications"
 version = "2023.6.1"
@@ -1805,6 +2179,11 @@ files = [
 
 [package.dependencies]
 referencing = ">=0.28.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "jupyter"
@@ -1825,6 +2204,11 @@ jupyter-console = "*"
 nbconvert = "*"
 notebook = "*"
 qtconsole = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "jupyter-client"
@@ -1847,6 +2231,11 @@ traitlets = ">=5.3"
 [package.extras]
 docs = ["ipykernel", "myst-parser", "pydata-sphinx-theme", "sphinx (>=4)", "sphinx-autodoc-typehints", "sphinxcontrib-github-alt", "sphinxcontrib-spelling"]
 test = ["coverage", "ipykernel (>=6.14)", "mypy", "paramiko", "pre-commit", "pytest", "pytest-cov", "pytest-jupyter[client] (>=0.4.1)", "pytest-timeout"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "jupyter-console"
@@ -1872,6 +2261,11 @@ traitlets = ">=5.4"
 [package.extras]
 test = ["flaky", "pexpect", "pytest"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "jupyter-core"
 version = "5.3.1"
@@ -1891,6 +2285,11 @@ traitlets = ">=5.3"
 [package.extras]
 docs = ["myst-parser", "sphinx-autodoc-typehints", "sphinxcontrib-github-alt", "sphinxcontrib-spelling", "traitlets"]
 test = ["ipykernel", "pre-commit", "pytest", "pytest-cov", "pytest-timeout"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "jupyter-events"
@@ -1915,6 +2314,11 @@ traitlets = ">=5.3"
 cli = ["click", "rich"]
 docs = ["jupyterlite-sphinx", "myst-parser", "pydata-sphinx-theme", "sphinxcontrib-spelling"]
 test = ["click", "coverage", "pre-commit", "pytest (>=7.0)", "pytest-asyncio (>=0.19.0)", "pytest-console-scripts", "pytest-cov", "rich"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "jupyter-server"
@@ -1952,6 +2356,11 @@ websocket-client = "*"
 docs = ["ipykernel", "jinja2", "jupyter-client", "jupyter-server", "myst-parser", "nbformat", "prometheus-client", "pydata-sphinx-theme", "send2trash", "sphinx-autodoc-typehints", "sphinxcontrib-github-alt", "sphinxcontrib-openapi (>=0.8.0)", "sphinxcontrib-spelling", "sphinxemoji", "tornado", "typing-extensions"]
 test = ["flaky", "ipykernel", "pre-commit", "pytest (>=7.0)", "pytest-console-scripts", "pytest-jupyter[server] (>=0.4)", "pytest-timeout", "requests"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "jupyter-server-terminals"
 version = "0.4.4"
@@ -1971,6 +2380,11 @@ terminado = ">=0.8.3"
 docs = ["jinja2", "jupyter-server", "mistune (<3.0)", "myst-parser", "nbformat", "packaging", "pydata-sphinx-theme", "sphinxcontrib-github-alt", "sphinxcontrib-openapi", "sphinxcontrib-spelling", "sphinxemoji", "tornado"]
 test = ["coverage", "jupyter-server (>=2.0.0)", "pytest (>=7.0)", "pytest-cov", "pytest-jupyter[server] (>=0.5.3)", "pytest-timeout"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "jupyterlab-pygments"
 version = "0.2.2"
@@ -1982,6 +2396,11 @@ files = [
     {file = "jupyterlab_pygments-0.2.2.tar.gz", hash = "sha256:7405d7fde60819d905a9fa8ce89e4cd830e318cdad22a0030f7a901da705585d"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "jupyterlab-widgets"
 version = "3.0.8"
@@ -1992,6 +2411,11 @@ files = [
     {file = "jupyterlab_widgets-3.0.8-py3-none-any.whl", hash = "sha256:4715912d6ceab839c9db35953c764b3214ebbc9161c809f6e0510168845dfdf5"},
     {file = "jupyterlab_widgets-3.0.8.tar.gz", hash = "sha256:d428ab97b8d87cc7c54cbf37644d6e0f0e662f23876e05fa460a73ec3257252a"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "kiwisolver"
@@ -2070,6 +2494,26 @@ files = [
     {file = "kiwisolver-1.4.4.tar.gz", hash = "sha256:d41997519fcba4a1e46eb4a2fe31bc12f0ff957b2b81bac28db24744f333e955"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "lit"
+version = "16.0.6"
+description = "A Software Testing Tool"
+optional = false
+python-versions = "*"
+files = [
+    {file = "lit-16.0.6.tar.gz", hash = "sha256:84623c9c23b6b14763d637f4e63e6b721b3446ada40bf7001d8fee70b8e77a9a"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "markdown-it-py"
 version = "3.0.0"
@@ -2093,6 +2537,11 @@ plugins = ["mdit-py-plugins"]
 profiling = ["gprof2dot"]
 rtd = ["jupyter_sphinx", "mdit-py-plugins", "myst-parser", "pyyaml", "sphinx", "sphinx-copybutton", "sphinx-design", "sphinx_book_theme"]
 testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "markupsafe"
@@ -2152,6 +2601,11 @@ files = [
     {file = "MarkupSafe-2.1.3-cp39-cp39-win_amd64.whl", hash = "sha256:3fd4abcb888d15a94f32b75d8fd18ee162ca0c064f35b11134be77050296d6ba"},
     {file = "MarkupSafe-2.1.3.tar.gz", hash = "sha256:af598ed32d6ae86f1b747b82783958b1a4ab8f617b06fe68795c7f026abbdcad"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "matplotlib"
@@ -2214,6 +2668,11 @@ pillow = ">=6.2.0"
 pyparsing = ">=2.3.1,<3.1"
 python-dateutil = ">=2.7"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "matplotlib-inline"
 version = "0.1.6"
@@ -2228,6 +2687,11 @@ files = [
 [package.dependencies]
 traitlets = "*"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "mccabe"
 version = "0.6.1"
@@ -2238,6 +2702,11 @@ files = [
     {file = "mccabe-0.6.1-py2.py3-none-any.whl", hash = "sha256:ab8a6258860da4b6677da4bd2fe5dc2c659cff31b3ee4f7f5d64e79735b80d42"},
     {file = "mccabe-0.6.1.tar.gz", hash = "sha256:dd8d182285a0fe56bace7f45b5e7d1a6ebcbf524e8f3bd87eb0f125271b8831f"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "mdurl"
@@ -2250,6 +2719,11 @@ files = [
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "mistune"
 version = "3.0.1"
@@ -2260,6 +2734,11 @@ files = [
     {file = "mistune-3.0.1-py3-none-any.whl", hash = "sha256:b9b3e438efbb57c62b5beb5e134dab664800bdf1284a7ee09e8b12b13eb1aac6"},
     {file = "mistune-3.0.1.tar.gz", hash = "sha256:e912116c13aa0944f9dc530db38eb88f6a77087ab128f49f84a48f4c05ea163c"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "mpmath"
@@ -2277,6 +2756,11 @@ develop = ["codecov", "pycodestyle", "pytest (>=4.6)", "pytest-cov", "wheel"]
 docs = ["sphinx"]
 gmpy = ["gmpy2 (>=2.1.0a4)"]
 tests = ["pytest (>=4.6)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "multidict"
@@ -2361,6 +2845,11 @@ files = [
     {file = "multidict-6.0.4.tar.gz", hash = "sha256:3666906492efb76453c0e7b97f2cf459b0682e7402c0489a95484965dbc1da49"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "multiprocess"
 version = "0.70.14"
@@ -2387,6 +2876,11 @@ files = [
 [package.dependencies]
 dill = ">=0.3.6"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "mutagen"
 version = "1.46.0"
@@ -2397,6 +2891,11 @@ files = [
     {file = "mutagen-1.46.0-py3-none-any.whl", hash = "sha256:8af0728aa2d5c3ee5a727e28d0627966641fddfe804c23eabb5926a4d770aed5"},
     {file = "mutagen-1.46.0.tar.gz", hash = "sha256:6e5f8ba84836b99fe60be5fb27f84be4ad919bbb6b49caa6ae81e70584b55e58"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "mypy"
@@ -2448,6 +2947,11 @@ install-types = ["pip"]
 python2 = ["typed-ast (>=1.4.0,<2)"]
 reports = ["lxml"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "mypy-extensions"
 version = "1.0.0"
@@ -2458,6 +2962,11 @@ files = [
     {file = "mypy_extensions-1.0.0-py3-none-any.whl", hash = "sha256:4392f6c0eb8a5668a69e23d168ffa70f0be9ccfd32b5cc2d26a34ae5b844552d"},
     {file = "mypy_extensions-1.0.0.tar.gz", hash = "sha256:75dbf8955dc00442a438fc4d0666508a9a97b6bd41aa2f0ffe9d2f2725af0782"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "nbclassic"
@@ -2494,6 +3003,11 @@ docs = ["myst-parser", "nbsphinx", "sphinx", "sphinx-rtd-theme", "sphinxcontrib-
 json-logging = ["json-logging"]
 test = ["coverage", "nbval", "pytest", "pytest-cov", "pytest-jupyter", "pytest-playwright", "pytest-tornasync", "requests", "requests-unixsocket", "testpath"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "nbclient"
 version = "0.8.0"
@@ -2515,6 +3029,11 @@ traitlets = ">=5.4"
 dev = ["pre-commit"]
 docs = ["autodoc-traits", "mock", "moto", "myst-parser", "nbclient[test]", "sphinx (>=1.7)", "sphinx-book-theme", "sphinxcontrib-spelling"]
 test = ["flaky", "ipykernel (>=6.19.3)", "ipython", "ipywidgets", "nbconvert (>=7.0.0)", "pytest (>=7.0)", "pytest-asyncio", "pytest-cov (>=4.0)", "testpath", "xmltodict"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "nbconvert"
@@ -2553,6 +3072,11 @@ serve = ["tornado (>=6.1)"]
 test = ["ipykernel", "ipywidgets (>=7)", "pre-commit", "pytest", "pytest-dependency"]
 webpdf = ["pyppeteer (>=1,<1.1)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "nbformat"
 version = "5.9.1"
@@ -2574,6 +3098,11 @@ traitlets = ">=5.1"
 docs = ["myst-parser", "pydata-sphinx-theme", "sphinx", "sphinxcontrib-github-alt", "sphinxcontrib-spelling"]
 test = ["pep440", "pre-commit", "pytest", "testpath"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "nest-asyncio"
 version = "1.5.6"
@@ -2584,6 +3113,11 @@ files = [
     {file = "nest_asyncio-1.5.6-py3-none-any.whl", hash = "sha256:b9a953fb40dceaa587d109609098db21900182b16440652454a146cffb06e8b8"},
     {file = "nest_asyncio-1.5.6.tar.gz", hash = "sha256:d267cc1ff794403f7df692964d1d2a3fa9418ffea2a3f6859a439ff482fef290"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "networkx"
@@ -2602,6 +3136,11 @@ developer = ["mypy (>=1.1)", "pre-commit (>=3.2)"]
 doc = ["nb2plots (>=0.6)", "numpydoc (>=1.5)", "pillow (>=9.4)", "pydata-sphinx-theme (>=0.13)", "sphinx (>=6.1)", "sphinx-gallery (>=0.12)", "texext (>=0.6.7)"]
 extra = ["lxml (>=4.6)", "pydot (>=1.4.2)", "pygraphviz (>=1.10)", "sympy (>=1.10)"]
 test = ["codecov (>=2.1)", "pytest (>=7.2)", "pytest-cov (>=4.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "notebook"
@@ -2637,6 +3176,11 @@ docs = ["myst-parser", "nbsphinx", "sphinx", "sphinx-rtd-theme", "sphinxcontrib-
 json-logging = ["json-logging"]
 test = ["coverage", "nbval", "pytest", "pytest-cov", "requests", "requests-unixsocket", "selenium (==4.1.5)", "testpath"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "notebook-shim"
 version = "0.2.3"
@@ -2653,6 +3197,11 @@ jupyter-server = ">=1.8,<3"
 
 [package.extras]
 test = ["pytest", "pytest-console-scripts", "pytest-jupyter", "pytest-tornasync"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "numpy"
@@ -2688,6 +3237,218 @@ files = [
     {file = "numpy-1.25.1.tar.gz", hash = "sha256:9a3a9f3a61480cc086117b426a8bd86869c213fc4072e606f01c4e4b66eb92bf"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cublas-cu11"
+version = "11.10.3.66"
+description = "CUBLAS native runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cublas_cu11-11.10.3.66-py3-none-manylinux1_x86_64.whl", hash = "sha256:d32e4d75f94ddfb93ea0a5dda08389bcc65d8916a25cb9f37ac89edaeed3bded"},
+    {file = "nvidia_cublas_cu11-11.10.3.66-py3-none-win_amd64.whl", hash = "sha256:8ac17ba6ade3ed56ab898a036f9ae0756f1e81052a317bf98f8c6d18dc3ae49e"},
+]
+
+[package.dependencies]
+setuptools = "*"
+wheel = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cuda-cupti-cu11"
+version = "11.7.101"
+description = "CUDA profiling tools runtime libs."
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cuda_cupti_cu11-11.7.101-py3-none-manylinux1_x86_64.whl", hash = "sha256:e0cfd9854e1f2edaa36ca20d21cd0bdd5dcfca4e3b9e130a082e05b33b6c5895"},
+    {file = "nvidia_cuda_cupti_cu11-11.7.101-py3-none-win_amd64.whl", hash = "sha256:7cc5b8f91ae5e1389c3c0ad8866b3b016a175e827ea8f162a672990a402ab2b0"},
+]
+
+[package.dependencies]
+setuptools = "*"
+wheel = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cuda-nvrtc-cu11"
+version = "11.7.99"
+description = "NVRTC native runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cuda_nvrtc_cu11-11.7.99-2-py3-none-manylinux1_x86_64.whl", hash = "sha256:9f1562822ea264b7e34ed5930567e89242d266448e936b85bc97a3370feabb03"},
+    {file = "nvidia_cuda_nvrtc_cu11-11.7.99-py3-none-manylinux1_x86_64.whl", hash = "sha256:f7d9610d9b7c331fa0da2d1b2858a4a8315e6d49765091d28711c8946e7425e7"},
+    {file = "nvidia_cuda_nvrtc_cu11-11.7.99-py3-none-win_amd64.whl", hash = "sha256:f2effeb1309bdd1b3854fc9b17eaf997808f8b25968ce0c7070945c4265d64a3"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cuda-runtime-cu11"
+version = "11.7.99"
+description = "CUDA Runtime native Libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cuda_runtime_cu11-11.7.99-py3-none-manylinux1_x86_64.whl", hash = "sha256:cc768314ae58d2641f07eac350f40f99dcb35719c4faff4bc458a7cd2b119e31"},
+    {file = "nvidia_cuda_runtime_cu11-11.7.99-py3-none-win_amd64.whl", hash = "sha256:bc77fa59a7679310df9d5c70ab13c4e34c64ae2124dd1efd7e5474b71be125c7"},
+]
+
+[package.dependencies]
+setuptools = "*"
+wheel = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cudnn-cu11"
+version = "8.5.0.96"
+description = "cuDNN runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cudnn_cu11-8.5.0.96-2-py3-none-manylinux1_x86_64.whl", hash = "sha256:402f40adfc6f418f9dae9ab402e773cfed9beae52333f6d86ae3107a1b9527e7"},
+    {file = "nvidia_cudnn_cu11-8.5.0.96-py3-none-manylinux1_x86_64.whl", hash = "sha256:71f8111eb830879ff2836db3cccf03bbd735df9b0d17cd93761732ac50a8a108"},
+]
+
+[package.dependencies]
+nvidia-cublas-cu11 = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cufft-cu11"
+version = "10.9.0.58"
+description = "CUFFT native runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cufft_cu11-10.9.0.58-py3-none-manylinux1_x86_64.whl", hash = "sha256:222f9da70c80384632fd6035e4c3f16762d64ea7a843829cb278f98b3cb7dd81"},
+    {file = "nvidia_cufft_cu11-10.9.0.58-py3-none-win_amd64.whl", hash = "sha256:c4d316f17c745ec9c728e30409612eaf77a8404c3733cdf6c9c1569634d1ca03"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-curand-cu11"
+version = "10.2.10.91"
+description = "CURAND native runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_curand_cu11-10.2.10.91-py3-none-manylinux1_x86_64.whl", hash = "sha256:eecb269c970fa599a2660c9232fa46aaccbf90d9170b96c462e13bcb4d129e2c"},
+    {file = "nvidia_curand_cu11-10.2.10.91-py3-none-win_amd64.whl", hash = "sha256:f742052af0e1e75523bde18895a9ed016ecf1e5aa0ecddfcc3658fd11a1ff417"},
+]
+
+[package.dependencies]
+setuptools = "*"
+wheel = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cusolver-cu11"
+version = "11.4.0.1"
+description = "CUDA solver native runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cusolver_cu11-11.4.0.1-2-py3-none-manylinux1_x86_64.whl", hash = "sha256:72fa7261d755ed55c0074960df5904b65e2326f7adce364cbe4945063c1be412"},
+    {file = "nvidia_cusolver_cu11-11.4.0.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:700b781bfefd57d161443aff9ace1878584b93e0b2cfef3d6e9296d96febbf99"},
+    {file = "nvidia_cusolver_cu11-11.4.0.1-py3-none-win_amd64.whl", hash = "sha256:00f70b256add65f8c1eb3b6a65308795a93e7740f6df9e273eccbba770d370c4"},
+]
+
+[package.dependencies]
+nvidia-cublas-cu11 = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-cusparse-cu11"
+version = "11.7.4.91"
+description = "CUSPARSE native runtime libraries"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_cusparse_cu11-11.7.4.91-py3-none-manylinux1_x86_64.whl", hash = "sha256:a3389de714db63321aa11fbec3919271f415ef19fda58aed7f2ede488c32733d"},
+    {file = "nvidia_cusparse_cu11-11.7.4.91-py3-none-win_amd64.whl", hash = "sha256:304a01599534f5186a8ed1c3756879282c72c118bc77dd890dc1ff868cad25b9"},
+]
+
+[package.dependencies]
+setuptools = "*"
+wheel = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-nccl-cu11"
+version = "2.14.3"
+description = "NVIDIA Collective Communication Library (NCCL) Runtime"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_nccl_cu11-2.14.3-py3-none-manylinux1_x86_64.whl", hash = "sha256:5e5534257d1284b8e825bc3a182c6f06acd6eb405e9f89d49340e98cd8f136eb"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "nvidia-nvtx-cu11"
+version = "11.7.91"
+description = "NVIDIA Tools Extension"
+optional = false
+python-versions = ">=3"
+files = [
+    {file = "nvidia_nvtx_cu11-11.7.91-py3-none-manylinux1_x86_64.whl", hash = "sha256:b22c64eee426a62fc00952b507d6d29cf62b4c9df7a480fcc417e540e05fd5ac"},
+    {file = "nvidia_nvtx_cu11-11.7.91-py3-none-win_amd64.whl", hash = "sha256:dfd7fcb2a91742513027d63a26b757f38dd8b07fecac282c4d132a9d373ff064"},
+]
+
+[package.dependencies]
+setuptools = "*"
+wheel = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "opencv-python"
 version = "4.8.0.74"
@@ -2713,6 +3474,11 @@ numpy = [
     {version = ">=1.17.3", markers = "python_version >= \"3.8\""},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "overrides"
 version = "7.3.1"
@@ -2724,6 +3490,11 @@ files = [
     {file = "overrides-7.3.1.tar.gz", hash = "sha256:8b97c6c1e1681b78cbc9424b138d880f0803c2254c5ebaabdde57bb6c62093f2"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "packaging"
 version = "23.1"
@@ -2734,6 +3505,11 @@ files = [
     {file = "packaging-23.1-py3-none-any.whl", hash = "sha256:994793af429502c4ea2ebf6bf664629d07c1a9fe974af92966e4b8d2df7edc61"},
     {file = "packaging-23.1.tar.gz", hash = "sha256:a392980d2b6cffa644431898be54b0045151319d1e7ec34f0cfed48767dd334f"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pandas"
@@ -2779,6 +3555,11 @@ pytz = ">=2020.1"
 [package.extras]
 test = ["hypothesis (>=5.5.3)", "pytest (>=6.0)", "pytest-xdist (>=1.31)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pandocfilters"
 version = "1.5.0"
@@ -2789,6 +3570,11 @@ files = [
     {file = "pandocfilters-1.5.0-py2.py3-none-any.whl", hash = "sha256:33aae3f25fd1a026079f5d27bdd52496f0e0803b3469282162bafdcbdf6ef14f"},
     {file = "pandocfilters-1.5.0.tar.gz", hash = "sha256:0b679503337d233b4339a817bfc8c50064e2eff681314376a47cb582305a7a38"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "parso"
@@ -2805,6 +3591,11 @@ files = [
 qa = ["flake8 (==3.8.3)", "mypy (==0.782)"]
 testing = ["docopt", "pytest (<6.0.0)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pathspec"
 version = "0.11.1"
@@ -2816,6 +3607,11 @@ files = [
     {file = "pathspec-0.11.1.tar.gz", hash = "sha256:2798de800fa92780e33acca925945e9a19a133b715067cf165b8866c15a31687"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "peewee"
 version = "3.16.2"
@@ -2825,6 +3621,11 @@ python-versions = "*"
 files = [
     {file = "peewee-3.16.2.tar.gz", hash = "sha256:10769981198c7311f84a0ca8db892fa213303a8eb1305deb795a71e7bd606a91"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pexpect"
@@ -2840,6 +3641,11 @@ files = [
 [package.dependencies]
 ptyprocess = ">=0.5"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pickleshare"
 version = "0.7.5"
@@ -2850,6 +3656,11 @@ files = [
     {file = "pickleshare-0.7.5-py2.py3-none-any.whl", hash = "sha256:9649af414d74d4df115d5d718f82acb59c9d418196b7b4290ed47a12ce62df56"},
     {file = "pickleshare-0.7.5.tar.gz", hash = "sha256:87683d47965c1da65cdacaf31c8441d12b8044cdec9aca500cd78fc2c683afca"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pillow"
@@ -2920,6 +3731,11 @@ files = [
 docs = ["furo", "olefile", "sphinx (>=2.4)", "sphinx-copybutton", "sphinx-inline-tabs", "sphinx-removed-in", "sphinxext-opengraph"]
 tests = ["check-manifest", "coverage", "defusedxml", "markdown2", "olefile", "packaging", "pyroma", "pytest", "pytest-cov", "pytest-timeout"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "platformdirs"
 version = "3.9.1"
@@ -2934,6 +3750,11 @@ files = [
 [package.extras]
 docs = ["furo (>=2023.5.20)", "proselint (>=0.13)", "sphinx (>=7.0.1)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
 test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.3.1)", "pytest-cov (>=4.1)", "pytest-mock (>=3.10)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pluggy"
@@ -2950,6 +3771,11 @@ files = [
 dev = ["pre-commit", "tox"]
 testing = ["pytest", "pytest-benchmark"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "prometheus-client"
 version = "0.17.1"
@@ -2964,6 +3790,11 @@ files = [
 [package.extras]
 twisted = ["twisted"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "prompt-toolkit"
 version = "3.0.39"
@@ -2977,6 +3808,11 @@ files = [
 
 [package.dependencies]
 wcwidth = "*"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "protobuf"
@@ -2999,6 +3835,11 @@ files = [
     {file = "protobuf-4.23.4-py3-none-any.whl", hash = "sha256:e9d0be5bf34b275b9f87ba7407796556abeeba635455d036c7351f7c183ef8ff"},
     {file = "protobuf-4.23.4.tar.gz", hash = "sha256:ccd9430c0719dce806b93f89c91de7977304729e55377f872a92465d548329a9"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "psutil"
@@ -3025,6 +3866,11 @@ files = [
 
 [package.extras]
 test = ["enum34", "ipaddress", "mock", "pywin32", "wmi"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "psycopg2-binary"
@@ -3097,6 +3943,11 @@ files = [
     {file = "psycopg2_binary-2.9.6-cp39-cp39-win_amd64.whl", hash = "sha256:f6a88f384335bb27812293fdb11ac6aee2ca3f51d3c7820fe03de0a304ab6249"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "ptyprocess"
 version = "0.7.0"
@@ -3107,6 +3958,11 @@ files = [
     {file = "ptyprocess-0.7.0-py2.py3-none-any.whl", hash = "sha256:4b41f3967fce3af57cc7e94b888626c18bf37a083e3651ca8feeb66d492fef35"},
     {file = "ptyprocess-0.7.0.tar.gz", hash = "sha256:5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pure-eval"
@@ -3121,6 +3977,11 @@ files = [
 
 [package.extras]
 tests = ["pytest"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pyarrow"
@@ -3159,6 +4020,11 @@ files = [
 [package.dependencies]
 numpy = ">=1.16.6"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pyasn1"
 version = "0.5.0"
@@ -3169,6 +4035,11 @@ files = [
     {file = "pyasn1-0.5.0-py2.py3-none-any.whl", hash = "sha256:87a2121042a1ac9358cabcaf1d07680ff97ee6404333bacca15f76aa8ad01a57"},
     {file = "pyasn1-0.5.0.tar.gz", hash = "sha256:97b7290ca68e62a832558ec3976f15cbf911bf5d7c7039d8b861c2a0ece69fde"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pyasn1-modules"
@@ -3184,6 +4055,11 @@ files = [
 [package.dependencies]
 pyasn1 = ">=0.4.6,<0.6.0"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pycodestyle"
 version = "2.8.0"
@@ -3195,6 +4071,11 @@ files = [
     {file = "pycodestyle-2.8.0.tar.gz", hash = "sha256:eddd5847ef438ea1c7870ca7eb78a9d47ce0cdb4851a5523949f2601d0cbbe7f"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pycparser"
 version = "2.21"
@@ -3205,6 +4086,11 @@ files = [
     {file = "pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
     {file = "pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pycryptodomex"
@@ -3246,6 +4132,11 @@ files = [
     {file = "pycryptodomex-3.18.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:215be2980a6b70704c10796dd7003eb4390e7be138ac6fb8344bf47e71a8d470"},
     {file = "pycryptodomex-3.18.0.tar.gz", hash = "sha256:3e3ecb5fe979e7c1bb0027e518340acf7ee60415d79295e5251d13c68dde576e"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pydantic"
@@ -3299,6 +4190,11 @@ typing-extensions = ">=4.2.0"
 dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pyflakes"
 version = "2.4.0"
@@ -3309,6 +4205,11 @@ files = [
     {file = "pyflakes-2.4.0-py2.py3-none-any.whl", hash = "sha256:3bb3a3f256f4b7968c9c788781e4ff07dce46bdf12339dcda61053375426ee2e"},
     {file = "pyflakes-2.4.0.tar.gz", hash = "sha256:05a85c2872edf37a4ed30b0cce2f6093e1d0581f8c19d7393122da7e25b2b24c"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pygments"
@@ -3324,6 +4225,11 @@ files = [
 [package.extras]
 plugins = ["importlib-metadata"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pyparsing"
 version = "3.0.9"
@@ -3337,6 +4243,11 @@ files = [
 
 [package.extras]
 diagrams = ["jinja2", "railroad-diagrams"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pysen"
@@ -3359,6 +4270,11 @@ unidiff = ">=0.6.0,<1.0.0"
 [package.extras]
 lint = ["black (>=19.10b0,<=22.10)", "flake8 (>=3.7,<5)", "flake8-bugbear", "isort (>=4.3,<5.2.0)", "mypy (>=0.770,<0.800)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pytesseract"
 version = "0.3.10"
@@ -3373,6 +4289,11 @@ files = [
 [package.dependencies]
 packaging = ">=21.3"
 Pillow = ">=8.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pytest"
@@ -3396,6 +4317,11 @@ tomli = {version = ">=1.0.0", markers = "python_version < \"3.11\""}
 [package.extras]
 testing = ["argcomplete", "attrs (>=19.2.0)", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "setuptools", "xmlschema"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "python-dateutil"
 version = "2.8.2"
@@ -3409,6 +4335,11 @@ files = [
 
 [package.dependencies]
 six = ">=1.5"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "python-dotenv"
@@ -3424,6 +4355,11 @@ files = [
 [package.extras]
 cli = ["click (>=5.0)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "python-json-logger"
 version = "2.0.7"
@@ -3434,6 +4370,11 @@ files = [
     {file = "python-json-logger-2.0.7.tar.gz", hash = "sha256:23e7ec02d34237c5aa1e29a070193a4ea87583bb4e7f8fd06d3de8264c4b2e1c"},
     {file = "python_json_logger-2.0.7-py3-none-any.whl", hash = "sha256:f380b826a991ebbe3de4d897aeec42760035ac760345e57b812938dc8b35e2bd"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pytube"
@@ -3446,6 +4387,11 @@ files = [
     {file = "pytube-12.1.3.tar.gz", hash = "sha256:6a56ce9bbc03a6aaf62a1e5a54bae003c70fe2aa1c86c279037c031d59f571b3"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pytz"
 version = "2023.3"
@@ -3456,6 +4402,11 @@ files = [
     {file = "pytz-2023.3-py2.py3-none-any.whl", hash = "sha256:a151b3abb88eda1d4e34a9814df37de2a80e301e68ba0fd856fb9b46bfbbbffb"},
     {file = "pytz-2023.3.tar.gz", hash = "sha256:1d8ce29db189191fb55338ee6d0387d82ab59f3d00eac103412d64e0ebd0c588"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pywin32"
@@ -3480,6 +4431,11 @@ files = [
     {file = "pywin32-306-cp39-cp39-win_amd64.whl", hash = "sha256:39b61c15272833b5c329a2989999dcae836b1eed650252ab1b7bfbe1d59f30f4"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "pywinpty"
 version = "2.0.11"
@@ -3493,6 +4449,11 @@ files = [
     {file = "pywinpty-2.0.11-cp39-none-win_amd64.whl", hash = "sha256:e4e7f023c28ca7aa8e1313e53ba80a4d10171fe27857b7e02f99882dfe3e8638"},
     {file = "pywinpty-2.0.11.tar.gz", hash = "sha256:e244cffe29a894876e2cd251306efd0d8d64abd5ada0a46150a4a71c0b9ad5c5"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pyyaml"
@@ -3542,6 +4503,11 @@ files = [
     {file = "PyYAML-6.0-cp39-cp39-win_amd64.whl", hash = "sha256:b3d267842bf12586ba6c734f89d1f5b871df0273157918b0ccefa29deb05c21c"},
     {file = "PyYAML-6.0.tar.gz", hash = "sha256:68fb519c14306fec9720a2a5b45bc9f0c8d1b9c72adf45c37baedfcd949c35a2"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "pyzmq"
@@ -3632,6 +4598,11 @@ files = [
 [package.dependencies]
 cffi = {version = "*", markers = "implementation_name == \"pypy\""}
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "qtconsole"
 version = "5.4.3"
@@ -3658,6 +4629,11 @@ traitlets = "<5.2.1 || >5.2.1,<5.2.2 || >5.2.2"
 doc = ["Sphinx (>=1.3)"]
 test = ["flaky", "pytest", "pytest-qt"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "qtpy"
 version = "2.3.1"
@@ -3675,6 +4651,11 @@ packaging = "*"
 [package.extras]
 test = ["pytest (>=6,!=7.0.0,!=7.0.1)", "pytest-cov (>=3.0.0)", "pytest-qt"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "referencing"
 version = "0.29.1"
@@ -3689,6 +4670,11 @@ files = [
 [package.dependencies]
 attrs = ">=22.2.0"
 rpds-py = ">=0.7.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "regex"
@@ -3787,6 +4773,11 @@ files = [
     {file = "regex-2023.6.3.tar.gz", hash = "sha256:72d1a25bf36d2050ceb35b517afe13864865268dfb45910e2e17a84be6cbfeb0"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "requests"
 version = "2.31.0"
@@ -3808,6 +4799,11 @@ urllib3 = ">=1.21.1,<3"
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "rfc3339-validator"
 version = "0.1.4"
@@ -3822,6 +4818,11 @@ files = [
 [package.dependencies]
 six = "*"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "rfc3986-validator"
 version = "0.1.1"
@@ -3832,6 +4833,11 @@ files = [
     {file = "rfc3986_validator-0.1.1-py2.py3-none-any.whl", hash = "sha256:2f235c432ef459970b4306369336b9d5dbdda31b510ca1e327636e01f528bfa9"},
     {file = "rfc3986_validator-0.1.1.tar.gz", hash = "sha256:3d44bde7921b3b9ec3ae4e3adca370438eccebc676456449b145d533b240d055"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "rich"
@@ -3850,6 +4856,11 @@ pygments = ">=2.13.0,<3.0.0"
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "rpds-py"
@@ -3957,6 +4968,11 @@ files = [
     {file = "rpds_py-0.8.10.tar.gz", hash = "sha256:13e643ce8ad502a0263397362fb887594b49cf84bf518d6038c16f235f2bcea4"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "rsa"
 version = "4.9"
@@ -3970,6 +4986,11 @@ files = [
 
 [package.dependencies]
 pyasn1 = ">=0.1.3"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "scikit-learn"
@@ -4013,6 +5034,11 @@ docs = ["Pillow (>=7.1.2)", "matplotlib (>=3.1.3)", "memory-profiler (>=0.57.0)"
 examples = ["matplotlib (>=3.1.3)", "pandas (>=1.0.5)", "plotly (>=5.14.0)", "pooch (>=1.6.0)", "scikit-image (>=0.16.2)", "seaborn (>=0.9.0)"]
 tests = ["black (>=23.3.0)", "matplotlib (>=3.1.3)", "mypy (>=1.3)", "numpydoc (>=1.2.0)", "pandas (>=1.0.5)", "pooch (>=1.6.0)", "pyamg (>=4.0.0)", "pytest (>=7.1.2)", "pytest-cov (>=2.9.0)", "ruff (>=0.0.272)", "scikit-image (>=0.16.2)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "scipy"
 version = "1.11.1"
@@ -4049,6 +5075,11 @@ dev = ["click", "cython-lint (>=0.12.2)", "doit (>=0.36.0)", "mypy", "pycodestyl
 doc = ["jupytext", "matplotlib (>2)", "myst-nb", "numpydoc", "pooch", "pydata-sphinx-theme (==0.9.0)", "sphinx (!=4.1.0)", "sphinx-design (>=0.2.0)"]
 test = ["asv", "gmpy2", "mpmath", "pooch", "pytest", "pytest-cov", "pytest-timeout", "pytest-xdist", "scikit-umfpack", "threadpoolctl"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "send2trash"
 version = "1.8.2"
@@ -4064,6 +5095,11 @@ files = [
 nativelib = ["pyobjc-framework-Cocoa", "pywin32"]
 objc = ["pyobjc-framework-Cocoa"]
 win32 = ["pywin32"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "setuptools"
@@ -4081,6 +5117,11 @@ docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "pygments-g
 testing = ["build[virtualenv]", "filelock (>=3.4.0)", "flake8-2020", "ini2toml[lite] (>=0.9)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pip (>=19.1)", "pip-run (>=8.8)", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-mypy (>=0.9.1)", "pytest-perf", "pytest-ruff", "pytest-timeout", "pytest-xdist", "tomli-w (>=1.0.0)", "virtualenv (>=13.0.0)", "wheel"]
 testing-integration = ["build[virtualenv]", "filelock (>=3.4.0)", "jaraco.envs (>=2.2)", "jaraco.path (>=3.2.0)", "pytest", "pytest-enabler", "pytest-xdist", "tomli", "virtualenv (>=13.0.0)", "wheel"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "six"
 version = "1.16.0"
@@ -4091,6 +5132,11 @@ files = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "smmap"
@@ -4103,6 +5149,11 @@ files = [
     {file = "smmap-5.0.0.tar.gz", hash = "sha256:c840e62059cd3be204b0c9c9f74be2c09d5648eddd4580d9314c3ecde0b30936"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "sniffio"
 version = "1.3.0"
@@ -4114,6 +5165,11 @@ files = [
     {file = "sniffio-1.3.0.tar.gz", hash = "sha256:e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "soupsieve"
 version = "2.4.1"
@@ -4124,6 +5180,11 @@ files = [
     {file = "soupsieve-2.4.1-py3-none-any.whl", hash = "sha256:1c1bfee6819544a3447586c889157365a27e10d88cde3ad3da0cf0ddf646feb8"},
     {file = "soupsieve-2.4.1.tar.gz", hash = "sha256:89d12b2d5dfcd2c9e8c22326da9d9aa9cb3dfab0a83a024f05704076ee8d35ea"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "stack-data"
@@ -4144,6 +5205,11 @@ pure-eval = "*"
 [package.extras]
 tests = ["cython", "littleutils", "pygments", "pytest", "typeguard"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "starlette"
 version = "0.25.0"
@@ -4161,6 +5227,11 @@ anyio = ">=3.4.0,<5"
 [package.extras]
 full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyaml"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "sympy"
 version = "1.12"
@@ -4174,6 +5245,11 @@ files = [
 
 [package.dependencies]
 mpmath = ">=0.19"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "terminado"
@@ -4195,6 +5271,11 @@ tornado = ">=6.1.0"
 docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["pre-commit", "pytest (>=7.0)", "pytest-timeout"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "threadpoolctl"
 version = "3.2.0"
@@ -4205,6 +5286,11 @@ files = [
     {file = "threadpoolctl-3.2.0-py3-none-any.whl", hash = "sha256:2b7818516e423bdaebb97c723f86a7c6b0a83d3f3b0970328d66f4d9104dc032"},
     {file = "threadpoolctl-3.2.0.tar.gz", hash = "sha256:c96a0ba3bdddeaca37dc4cc7344aafad41cdb8c313f74fdfe387a867bba93355"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "tinycss2"
@@ -4223,6 +5309,11 @@ webencodings = ">=0.4"
 [package.extras]
 doc = ["sphinx", "sphinx_rtd_theme"]
 test = ["flake8", "isort", "pytest"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "tokenizers"
@@ -4278,6 +5369,11 @@ dev = ["black (==22.3)", "datasets", "numpy", "pytest", "requests"]
 docs = ["setuptools-rust", "sphinx", "sphinx-rtd-theme"]
 testing = ["black (==22.3)", "datasets", "numpy", "pytest", "requests"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "tomli"
 version = "2.0.1"
@@ -4289,6 +5385,11 @@ files = [
     {file = "tomli-2.0.1.tar.gz", hash = "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "tomlkit"
 version = "0.11.8"
@@ -4299,6 +5400,11 @@ files = [
     {file = "tomlkit-0.11.8-py3-none-any.whl", hash = "sha256:8c726c4c202bdb148667835f68d68780b9a003a9ec34167b6c673b38eff2a171"},
     {file = "tomlkit-0.11.8.tar.gz", hash = "sha256:9330fc7faa1db67b541b28e62018c17d20be733177d290a13b24c62d1614e0c3"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "torch"
@@ -4333,11 +5439,28 @@ files = [
 filelock = "*"
 jinja2 = "*"
 networkx = "*"
+nvidia-cublas-cu11 = {version = "11.10.3.66", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-cuda-cupti-cu11 = {version = "11.7.101", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-cuda-nvrtc-cu11 = {version = "11.7.99", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-cuda-runtime-cu11 = {version = "11.7.99", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-cudnn-cu11 = {version = "8.5.0.96", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-cufft-cu11 = {version = "10.9.0.58", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-curand-cu11 = {version = "10.2.10.91", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-cusolver-cu11 = {version = "11.4.0.1", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-cusparse-cu11 = {version = "11.7.4.91", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-nccl-cu11 = {version = "2.14.3", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
+nvidia-nvtx-cu11 = {version = "11.7.91", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
 sympy = "*"
+triton = {version = "2.0.0", markers = "platform_system == \"Linux\" and platform_machine == \"x86_64\""}
 typing-extensions = "*"
 
 [package.extras]
 opt-einsum = ["opt-einsum (>=3.3)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "tornado"
@@ -4359,6 +5482,11 @@ files = [
     {file = "tornado-6.3.2.tar.gz", hash = "sha256:4b927c4f19b71e627b13f3db2324e4ae660527143f9e1f2e2fb404f3a187e2ba"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "tqdm"
 version = "4.65.0"
@@ -4379,6 +5507,11 @@ notebook = ["ipywidgets (>=6)"]
 slack = ["slack-sdk"]
 telegram = ["requests"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "traitlets"
 version = "5.9.0"
@@ -4393,6 +5526,11 @@ files = [
 [package.extras]
 docs = ["myst-parser", "pydata-sphinx-theme", "sphinx"]
 test = ["argcomplete (>=2.0)", "pre-commit", "pytest", "pytest-mock"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "transformers"
@@ -4461,6 +5599,53 @@ torchhub = ["filelock", "huggingface-hub (>=0.11.0,<1.0)", "importlib-metadata",
 video = ["av (==9.2.0)", "decord (==0.6.0)"]
 vision = ["Pillow"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "triton"
+version = "2.0.0"
+description = "A language and compiler for custom Deep Learning operations"
+optional = false
+python-versions = "*"
+files = [
+    {file = "triton-2.0.0-1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:38806ee9663f4b0f7cd64790e96c579374089e58f49aac4a6608121aa55e2505"},
+    {file = "triton-2.0.0-1-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:226941c7b8595219ddef59a1fdb821e8c744289a132415ddd584facedeb475b1"},
+    {file = "triton-2.0.0-1-cp36-cp36m-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:4c9fc8c89874bc48eb7e7b2107a9b8d2c0bf139778637be5bfccb09191685cfd"},
+    {file = "triton-2.0.0-1-cp37-cp37m-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:d2684b6a60b9f174f447f36f933e9a45f31db96cb723723ecd2dcfd1c57b778b"},
+    {file = "triton-2.0.0-1-cp38-cp38-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:9d4978298b74fcf59a75fe71e535c092b023088933b2f1df933ec32615e4beef"},
+    {file = "triton-2.0.0-1-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:74f118c12b437fb2ca25e1a04759173b517582fcf4c7be11913316c764213656"},
+    {file = "triton-2.0.0-1-pp37-pypy37_pp73-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:9618815a8da1d9157514f08f855d9e9ff92e329cd81c0305003eb9ec25cc5add"},
+    {file = "triton-2.0.0-1-pp38-pypy38_pp73-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:1aca3303629cd3136375b82cb9921727f804e47ebee27b2677fef23005c3851a"},
+    {file = "triton-2.0.0-1-pp39-pypy39_pp73-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:e3e13aa8b527c9b642e3a9defcc0fbd8ffbe1c80d8ac8c15a01692478dc64d8a"},
+    {file = "triton-2.0.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8f05a7e64e4ca0565535e3d5d3405d7e49f9d308505bb7773d21fb26a4c008c2"},
+    {file = "triton-2.0.0-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bb4b99ca3c6844066e516658541d876c28a5f6e3a852286bbc97ad57134827fd"},
+    {file = "triton-2.0.0-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:47b4d70dc92fb40af553b4460492c31dc7d3a114a979ffb7a5cdedb7eb546c08"},
+    {file = "triton-2.0.0-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fedce6a381901b1547e0e7e1f2546e4f65dca6d91e2d8a7305a2d1f5551895be"},
+    {file = "triton-2.0.0-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:75834f27926eab6c7f00ce73aaf1ab5bfb9bec6eb57ab7c0bfc0a23fac803b4c"},
+    {file = "triton-2.0.0-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0117722f8c2b579cd429e0bee80f7731ae05f63fe8e9414acd9a679885fcbf42"},
+    {file = "triton-2.0.0-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bcd9be5d0c2e45d2b7e6ddc6da20112b6862d69741576f9c3dbaf941d745ecae"},
+    {file = "triton-2.0.0-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:42a0d2c3fc2eab4ba71384f2e785fbfd47aa41ae05fa58bf12cb31dcbd0aeceb"},
+    {file = "triton-2.0.0-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:52c47b72c72693198163ece9d90a721299e4fb3b8e24fd13141e384ad952724f"},
+]
+
+[package.dependencies]
+cmake = "*"
+filelock = "*"
+lit = "*"
+torch = "*"
+
+[package.extras]
+tests = ["autopep8", "flake8", "isort", "numpy", "pytest", "scipy (>=1.7.1)"]
+tutorials = ["matplotlib", "pandas", "tabulate"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "typing-extensions"
 version = "4.7.1"
@@ -4472,6 +5657,11 @@ files = [
     {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "unidiff"
 version = "0.7.5"
@@ -4482,6 +5672,11 @@ files = [
     {file = "unidiff-0.7.5-py2.py3-none-any.whl", hash = "sha256:c93bf2265cc1ba2a520e415ab05da587370bc2a3ae9e0414329f54f0c2fc09e8"},
     {file = "unidiff-0.7.5.tar.gz", hash = "sha256:2e5f0162052248946b9f0970a40e9e124236bf86c82b70821143a6fc1dea2574"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "uri-template"
@@ -4496,6 +5691,11 @@ files = [
 
 [package.extras]
 dev = ["flake8", "flake8-annotations", "flake8-bandit", "flake8-bugbear", "flake8-commas", "flake8-comprehensions", "flake8-continuation", "flake8-datetimez", "flake8-docstrings", "flake8-import-order", "flake8-literal", "flake8-modern-annotations", "flake8-noqa", "flake8-pyproject", "flake8-requirements", "flake8-typechecking-import", "flake8-use-fstring", "mypy", "pep8-naming", "types-PyYAML"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "urllib3"
@@ -4512,6 +5712,11 @@ files = [
 brotli = ["brotli (>=1.0.9)", "brotlicffi (>=0.8.0)", "brotlipy (>=0.6.0)"]
 secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "pyOpenSSL (>=0.14)", "urllib3-secure-extra"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "uvicorn"
@@ -4531,6 +5736,11 @@ h11 = ">=0.8"
 [package.extras]
 standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)", "pyyaml (>=5.1)", "uvloop (>=0.14.0,!=0.15.0,!=0.15.1)", "watchfiles (>=0.13)", "websockets (>=10.4)"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "wcwidth"
 version = "0.2.6"
@@ -4541,6 +5751,11 @@ files = [
     {file = "wcwidth-0.2.6-py2.py3-none-any.whl", hash = "sha256:795b138f6875577cd91bba52baf9e445cd5118fd32723b460e30a0af30ea230e"},
     {file = "wcwidth-0.2.6.tar.gz", hash = "sha256:a5220780a404dbe3353789870978e472cfe477761f06ee55077256e509b156d0"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "webcolors"
@@ -4557,6 +5772,11 @@ files = [
 docs = ["furo", "sphinx", "sphinx-copybutton", "sphinx-inline-tabs", "sphinx-notfound-page", "sphinxext-opengraph"]
 tests = ["pytest", "pytest-cov"]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "webencodings"
 version = "0.5.1"
@@ -4567,6 +5787,11 @@ files = [
     {file = "webencodings-0.5.1-py2.py3-none-any.whl", hash = "sha256:a0af1213f3c2226497a97e2b3aa01a7e4bee4f403f95be16fc9acd2947514a78"},
     {file = "webencodings-0.5.1.tar.gz", hash = "sha256:b36a1c245f2d304965eb4e0a82848379241dc04b865afcc4aab16748587e1923"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "websocket-client"
@@ -4583,6 +5808,11 @@ files = [
 docs = ["Sphinx (>=3.4)", "sphinx-rtd-theme (>=0.5)"]
 optional = ["python-socks", "wsaccel"]
 test = ["websockets"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "websockets"
@@ -4663,6 +5893,30 @@ files = [
     {file = "websockets-11.0.3.tar.gz", hash = "sha256:88fc51d9a26b10fc331be344f1781224a375b78488fc343620184e95a4b27016"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
+name = "wheel"
+version = "0.40.0"
+description = "A built-package format for Python"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "wheel-0.40.0-py3-none-any.whl", hash = "sha256:d236b20e7cb522daf2390fa84c55eea81c5c30190f90f29ae2ca1ad8355bf247"},
+    {file = "wheel-0.40.0.tar.gz", hash = "sha256:cd1196f3faee2b31968d626e1731c94f99cbdb67cf5a46e4f5656cbee7738873"},
+]
+
+[package.extras]
+test = ["pytest (>=6.0.0)"]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "widgetsnbextension"
 version = "4.0.8"
@@ -4673,6 +5927,11 @@ files = [
     {file = "widgetsnbextension-4.0.8-py3-none-any.whl", hash = "sha256:2e37f0ce9da11651056280c7efe96f2db052fe8fc269508e3724f5cbd6c93018"},
     {file = "widgetsnbextension-4.0.8.tar.gz", hash = "sha256:9ec291ba87c2dfad42c3d5b6f68713fa18be1acd7476569516b2431682315c17"},
 ]
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
 
 [[package]]
 name = "xxhash"
@@ -4781,6 +6040,11 @@ files = [
     {file = "xxhash-3.2.0.tar.gz", hash = "sha256:1afd47af8955c5db730f630ad53ae798cf7fae0acb64cebb3cf94d35c47dd088"},
 ]
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "yarl"
 version = "1.9.2"
@@ -4868,6 +6132,11 @@ files = [
 idna = ">=2.0"
 multidict = ">=4.0"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [[package]]
 name = "yt-dlp"
 version = "2023.7.6"
@@ -4887,7 +6156,12 @@ mutagen = "*"
 pycryptodomex = "*"
 websockets = "*"
 
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "445e213e765b9f007bc729980e8caab26817bc0bc1e4c43d261003c1f8efc06a"
+content-hash = "539d4615faeac7c0f30d7087c25677083aa210d22500e46d640b0f51e56729e2"
