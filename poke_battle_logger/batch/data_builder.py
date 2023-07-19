@@ -42,28 +42,94 @@ class DataBuilder:
         self.messages = messages
         self.win_or_lost = win_or_lost
         self.form_change_pokemon_names = {
-            "ロトム": [],
-            "ケンタロス": [],
-            "ドレディア": [],
-            "ウォーグル": [],
-            "ダイケンキ": [],
-            "バクフーン": [],
-            "ジュナイパー": [],
-            "ヌメルゴン": [],
-            "ウインディ": [],
-            "マルマイン": [],
-            "ゾロアーク": [],
-            "ランドロス": [],
-            "ボルトロス": [],
-            "トルネロス": [],
-            "ラブトロス": [],
-            "フリーザー": [],
-            "サンダー": [],
-            "ファイヤー": [],
-            "ヤドラン": [],
-            "ヤドキング": [],
-            "ペルシアン": [],
-            "ベトベトン": [],
+            "ロトム": {
+                "you": [],
+                "opponent": []
+            },
+            "ケンタロス": {
+                "you": [],
+                "opponent": []
+            },
+            "ドレディア": {
+                "you": [],
+                "opponent": []
+            },
+            "ウォーグル": {
+                "you": [],
+                "opponent": []
+            },
+            "ダイケンキ": {
+                "you": [],
+                "opponent": []
+            },
+            "バクフーン": {
+                "you": [],
+                "opponent": []
+            },
+            "ジュナイパー": {
+                "you": [],
+                "opponent": []
+            },
+            "ヌメルゴン": {
+                "you": [],
+                "opponent": []
+            },
+            "ウインディ": {
+                "you": [],
+                "opponent": []
+            },
+            "マルマイン": {
+                "you": [],
+                "opponent": []
+            },
+            "ゾロアーク": {
+                "you": [],
+                "opponent": []
+            },
+            "ランドロス": {
+                "you": [],
+                "opponent": []
+            },
+            "ボルトロス": {
+                "you": [],
+                "opponent": []
+            },
+            "トルネロス": {
+                "you": [],
+                "opponent": []
+            },
+            "ラブトロス": {
+                "you": [],
+                "opponent": []
+            },
+            "フリーザー": {
+                "you": [],
+                "opponent": []
+            },
+            "サンダー": {
+                "you": [],
+                "opponent": []
+            },
+            "ファイヤー": {
+                "you": [],
+                "opponent": []
+            },
+            "ヤドラン": {
+                "you": [],
+                "opponent": []
+            },
+            "ヤドキング": {
+                "you": [],
+                "opponent": []
+            },
+            "ペルシアン": {
+                "you": [],
+                "opponent": []
+            },
+            "ベトベトン": {
+                "you": [],
+                "opponent": []
+            },
         }
 
     def _publish_date(self, watch_html: str) -> Optional[datetime]:
@@ -143,45 +209,82 @@ class DataBuilder:
                     _messages.append(message_dict)
             self.compressed_messages.append(_messages)
 
-    def _identify_form_change_pokemon(self, battle_index: int, pokemon_name: str) -> Tuple[str, str]:
-        pre_battle_opponent_pokemons = list(self.pre_battle_pokemons.values())[battle_index]["opponent_pokemon_names"]
-        your_pokemon_names = list(self.pre_battle_pokemons.values())[battle_index]["your_pokemon_names"]
+    def _identify_form_change_pokemon(
+        self, battle_index: int, pokemon_name: str
+    ) -> Tuple[str, str]:
+        pre_battle_opponent_pokemons = list(self.pre_battle_pokemons.values())[
+            battle_index
+        ]["opponent_pokemon_names"]
+        your_pokemon_names = list(self.pre_battle_pokemons.values())[battle_index][
+            "your_pokemon_names"
+        ]
 
-        opponent_team_pokemon_names = [v for v in pre_battle_opponent_pokemons if pokemon_name in v]
+        opponent_team_pokemon_names = [
+            v for v in pre_battle_opponent_pokemons if pokemon_name in v
+        ]
         your_team_pokemon_names = [v for v in your_pokemon_names if pokemon_name in v]
 
-        opponent_team_pokemon_name = opponent_team_pokemon_names[0].split("_")[0] if len(opponent_team_pokemon_names) == 1 else pokemon_name
-        your_team_pokemon_name = your_team_pokemon_names[0].split("_")[0] if len(your_team_pokemon_names) == 1 else pokemon_name
+        opponent_team_pokemon_name = (
+            opponent_team_pokemon_names[0].split("_")[0]
+            if len(opponent_team_pokemon_names) == 1
+            else pokemon_name
+        )
+        your_team_pokemon_name = (
+            your_team_pokemon_names[0].split("_")[0]
+            if len(your_team_pokemon_names) == 1
+            else pokemon_name
+        )
 
         return opponent_team_pokemon_name, your_team_pokemon_name
 
     def _build_battle_pokemon_combinations(self) -> None:
         battle_pokemon_combinations = []
 
-        for battle_index, _battle_pokemons in enumerate(self.compressed_battle_pokemons):
+        for battle_index, _battle_pokemons in enumerate(
+            self.compressed_battle_pokemons
+        ):
             for pokemon_name in self.form_change_pokemon_names.keys():
-                opponent_name, your_name = self._identify_form_change_pokemon(battle_index, pokemon_name)
-                self.form_change_pokemon_names[pokemon_name].append(opponent_name)
+                opponent_name, your_name = self._identify_form_change_pokemon(
+                    battle_index, pokemon_name
+                )
+                self.form_change_pokemon_names[pokemon_name]["you"].append(your_name)
+                self.form_change_pokemon_names[pokemon_name]["opponent"].append(opponent_name)
 
-            pre_battle_your_pokemons = list(self.pre_battle_pokemons.values())[battle_index]["your_pokemon_names"]
-            pokemon_select_order = list(self.pokemon_select_order.values())[battle_index]
-            battle_pokemon_your_combinations = [pre_battle_your_pokemons[position].split("_")[0] for position in pokemon_select_order]
+            pre_battle_your_pokemons = list(self.pre_battle_pokemons.values())[
+                battle_index
+            ]["your_pokemon_names"]
+            pokemon_select_order = list(self.pokemon_select_order.values())[
+                battle_index
+            ]
+            battle_pokemon_your_combinations = [
+                pre_battle_your_pokemons[position].split("_")[0]
+                for position in pokemon_select_order
+            ]
 
             battle_pokemon_opponent_combinations = []
             for _b_p in _battle_pokemons:
-                your = _b_p["your_pokemon_name"]
                 opponent = _b_p["opponent_pokemon_name"]
 
                 # If the pokemon is a form-changing pokemon, replace the name with the identified form
-                your = self.form_change_pokemon_names.get(your, [your])[0]
-                opponent = self.form_change_pokemon_names.get(opponent, [opponent])[0]
+                if opponent in self.form_change_pokemon_names:
+                    opponent = self.form_change_pokemon_names[opponent]["opponent"][battle_index]
 
-                if len(battle_pokemon_opponent_combinations) < 3 and opponent not in battle_pokemon_opponent_combinations:
+                if (
+                    len(battle_pokemon_opponent_combinations) < 3
+                    and opponent not in battle_pokemon_opponent_combinations
+                ):
                     battle_pokemon_opponent_combinations.append(opponent)
 
-            battle_pokemon_opponent_combinations += ["Unseen"] * (3 - len(battle_pokemon_opponent_combinations))
+            battle_pokemon_opponent_combinations += ["Unseen"] * (
+                3 - len(battle_pokemon_opponent_combinations)
+            )
 
-            battle_pokemon_combinations.append({"you": battle_pokemon_your_combinations, "opponent": battle_pokemon_opponent_combinations})
+            battle_pokemon_combinations.append(
+                {
+                    "you": battle_pokemon_your_combinations,
+                    "opponent": battle_pokemon_opponent_combinations,
+                }
+            )
 
         self.battle_pokemon_combinations = battle_pokemon_combinations
 
@@ -371,13 +474,13 @@ class DataBuilder:
                 if in_battle_your_pokemon_name in self.form_change_pokemon_names:
                     _your_pokemon_name = self.form_change_pokemon_names[
                         in_battle_your_pokemon_name
-                    ][i]
+                    ]["you"][i]
                 else:
                     _your_pokemon_name = in_battle_your_pokemon_name
                 if in_battle_opponent_pokemon_name in self.form_change_pokemon_names:
                     _opponent_pokemon_name = self.form_change_pokemon_names[
                         in_battle_opponent_pokemon_name
-                    ][i]
+                    ]["opponent"][i]
                 else:
                     _opponent_pokemon_name = in_battle_opponent_pokemon_name
 

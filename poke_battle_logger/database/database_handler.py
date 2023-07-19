@@ -1321,19 +1321,10 @@ class DatabaseHandler:
             df_in_battle_pokemon.fainted_pokemon_type == "Opponent Pokemon Fainted",
             "fainted_pokemon_side",
         ] = "Your Pokemon Win"
-        df_battle = df_in_battle_pokemon[df_in_battle_pokemon.battle_id == battle_id]
-        stats = df_battle.query("fainted_pokemon_side != 'Unknown'")
+        stats = df_in_battle_pokemon.query("fainted_pokemon_side != 'Unknown'")
+        stats = stats.drop_duplicates()
 
-        fainted_log: List[Dict[str, Union[str, int]]] = pd.DataFrame(
-            stats,
-            columns=[
-                "battle_id",
-                "turn",
-                "your_pokemon_name",
-                "opponent_pokemon_name",
-                "fainted_pokemon_side",
-            ],
-        ).to_json(orient="records")
+        fainted_log: List[Dict[str, Union[str, int]]] = stats.to_dict(orient="records")
         for _fainted_log in fainted_log:
             FaintedLog.create(
                 battle_id=_fainted_log["battle_id"],
