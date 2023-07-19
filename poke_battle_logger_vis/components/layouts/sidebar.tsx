@@ -68,6 +68,7 @@ const SideBar = ({ onClose, setSeason, season, ...rest }: SidebarProps) => {
         <option value={5}>シーズン5</option>
         <option value={6}>シーズン6</option>
         <option value={7}>シーズン7</option>
+        <option value={8}>シーズン8</option>
       </Select>
       <NavItem
         key={'dashboard'}
