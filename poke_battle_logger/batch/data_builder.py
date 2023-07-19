@@ -41,95 +41,29 @@ class DataBuilder:
         self.rank_numbers = rank_numbers
         self.messages = messages
         self.win_or_lost = win_or_lost
-        self.form_change_pokemon_names = {
-            "ロトム": {
-                "you": [],
-                "opponent": []
-            },
-            "ケンタロス": {
-                "you": [],
-                "opponent": []
-            },
-            "ドレディア": {
-                "you": [],
-                "opponent": []
-            },
-            "ウォーグル": {
-                "you": [],
-                "opponent": []
-            },
-            "ダイケンキ": {
-                "you": [],
-                "opponent": []
-            },
-            "バクフーン": {
-                "you": [],
-                "opponent": []
-            },
-            "ジュナイパー": {
-                "you": [],
-                "opponent": []
-            },
-            "ヌメルゴン": {
-                "you": [],
-                "opponent": []
-            },
-            "ウインディ": {
-                "you": [],
-                "opponent": []
-            },
-            "マルマイン": {
-                "you": [],
-                "opponent": []
-            },
-            "ゾロアーク": {
-                "you": [],
-                "opponent": []
-            },
-            "ランドロス": {
-                "you": [],
-                "opponent": []
-            },
-            "ボルトロス": {
-                "you": [],
-                "opponent": []
-            },
-            "トルネロス": {
-                "you": [],
-                "opponent": []
-            },
-            "ラブトロス": {
-                "you": [],
-                "opponent": []
-            },
-            "フリーザー": {
-                "you": [],
-                "opponent": []
-            },
-            "サンダー": {
-                "you": [],
-                "opponent": []
-            },
-            "ファイヤー": {
-                "you": [],
-                "opponent": []
-            },
-            "ヤドラン": {
-                "you": [],
-                "opponent": []
-            },
-            "ヤドキング": {
-                "you": [],
-                "opponent": []
-            },
-            "ペルシアン": {
-                "you": [],
-                "opponent": []
-            },
-            "ベトベトン": {
-                "you": [],
-                "opponent": []
-            },
+        self.form_change_pokemon_names: dict[str, dict[str, list[str]]] = {
+            "ロトム": {"you": [], "opponent": []},
+            "ケンタロス": {"you": [], "opponent": []},
+            "ドレディア": {"you": [], "opponent": []},
+            "ウォーグル": {"you": [], "opponent": []},
+            "ダイケンキ": {"you": [], "opponent": []},
+            "バクフーン": {"you": [], "opponent": []},
+            "ジュナイパー": {"you": [], "opponent": []},
+            "ヌメルゴン": {"you": [], "opponent": []},
+            "ウインディ": {"you": [], "opponent": []},
+            "マルマイン": {"you": [], "opponent": []},
+            "ゾロアーク": {"you": [], "opponent": []},
+            "ランドロス": {"you": [], "opponent": []},
+            "ボルトロス": {"you": [], "opponent": []},
+            "トルネロス": {"you": [], "opponent": []},
+            "ラブトロス": {"you": [], "opponent": []},
+            "フリーザー": {"you": [], "opponent": []},
+            "サンダー": {"you": [], "opponent": []},
+            "ファイヤー": {"you": [], "opponent": []},
+            "ヤドラン": {"you": [], "opponent": []},
+            "ヤドキング": {"you": [], "opponent": []},
+            "ペルシアン": {"you": [], "opponent": []},
+            "ベトベトン": {"you": [], "opponent": []},
         }
 
     def _publish_date(self, watch_html: str) -> Optional[datetime]:
@@ -248,7 +182,9 @@ class DataBuilder:
                     battle_index, pokemon_name
                 )
                 self.form_change_pokemon_names[pokemon_name]["you"].append(your_name)
-                self.form_change_pokemon_names[pokemon_name]["opponent"].append(opponent_name)
+                self.form_change_pokemon_names[pokemon_name]["opponent"].append(
+                    opponent_name
+                )
 
             pre_battle_your_pokemons = list(self.pre_battle_pokemons.values())[
                 battle_index
@@ -261,13 +197,15 @@ class DataBuilder:
                 for position in pokemon_select_order
             ]
 
-            battle_pokemon_opponent_combinations = []
+            battle_pokemon_opponent_combinations: list[str] = []
             for _b_p in _battle_pokemons:
-                opponent = _b_p["opponent_pokemon_name"]
+                opponent = cast(str, _b_p["opponent_pokemon_name"])
 
                 # If the pokemon is a form-changing pokemon, replace the name with the identified form
                 if opponent in self.form_change_pokemon_names:
-                    opponent = self.form_change_pokemon_names[opponent]["opponent"][battle_index]
+                    opponent = self.form_change_pokemon_names[opponent]["opponent"][
+                        battle_index
+                    ]
 
                 if (
                     len(battle_pokemon_opponent_combinations) < 3
