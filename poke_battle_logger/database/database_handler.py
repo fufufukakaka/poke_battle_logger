@@ -1270,7 +1270,6 @@ class DatabaseHandler:
 
     def build_and_insert_fainted_log(
         self,
-        battle_id: str,
         modified_in_battle_pokemons: List[InBattlePokemon],
         modified_messages: List[Message],
     ) -> None:
