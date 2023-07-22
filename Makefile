@@ -13,12 +13,12 @@ export PYTHONPATH=$PYTHONPATH:$(pwd)
 export SERVER_IMAGE_NAME=$(PROJECT_NAME)-image-server
 export CONTAINER_NAME=$(PROJECT_NAME)-container
 export SERVER_DOCKERFILE=docker/server/Dockerfile
-export JUPYTER_HOST_PORT=8080
-export JUPYTER_CONTAINER_PORT=8080
 export DOCKER_BUILDKIT=1
 export ENV=local
 export LOCAL_TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 export LOCAL_GOOGLE_APPLICATION_CREDENTIALS=.credentials/google-cloud-credential.json
+export API_HOST_PORT=8000
+export API_CONTAINER_PORT=8000
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"
@@ -40,7 +40,7 @@ run_dashboard:
 	cd poke_battle_logger_vis && yarn run dev
 
 run_api:
-	poetry run uvicorn poke_battle_logger.api.app:app
+	poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
 run_api_local:
 	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) \
@@ -82,9 +82,9 @@ init-docker-server: ## initialize docker image
 	$(DOCKER) build -t $(SERVER_IMAGE_NAME) -f $(SERVER_DOCKERFILE) .
 
 create-container-no-mount: ## create docker container for development
-	$(DOCKER) run --rm -it -p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
-    --name $(CONTAINER_NAME) --memory=64g --cpus="16" $(IMAGE_NAME) /bin/bash
+	$(DOCKER) run --rm -it -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
+    --name $(CONTAINER_NAME) $(SERVER_IMAGE_NAME) /bin/bash
 
 create-container-mount: ## create docker container for development
-	$(DOCKER) run --rm -it -v $(PWD):/work -p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
-    --name $(CONTAINER_NAME) --memory=64g --cpus="16" $(IMAGE_NAME) /bin/bash
+	$(DOCKER) run --rm -it -v $(PWD):/work -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
+    --name $(CONTAINER_NAME) $(SERVER_IMAGE_NAME) /bin/bash
