@@ -44,4 +44,6 @@ RUN poetry config installer.parallel false
 RUN poetry install
 RUN poetry run pip install setuptools
 
+EXPOSE 8000
+
 CMD ["/bin/bash"]
