@@ -18,7 +18,7 @@ export ENV=local
 export LOCAL_TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
 export LOCAL_GOOGLE_APPLICATION_CREDENTIALS=.credentials/google-cloud-credential.json
 export API_HOST_PORT=8001
-export API_CONTAINER_PORT=8000
+export API_CONTAINER_PORT=10000
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"
