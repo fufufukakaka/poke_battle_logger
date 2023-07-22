@@ -42,6 +42,9 @@ run_dashboard:
 run_api:
 	ENV=$(ENV) poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
+run_api_production:
+	ENV=production poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
+
 run_api_local:
 	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) \
 	GOOGLE_APPLICATION_CREDENTIALS=$(LOCAL_GOOGLE_APPLICATION_CREDENTIALS) \
