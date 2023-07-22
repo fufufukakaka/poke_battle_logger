@@ -40,7 +40,7 @@ run_dashboard:
 	cd poke_battle_logger_vis && yarn run dev
 
 run_api:
-	poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
+	ENV=$(ENV) poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
 run_api_local:
 	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) \
