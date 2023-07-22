@@ -30,7 +30,7 @@ jobs:
 
     - name: Build
       run: |
-        docker build -f ./docker/Dockerfile -t asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-api/production-image:${{ github.sha }} ./
+        docker build -f ./docker/server/Dockerfile -t asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-api/production-image:${{ github.sha }} ./
 
     - name: Push
       run: |
