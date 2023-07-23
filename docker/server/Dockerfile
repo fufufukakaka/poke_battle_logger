@@ -37,13 +37,13 @@ COPY config ./config
 COPY data ./data
 COPY template_images ./template_images
 COPY Makefile poetry.lock pyproject.toml setup.cfg ./
+RUN mkdir video
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip && \
     python3 -m pip install --no-cache-dir poetry awscli
-RUN poetry config installer.parallel false
-RUN poetry install
-RUN poetry run pip install setuptools
+RUN poetry export -f requirements.txt --output requirements.txt
+RUN pip install -r requirements.txt
 
 EXPOSE 10000
 
-CMD ["/bin/bash"]
+CMD ["make", "run_api_in_cloud_run"]
