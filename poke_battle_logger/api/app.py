@@ -1,5 +1,3 @@
-import asyncio
-import dataclasses
 import logging
 import unicodedata
 from logging import getLogger
@@ -7,18 +5,16 @@ from typing import Dict, List, Union
 
 import pandas as pd
 import yt_dlp
-from fastapi import FastAPI, HTTPException, Request, WebSocket, status
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from rich.logging import RichHandler
-from tqdm.auto import tqdm
 
-from poke_battle_logger.api.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.types import ImageLabel, NameWindowImageLabel, StatusByWebsocket
+from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
 logging.basicConfig(
     level=logging.INFO,
@@ -328,50 +324,6 @@ async def check_video_format(
             "is1080p": False,
             "is30fps": False,
         }
-
-
-async def send_progress(websocket: WebSocket, total: int):  # type: ignore
-    status = StatusByWebsocket(
-        message=["INFO: start"],
-        progress=total,
-    )
-    with tqdm(total=total) as progress_bar:
-        for i in range(total):
-            await asyncio.sleep(0.1)  # 重い処理の代わりに0.1秒待機
-            progress_bar.update(1)
-            status.progress = progress_bar.n
-            await websocket.send_json(dataclasses.asdict(status))
-
-    await asyncio.sleep(2)
-    status.message.append("INFO: job1")
-    await websocket.send_json(dataclasses.asdict(status))
-
-    await asyncio.sleep(2)
-    status.message.append("INFO: job2")
-    await websocket.send_json(dataclasses.asdict(status))
-
-    await asyncio.sleep(2)
-    status.message.append("INFO: end")
-    await websocket.send_json(dataclasses.asdict(status))
-
-
-@app.websocket("/api/v1/extract_stats_from_video")
-async def extract_stats_from_video(  # type: ignore
-    job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
-):
-    gcs_handler = GCSHandler()
-    trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
-    gcs_handler.download_pokemon_templates(trainer_id_in_DB)
-    gcs_handler.download_pokemon_name_window_templates(trainer_id_in_DB)
-    poke_battle_extractor = PokemonBattleExtractor(
-        video_id=videoId,
-        language=language,
-        trainer_id=trainer_id_in_DB,
-    )
-
-    await job_progress_websocket.accept()
-    await poke_battle_extractor.run(job_progress_websocket)
-    await job_progress_websocket.close()
 
 
 class SetLabelRequest(BaseModel):

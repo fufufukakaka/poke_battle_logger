@@ -3,7 +3,12 @@ on:
   pull_request:
 
 jobs:
-  lint-and-test:
-    uses: ./.github/workflows/call-lint-test.yml
+  lint-and-test-server:
+    uses: ./.github/workflows/call-lint-test-server.yml
+    with:
+      ref: "refs/pull/${{ github.event.pull_request.number }}/head"
+
+  lint-and-test-job:
+    uses: ./.github/workflows/call-lint-test-job.yml
     with:
       ref: "refs/pull/${{ github.event.pull_request.number }}/head"

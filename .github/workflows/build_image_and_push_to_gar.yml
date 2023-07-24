@@ -6,7 +6,7 @@ on:
     - main
 
 jobs:
-  build-and-publish:
+  build-and-publish-image:
     name: Build and Push docker image
     runs-on: ubuntu-latest
 
@@ -62,10 +62,18 @@ jobs:
       run: |
         gcloud auth configure-docker asia-northeast1-docker.pkg.dev
 
-    - name: Build
+    - name: Build Server Image
       run: |
         docker build -f ./docker/server/Dockerfile -t asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-api/production-image:${{ github.sha }} ./
 
-    - name: Push
+    - name: Push Server Image
       run: |
         docker push asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-api/production-image:${{ github.sha }}
+
+    - name: Build Job Image
+      run: |
+        docker build -f ./docker/server/Dockerfile -t asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:${{ github.sha }} ./
+
+    - name: Push Job Image
+      run: |
+        docker push asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:${{ github.sha }}
