@@ -16,3 +16,5 @@ jobs:
         run: make init-docker-server
       - name: lint-in-docker
         run: make lint-in-docker
+      - name: test-in-docker
+        run: make test-in-docker
