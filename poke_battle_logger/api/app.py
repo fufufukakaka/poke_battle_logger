@@ -28,7 +28,7 @@ app = FastAPI()
 origins = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
-    "https://poke-battle-logger.vercel.app"
+    "https://poke-battle-logger.vercel.app",
 ]
 app.add_middleware(
     CORSMiddleware,

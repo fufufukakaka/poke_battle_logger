@@ -110,6 +110,12 @@ class FaintedLog(BaseModel):  # type: ignore
     fainted_pokemon_side = TextField()
 
 
+class BattleVideo(BaseModel):  # type: ignore
+    trainer_id = IntegerField()
+    video_id = TextField()
+    process_status = TextField()
+
+
 class DatabaseHandler:
     def __init__(self) -> None:
         self.db = build_db_connection()
