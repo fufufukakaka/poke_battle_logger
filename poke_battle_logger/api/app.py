@@ -13,6 +13,7 @@ from pydantic import BaseModel
 from rich.logging import RichHandler
 
 from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
@@ -378,3 +379,19 @@ async def set_label_to_unknown_pokemon_name_window_images(
 async def get_fainted_pokemon_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
     database_handler: DatabaseHandler = DatabaseHandler()
     return database_handler.get_fainted_pokemon_log(battle_id)
+
+
+@app.get("/api/v1/get_battle_video_status_list")
+async def get_battle_video_status_list(
+    trainer_id: str,
+) -> list[dict[str, str]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
+    return database_handler.get_battle_video_status_list(trainer_id)
+
+
+@app.get("/api/v1/get_battle_video_detail_status_log")
+async def get_battle_video_detail_status_log(
+    video_id: str,
+) -> list[str]:
+    firestore_handler: FirestoreHandler = FirestoreHandler()
+    return firestore_handler.get_battle_video_detail_status_log(video_id)

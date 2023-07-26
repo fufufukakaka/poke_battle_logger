@@ -30,6 +30,7 @@ class PokemonBattleExtractor:
         self.trainer_id_in_DB = trainer_id_in_DB
         self.gcs_handler = GCSHandler()
         self.firestore_handler = FirestoreHandler()
+        self.database_handler = DatabaseHandler()
 
     def _download_video(
         self,
@@ -68,9 +69,20 @@ class PokemonBattleExtractor:
             local_path=f"video/{self.video_id}.mp4",
         )
 
+        self.database_handler.update_video_process_status(
+            trainer_id_in_DB=self.trainer_id_in_DB,
+            video_id=self.video_id,
+            status="Video downloaded.",
+        )
+
     async def run(self) -> None:
         self._download_video()
 
+        self.database_handler.update_video_process_status(
+            trainer_id_in_DB=self.trainer_id_in_DB,
+            video_id=self.video_id,
+            status="Processing...",
+        )
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Read Video..."
         )
@@ -356,23 +368,29 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Inserting data to database..."
         )
-        database_handler = DatabaseHandler()
-        database_handler.insert_battle_id(battles)
-        database_handler.insert_battle_summary(battle_logs)
-        database_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
-        database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
-        database_handler.insert_message_log(modified_messages)
+
+        self.database_handler.insert_battle_id(battles)
+        self.database_handler.insert_battle_summary(battle_logs)
+        self.database_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
+        self.database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
+        self.database_handler.insert_message_log(modified_messages)
 
         # build fainted log
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Build And Insert Fainted Log..."
         )
-        database_handler.build_and_insert_fainted_log(
+        self.database_handler.build_and_insert_fainted_log(
             modified_in_battle_pokemons, modified_messages
         )
 
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Finish Processing ALL!!!"
+        )
+
+        self.database_handler.update_video_process_status(
+            trainer_id_in_DB=self.trainer_id_in_DB,
+            video_id=self.video_id,
+            status="Processing Done.",
         )
 
         return

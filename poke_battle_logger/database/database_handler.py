@@ -1481,3 +1481,53 @@ class DatabaseHandler:
             list(summary.to_dict(orient="index").values()),
         )
         return _res
+
+    def update_video_process_status(
+        self, trainer_id_in_DB: int, video_id: str, status: str
+    ) -> None:
+        sql = f"""
+        update
+            battlevideo
+        set
+            process_status = '{status}'
+        where
+            trainer_id = '{trainer_id_in_DB}'
+            and video_id = '{video_id}'
+        """
+        self.db.connect()
+        self.db.execute_sql(sql)
+        self.db.close()
+
+    def get_battle_video_status_list(self, trainer_id: str) -> list[dict[str, str]]:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        ),
+        select
+            video_id,
+            process_status
+        from
+            battlevideo
+        where
+            trainer_id = target_trainer.id
+        """
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "video_id",
+                "process_status",
+            ],
+        )
+        _res = cast(
+            list[Dict[str, str]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res

@@ -23,3 +23,14 @@ class FirestoreHandler:
         current_data: dict[str, list[str]] = self.get_document("poke_battle_logger_processing_log", video_id)
         current_data["messages"] = current_data["messages"] + [new_message]
         self.update_document("poke_battle_logger_processing_log", video_id, current_data)
+
+    def get_battle_video_detail_status_log(self, video_id: str) -> list[str]:
+        """ poke_battle_logger_processing_log から video_id に対応する status log を取得する関数
+
+        Args:
+            video_id (str): video_id
+
+        Returns:
+            list[str]: status log
+        """
+        return self.get_document("poke_battle_logger_processing_log", video_id)["messages"]
