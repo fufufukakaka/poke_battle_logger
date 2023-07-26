@@ -15,6 +15,7 @@ from poke_battle_logger.batch.frame_compressor import (
 from poke_battle_logger.batch.frame_detector import FrameDetector
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 
 
@@ -28,6 +29,7 @@ class PokemonBattleExtractor:
         self.language = language
         self.trainer_id_in_DB = trainer_id_in_DB
         self.gcs_handler = GCSHandler()
+        self.firestore_handler = FirestoreHandler()
 
     def _download_video(
         self,
@@ -69,8 +71,9 @@ class PokemonBattleExtractor:
     async def run(self) -> None:
         self._download_video()
 
-        # status_json.message.insert(0, "INFO: Read Video...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Read Video..."
+        )
         video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
 
         frame_detector = FrameDetector(self.language)
@@ -85,8 +88,9 @@ class PokemonBattleExtractor:
         win_or_lost_frames = []
         message_window_frames = []
 
-        # status_json.message.insert(0, "INFO: Detecting frames...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Detecting frames..."
+        )
 
         total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
         for i in range(total_frames):
@@ -121,13 +125,11 @@ class PokemonBattleExtractor:
                     message_window_frames.append(i)
             else:
                 continue
-            # if i % 100 == 0:
-            #     status_json.progress = int((i / total_frames) * 100)
-            #     await websocket_for_status.send_json(dataclasses.asdict(status_json))
 
         # compress
-        # status_json.message.insert(0, "INFO: Compressing frame array...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Compressing frame array..."
+        )
 
         compressed_first_ranking_frames = frame_compress(first_ranking_frames)
         compressed_select_done_frames = frame_compress(select_done_frames)
@@ -142,8 +144,9 @@ class PokemonBattleExtractor:
         )
 
         # 開始時のランクを検出(OCR)
-        # status_json.message.insert(0, "INFO: Extracting first ranking...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Extracting first ranking..."
+        )
         rank_numbers = {}
         first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
         video.set(cv2.CAP_PROP_POS_FRAMES, first_ranking_frame_number - 1)
@@ -153,8 +156,9 @@ class PokemonBattleExtractor:
         )
 
         # ランクを検出(OCR)
-        # status_json.message.insert(0, "INFO: Extracting ranking...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Extracting ranking..."
+        )
         for ranking_frame_numbers in compressed_ranking_frames:
             ranking_frame_number = ranking_frame_numbers[-5]
             video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
@@ -164,10 +168,9 @@ class PokemonBattleExtractor:
             )
 
         # 順位が変動しなかった場合、その値を rank_numbers から削除する
-        # status_json.message.insert(
-        #     0, "INFO: Removing unchanged ranking from rank_numbers..."
-        # )
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Removing unchanged ranking..."
+        )
         rank_frames = list(rank_numbers.keys())
         for i in range(len(rank_numbers) - 1):
             _ranking_frame_number = rank_frames[i]
@@ -180,10 +183,9 @@ class PokemonBattleExtractor:
                 del rank_numbers[_ranking_frame_number]
 
         # 対戦の始点と終点を定義する
-        status_json.message.insert(
-            0, "INFO: Defining battle start and end frame numbers..."
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Defining battle start and end frame numbers..."
         )
-        await websocket_for_status.send_json(dataclasses.asdict(status_json))
         battle_start_end_frame_numbers: List[Tuple[int, int]] = []
         rank_frames = list(rank_numbers.keys())
         for i in range(len(compressed_standing_by_frames)):
@@ -203,8 +205,9 @@ class PokemonBattleExtractor:
                 )
 
         # ポケモンの選出順を抽出する
-        # status_json.message.insert(0, "INFO: Extracting pokemon select order...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Extracting pokemon select order..."
+        )
         pokemon_select_order = {}
         for i in range(len(compressed_select_done_frames)):
             _select_done_frames = compressed_select_done_frames[i]
@@ -219,8 +222,9 @@ class PokemonBattleExtractor:
             pokemon_select_order[_select_done_frame_number] = _pokemon_select_order
 
         # 6vs6のポケモンを抽出する
-        # status_json.message.insert(0, "INFO: Extracting pre-battle pokemons...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Extracting pre-battle pokemons..."
+        )
         pre_battle_pokemons: Dict[int, Dict[str, List[str]]] = {}
         is_exist_unknown_pokemon_list1 = []
         for i in range(len(compressed_standing_by_frames)):
@@ -245,8 +249,9 @@ class PokemonBattleExtractor:
             is_exist_unknown_pokemon_list1.append(_is_exist_unknown_pokemon)
 
         # 対戦中のポケモンを抽出する
-        # status_json.message.insert(0, "INFO: Extracting in-battle pokemons...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Extracting in-battle pokemons..."
+        )
         battle_pokemons: List[Dict[str, Union[str, int]]] = []
         is_exist_unknown_pokemon_list2 = []
         for level_50_frame_numbers in compressed_level_50_frames:
@@ -271,22 +276,21 @@ class PokemonBattleExtractor:
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
             self.gcs_handler.upload_unknown_pokemon_templates_to_gcs(
-                trainer_id=self.trainer_id
+                trainer_id=self.trainer_id_in_DB
             )
             self.gcs_handler.upload_unknown_pokemon_name_window_templates_to_gcs(
-                trainer_id=self.trainer_id
+                trainer_id=self.trainer_id_in_DB
             )
-            # status_json.message.insert(
-            #     0,
-            #     "ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
-            # )
-            # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+            self.firestore_handler.update_log_document(
+                video_id=self.video_id, new_message="ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons."
+            )
             return
 
         # 勝ち負けを検出
         # 間違いやすいので、周辺最大10フレームを見て判断する。全て unknown の時は弾く
-        # status_json.message.insert(0, "INFO: Extracting win or lost...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Extracting win or lost..."
+        )
         win_or_lost = {}
         for win_or_lost_frame_numbers in compressed_win_or_lost_frames:
             if len(win_or_lost_frame_numbers) > 3:
@@ -312,8 +316,9 @@ class PokemonBattleExtractor:
                 win_or_lost[win_or_lost_frame_number] = win_or_lost_result
 
         # メッセージの文字認識(OCR)
-        # status_json.message.insert(0, "INFO: Extracting message...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Extracting message..."
+        )
         messages = {}
         for message_frame_numbers in compressed_message_window_frames:
             message_frame_number = message_frame_numbers[-1]
@@ -324,10 +329,11 @@ class PokemonBattleExtractor:
                 messages[message_frame_number] = _message
 
         # build formatted data
-        # status_json.message.insert(0, "INFO: Build Formatted Data...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Building formatted data..."
+        )
         data_builder = DataBuilder(
-            trainer_id=self.trainer_id,
+            trainer_id=self.trainer_id_in_DB,
             video_id=self.video_id,
             battle_start_end_frame_numbers=battle_start_end_frame_numbers,
             battle_pokemons=battle_pokemons,
@@ -347,8 +353,9 @@ class PokemonBattleExtractor:
         ) = data_builder.build()
 
         # insert data to database
-        # status_json.message.insert(0, "INFO: Insert Data to Database...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Inserting data to database..."
+        )
         database_handler = DatabaseHandler()
         database_handler.insert_battle_id(battles)
         database_handler.insert_battle_summary(battle_logs)
@@ -356,17 +363,16 @@ class PokemonBattleExtractor:
         database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
         database_handler.insert_message_log(modified_messages)
 
-        # status_json.message.insert(0, "INFO: Finish Inserting Battle Log!")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
-
         # build fainted log
-        # status_json.message.insert(0, "INFO: Build And Insert Fainted Log...")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Build And Insert Fainted Log..."
+        )
         database_handler.build_and_insert_fainted_log(
             modified_in_battle_pokemons, modified_messages
         )
 
-        # status_json.message.insert(0, "INFO: Finish Processing ALL!!!")
-        # await websocket_for_status.send_json(dataclasses.asdict(status_json))
+        self.firestore_handler.update_log_document(
+            video_id=self.video_id, new_message="INFO: Finish Processing ALL!!!"
+        )
 
         return
