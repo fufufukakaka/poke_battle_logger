@@ -1,4 +1,4 @@
-import { Alert, AlertIcon, Spinner, Badge, Box, Button, Container, Progress, Stack, HStack, Heading, Image, Text, InputGroup, InputLeftAddon, Input, Divider, VStack, Radio, RadioGroup } from "@chakra-ui/react";
+import { Alert, AlertIcon, Spinner, Badge, Box, Button, Container, Progress, Stack, HStack, Heading, Image, Text, InputGroup, InputLeftAddon, Input, Divider, VStack, Radio, RadioGroup, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, OrderedList, ListItem } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from 'axios';
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
@@ -41,6 +41,8 @@ const ProcessVideoPage = () => {
   const [videoFormat, setVideoFormat] = useState<videoFormat | undefined>(undefined);
   const [langInVideo, setLangInVideo] = useState('en')
   const [showSpinner, setShowSpinner] = useState(false)
+  const [videoStatusLogDetail, setVideoStatusLogDetail] = useState<string[]>([])
+
   const { user } = useAuth0();
   const trainerId = user?.sub?.replace("|", "_");
   const { data: dataVideoStatus } = useSWR(`/api/get_video_process_status?trainerId=${trainerId}`, fetcher);
@@ -69,7 +71,7 @@ const ProcessVideoPage = () => {
 
   const processLogDetailFetchHandler = async (targetVideoId: string) => {
     const res = await axios.get(`/api/get_battle_video_detail_status_log?videoId=${targetVideoId}`);
-    console.log(res.data);
+    setVideoStatusLogDetail(res.data);
   }
 
   return (
@@ -118,11 +120,6 @@ const ProcessVideoPage = () => {
                         jobStatusList.map((status, index) => {
                             return (
                                 <Stack key={index} direction='row'>
-                                    {/* もし status が INFO から始まるなら success, ERROR から始まるなら error にする */}
-                                    {/* <Alert key={index} status='success' variant='subtle' marginTop={"10px"}>
-                                        <AlertIcon />
-                                        {status}
-                                    </Alert> */}
                                     <Alert key={index} status={status.startsWith('INFO') ? 'success' : 'error'} variant='subtle' marginTop={"10px"}>
                                         <AlertIcon />
                                         {status}
@@ -152,8 +149,31 @@ const ProcessVideoPage = () => {
                     <Td>{videoStatus.videoId}</Td>
                     <Td>{videoStatus.registeredAt}</Td>
                     <Td>{videoStatus.status}</Td>
-                    <Td><Button colorScheme='blue' onClick={() => processLogDetailFetchHandler(videoStatus.videoId)}>処理詳細</Button></Td>
-                    <Td><Button colorScheme='blue' onClick={() => window.open(`https://www.youtube.com/watch?v=${videoStatus.videoId}`)}>Open Video</Button></Td>
+                    <Td>
+                      <Popover>
+                        <PopoverTrigger>
+                          <Button colorScheme='blue' onClick={() => processLogDetailFetchHandler(videoStatus.videoId)}>処理詳細</Button>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <PopoverArrow />
+                          <PopoverCloseButton />
+                          <PopoverHeader>処理ログ</PopoverHeader>
+                          <PopoverBody>
+                            <OrderedList>
+                            {
+                              videoStatusLogDetail.length > 0 ? videoStatusLogDetail.map((log, index) => {
+                              return (
+                                <ListItem key={index}>{log}</ListItem>
+                              )
+                              }) : <Spinner />}
+                            </OrderedList>
+                          </PopoverBody>
+                        </PopoverContent>
+                      </Popover>
+                    </Td>
+                    <Td>
+                      <Button colorScheme='blue' onClick={() => window.open(`https://www.youtube.com/watch?v=${videoStatus.videoId}`)}>Open Video</Button>
+                    </Td>
                   </Tr>
                 )
               })}
