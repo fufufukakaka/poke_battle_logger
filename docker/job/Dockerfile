@@ -44,6 +44,6 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip && \
 RUN poetry export --with dev,job -f requirements.txt --output requirements.txt
 RUN pip install -r requirements.txt
 
-EXPOSE 10000
+EXPOSE 11000
 
-CMD ["make", "run_api_in_cloud_run"]
+CMD ["make", "run_job_api_in_cloud_run"]

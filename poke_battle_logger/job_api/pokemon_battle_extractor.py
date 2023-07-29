@@ -196,7 +196,8 @@ class PokemonBattleExtractor:
 
         # 対戦の始点と終点を定義する
         self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Defining battle start and end frame numbers..."
+            video_id=self.video_id,
+            new_message="INFO: Defining battle start and end frame numbers...",
         )
         battle_start_end_frame_numbers: List[Tuple[int, int]] = []
         rank_frames = list(rank_numbers.keys())
@@ -218,7 +219,8 @@ class PokemonBattleExtractor:
 
         # ポケモンの選出順を抽出する
         self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Extracting pokemon select order..."
+            video_id=self.video_id,
+            new_message="INFO: Extracting pokemon select order...",
         )
         pokemon_select_order = {}
         for i in range(len(compressed_select_done_frames)):
@@ -235,7 +237,8 @@ class PokemonBattleExtractor:
 
         # 6vs6のポケモンを抽出する
         self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Extracting pre-battle pokemons..."
+            video_id=self.video_id,
+            new_message="INFO: Extracting pre-battle pokemons...",
         )
         pre_battle_pokemons: Dict[int, Dict[str, List[str]]] = {}
         is_exist_unknown_pokemon_list1 = []
@@ -294,7 +297,8 @@ class PokemonBattleExtractor:
                 trainer_id=self.trainer_id_in_DB
             )
             self.firestore_handler.update_log_document(
-                video_id=self.video_id, new_message="ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons."
+                video_id=self.video_id,
+                new_message="ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
             )
             return
 

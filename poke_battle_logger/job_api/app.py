@@ -1,13 +1,13 @@
 import logging
 from logging import getLogger
 
-from fastapi import FastAPI, Request, status
+from fastapi import BackgroundTasks, FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from rich.logging import RichHandler
-
-from poke_battle_logger.database.database_handler import DatabaseHandler
+import pydantic
+from poke_battle_logger.database.database_handler import BaseModel, DatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 from poke_battle_logger.job_api.pokemon_battle_extractor import PokemonBattleExtractor
 
@@ -51,18 +51,30 @@ def get_trainer_id_in_DB(trainer_id: str) -> int:
     return trainer_id_in_DB
 
 
+class ExtractStatsFromVideoRequest(pydantic.BaseModel):
+    trainerId: str
+    videoId: str
+    language: str
+
+
 @app.post("/api/v1/extract_stats_from_video")
 async def extract_stats_from_video(  # type: ignore
-    videoId: str, language: str, trainerId: str
-):
+    request: ExtractStatsFromVideoRequest, background_tasks: BackgroundTasks
+) -> str:
+    background_tasks.add_task(
+        extract_stats, request=request, trainer_id_in_DB=get_trainer_id_in_DB(request.trainerId)
+    )
+    return "Request accepted"
+
+
+async def extract_stats(request: ExtractStatsFromVideoRequest, trainer_id_in_DB) -> None:
     gcs_handler = GCSHandler()
-    trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
     gcs_handler.download_pokemon_templates(trainer_id_in_DB)
     gcs_handler.download_pokemon_name_window_templates(trainer_id_in_DB)
     poke_battle_extractor = PokemonBattleExtractor(
-        video_id=videoId,
-        language=language,
+        video_id=request.videoId,
+        language=request.language,
         trainer_id_in_DB=trainer_id_in_DB,
     )
 
-    poke_battle_extractor.run()
+    await poke_battle_extractor.run()

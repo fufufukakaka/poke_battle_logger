@@ -3,11 +3,29 @@ import React, { useState } from "react";
 import axios from 'axios';
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { ServerHost, ServerHostWebsocket } from "../../util"
+import useSWR from "swr";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from '@chakra-ui/react'
 
 interface videoFormat {
     isValid: boolean;
     is1080p: boolean;
     is30fps: boolean;
+}
+
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  return data
 }
 
 const ProcessVideoPage = () => {
@@ -18,6 +36,8 @@ const ProcessVideoPage = () => {
   const [langInVideo, setLangInVideo] = useState('en')
   const [showSpinner, setShowSpinner] = useState(false)
   const { user } = useAuth0();
+  const trainerId = user?.sub?.replace("|", "_");
+  const { data: dataVideoStatus } = useSWR(`/api/get_video_process_status?trainerId=${trainerId}`, fetcher);
 
   const handleOnChange = (value: string) => {
     setVideoId(value);
@@ -30,7 +50,7 @@ const ProcessVideoPage = () => {
 
   const handleExtractJob = async () => {
     setShowSpinner(true)
-    const socket = new WebSocket(`${ServerHostWebsocket}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
+    const socket = new WebSocket(`${ServerHost}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         setProgress(data.progress);
@@ -103,6 +123,24 @@ const ProcessVideoPage = () => {
             </Box>
           </>
         ) : null}
+        {dataVideoStatus && dataVideoStatus.length > 0 ? <TableContainer>
+          <Table variant='simple'>
+            <Thead>
+              <Tr>
+                <Th>動画ID</Th>
+                <Th>登録日</Th>
+                <Th>処理状況</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              <Tr>
+                <Td>inches</Td>
+                <Td>millimetres (mm)</Td>
+                <Td isNumeric>25.4</Td>
+              </Tr>
+            </Tbody>
+          </Table>
+        </TableContainer> : <p>まだ登録された動画がありません。動画を登録して対戦情報を抽出してみましょう。</p>}
       </Container>
     </Box>
   );

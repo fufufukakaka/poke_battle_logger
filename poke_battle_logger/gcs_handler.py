@@ -123,21 +123,21 @@ class GCSHandler:
             )
 
     def check_user_battle_video_exists(
-            self, trainer_id_in_DB: int, video_id: str
+        self, trainer_id_in_DB: int, video_id: str
     ) -> bool:
         source_path = f"user_battle_video/{trainer_id_in_DB}/{video_id}.mp4"
         blob = self.bucket.blob(source_path)
         return blob.exists()
 
     def download_video_from_gcs(
-            self, trainer_id_in_DB: int, video_id: str, local_path: str
+        self, trainer_id_in_DB: int, video_id: str, local_path: str
     ) -> None:
         source_path = f"user_battle_video/{trainer_id_in_DB}/{video_id}.mp4"
         blob = self.bucket.blob(source_path)
         blob.download_to_filename(local_path)
 
     def upload_video_to_gcs(
-            self, trainer_id_in_DB: int, video_id: str, local_path: str
+        self, trainer_id_in_DB: int, video_id: str, local_path: str
     ) -> None:
         dest_path = f"user_battle_video/{trainer_id_in_DB}/{video_id}.mp4"
         blob = self.bucket.blob(dest_path)

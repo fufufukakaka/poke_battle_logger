@@ -1485,15 +1485,17 @@ class DatabaseHandler:
     def update_video_process_status(
         self, trainer_id_in_DB: int, video_id: str, status: str
     ) -> None:
+        # postgresql upsert
         sql = f"""
-        update
-            battlevideo
-        set
+        insert into
+            battlevideo (trainer_id, video_id, process_status)
+        values
+            ('{trainer_id_in_DB}', '{video_id}', '{status}')
+        on conflict (trainer_id, video_id)
+        do update set
             process_status = '{status}'
-        where
-            trainer_id = '{trainer_id_in_DB}'
-            and video_id = '{video_id}'
         """
+
         self.db.connect()
         self.db.execute_sql(sql)
         self.db.close()
@@ -1507,14 +1509,15 @@ class DatabaseHandler:
                 trainer
             where
                 identity = '{trainer_id}'
-        ),
+        )
         select
             video_id,
+            registered_at,
             process_status
         from
             battlevideo
         where
-            trainer_id = target_trainer.id
+            trainer_id in (select id from target_trainer)
         """
         self.db.connect()
         stats = self.db.execute_sql(sql).fetchall()
@@ -1523,6 +1526,7 @@ class DatabaseHandler:
             stats,
             columns=[
                 "video_id",
+                "registered_at",
                 "process_status",
             ],
         )
