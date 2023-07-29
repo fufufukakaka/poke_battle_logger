@@ -22,6 +22,12 @@ interface videoFormat {
     is30fps: boolean;
 }
 
+interface videoStatus {
+  videoId: string;
+  registeredAt: string;
+  status: string;
+}
+
 const fetcher = async (url: string) => {
   const res = await fetch(url);
   const data = await res.json();
@@ -59,6 +65,11 @@ const ProcessVideoPage = () => {
     socket.onclose = () => {
       setShowSpinner(false);
     };
+  }
+
+  const processLogDetailFetchHandler = async (targetVideoId: string) => {
+    const res = await axios.get(`/api/get_battle_video_detail_status_log?videoId=${targetVideoId}`);
+    console.log(res.data);
   }
 
   return (
@@ -130,14 +141,22 @@ const ProcessVideoPage = () => {
                 <Th>動画ID</Th>
                 <Th>登録日</Th>
                 <Th>処理状況</Th>
+                <Th>処理状況詳細</Th>
+                <Th>動画を開く</Th>
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td>inches</Td>
-                <Td>millimetres (mm)</Td>
-                <Td isNumeric>25.4</Td>
-              </Tr>
+              {dataVideoStatus.map((videoStatus:videoStatus , index: number) => {
+                return (
+                  <Tr key={index}>
+                    <Td>{videoStatus.videoId}</Td>
+                    <Td>{videoStatus.registeredAt}</Td>
+                    <Td>{videoStatus.status}</Td>
+                    <Td><Button colorScheme='blue' onClick={() => processLogDetailFetchHandler(videoStatus.videoId)}>処理詳細</Button></Td>
+                    <Td><Button colorScheme='blue' onClick={() => window.open(`https://www.youtube.com/watch?v=${videoStatus.videoId}`)}>Open Video</Button></Td>
+                  </Tr>
+                )
+              })}
             </Tbody>
           </Table>
         </TableContainer> : <p>まだ登録された動画がありません。動画を登録して対戦情報を抽出してみましょう。</p>}

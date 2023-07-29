@@ -1525,10 +1525,13 @@ class DatabaseHandler:
         summary = pd.DataFrame(
             stats,
             columns=[
-                "video_id",
-                "registered_at",
-                "process_status",
+                "videoId",
+                "registeredAt",
+                "status",
             ],
+        )
+        summary["registeredAt"] = summary["registeredAt"].dt.strftime(
+            "%Y-%m-%d %H:%M:%S"
         )
         _res = cast(
             list[Dict[str, str]],
