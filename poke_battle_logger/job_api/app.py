@@ -77,4 +77,11 @@ async def extract_stats(request: ExtractStatsFromVideoRequest, trainer_id_in_DB)
         trainer_id_in_DB=trainer_id_in_DB,
     )
 
-    await poke_battle_extractor.run()
+    try:
+        await poke_battle_extractor.run()
+    except Exception:
+        poke_battle_extractor.database_handler.update_video_process_status(
+            trainer_id_in_DB=trainer_id_in_DB,
+            video_id=request.videoId,
+            status="Process failed",
+        )
