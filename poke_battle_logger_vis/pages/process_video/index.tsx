@@ -57,16 +57,12 @@ const ProcessVideoPage = () => {
   };
 
   const handleExtractJob = async () => {
-    setShowSpinner(true)
-    const socket = new WebSocket(`${ServerHost}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
-    socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        setProgress(data.progress);
-        setJobStatusList(data.message)
-    }
-    socket.onclose = () => {
-      setShowSpinner(false);
-    };
+    await axios.get(`${ServerHost}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
+    dataVideoStatus.push({
+      videoId: videoId,
+      registeredAt: new Date().toLocaleString(),
+      status: "Processing..."
+    })
   }
 
   const processLogDetailFetchHandler = async (targetVideoId: string) => {
@@ -107,27 +103,13 @@ const ProcessVideoPage = () => {
           <>
           <Divider />
             <Box flex="1" p="4" bg="white">
-                    <RadioGroup onChange={setLangInVideo} value={langInVideo} marginBottom={"10px"}>
-                        <Stack direction='row'>
-                            <Radio value='en'>English</Radio>
-                            <Radio value='ja'>Japanese</Radio>
-                        </Stack>
-                    </RadioGroup>
-                    <Button colorScheme='green' onClick={() => handleExtractJob()} marginBottom={"10px"}>Start Process Video</Button>
-                    {showSpinner && <Spinner marginLeft={"10px"} />}
-                    <Progress size='xs' value={progress} />
-                    {
-                        jobStatusList.map((status, index) => {
-                            return (
-                                <Stack key={index} direction='row'>
-                                    <Alert key={index} status={status.startsWith('INFO') ? 'success' : 'error'} variant='subtle' marginTop={"10px"}>
-                                        <AlertIcon />
-                                        {status}
-                                    </Alert>
-                                </Stack>
-                            )
-                        })
-                    }
+              <RadioGroup onChange={setLangInVideo} value={langInVideo} marginBottom={"10px"}>
+                  <Stack direction='row'>
+                      <Radio value='en'>English</Radio>
+                      <Radio value='ja'>Japanese</Radio>
+                  </Stack>
+              </RadioGroup>
+              <Button colorScheme='green' onClick={() => handleExtractJob()} marginBottom={"10px"}>Start Process Video</Button>
             </Box>
           </>
         ) : null}
@@ -148,7 +130,7 @@ const ProcessVideoPage = () => {
                   <Tr key={index}>
                     <Td>{videoStatus.videoId}</Td>
                     <Td>{videoStatus.registeredAt}</Td>
-                    <Td>{videoStatus.status}</Td>
+                    <Td><Badge>{videoStatus.status}</Badge></Td>
                     <Td>
                       <Popover>
                         <PopoverTrigger>
