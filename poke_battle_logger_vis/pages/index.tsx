@@ -83,7 +83,6 @@ export const fetcher = async (url: string) => {
 
 const Dashboard: React.FC<DashBoardProps> = ({
 }) => {
-  console.log(ServerHost)
   // ここで useEffect して新しいユーザだった場合、User テーブルに書き込む
   // まだ対戦履歴がないユーザだった場合は、「記録してみよう」的な文言を出す
 

@@ -110,6 +110,12 @@ class FaintedLog(BaseModel):  # type: ignore
     fainted_pokemon_side = TextField()
 
 
+class BattleVideo(BaseModel):  # type: ignore
+    trainer_id = IntegerField()
+    video_id = TextField()
+    process_status = TextField()
+
+
 class DatabaseHandler:
     def __init__(self) -> None:
         self.db = build_db_connection()
@@ -1472,6 +1478,63 @@ class DatabaseHandler:
         )
         _res = cast(
             List[Dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def update_video_process_status(
+        self, trainer_id_in_DB: int, video_id: str, status: str
+    ) -> None:
+        # postgresql upsert
+        sql = f"""
+        insert into
+            battlevideo (trainer_id, video_id, process_status)
+        values
+            ('{trainer_id_in_DB}', '{video_id}', '{status}')
+        on conflict (trainer_id, video_id)
+        do update set
+            process_status = '{status}'
+        """
+
+        self.db.connect()
+        self.db.execute_sql(sql)
+        self.db.close()
+
+    def get_battle_video_status_list(self, trainer_id: str) -> list[dict[str, str]]:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                identity = '{trainer_id}'
+        )
+        select
+            video_id,
+            registered_at,
+            process_status
+        from
+            battlevideo
+        where
+            trainer_id in (select id from target_trainer)
+        """
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "videoId",
+                "registeredAt",
+                "status",
+            ],
+        )
+        summary["registeredAt"] = summary["registeredAt"].dt.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        _res = cast(
+            list[Dict[str, str]],
             list(summary.to_dict(orient="index").values()),
         )
         return _res

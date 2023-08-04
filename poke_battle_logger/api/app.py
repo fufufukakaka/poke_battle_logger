@@ -1,24 +1,22 @@
-import asyncio
-import dataclasses
 import logging
 import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
 
+import httpx
 import pandas as pd
 import yt_dlp
-from fastapi import FastAPI, HTTPException, Request, WebSocket, status
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from rich.logging import RichHandler
-from tqdm.auto import tqdm
 
-from poke_battle_logger.api.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.types import ImageLabel, NameWindowImageLabel, StatusByWebsocket
+from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,7 +30,7 @@ app = FastAPI()
 origins = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
-    "https://poke-battle-logger.vercel.app"
+    "https://poke-battle-logger.vercel.app",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -330,50 +328,6 @@ async def check_video_format(
         }
 
 
-async def send_progress(websocket: WebSocket, total: int):  # type: ignore
-    status = StatusByWebsocket(
-        message=["INFO: start"],
-        progress=total,
-    )
-    with tqdm(total=total) as progress_bar:
-        for i in range(total):
-            await asyncio.sleep(0.1)  # 重い処理の代わりに0.1秒待機
-            progress_bar.update(1)
-            status.progress = progress_bar.n
-            await websocket.send_json(dataclasses.asdict(status))
-
-    await asyncio.sleep(2)
-    status.message.append("INFO: job1")
-    await websocket.send_json(dataclasses.asdict(status))
-
-    await asyncio.sleep(2)
-    status.message.append("INFO: job2")
-    await websocket.send_json(dataclasses.asdict(status))
-
-    await asyncio.sleep(2)
-    status.message.append("INFO: end")
-    await websocket.send_json(dataclasses.asdict(status))
-
-
-@app.websocket("/api/v1/extract_stats_from_video")
-async def extract_stats_from_video(  # type: ignore
-    job_progress_websocket: WebSocket, videoId: str, language: str, trainerId: str
-):
-    gcs_handler = GCSHandler()
-    trainer_id_in_DB = get_trainer_id_in_DB(trainerId)
-    gcs_handler.download_pokemon_templates(trainer_id_in_DB)
-    gcs_handler.download_pokemon_name_window_templates(trainer_id_in_DB)
-    poke_battle_extractor = PokemonBattleExtractor(
-        video_id=videoId,
-        language=language,
-        trainer_id=trainer_id_in_DB,
-    )
-
-    await job_progress_websocket.accept()
-    await poke_battle_extractor.run(job_progress_websocket)
-    await job_progress_websocket.close()
-
-
 class SetLabelRequest(BaseModel):
     trainer_id: int
     image_labels: List[ImageLabel]
@@ -426,3 +380,45 @@ async def set_label_to_unknown_pokemon_name_window_images(
 async def get_fainted_pokemon_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
     database_handler: DatabaseHandler = DatabaseHandler()
     return database_handler.get_fainted_pokemon_log(battle_id)
+
+
+@app.get("/api/v1/get_battle_video_status_list")
+async def get_battle_video_status_list(
+    trainer_id: str,
+) -> list[dict[str, str]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
+    return database_handler.get_battle_video_status_list(trainer_id)
+
+
+@app.get("/api/v1/get_battle_video_detail_status_log")
+async def get_battle_video_detail_status_log(
+    video_id: str,
+) -> list[str]:
+    firestore_handler: FirestoreHandler = FirestoreHandler()
+    return firestore_handler.get_battle_video_detail_status_log(video_id)
+
+
+@app.get("/api/v1/extract_stats_from_video")
+async def get_stats_from_video_via_job_api(
+    videoId: str, language: str, trainerId: str, background_tasks: BackgroundTasks
+) -> str:
+
+    job_api_host = "http://0.0.0.0:11000"
+    # if os.getenv("ENV") == "production":
+    #     job_api_host = "https://poke-battle-logger-job-api.herokuapp.com"
+
+    background_tasks.add_task(
+        send_extract_request,
+        job_api_host,
+        videoId,
+        language,
+        trainerId
+    )
+    return "Start extracting stats from video via job_api"
+
+
+async def send_extract_request(job_api_host: str, videoId: str, language: str, trainerId: str) -> None:
+    httpx.post(
+        f"{job_api_host}/api/v1/extract_stats_from_video",
+        json={"videoId": videoId, "language": language, "trainerId": trainerId},
+    )

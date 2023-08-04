@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format:eslint": "eslint --fix --ext .js,.ts,.tsx ."
   },
   "dependencies": {
     "@auth0/auth0-react": "^2.0.1",
