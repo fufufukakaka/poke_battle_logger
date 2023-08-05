@@ -1,4 +1,5 @@
 import logging
+import os
 import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
@@ -404,8 +405,8 @@ async def get_stats_from_video_via_job_api(
 ) -> str:
 
     job_api_host = "http://0.0.0.0:11000"
-    # if os.getenv("ENV") == "production":
-    #     job_api_host = "https://poke-battle-logger-job-api.herokuapp.com"
+    if os.getenv("ENV") == "production":
+        job_api_host = "https://poke-battle-logger-job-edzojg3wxa-an.a.run.app"
 
     background_tasks.add_task(
         send_extract_request,
