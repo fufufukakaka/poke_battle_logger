@@ -47,7 +47,7 @@ run_api_in_cloud_run:
 	ENV=production uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
 run_job_api_in_cloud_run:
-	ENV=production uvicorn poke_battle_logger.api.job_app:app --host 0.0.0.0 --port $(JOB_API_CONTAINER_PORT)
+	ENV=production uvicorn poke_battle_logger.job_api.app:app --host 0.0.0.0 --port $(JOB_API_CONTAINER_PORT)
 
 run_api_local_use_postgres:
 	ENV=production \
