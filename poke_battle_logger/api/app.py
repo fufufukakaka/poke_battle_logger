@@ -247,6 +247,7 @@ async def get_pokemon_image_url(
 
 class UserModel(BaseModel):
     trainer_id: str
+    email: str
 
 
 @app.post("/api/v1/save_new_trainer")
@@ -266,7 +267,7 @@ async def save_new_trainer(
         return "trainer_id already exists"
     else:
         logger.info("trainer_id does not exist")
-        database_handler.save_new_trainer(user.trainer_id)
+        database_handler.save_new_trainer(user.trainer_id, user.email)
         return f"save new user: {user.trainer_id}"
 
 
@@ -406,7 +407,7 @@ async def get_stats_from_video_via_job_api(
 
     job_api_host = "http://0.0.0.0:11000"
     if os.getenv("ENV") == "production":
-        job_api_host = "https://poke-battle-logger-job-edzojg3wxa-an.a.run.app"
+        job_api_host = os.getenv("JOB_API_HOST", default="http://0.0.0.0:11000")
 
     background_tasks.add_task(
         send_extract_request,

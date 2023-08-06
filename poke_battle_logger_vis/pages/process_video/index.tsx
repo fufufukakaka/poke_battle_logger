@@ -35,12 +35,9 @@ const fetcher = async (url: string) => {
 }
 
 const ProcessVideoPage = () => {
-  const [progress, setProgress] = useState(0);
-  const [jobStatusList, setJobStatusList] = useState<string[]>(["INFO: idle"]);
   const [videoId, setVideoId] = useState("");
   const [videoFormat, setVideoFormat] = useState<videoFormat | undefined>(undefined);
   const [langInVideo, setLangInVideo] = useState('en')
-  const [showSpinner, setShowSpinner] = useState(false)
   const [videoStatusLogDetail, setVideoStatusLogDetail] = useState<string[]>([])
 
   const { user } = useAuth0();
