@@ -83,13 +83,13 @@ test-in-docker: ## run test cases in tests directory in docker
 	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make test
 
 lint-in-docker: ## check style with flake8 in docker
-	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make lint
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pysen run lint
 
 test-in-docker-job: ## run test cases in tests directory in docker
-	$(DOCKER) run --rm $(JOB_IMAGE_NAME) make test
+	$(DOCKER) run --rm $(JOB_IMAGE_NAME) pytest -vvv
 
 lint-in-docker-job: ## check style with flake8 in docker
-	$(DOCKER) run --rm $(JOB_IMAGE_NAME) make lint
+	$(DOCKER) run --rm $(JOB_IMAGE_NAME) pysen run lint
 
 jupyter: ## start Jupyter Notebook server
 	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
