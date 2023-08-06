@@ -88,7 +88,7 @@ class FrameDetector:
             gray_standing_by_area, self.gray_standing_by_template, cv2.TM_CCOEFF_NORMED
         )
         _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
-        return _result
+        return bool(_result)
 
     def is_level_50_frame(self, frame: np.ndarray) -> bool:
         gray_level_50_area = cv2.cvtColor(
@@ -106,7 +106,7 @@ class FrameDetector:
             cv2.countNonZero(thresh) > 100
             and cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         )
-        return _res
+        return bool(_res)
 
     def is_first_ranking_frame(self, frame: np.ndarray) -> bool:
         gray_ranking_area = cv2.cvtColor(
@@ -134,7 +134,7 @@ class FrameDetector:
             gray_ranking_area, self.gray_ranking_template, cv2.TM_CCOEFF_NORMED
         )
         _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
-        return _result
+        return bool(_result)
 
     def is_win_or_lost_frame(self, frame: np.ndarray) -> bool:
         gray_win_lost_area = cv2.cvtColor(
@@ -154,7 +154,7 @@ class FrameDetector:
             cv2.minMaxLoc(result_win)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
             or cv2.minMaxLoc(result_lost)[1] >= WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD
         )
-        return _result
+        return bool(_result)
 
     def is_select_done_frame(self, frame: np.ndarray) -> bool:
         gray_select_done_area = cv2.cvtColor(
@@ -168,7 +168,7 @@ class FrameDetector:
             gray_select_done_area, self.gray_done_template, cv2.TM_CCOEFF_NORMED
         )
         _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
-        return _result
+        return bool(_result)
 
     def is_message_window_frame(self, frame: np.ndarray) -> bool:
         gray = cv2.cvtColor(
@@ -192,4 +192,4 @@ class FrameDetector:
         regions, _ = mser.detectRegions(thresh)
         is_exist_text = len(regions) >= 2
         _result = is_message & is_exist_text
-        return _result
+        return bool(_result)
