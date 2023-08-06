@@ -12,7 +12,7 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@master
+      - name: lint
+        run: make lint
       - name: build test
         run: make init-docker-server
-      - name: lint-in-docker
-        run: make lint-in-docker
