@@ -100,6 +100,7 @@ class Season(BaseModel):  # type: ignore
 
 class Trainer(BaseModel):  # type: ignore
     identity = TextField()
+    email = TextField()
 
 
 class FaintedLog(BaseModel):  # type: ignore
@@ -1131,12 +1132,12 @@ class DatabaseHandler:
         _result = cast(bool, count > 0)
         return _result
 
-    def save_new_trainer(self, trainer_id: str) -> None:
+    def save_new_trainer(self, trainer_id: str, email: str) -> None:
         sql = f"""
         insert into
-            trainer
+            trainer (identity, email)
         values
-            ('{trainer_id}')
+            ('{trainer_id}', '{email}')
         """
         self.db.connect()
         self.db.execute_sql(sql)
@@ -1248,6 +1249,20 @@ class DatabaseHandler:
         trainer_id_in_DB: int = self.db.execute_sql(sql).fetchone()[0]
         self.db.close()
         return trainer_id_in_DB
+
+    def get_user_email(self, trainer_id: str) -> str:
+        sql = f"""
+        select
+            email
+        from
+            trainer
+        where
+            identity = '{trainer_id}'
+        """
+        self.db.connect()
+        email: str = self.db.execute_sql(sql).fetchone()[0]
+        self.db.close()
+        return email
 
     def get_in_battle_message_log(
         self, battle_id: str

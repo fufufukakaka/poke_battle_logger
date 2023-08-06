@@ -1,4 +1,4 @@
-import dataclasses
+import resend
 from collections import Counter
 from typing import Dict, List, Tuple, Union, cast
 
@@ -19,15 +19,19 @@ from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 
 
+fail_unknown_pokemons_templates = open("poke_battle_logger/email_templates/extract_fail_unknown_pokemons.html").read()
+
+
 class PokemonBattleExtractor:
     """
     API でポケモンの対戦動画から情報を抽出するクラス
     """
 
-    def __init__(self, video_id: str, language: str, trainer_id_in_DB: int) -> None:
+    def __init__(self, video_id: str, language: str, trainer_id_in_DB: int, email: str) -> None:
         self.video_id = video_id
         self.language = language
         self.trainer_id_in_DB = trainer_id_in_DB
+        self.email = email
         self.gcs_handler = GCSHandler()
         self.firestore_handler = FirestoreHandler()
         self.database_handler = DatabaseHandler()
@@ -75,7 +79,7 @@ class PokemonBattleExtractor:
             status="Video downloaded.",
         )
 
-    async def run(self) -> None:
+    async def run(self) -> Tuple[int, int, int]:
         self._download_video()
 
         self.database_handler.update_video_process_status(
@@ -300,7 +304,16 @@ class PokemonBattleExtractor:
                 video_id=self.video_id,
                 new_message="ERROR: Unknown pokemon exists. Stop processing. Please annotate unknown pokemons.",
             )
-            return
+
+            params = {
+                "from": "PokeBattleLogger <notify@poke-battle-logger-api.com>",
+                "to": self.email,
+                "subject": "PokeBattleLogger: Failed to extract stats from video because unknown pokemon exists.",
+                "html": fail_unknown_pokemons_templates.format(video_id=self.video_id),
+            }
+            resend.Emails.send(params)
+
+            raise Exception("Unknown pokemon exists. Stop processing.")
 
         # 勝ち負けを検出
         # 間違いやすいので、周辺最大10フレームを見て判断する。全て unknown の時は弾く

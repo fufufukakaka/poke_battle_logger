@@ -96,9 +96,10 @@ const Dashboard: React.FC<DashBoardProps> = ({
   )
 
   useEffect(() => {
-    if (isAuthenticated && user && user.sub) {
+    if (isAuthenticated && user && user.sub && user.email) {
       axios.post(`${ServerHost}/api/v1/save_new_trainer`, {
         trainer_id: user.sub.replace("|", "_"),
+        trainer_email: user.email,
     })
   }}, [isAuthenticated, user])
 

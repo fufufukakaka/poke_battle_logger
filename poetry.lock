@@ -5097,6 +5097,24 @@ url = "https://pypi.python.org/simple"
 reference = "default"
 
 [[package]]
+name = "resend"
+version = "0.5.2"
+description = "Resend Python SDK"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "resend-0.5.2-py2.py3-none-any.whl", hash = "sha256:9bb80a0342bf87d29012c3917fd52371a72d3c636b7acfe79c841307e62b9e5f"},
+]
+
+[package.dependencies]
+requests = "2.31.0"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
 name = "rfc3339-validator"
 version = "0.1.4"
 description = "A pure python RFC3339 validator"
@@ -6339,4 +6357,4 @@ reference = "default"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "915d83df64899949fa407a78cb6d5ef75f99509d3730c2c3b8fea60ff2733e9e"
+content-hash = "b8e7d428a868782536c80da0b6867d275c57cb349718187c75065169a8ba78de"
