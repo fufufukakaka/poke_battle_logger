@@ -73,6 +73,9 @@ test:
 test_local:
 	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) poetry run pytest -vvv
 
+test_in_docker_command:
+	PYTHONPATH=$PYTHONPATH:$(pwd) pytest -vvv
+
 format: ## format style with pysen
 	poetry run pysen run format
 
@@ -80,13 +83,13 @@ lint: ## check style with pysen
 	poetry run pysen run lint
 
 test-in-docker: ## run test cases in tests directory in docker
-	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) PYTHONPATH=$PYTHONPATH:$(pwd) pytest -vvv
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make test_in_docker_command
 
 lint-in-docker: ## check style with flake8 in docker
 	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pysen run lint
 
 test-in-docker-job: ## run test cases in tests directory in docker
-	$(DOCKER) run --rm $(JOB_IMAGE_NAME) PYTHONPATH=$PYTHONPATH:$(pwd) pytest -vvv
+	$(DOCKER) run --rm $(JOB_IMAGE_NAME) make test_in_docker_command
 
 lint-in-docker-job: ## check style with flake8 in docker
 	$(DOCKER) run --rm $(JOB_IMAGE_NAME) pysen run lint
