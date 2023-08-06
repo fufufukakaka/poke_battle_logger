@@ -80,13 +80,13 @@ lint: ## check style with pysen
 	poetry run pysen run lint
 
 test-in-docker: ## run test cases in tests directory in docker
-	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make test
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) PYTHONPATH=$PYTHONPATH:$(pwd) pytest -vvv
 
 lint-in-docker: ## check style with flake8 in docker
 	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pysen run lint
 
 test-in-docker-job: ## run test cases in tests directory in docker
-	$(DOCKER) run --rm $(JOB_IMAGE_NAME) pytest -vvv
+	$(DOCKER) run --rm $(JOB_IMAGE_NAME) PYTHONPATH=$PYTHONPATH:$(pwd) pytest -vvv
 
 lint-in-docker-job: ## check style with flake8 in docker
 	$(DOCKER) run --rm $(JOB_IMAGE_NAME) pysen run lint
