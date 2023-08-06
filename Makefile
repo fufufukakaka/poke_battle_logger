@@ -11,6 +11,7 @@ export PRINT_HELP_PYSCRIPT
 export PYTHON=poetry run python
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 export SERVER_IMAGE_NAME=$(PROJECT_NAME)-image-server
+export JOB_IMAGE_NAME=$(PROJECT_NAME)-image-job
 export CONTAINER_NAME=$(PROJECT_NAME)-container
 export SERVER_DOCKERFILE=docker/server/Dockerfile
 export JOB_DOCKERFILE=docker/job/Dockerfile
