@@ -120,7 +120,7 @@ class FrameDetector:
             gray_ranking_area, self.gray_ranking_template, cv2.TM_CCOEFF_NORMED
         )
         _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
-        return _result
+        return bool(_result)
 
     def is_ranking_frame(self, frame: np.ndarray) -> bool:
         gray_ranking_area = cv2.cvtColor(
