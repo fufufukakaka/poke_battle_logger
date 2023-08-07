@@ -11,8 +11,10 @@ export PRINT_HELP_PYSCRIPT
 export PYTHON=poetry run python
 export PYTHONPATH=$PYTHONPATH:$(pwd)
 export SERVER_IMAGE_NAME=$(PROJECT_NAME)-image-server
+export JOB_IMAGE_NAME=$(PROJECT_NAME)-image-job
 export CONTAINER_NAME=$(PROJECT_NAME)-container
 export SERVER_DOCKERFILE=docker/server/Dockerfile
+export JOB_DOCKERFILE=docker/job/Dockerfile
 export DOCKER_BUILDKIT=1
 export ENV=local
 export LOCAL_TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/
@@ -71,6 +73,9 @@ test:
 test_local:
 	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) poetry run pytest -vvv
 
+test_in_docker_command:
+	pytest -vvv
+
 format: ## format style with pysen
 	poetry run pysen run format
 
@@ -78,16 +83,25 @@ lint: ## check style with pysen
 	poetry run pysen run lint
 
 test-in-docker: ## run test cases in tests directory in docker
-	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pysen run format
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make test_in_docker_command
 
 lint-in-docker: ## check style with flake8 in docker
-	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pysen run format
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pysen run lint
+
+test-in-docker-job: ## run test cases in tests directory in docker
+	$(DOCKER) run --rm $(JOB_IMAGE_NAME) make test_in_docker_command
+
+lint-in-docker-job: ## check style with flake8 in docker
+	$(DOCKER) run --rm $(JOB_IMAGE_NAME) pysen run lint
 
 jupyter: ## start Jupyter Notebook server
 	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}
 
 init-docker-server: ## initialize docker image
 	$(DOCKER) build -t $(SERVER_IMAGE_NAME) -f $(SERVER_DOCKERFILE) .
+
+init-docker-job: ## initialize docker image
+	$(DOCKER) build -t $(JOB_IMAGE_NAME) -f $(JOB_DOCKERFILE) .
 
 create-container-no-mount: ## create docker container for development
 	$(DOCKER) run --rm -it -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \

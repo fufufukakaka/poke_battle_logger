@@ -1,9 +1,10 @@
-import resend
+import os
 from collections import Counter
 from typing import Dict, List, Tuple, Union, cast
 
 import cv2
 import numpy as np
+import resend
 import yt_dlp
 
 from poke_battle_logger.batch.data_builder import DataBuilder
@@ -18,8 +19,10 @@ from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 
-
-fail_unknown_pokemons_templates = open("poke_battle_logger/email_templates/extract_fail_unknown_pokemons.html").read()
+resend.api_key = os.environ["RESEND_API_KEY"]
+fail_unknown_pokemons_templates = open(
+    "poke_battle_logger/email_templates/extract_fail_unknown_pokemons.html"
+).read()
 
 
 class PokemonBattleExtractor:
@@ -27,7 +30,9 @@ class PokemonBattleExtractor:
     API でポケモンの対戦動画から情報を抽出するクラス
     """
 
-    def __init__(self, video_id: str, language: str, trainer_id_in_DB: int, email: str) -> None:
+    def __init__(
+        self, video_id: str, language: str, trainer_id_in_DB: int, email: str
+    ) -> None:
         self.video_id = video_id
         self.language = language
         self.trainer_id_in_DB = trainer_id_in_DB
@@ -410,4 +415,20 @@ class PokemonBattleExtractor:
             status="Processing Done.",
         )
 
-        return
+        return (
+            len(battle_logs),
+            len(
+                [
+                    battle_log
+                    for battle_log in battle_logs
+                    if battle_log.win_or_lose == "win"
+                ]
+            ),
+            len(
+                [
+                    battle_log
+                    for battle_log in battle_logs
+                    if battle_log.win_or_lose == "lose"
+                ]
+            ),
+        )

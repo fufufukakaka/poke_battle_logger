@@ -16,8 +16,12 @@ from poke_battle_logger.gcs_handler import GCSHandler
 from poke_battle_logger.job_api.pokemon_battle_extractor import PokemonBattleExtractor
 
 resend.api_key = os.environ["RESEND_API_KEY"]
-success_mail_templates = open("poke_battle_logger/email_templates/extract_success.html").read()
-fail_mail_templates = open("poke_battle_logger/email_templates/extract_fail.html").read()
+success_mail_templates = open(
+    "poke_battle_logger/email_templates/extract_success.html"
+).read()
+fail_mail_templates = open(
+    "poke_battle_logger/email_templates/extract_fail.html"
+).read()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -77,7 +81,9 @@ async def extract_stats_from_video(  # type: ignore
     return "Request accepted"
 
 
-async def extract_stats(request: ExtractStatsFromVideoRequest, trainer_id_in_DB: int, email: str) -> None:
+async def extract_stats(
+    request: ExtractStatsFromVideoRequest, trainer_id_in_DB: int, email: str
+) -> None:
     gcs_handler = GCSHandler()
     gcs_handler.download_pokemon_templates(trainer_id_in_DB)
     gcs_handler.download_pokemon_name_window_templates(trainer_id_in_DB)
@@ -94,7 +100,12 @@ async def extract_stats(request: ExtractStatsFromVideoRequest, trainer_id_in_DB:
             "from": "PokeBattleLogger <notify@poke-battle-logger-api.com>",
             "to": email,
             "subject": "PokeBattleLogger: You're now ready to see your pokemon battle log!",
-            "html": success_mail_templates.format(video_id=request.videoId, number_of_logs=number_of_log, number_of_win=number_of_win, number_of_lose=number_of_lose),
+            "html": success_mail_templates.format(
+                video_id=request.videoId,
+                number_of_logs=number_of_log,
+                number_of_win=number_of_win,
+                number_of_lose=number_of_lose,
+            ),
         }
         resend.Emails.send(params)
     except Exception:

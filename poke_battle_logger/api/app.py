@@ -410,16 +410,14 @@ async def get_stats_from_video_via_job_api(
         job_api_host = os.getenv("JOB_API_HOST", default="http://0.0.0.0:11000")
 
     background_tasks.add_task(
-        send_extract_request,
-        job_api_host,
-        videoId,
-        language,
-        trainerId
+        send_extract_request, job_api_host, videoId, language, trainerId
     )
     return "Start extracting stats from video via job_api"
 
 
-async def send_extract_request(job_api_host: str, videoId: str, language: str, trainerId: str) -> None:
+async def send_extract_request(
+    job_api_host: str, videoId: str, language: str, trainerId: str
+) -> None:
     httpx.post(
         f"{job_api_host}/api/v1/extract_stats_from_video",
         json={"videoId": videoId, "language": language, "trainerId": trainerId},

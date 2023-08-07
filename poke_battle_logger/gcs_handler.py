@@ -1,6 +1,6 @@
 import glob
 import os
-from typing import List
+from typing import List, cast
 
 from google.cloud import storage
 
@@ -127,7 +127,8 @@ class GCSHandler:
     ) -> bool:
         source_path = f"user_battle_video/{trainer_id_in_DB}/{video_id}.mp4"
         blob = self.bucket.blob(source_path)
-        return blob.exists()
+        _is_exist = cast(bool, blob.exists())
+        return _is_exist
 
     def download_video_from_gcs(
         self, trainer_id_in_DB: int, video_id: str, local_path: str

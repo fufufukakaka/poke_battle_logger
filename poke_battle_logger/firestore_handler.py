@@ -1,3 +1,5 @@
+from typing import cast
+
 from google.cloud import firestore
 
 
@@ -5,9 +7,10 @@ class FirestoreHandler:
     def __init__(self) -> None:
         self.client = firestore.Client()
 
-    def get_document(self, collection: str, document: str) -> dict:
+    def get_document(self, collection: str, document: str) -> dict[str, list[str]]:
         doc_ref = self.client.collection(collection).document(document)
-        return doc_ref.get().to_dict()
+        _res = cast(dict[str, list[str]], doc_ref.get().to_dict())
+        return _res
 
     def update_document(self, collection: str, document: str, data: dict) -> None:
         doc_ref = self.client.collection(collection).document(document)
