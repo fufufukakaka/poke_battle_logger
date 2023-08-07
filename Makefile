@@ -74,7 +74,7 @@ test_local:
 	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) poetry run pytest -vvv
 
 test_in_docker_command:
-	PYTHONPATH=$PYTHONPATH:$(pwd) pytest -vvv
+	pytest -vvv
 
 format: ## format style with pysen
 	poetry run pysen run format
