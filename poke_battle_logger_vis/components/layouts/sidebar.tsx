@@ -24,10 +24,11 @@ import { BiImages } from 'react-icons/bi';
 interface SidebarProps extends BoxProps {
   onClose: () => void;
   setSeason: (season: number) => void;
+  seasonList?: { season: number; seasonStartEnd: string }[];
   season: number;
 }
 
-const SideBar = ({ onClose, setSeason, season, ...rest }: SidebarProps) => {
+const SideBar = ({ onClose, setSeason, seasonList, season, ...rest }: SidebarProps) => {
   const { user, isAuthenticated, logout } = useAuth0();
   return (
     <Box
@@ -62,13 +63,11 @@ const SideBar = ({ onClose, setSeason, season, ...rest }: SidebarProps) => {
         value={season}
         onChange={(e) => setSeason(Number(e.target.value))}
       >
-        <option value={0}>全シーズン</option>
-        <option value={3}>シーズン3</option>
-        <option value={4}>シーズン4</option>
-        <option value={5}>シーズン5</option>
-        <option value={6}>シーズン6</option>
-        <option value={7}>シーズン7</option>
-        <option value={8}>シーズン8</option>
+        {seasonList ? seasonList.map((season) => (
+          <option key={season.season} value={season.season}>
+            {season.seasonStartEnd}
+          </option>
+        )) : null}
       </Select>
       <NavItem
         key={'dashboard'}

@@ -1553,3 +1553,46 @@ class DatabaseHandler:
             list(summary.to_dict(orient="index").values()),
         )
         return _res
+
+    def get_seasons(self) -> list[dict[str, int | str]]:
+        sql = """
+        select
+            season,
+            start_datetime,
+            end_datetime
+        from
+            season
+        order by
+            season desc
+        """
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "season",
+                "start_datetime",
+                "end_datetime",
+            ],
+        )
+        summary["start_date"] = pd.to_datetime(summary["start_datetime"]).dt.strftime(
+            "%Y/%m/%d"
+        )
+        summary["end_date"] = pd.to_datetime(summary["end_datetime"]).dt.strftime(
+            "%Y/%m/%d"
+        )
+        summary["seasonStartEnd"] = (
+            "シーズン"
+            + summary["season"].apply(str)
+            + " "
+            + summary["start_date"]
+            + " - "
+            + summary["end_date"]
+        )
+        summary2 = summary[["season", "seasonStartEnd"]]
+        _res = cast(
+            list[Dict[str, int | str]],
+            list(summary2.to_dict(orient="index").values()),
+        )
+        return _res
