@@ -9,12 +9,21 @@ import {
 import SideBar from './sidebar';
 import MobileNav from '../atoms/MobileNav';
 
+
+interface seasonType {
+  season: number;
+  seasonStartEnd: string;
+}
+
+
 export default function Layout({
+  seasonList,
   season,
   setSeason,
   hideSidebar,
   children,
 }: {
+  seasonList?: seasonType[];
   season: number;
   setSeason: (season: number) => void;
   hideSidebar: boolean;
@@ -32,6 +41,7 @@ export default function Layout({
           <SideBar
             onClose={() => onClose}
             display={{ base: 'none', md: 'block' }}
+            seasonList={seasonList}
             setSeason={setSeason}
             season={season}
           />
@@ -45,7 +55,7 @@ export default function Layout({
             size="full"
           >
             <DrawerContent>
-              <SideBar season={season} onClose={onClose} setSeason={setSeason} />
+              <SideBar seasonList={seasonList} season={season} onClose={onClose} setSeason={setSeason} />
             </DrawerContent>
           </Drawer>
           <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />

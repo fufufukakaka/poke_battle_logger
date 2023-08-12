@@ -5,6 +5,7 @@ import Layout from '../components/layouts/layout';
 import Login from '../pages/login/index';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { Auth0Domain, Auto0ClientId, Auth0CallbackURL } from '../util'
+import useSWR from 'swr';
 
 // get season from local storage
 let initialSeason = 0
@@ -13,7 +14,15 @@ if (typeof window !== "undefined") {
 }
 export const SeasonContext = createContext(initialSeason);
 
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  const data = await res.json();
+  return data
+}
+
 export default function App({ Component, pageProps }: AppProps) {
+  const { data: seasonList } = useSWR("/api/get_seasons", fetcher);
+
   const [season, setSeason] = useState(initialSeason);
   const hideSidebar = Component === Login;
 
@@ -34,7 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
     >
       <ChakraProvider>
         <SeasonContext.Provider value={season}>
-          <Layout season={season} setSeason={setSeasonHandler} hideSidebar={hideSidebar}>
+          <Layout seasonList={seasonList} season={season} setSeason={setSeasonHandler} hideSidebar={hideSidebar}>
             <Component {...pageProps} />
           </Layout>
         </SeasonContext.Provider>

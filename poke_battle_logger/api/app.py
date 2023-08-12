@@ -422,3 +422,9 @@ async def send_extract_request(
         f"{job_api_host}/api/v1/extract_stats_from_video",
         json={"videoId": videoId, "language": language, "trainerId": trainerId},
     )
+
+
+@app.get("/api/v1/get_seasons")
+async def get_seasons() -> list[dict[str, int | str]]:
+    database_handler: DatabaseHandler = DatabaseHandler()
+    return database_handler.get_seasons()

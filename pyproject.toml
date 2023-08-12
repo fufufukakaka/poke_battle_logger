@@ -50,6 +50,7 @@ isort = "^5.10.1"
 flake8 = "^4.0.1"
 pysen = "^0.10.4"
 mypy = "^1.4.1"
+notebook = "^7.0.2"
 
 [[tool.poetry.source]]
 name = "default"

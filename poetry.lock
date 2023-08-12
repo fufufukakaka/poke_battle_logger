@@ -6351,4 +6351,4 @@ reference = "default"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "b87402ec89073a10cab7be43ac0e82109a49151b5df621d2e530692e9a5ebbf3"
+content-hash = "fe91eb45e3a99ba0362a41a69cd8da3edd6be932cc25d575cfcb11e837254416"
