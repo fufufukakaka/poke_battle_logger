@@ -1576,8 +1576,12 @@ class DatabaseHandler:
                 "end_datetime",
             ],
         )
-        summary["start_date"] = pd.to_datetime(summary["start_datetime"]).dt.strftime("%Y/%m/%d")
-        summary["end_date"] = pd.to_datetime(summary["end_datetime"]).dt.strftime("%Y/%m/%d")
+        summary["start_date"] = pd.to_datetime(summary["start_datetime"]).dt.strftime(
+            "%Y/%m/%d"
+        )
+        summary["end_date"] = pd.to_datetime(summary["end_datetime"]).dt.strftime(
+            "%Y/%m/%d"
+        )
         summary["seasonStartEnd"] = (
             "シーズン"
             + summary["season"].apply(str)
