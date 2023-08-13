@@ -85,6 +85,12 @@ class PokemonBattleExtractor:
         )
 
     async def run(self) -> Tuple[int, int, int]:
+        self.database_handler.update_video_process_status(
+            trainer_id_in_DB=self.trainer_id_in_DB,
+            video_id=self.video_id,
+            status="Downloading Video...",
+        )
+
         self._download_video()
 
         self.database_handler.update_video_process_status(
@@ -117,33 +123,40 @@ class PokemonBattleExtractor:
         for i in range(total_frames):
             ret, frame = video.read()
             if ret:
-                # first ranking
-                if frame_detector.is_first_ranking_frame(frame):
-                    first_ranking_frames.append(i)
-
-                # select done
-                if frame_detector.is_select_done_frame(frame):
-                    select_done_frames.append(i)
-
-                # standing_by
-                if frame_detector.is_standing_by_frame(frame):
-                    standing_by_frames.append(i)
+                # message window
+                if frame_detector.is_message_window_frame(frame):
+                    message_window_frames.append(i)
+                    continue
 
                 # level_50
                 if frame_detector.is_level_50_frame(frame):
                     level_50_frames.append(i)
+                    continue
+
+                # first ranking
+                if frame_detector.is_first_ranking_frame(frame):
+                    first_ranking_frames.append(i)
+                    continue
+
+                # select done
+                if frame_detector.is_select_done_frame(frame):
+                    select_done_frames.append(i)
+                    continue
+
+                # standing_by
+                if frame_detector.is_standing_by_frame(frame):
+                    standing_by_frames.append(i)
+                    continue
 
                 # ranking
                 if frame_detector.is_ranking_frame(frame):
                     ranking_frames.append(i)
+                    continue
 
                 # win_or_lost
                 if frame_detector.is_win_or_lost_frame(frame):
                     win_or_lost_frames.append(i)
-
-                # message window
-                if frame_detector.is_message_window_frame(frame):
-                    message_window_frames.append(i)
+                    continue
             else:
                 continue
 

@@ -1,15 +1,17 @@
-FROM python:3.10.10-slim-bullseye
+FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update -y \
-    && apt-get -y install build-essential \
-    && apt-get -y install libpq-dev \
-    && apt-get -y install libtesseract-dev \
-    && apt-get -y install tesseract-ocr \
-    && apt-get -y install wget \
-    && apt-get -y install unzip \
-    && apt-get -y install libgl1-mesa-glx ffmpeg libsm6 libxext6
+RUN apt update -y
+RUN apt -y install sudo software-properties-common
+RUN sudo add-apt-repository ppa:alex-p/tesseract-ocr-devel
+RUN apt -y install build-essential \
+    && apt -y install libpq-dev \
+    && apt -y install libtesseract-dev \
+    && apt -y install tesseract-ocr \
+    && apt -y install wget \
+    && apt -y install unzip \
+    && apt -y install libgl1-mesa-glx ffmpeg libsm6 libxext6 python3-pip
 
 RUN apt-get install -y poppler-utils
 
@@ -39,8 +41,8 @@ COPY template_images ./template_images
 COPY Makefile poetry.lock pyproject.toml setup.cfg ./
 RUN mkdir video
 
-RUN python3 -m pip install --no-cache-dir --upgrade pip && \
-    python3 -m pip install --no-cache-dir poetry awscli
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir poetry
 RUN poetry export --with dev,job -f requirements.txt --output requirements.txt
 RUN pip install -r requirements.txt
 

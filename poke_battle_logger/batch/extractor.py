@@ -1,3 +1,4 @@
+import os
 import re
 from typing import List, Optional, Tuple, cast
 
@@ -28,7 +29,7 @@ from poke_battle_logger.batch.pokemon_name_window_extractor import (
     PokemonNameWindowExtractor,
 )
 
-pytesseract.pytesseract.tesseract_cmd = r"/opt/brew/bin/tesseract"
+# pytesseract.pytesseract.tesseract_cmd = os.environ.get("TESSERACT_CMD", "/opt/brew/bin/tesseract")
 
 
 class Extractor:
