@@ -1,4 +1,3 @@
-import os
 import re
 from typing import List, Optional, Tuple, cast
 
@@ -28,8 +27,6 @@ from poke_battle_logger.batch.pokemon_name_window_extractor import (
     EDIT_DISTANCE_THRESHOLD,
     PokemonNameWindowExtractor,
 )
-
-# pytesseract.pytesseract.tesseract_cmd = os.environ.get("TESSERACT_CMD", "/opt/brew/bin/tesseract")
 
 
 class Extractor:
