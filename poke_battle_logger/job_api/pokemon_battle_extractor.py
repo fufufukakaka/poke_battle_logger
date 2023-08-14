@@ -1,11 +1,14 @@
+import logging
 import os
 from collections import Counter
+from logging import getLogger
 from typing import Dict, List, Tuple, Union, cast
 
 import cv2
 import numpy as np
 import resend
 import yt_dlp
+from rich.logging import RichHandler
 
 from poke_battle_logger.batch.data_builder import DataBuilder
 from poke_battle_logger.batch.extractor import Extractor
@@ -23,6 +26,15 @@ resend.api_key = os.environ["RESEND_API_KEY"]
 fail_unknown_pokemons_templates = open(
     "poke_battle_logger/email_templates/extract_fail_unknown_pokemons.html"
 ).read()
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[RichHandler()],
+)
+logger = getLogger(__name__)
 
 
 class PokemonBattleExtractor:
@@ -90,6 +102,7 @@ class PokemonBattleExtractor:
             video_id=self.video_id,
             status="Downloading Video...",
         )
+        logger.info(f"Downloading Video... {self.video_id}")
 
         self._download_video()
 
@@ -118,6 +131,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Detecting frames..."
         )
+        logger.info(f"Detecting frames... {self.video_id}")
 
         total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
         for i in range(total_frames):
@@ -164,6 +178,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Compressing frame array..."
         )
+        logger.info(f"Compressing frame array... {self.video_id}")
 
         compressed_first_ranking_frames = frame_compress(first_ranking_frames)
         compressed_select_done_frames = frame_compress(select_done_frames)
@@ -181,6 +196,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Extracting first ranking..."
         )
+        logger.info(f"Extracting first ranking... {self.video_id}")
         rank_numbers = {}
         first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
         video.set(cv2.CAP_PROP_POS_FRAMES, first_ranking_frame_number - 1)
@@ -193,6 +209,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Extracting ranking..."
         )
+        logger.info(f"Extracting ranking... {self.video_id}")
         for ranking_frame_numbers in compressed_ranking_frames:
             ranking_frame_number = ranking_frame_numbers[-5]
             video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
@@ -205,6 +222,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Removing unchanged ranking..."
         )
+        logger.info(f"Removing unchanged ranking... {self.video_id}")
         rank_frames = list(rank_numbers.keys())
         for i in range(len(rank_numbers) - 1):
             _ranking_frame_number = rank_frames[i]
@@ -220,6 +238,9 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id,
             new_message="INFO: Defining battle start and end frame numbers...",
+        )
+        logger.info(
+            f"Defining battle start and end frame numbers... {self.video_id}"
         )
         battle_start_end_frame_numbers: List[Tuple[int, int]] = []
         rank_frames = list(rank_numbers.keys())
@@ -244,6 +265,7 @@ class PokemonBattleExtractor:
             video_id=self.video_id,
             new_message="INFO: Extracting pokemon select order...",
         )
+        logger.info(f"Extracting pokemon select order... {self.video_id}")
         pokemon_select_order = {}
         for i in range(len(compressed_select_done_frames)):
             _select_done_frames = compressed_select_done_frames[i]
@@ -262,6 +284,7 @@ class PokemonBattleExtractor:
             video_id=self.video_id,
             new_message="INFO: Extracting pre-battle pokemons...",
         )
+        logger.info(f"Extracting pre-battle pokemons... {self.video_id}")
         pre_battle_pokemons: Dict[int, Dict[str, List[str]]] = {}
         is_exist_unknown_pokemon_list1 = []
         for i in range(len(compressed_standing_by_frames)):
@@ -289,6 +312,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Extracting in-battle pokemons..."
         )
+        logger.info(f"Extracting in-battle pokemons... {self.video_id}")
         battle_pokemons: List[Dict[str, Union[str, int]]] = []
         is_exist_unknown_pokemon_list2 = []
         for level_50_frame_numbers in compressed_level_50_frames:
@@ -338,6 +362,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Extracting win or lost..."
         )
+        logger.info(f"Extracting win or lost... {self.video_id}")
         win_or_lost = {}
         for win_or_lost_frame_numbers in compressed_win_or_lost_frames:
             if len(win_or_lost_frame_numbers) > 3:
@@ -366,6 +391,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Extracting message..."
         )
+        logger.info(f"Extracting message... {self.video_id}")
         messages = {}
         for message_frame_numbers in compressed_message_window_frames:
             message_frame_number = message_frame_numbers[-1]
@@ -379,6 +405,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Building formatted data..."
         )
+        logger.info(f"Building formatted data... {self.video_id}")
         data_builder = DataBuilder(
             trainer_id=self.trainer_id_in_DB,
             video_id=self.video_id,
@@ -403,6 +430,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Inserting data to database..."
         )
+        logger.info(f"Inserting data to database... {self.video_id}")
 
         self.database_handler.insert_battle_id(battles)
         self.database_handler.insert_battle_summary(battle_logs)
@@ -414,6 +442,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Build And Insert Fainted Log..."
         )
+        logger.info(f"Build And Insert Fainted Log... {self.video_id}")
         self.database_handler.build_and_insert_fainted_log(
             modified_in_battle_pokemons, modified_messages
         )
@@ -421,6 +450,7 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Finish Processing ALL!!!"
         )
+        logger.info(f"Finish Processing ALL!!! {self.video_id}")
 
         self.database_handler.update_video_process_status(
             trainer_id_in_DB=self.trainer_id_in_DB,
