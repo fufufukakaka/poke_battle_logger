@@ -114,3 +114,7 @@ create-container-mount: ## create docker container for development
 create-container-mount-job: ## create docker container for development
 	$(DOCKER) run --rm -it -v $(PWD):/work -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
     --name $(CONTAINER_NAME) $(JOB_IMAGE_NAME) /bin/bash
+
+create-container-no-mount-job: ## create docker container for development
+	$(DOCKER) run --rm -it -p $(API_HOST_PORT):$(API_CONTAINER_PORT) \
+    --name $(CONTAINER_NAME) $(JOB_IMAGE_NAME) /bin/bash
