@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM python:3.10.10-slim-bullseye
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -11,7 +11,7 @@ RUN apt -y install build-essential \
     && apt -y install tesseract-ocr \
     && apt -y install wget \
     && apt -y install unzip \
-    && apt -y install libgl1-mesa-glx ffmpeg libsm6 libxext6 python3-pip
+    && apt -y install libgl1-mesa-glx ffmpeg libsm6 libxext6
 
 RUN apt-get install -y poppler-utils
 
