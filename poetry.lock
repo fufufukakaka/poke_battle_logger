@@ -1700,6 +1700,27 @@ url = "https://pypi.python.org/simple"
 reference = "default"
 
 [[package]]
+name = "google-cloud-batch"
+version = "0.16.0"
+description = "Google Cloud Batch API client library"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "google-cloud-batch-0.16.0.tar.gz", hash = "sha256:685faeb95c701d79058c8ac5383750d7437205d8d3a47dbf1fc920782bd2b5bc"},
+    {file = "google_cloud_batch-0.16.0-py2.py3-none-any.whl", hash = "sha256:c065e8b39460196218be047d5f397c9222497059724314cfb3173775a459eb3f"},
+]
+
+[package.dependencies]
+google-api-core = {version = ">=1.34.0,<2.0.dev0 || >=2.11.dev0,<3.0.0dev", extras = ["grpc"]}
+proto-plus = ">=1.22.0,<2.0.0dev"
+protobuf = ">=3.19.5,<3.20.0 || >3.20.0,<3.20.1 || >3.20.1,<4.21.0 || >4.21.0,<4.21.1 || >4.21.1,<4.21.2 || >4.21.2,<4.21.3 || >4.21.3,<4.21.4 || >4.21.4,<4.21.5 || >4.21.5,<5.0.0dev"
+
+[package.source]
+type = "legacy"
+url = "https://pypi.python.org/simple"
+reference = "default"
+
+[[package]]
 name = "google-cloud-core"
 version = "2.3.3"
 description = "Google Cloud API client core library"
@@ -6362,4 +6383,4 @@ reference = "default"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.10,<3.11"
-content-hash = "fe91eb45e3a99ba0362a41a69cd8da3edd6be932cc25d575cfcb11e837254416"
+content-hash = "b205d3cb766167e838c88292e4eab67c57168fe8bdab8d75bbe9748a92e1a45e"

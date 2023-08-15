@@ -36,6 +36,7 @@ WORKDIR /work
 COPY poke_battle_logger ./poke_battle_logger
 COPY tests ./tests
 COPY config ./config
+COPY scripts ./scripts
 COPY data ./data
 COPY template_images ./template_images
 COPY Makefile poetry.lock pyproject.toml setup.cfg ./
