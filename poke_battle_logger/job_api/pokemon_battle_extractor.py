@@ -239,9 +239,7 @@ class PokemonBattleExtractor:
             video_id=self.video_id,
             new_message="INFO: Defining battle start and end frame numbers...",
         )
-        logger.info(
-            f"Defining battle start and end frame numbers... {self.video_id}"
-        )
+        logger.info(f"Defining battle start and end frame numbers... {self.video_id}")
         battle_start_end_frame_numbers: List[Tuple[int, int]] = []
         rank_frames = list(rank_numbers.keys())
         for i in range(len(compressed_standing_by_frames)):
