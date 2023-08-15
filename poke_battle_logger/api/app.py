@@ -247,7 +247,7 @@ async def get_pokemon_image_url(
 
 class UserModel(BaseModel):
     trainer_id: str
-    email: str
+    trainer_email: str
 
 
 @app.post("/api/v1/save_new_trainer")
@@ -267,7 +267,7 @@ async def save_new_trainer(
         return "trainer_id already exists"
     else:
         logger.info("trainer_id does not exist")
-        database_handler.save_new_trainer(user.trainer_id, user.email)
+        database_handler.save_new_trainer(user.trainer_id, user.trainer_email)
         return f"save new user: {user.trainer_id}"
 
 
