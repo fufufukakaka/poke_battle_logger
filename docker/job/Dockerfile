@@ -44,9 +44,8 @@ RUN mkdir video
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir poetry
-RUN poetry export --with dev,job -f requirements.txt --output requirements.txt
-RUN pip install -r requirements.txt
+RUN poety install --with dev,job
 
 EXPOSE 11000
 
-CMD ["make", "run_job_api_in_cloud_run"]
+CMD ["make", "run_job_api"]

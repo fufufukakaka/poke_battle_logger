@@ -45,6 +45,9 @@ run_dashboard:
 run_api:
 	ENV=$(ENV) poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
+run_job_api:
+	ENV=$(ENV) poetry run uvicorn poke_battle_logger.job_api.app:app --host 0.0.0.0 --port $(JOB_API_CONTAINER_PORT)
+
 run_api_in_cloud_run:
 	ENV=production uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
