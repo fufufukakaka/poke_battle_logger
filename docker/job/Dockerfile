@@ -44,7 +44,7 @@ RUN mkdir video
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir poetry
-RUN poety install --with dev,job
+RUN poetry install --with dev,job
 
 EXPOSE 11000
 
