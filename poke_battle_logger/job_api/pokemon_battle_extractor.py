@@ -96,7 +96,7 @@ class PokemonBattleExtractor:
             status="Video downloaded.",
         )
 
-    async def run(self) -> Tuple[int, int, int]:
+    def run(self) -> Tuple[int, int, int]:
         self.database_handler.update_video_process_status(
             trainer_id_in_DB=self.trainer_id_in_DB,
             video_id=self.video_id,

@@ -39,7 +39,7 @@ def get_trainer_id_in_DB_and_email(trainer_id: str) -> Tuple[int, str]:
 @click.option("--trainer_id", required=True)
 @click.option("--video_id", required=True)
 @click.option("--language", required=True)
-async def run_extractor(trainer_id: str, video_id: str, language: str):
+def run_extractor(trainer_id: str, video_id: str, language: str):
     trainer_id_in_DB, email = get_trainer_id_in_DB_and_email(trainer_id)
 
     gcs_handler = GCSHandler()
@@ -53,7 +53,7 @@ async def run_extractor(trainer_id: str, video_id: str, language: str):
     )
 
     try:
-        number_of_log, number_of_win, number_of_lose = await poke_battle_extractor.run()
+        number_of_log, number_of_win, number_of_lose = poke_battle_extractor.run()
         params = {
             "from": "PokeBattleLogger <notify@poke-battle-logger-api.com>",
             "to": email,
