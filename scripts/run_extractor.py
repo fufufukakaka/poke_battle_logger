@@ -36,9 +36,9 @@ def get_trainer_id_in_DB_and_email(trainer_id: str) -> Tuple[int, str]:
 
 
 @click.command()
-@click.option("--trainer_id", required=True)
-@click.option("--video_id", required=True)
-@click.option("--language", required=True)
+@click.option("--trainer_id", required=True, type=str)
+@click.option("--video_id", required=True, type=str)
+@click.option("--language", required=True, type=str)
 def run_extractor(trainer_id: str, video_id: str, language: str):
     trainer_id_in_DB, email = get_trainer_id_in_DB_and_email(trainer_id)
 
@@ -66,7 +66,9 @@ def run_extractor(trainer_id: str, video_id: str, language: str):
             ),
         }
         resend.Emails.send(params)
-    except Exception:
+    except Exception as e:
+        # print error message
+        logger.error(e)
         poke_battle_extractor.database_handler.update_video_process_status(
             trainer_id_in_DB=trainer_id_in_DB,
             video_id=video_id,
