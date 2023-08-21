@@ -4,16 +4,21 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt update -y
 RUN apt -y install sudo software-properties-common
-RUN sudo add-apt-repository ppa:alex-p/tesseract-ocr-devel
 RUN apt -y install build-essential \
     && apt -y install libpq-dev \
-    && apt -y install libtesseract-dev \
-    && apt -y install tesseract-ocr \
     && apt -y install wget \
     && apt -y install unzip \
     && apt -y install libgl1-mesa-glx ffmpeg libsm6 libxext6
-
 RUN apt-get install -y poppler-utils
+
+# install tesseract
+RUN sudo apt-get -y install apt-transport-https
+RUN sudo apt-get install -y aptitude
+RUN echo deb https://notesalexp.org/tesseract-ocr5/bullseye/ bullseye main > /etc/apt/sources.list
+RUN sudo apt-get -y update -oAcquire::AllowInsecureRepositories=true \
+    && sudo apt-get -y --allow-unauthenticated install notesalexp-keyring -oAcquire::AllowInsecureRepositories=true \
+    && sudo apt-get -y update
+RUN sudo aptitude install -y tesseract-ocr
 
 RUN mkdir /usr/local/share/tessdata
 RUN cd /usr/local/share/tessdata && \
