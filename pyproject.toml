@@ -19,6 +19,7 @@ google-cloud-firestore = "^2.11.1"
 httpx = "^0.24.1"
 resend = "^0.5.2"
 google-cloud-batch = "^0.16.0"
+tenacity = "^8.2.3"
 
 [tool.poetry.group.job]
 optional = true

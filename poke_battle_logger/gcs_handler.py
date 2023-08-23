@@ -3,6 +3,7 @@ import os
 from typing import List, cast
 
 from google.cloud import storage
+from tenacity import retry, stop_after_attempt
 
 from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
@@ -61,6 +62,7 @@ class GCSHandler:
             local_path = os.path.join(destination_folder, file_name)
             blob.download_to_filename(local_path)
 
+    @retry(stop=stop_after_attempt(5))
     def upload_unknown_pokemon_templates_to_gcs(self, trainer_id: int) -> None:
         """
         target_gcs_path -> gcs://{bucket_name}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/*.png
@@ -75,6 +77,7 @@ class GCSHandler:
             # delete local file
             os.remove(path)
 
+    @retry(stop=stop_after_attempt(5))
     def upload_unknown_pokemon_name_window_templates_to_gcs(
         self, trainer_id: int
     ) -> None:
