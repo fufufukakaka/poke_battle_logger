@@ -12,6 +12,7 @@ from peewee import (
     SqliteDatabase,
     TextField,
 )
+from tenacity import retry, stop_after_attempt
 
 from poke_battle_logger.types import Battle as BattleType
 from poke_battle_logger.types import (
@@ -149,6 +150,7 @@ class DatabaseHandler:
                         end_datetime="2023-04-01 09:00:00",
                     )
 
+    @retry(stop=stop_after_attempt(5))
     def insert_battle_id(self, battles: List[BattleType]) -> None:
         self.db.connect()
         for _battle in battles:
@@ -157,6 +159,7 @@ class DatabaseHandler:
             Battle.create(battle_id=_battle_id, trainer_id=_trainer_id)
         self.db.close()
 
+    @retry(stop=stop_after_attempt(5))
     def insert_battle_summary(self, battle_summary: List[BattleLog]) -> None:
         self.db.connect()
         for _battle_summary in battle_summary:
@@ -192,6 +195,7 @@ class DatabaseHandler:
             )
         self.db.close()
 
+    @retry(stop=stop_after_attempt(5))
     def insert_battle_pokemon_team(
         self, battle_pokemon_team: List[PreBattlePokemon]
     ) -> None:
@@ -206,6 +210,7 @@ class DatabaseHandler:
             )
         self.db.close()
 
+    @retry(stop=stop_after_attempt(5))
     def insert_in_battle_pokemon_log(
         self, in_battle_pokemon_log: List[InBattlePokemon]
     ) -> None:
@@ -224,6 +229,7 @@ class DatabaseHandler:
             )
         self.db.close()
 
+    @retry(stop=stop_after_attempt(5))
     def insert_message_log(self, message_log: List[Message]) -> None:
         self.db.connect()
         for _message_log in message_log:
