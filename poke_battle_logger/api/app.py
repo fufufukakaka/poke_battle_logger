@@ -400,7 +400,7 @@ async def get_battle_video_detail_status_log(
 
 
 @app.get("/api/v1/extract_stats_from_video")
-async def get_stats_from_video_via_job_api(
+async def get_stats_from_video_via_cloud_batch(
     videoId: str, language: str, trainerId: str
 ) -> str:
 
@@ -408,7 +408,7 @@ async def get_stats_from_video_via_job_api(
     cloud_batch_handler.run_extract_stats_from_video_batch(
         video_id=videoId, trainer_id=trainerId, language=language
     )
-    return "Start extracting stats from video via job_api"
+    return "Start extracting stats from video via cloud batch"
 
 
 @app.get("/api/v1/get_seasons")

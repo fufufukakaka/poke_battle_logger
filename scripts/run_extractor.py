@@ -7,9 +7,9 @@ import click
 import resend
 from rich.logging import RichHandler
 
+from poke_battle_logger.batch.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.batch.pokemon_battle_extractor import PokemonBattleExtractor
 
 resend.api_key = os.environ["RESEND_API_KEY"]
 success_mail_templates = open(
