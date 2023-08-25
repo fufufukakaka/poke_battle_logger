@@ -63,7 +63,8 @@ jobs:
         gcloud auth configure-docker asia-northeast1-docker.pkg.dev
     - name: Build Job Image
       run: |
-        docker build -f ./docker/job/Dockerfile -t asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:${{ github.sha }} ./
+        docker build -f ./docker/job/Dockerfile -t asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:${{ github.sha }} -t asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:latest ./
     - name: Push Job Image
       run: |
         docker push asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:${{ github.sha }}
+        docker push asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:latest

@@ -1,19 +1,18 @@
 import logging
-import os
 import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
 
-import httpx
 import pandas as pd
 import yt_dlp
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from rich.logging import RichHandler
 
+from poke_battle_logger.cloud_batch_handler import CloudBatchHandler
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
@@ -402,26 +401,14 @@ async def get_battle_video_detail_status_log(
 
 @app.get("/api/v1/extract_stats_from_video")
 async def get_stats_from_video_via_job_api(
-    videoId: str, language: str, trainerId: str, background_tasks: BackgroundTasks
+    videoId: str, language: str, trainerId: str
 ) -> str:
 
-    job_api_host = "http://0.0.0.0:11000"
-    if os.getenv("ENV") == "production":
-        job_api_host = os.getenv("JOB_API_HOST", default="http://0.0.0.0:11000")
-
-    background_tasks.add_task(
-        send_extract_request, job_api_host, videoId, language, trainerId
+    cloud_batch_handler = CloudBatchHandler()
+    cloud_batch_handler.run_extract_stats_from_video_batch(
+        video_id=videoId, trainer_id=trainerId, language=language
     )
     return "Start extracting stats from video via job_api"
-
-
-async def send_extract_request(
-    job_api_host: str, videoId: str, language: str, trainerId: str
-) -> None:
-    httpx.post(
-        f"{job_api_host}/api/v1/extract_stats_from_video",
-        json={"videoId": videoId, "language": language, "trainerId": trainerId},
-    )
 
 
 @app.get("/api/v1/get_seasons")
