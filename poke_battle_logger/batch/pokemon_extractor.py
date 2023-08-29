@@ -52,7 +52,9 @@ class PokemonExtractor:
         pre_battle_pokemon_templates = {}
         for path in pre_battle_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
-            _pokemon_name = path.split("/")[-2] + "_" + path.split("/")[-1].split(".")[0]
+            _pokemon_name = (
+                path.split("/")[-2] + "_" + path.split("/")[-1].split(".")[0]
+            )
             pre_battle_pokemon_templates[_pokemon_name] = _gray_image
 
         user_labeled_pokemon_template_paths = glob.glob(
@@ -60,7 +62,9 @@ class PokemonExtractor:
         )
         for path in user_labeled_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
-            _pokemon_name = path.split("/")[-2] + "_" + path.split("/")[-1].split(".")[0]
+            _pokemon_name = (
+                path.split("/")[-2] + "_" + path.split("/")[-1].split(".")[0]
+            )
             pre_battle_pokemon_templates[_pokemon_name] = _gray_image
 
         return pre_battle_pokemon_templates

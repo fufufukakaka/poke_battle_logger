@@ -2,7 +2,7 @@ import glob
 import os
 from typing import List, cast
 
-from google.cloud import storage
+from google.cloud import storage  # type: ignore
 from tenacity import retry, stop_after_attempt
 
 from poke_battle_logger.types import ImageLabel, NameWindowImageLabel

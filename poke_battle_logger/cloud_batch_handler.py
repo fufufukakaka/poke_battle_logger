@@ -5,12 +5,12 @@ from google.cloud import batch_v1
 
 
 class CloudBatchHandler:
-    def __init__(self):
+    def __init__(self) -> None:
         # プロジェクト ID とロケーションを設定します。
         self.project_id = "turing-alcove-157907"
         self.location = "asia-northeast1"
 
-    def submit_batch_job(self, job_name: str, task_groups: batch_v1.TaskGroup) -> None:
+    def submit_batch_job(self, job_name: str, task_groups: list[batch_v1.TaskGroup]) -> None:
         # Batch サービスオブジェクトを作成します。
         batch_service = batch_v1.BatchServiceClient()
 
@@ -18,7 +18,7 @@ class CloudBatchHandler:
         # https://cloud.google.com/python/docs/reference/batch/latest/google.cloud.batch_v1.types.AllocationPolicy.InstancePolicy
         policy = batch_v1.AllocationPolicy.InstancePolicy()
         policy.machine_type = "e2-standard-4"
-        policy.provisioning_model = batch_v1.AllocationPolicy.ProvisioningModel.SPOT
+        policy.provisioning_model = batch_v1.AllocationPolicy.ProvisioningModel.SPOT  # type: ignore # TODO: fix
 
         # インスタンスポリシーの利用を宣言
         # https://cloud.google.com/python/docs/reference/batch/latest/google.cloud.batch_v1.types.AllocationPolicy.InstancePolicyOrTemplate
@@ -46,7 +46,7 @@ class CloudBatchHandler:
         job.task_groups = task_groups
         job.allocation_policy = allocation_policy
         job.logs_policy = batch_v1.LogsPolicy()
-        job.logs_policy.destination = batch_v1.LogsPolicy.Destination.CLOUD_LOGGING
+        job.logs_policy.destination = batch_v1.LogsPolicy.Destination.CLOUD_LOGGING  # type: ignore # TODO: fix
 
         # ジョブを実行
         # https://cloud.google.com/python/docs/reference/batch/latest/google.cloud.batch_v1.services.batch_service.BatchServiceClient#google_cloud_batch_v1_services_batch_service_BatchServiceClient_create_job

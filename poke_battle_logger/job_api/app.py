@@ -95,7 +95,7 @@ async def extract_stats(
     )
 
     try:
-        number_of_log, number_of_win, number_of_lose = await poke_battle_extractor.run()
+        number_of_log, number_of_win, number_of_lose = poke_battle_extractor.run()
         params = {
             "from": "PokeBattleLogger <notify@poke-battle-logger-api.com>",
             "to": email,
