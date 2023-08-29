@@ -10,7 +10,9 @@ class CloudBatchHandler:
         self.project_id = "turing-alcove-157907"
         self.location = "asia-northeast1"
 
-    def submit_batch_job(self, job_name: str, task_groups: list[batch_v1.TaskGroup]) -> None:
+    def submit_batch_job(
+        self, job_name: str, task_groups: list[batch_v1.TaskGroup]
+    ) -> None:
         # Batch サービスオブジェクトを作成します。
         batch_service = batch_v1.BatchServiceClient()
 
