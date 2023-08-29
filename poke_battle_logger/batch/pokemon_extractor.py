@@ -52,7 +52,7 @@ class PokemonExtractor:
         pre_battle_pokemon_templates = {}
         for path in pre_battle_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
-            _pokemon_name = path.split("/")[-2]
+            _pokemon_name = path.split("/")[-2] + "_" + path.split("/")[-1].split(".")[0]
             pre_battle_pokemon_templates[_pokemon_name] = _gray_image
 
         user_labeled_pokemon_template_paths = glob.glob(
@@ -60,7 +60,7 @@ class PokemonExtractor:
         )
         for path in user_labeled_pokemon_template_paths:
             _gray_image = cv2.imread(path, 0)
-            _pokemon_name = path.split("/")[-2]
+            _pokemon_name = path.split("/")[-2] + "_" + path.split("/")[-1].split(".")[0]
             pre_battle_pokemon_templates[_pokemon_name] = _gray_image
 
         return pre_battle_pokemon_templates
@@ -79,7 +79,8 @@ class PokemonExtractor:
             res = cv2.matchTemplate(gray_pokemon_image, template, cv2.TM_CCOEFF_NORMED)
             score = cv2.minMaxLoc(res)[1]
             if score >= POKEMON_TEMPLATE_MATCHING_THRESHOLD:
-                score_results[pokemon_name] = score
+                extracted_pokemon_name = pokemon_name.split("_")[0]
+                score_results[extracted_pokemon_name] = score
         if len(score_results) == 0:
             # save image for annotation(name is YYYYMMDDHHMMSS)
             name = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
