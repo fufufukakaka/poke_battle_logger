@@ -11,9 +11,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from rich.logging import RichHandler
 
+from poke_battle_logger.batch.pokemon_battle_extractor import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.job_api.pokemon_battle_extractor import PokemonBattleExtractor
 
 resend.api_key = os.environ["RESEND_API_KEY"]
 success_mail_templates = open(
@@ -95,7 +95,7 @@ async def extract_stats(
     )
 
     try:
-        number_of_log, number_of_win, number_of_lose = await poke_battle_extractor.run()
+        number_of_log, number_of_win, number_of_lose = poke_battle_extractor.run()
         params = {
             "from": "PokeBattleLogger <notify@poke-battle-logger-api.com>",
             "to": email,

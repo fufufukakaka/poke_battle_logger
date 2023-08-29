@@ -1,6 +1,6 @@
 from typing import cast
 
-from google.cloud import firestore
+from google.cloud import firestore  # type: ignore
 
 
 class FirestoreHandler:
