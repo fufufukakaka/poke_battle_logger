@@ -44,7 +44,6 @@ accelerate = "^0.21.0"
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-jupyter = "^1.0.0"
 matplotlib = "^3.7.0"
 pytest = "^7.3.1"
 black = "^22.3.0"
@@ -52,7 +51,10 @@ isort = "^5.10.1"
 flake8 = "^4.0.1"
 pysen = "^0.10.4"
 mypy = "^1.4.1"
+ipython = "^8.14.0"
 notebook = "^7.0.2"
+ipykernel = "^6.25.1"
+jupyterlab = "^4.0.5"
 
 [[tool.poetry.source]]
 name = "default"

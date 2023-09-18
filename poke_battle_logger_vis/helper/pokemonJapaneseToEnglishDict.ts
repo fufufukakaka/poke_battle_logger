@@ -1045,6 +1045,16 @@ export const pokemonJapaneseToEnglishDict: PokemonJapaneseToEnglishDict = {
   "ガラルヤドキング": "Slowking Galarian",
   "アローラペルシアン": "Persian Alolan",
   "アローラベトベトン": "Muk Alolan",
+  "カミッチュ": "Dipplin",
+  "チャデス": "Poltchageist",
+  "ヤバソチャ": "Sinistcha",
+  "イイネイヌ": "Okidogi",
+  "マシマシラ": "Munkidori",
+  "キチキギス": "Fezandipiti",
+  "オーガポン": "Ogerpon",
+  "炎オーガポン": "Ogerpon Hearthflame",
+  "岩オーガポン": "Ogerpon Cornerstone",
+  "水オーガポン": "Ogerpon Wellspring",
 }
 
 export const reactSelectOptions = Object.keys(pokemonJapaneseToEnglishDict).map(key => ({
