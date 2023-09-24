@@ -64,6 +64,8 @@ class DataBuilder:
             "ヤドキング": {"you": [], "opponent": []},
             "ペルシアン": {"you": [], "opponent": []},
             "ベトベトン": {"you": [], "opponent": []},
+            "オーガポン": {"you": [], "opponent": []},
+            "イダイトウ": {"you": [], "opponent": []},
         }
 
     def _publish_date(self, watch_html: str) -> Optional[datetime]:
@@ -149,14 +151,14 @@ class DataBuilder:
         pre_battle_opponent_pokemons = list(self.pre_battle_pokemons.values())[
             battle_index
         ]["opponent_pokemon_names"]
-        your_pokemon_names = list(self.pre_battle_pokemons.values())[battle_index][
+        pre_battle_your_pokemons = list(self.pre_battle_pokemons.values())[battle_index][
             "your_pokemon_names"
         ]
 
         opponent_team_pokemon_names = [
             v for v in pre_battle_opponent_pokemons if pokemon_name in v
         ]
-        your_team_pokemon_names = [v for v in your_pokemon_names if pokemon_name in v]
+        your_team_pokemon_names = [v for v in pre_battle_your_pokemons if pokemon_name in v]
 
         opponent_team_pokemon_name = (
             opponent_team_pokemon_names[0].split("_")[0]
