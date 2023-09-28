@@ -267,7 +267,10 @@ class PokemonBattleExtractor:
         pokemon_select_order = {}
         for i in range(len(compressed_select_done_frames)):
             _select_done_frames = compressed_select_done_frames[i]
-            _select_done_frame_number = _select_done_frames[-5]
+
+            _select_done_frame_number = _select_done_frames[-1]
+            if len(_select_done_frames) > 5:
+                _select_done_frame_number = _select_done_frames[-5]
 
             video.set(cv2.CAP_PROP_POS_FRAMES, _select_done_frame_number - 1)
             _, _select_done_frame = video.read()
