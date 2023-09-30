@@ -138,6 +138,8 @@ class PokemonNameWindowExtractor:
             return "ハバタクカミ"
         elif _text == "八ツサム":
             return "ハッサム"
+        elif _text == "アク ジム":
+            return "アグノム"
         else:
             return _text
 
