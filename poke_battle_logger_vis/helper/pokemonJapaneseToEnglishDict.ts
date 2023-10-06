@@ -1056,6 +1056,10 @@ export const pokemonJapaneseToEnglishDict: PokemonJapaneseToEnglishDict = {
   "炎オーガポン": "Ogerpon Hearthflame",
   "岩オーガポン": "Ogerpon Cornerstone",
   "水オーガポン": "Ogerpon Wellspring",
+  "ガラルマタドガス": "Weezing Galarian",
+  "アローラキュウコン": "Ninetales Alolan",
+  "ガチグマ赫月": "Ursaluna Bloodmoon",
+
 }
 
 export const reactSelectOptions = Object.keys(pokemonJapaneseToEnglishDict).map(key => ({
