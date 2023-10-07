@@ -66,6 +66,9 @@ class DataBuilder:
             "ベトベトン": {"you": [], "opponent": []},
             "オーガポン": {"you": [], "opponent": []},
             "イダイトウ": {"you": [], "opponent": []},
+            "ガチグマ": {"you": [], "opponent": []},
+            "キュウコン": {"you": [], "opponent": []},
+            "マタドガス": {"you": [], "opponent": []},
         }
 
     def _publish_date(self, watch_html: str) -> Optional[datetime]:
