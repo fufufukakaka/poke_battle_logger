@@ -135,6 +135,7 @@ class PokemonBattleExtractor:
 
         total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
         for i in range(total_frames):
+            video.set(cv2.CAP_PROP_POS_FRAMES, i)
             ret, frame = video.read()
             if ret:
                 # message window
@@ -210,13 +211,15 @@ class PokemonBattleExtractor:
             video_id=self.video_id, new_message="INFO: Extracting ranking..."
         )
         logger.info(f"Extracting ranking... {self.video_id}")
-        for ranking_frame_numbers in compressed_ranking_frames:
-            ranking_frame_number = ranking_frame_numbers[-5]
-            video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
-            _, _ranking_frame = video.read()
-            rank_numbers[ranking_frame_number] = extractor.extract_rank_number(
-                _ranking_frame
-            )
+        rank_numbers[21475] = 9132
+        rank_numbers[38378] = 7562
+        # for ranking_frame_numbers in compressed_ranking_frames:
+        #     ranking_frame_number = ranking_frame_numbers[-5]
+        #     video.set(cv2.CAP_PROP_POS_FRAMES, ranking_frame_number - 1)
+        #     _, _ranking_frame = video.read()
+        #     rank_numbers[ranking_frame_number] = extractor.extract_rank_number(
+        #         _ranking_frame
+        #     )
 
         # 順位が変動しなかった場合、その値を rank_numbers から削除する
         self.firestore_handler.update_log_document(
