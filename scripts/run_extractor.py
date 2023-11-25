@@ -7,7 +7,7 @@ import click
 import resend
 from rich.logging import RichHandler
 
-from poke_battle_logger.batch.pokemon_battle_extractor import PokemonBattleExtractor
+from poke_battle_logger.batch.pokemon_battle_extractor2 import PokemonBattleExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 
