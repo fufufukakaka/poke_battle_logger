@@ -220,6 +220,7 @@ class PokemonBattleExtractor:
         win_or_lost_all_frames = sum(compressed_win_or_lost_frames, [])
         messages = {}
         message_window_frames = [v[-1] for v in compressed_message_window_frames]
+        video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
         for i in range(total_frames):
             ret, frame = video.read()
             # 開始時のランクを検出(OCR)
@@ -287,6 +288,8 @@ class PokemonBattleExtractor:
                 _message = extractor.extract_message(_message_frame)
                 if _message is not None:
                     messages[i] = _message
+
+        video.release()
 
         # 勝敗検出
         # 間違いやすいので、周辺フレームを全て見て判断する。全て unknown の時は弾く
