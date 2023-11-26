@@ -114,7 +114,6 @@ class PokemonBattleExtractor:
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Read Video..."
         )
-        video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
 
         frame_detector = FrameDetector(self.language)
         extractor = Extractor(self.language)
@@ -133,6 +132,7 @@ class PokemonBattleExtractor:
         )
         logger.info(f"Detecting frames... {self.video_id}")
 
+        video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
         total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
         for i in range(total_frames):
             ret, frame = video.read()
@@ -140,67 +140,40 @@ class PokemonBattleExtractor:
                 # message window
                 if frame_detector.is_message_window_frame(frame):
                     message_window_frames.append(i)
-                    cv2.imwrite(
-                        f"tmp_images/{self.video_id}_{i}.png",
-                        frame,
-                    )
                     continue
 
                 # level_50
                 if frame_detector.is_level_50_frame(frame):
                     level_50_frames.append(i)
-                    cv2.imwrite(
-                        f"tmp_images/{self.video_id}_{i}.png",
-                        frame,
-                    )
                     continue
 
                 # first ranking
                 if frame_detector.is_first_ranking_frame(frame):
                     first_ranking_frames.append(i)
-                    cv2.imwrite(
-                        f"tmp_images/{self.video_id}_{i}.png",
-                        frame,
-                    )
                     continue
 
                 # select done
                 if frame_detector.is_select_done_frame(frame):
                     select_done_frames.append(i)
-                    cv2.imwrite(
-                        f"tmp_images/{self.video_id}_{i}.png",
-                        frame,
-                    )
                     continue
 
                 # standing_by
                 if frame_detector.is_standing_by_frame(frame):
                     standing_by_frames.append(i)
-                    cv2.imwrite(
-                        f"tmp_images/{self.video_id}_{i}.png",
-                        frame,
-                    )
                     continue
 
                 # ranking
                 if frame_detector.is_ranking_frame(frame):
                     ranking_frames.append(i)
-                    cv2.imwrite(
-                        f"tmp_images/{self.video_id}_{i}.png",
-                        frame,
-                    )
                     continue
 
                 # win_or_lost
                 if frame_detector.is_win_or_lost_frame(frame):
                     win_or_lost_frames.append(i)
-                    cv2.imwrite(
-                        f"tmp_images/{self.video_id}_{i}.png",
-                        frame,
-                    )
                     continue
             else:
                 continue
+        video.release()
 
         # compress
         self.firestore_handler.update_log_document(
@@ -220,38 +193,125 @@ class PokemonBattleExtractor:
             message_window_frames, frame_threshold=3
         )
 
-        # 開始時のランクを検出(OCR)
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Extracting first ranking..."
-        )
-        logger.info(f"Extracting first ranking... {self.video_id}")
-        rank_numbers = {}
-        first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
-        _first_ranking_frame = cv2.imread(
-            filename=f"tmp_images/{self.video_id}_{first_ranking_frame_number}.png"
-        )
-        rank_numbers[first_ranking_frame_number] = extractor.extract_first_rank_number(
-            _first_ranking_frame
-        )
+        video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
+        total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
 
-        # ランクを検出(OCR)
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Extracting ranking..."
-        )
-        logger.info(f"Extracting ranking... {self.video_id}")
-        for ranking_frame_numbers in compressed_ranking_frames:
-            ranking_frame_number = ranking_frame_numbers[-5]
-            _ranking_frame = cv2.imread(
-                filename=f"tmp_images/{self.video_id}_{ranking_frame_number}.png"
-            )
-            rank_numbers[ranking_frame_number] = extractor.extract_rank_number(
-                _ranking_frame
-            )
+        rank_numbers = {}
+        pokemon_select_order = {}
+        pre_battle_pokemons: dict[int, dict[str, list[str]]] = {}
+        is_exist_unknown_pokemon_list1 = []
+        battle_pokemons: list[dict[str, str | int]] = []
+        is_exist_unknown_pokemon_list2 = []
+
+        first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
+        ranking_frame_numbers = [v[-5] for v in compressed_ranking_frames]
+        select_done_frames = [v[-5] if len(v) > 5 else v[-1] for v in compressed_select_done_frames]
+        level_50_frames = [v[-1] for v in compressed_level_50_frames]
+
+        standing_by_frames = []
+        for i in range(len(compressed_standing_by_frames)):
+            _standing_by_frames = compressed_standing_by_frames[i]
+            if len(_standing_by_frames) == 1:
+                continue
+            standing_by_frames.append(_standing_by_frames[-1])
+
+        win_or_lost = {}
+        pre_win_or_lost = {}
+        win_or_lost_all_frames = sum(compressed_win_or_lost_frames, [])
+        messages = {}
+        message_window_frames = [v[-1] for v in compressed_message_window_frames]
+        video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
+        for i in range(total_frames):
+            ret, frame = video.read()
+            # 開始時のランクを検出(OCR)
+            if i == first_ranking_frame_number:
+                logger.info(f"Extracting first ranking... {self.video_id}")
+                _first_ranking_frame = frame
+                rank_numbers[first_ranking_frame_number] = extractor.extract_first_rank_number(
+                    _first_ranking_frame
+                )
+
+            # ランクを検出(OCR)
+            if i in ranking_frame_numbers:
+                _ranking_frame = frame
+                rank_numbers[i] = extractor.extract_rank_number(
+                    _ranking_frame
+                )
+
+            # 選出順の抽出
+            if i in select_done_frames:
+                _select_done_frame = frame
+                pokemon_select_order[i] = extractor.extract_pokemon_select_numbers(
+                    _select_done_frame
+                )
+
+            # 6vs6のポケモンを抽出する
+            if i in standing_by_frames:
+                _standing_by_frame = frame
+                (
+                    your_pokemon_names,
+                    opponent_pokemon_names,
+                    _is_exist_unknown_pokemon,
+                ) = pokemon_extractor.extract_pre_battle_pokemons(_standing_by_frame)
+                pre_battle_pokemons[i] = {
+                    "your_pokemon_names": your_pokemon_names,
+                    "opponent_pokemon_names": opponent_pokemon_names,
+                }
+                is_exist_unknown_pokemon_list1.append(_is_exist_unknown_pokemon)
+
+            # 対戦中のポケモンを抽出する
+            if i in level_50_frames:
+                _level_50_frame = frame
+                (
+                    your_pokemon_name,
+                    opponent_pokemon_name,
+                    _is_exist_unknown_pokemon,
+                ) = extractor.extract_pokemon_name_in_battle(_level_50_frame)
+                battle_pokemons.append(
+                    {
+                        "frame_number": i,
+                        "your_pokemon_name": your_pokemon_name,
+                        "opponent_pokemon_name": opponent_pokemon_name,
+                    },
+                )
+                is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
+
+            # 勝ち負けを検出
+            if i in win_or_lost_all_frames:
+                _win_or_lost_frame = frame
+                win_or_lost_result = extractor.extract_win_or_lost(_win_or_lost_frame)
+                pre_win_or_lost[i] = win_or_lost_result
+
+            # メッセージの文字認識(OCR)
+            if i in message_window_frames:
+                _message_frame = frame
+                _message = extractor.extract_message(_message_frame)
+                if _message is not None:
+                    messages[i] = _message
+
+        video.release()
+
+        # 勝敗検出
+        # 間違いやすいので、周辺フレームを全て見て判断する。全て unknown の時は弾く
+        for win_or_lost_frame_numbers in compressed_win_or_lost_frames:
+            if len(win_or_lost_frame_numbers) > 3:
+                _win_or_lost_results = []
+                for _win_or_lost_frame_number in win_or_lost_frame_numbers:
+                    _win_or_lost_result = pre_win_or_lost[_win_or_lost_frame_number]
+                    _win_or_lost_results.append(_win_or_lost_result)
+
+                _win_or_lost_results = [
+                    v for v in _win_or_lost_results if v != "unknown"
+                ]
+                win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
+                if len(_win_or_lost_results) == 0:
+                    win_or_lost[win_or_lost_frame_number] = "unknown"
+                    continue
+                win_or_lost_result = Counter(_win_or_lost_results).most_common()[0][0]
+                win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
+                win_or_lost[win_or_lost_frame_number] = win_or_lost_result
 
         # 順位が変動しなかった場合、その値を rank_numbers から削除する
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Removing unchanged ranking..."
-        )
         logger.info(f"Removing unchanged ranking... {self.video_id}")
         rank_frames = list(rank_numbers.keys())
         for i in range(len(rank_numbers) - 1):
@@ -288,86 +348,6 @@ class PokemonBattleExtractor:
                     (_standing_by_frame_number, _ranking_frame)
                 )
 
-        # ポケモンの選出順を抽出する
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id,
-            new_message="INFO: Extracting pokemon select order...",
-        )
-        logger.info(f"Extracting pokemon select order... {self.video_id}")
-        pokemon_select_order = {}
-        for i in range(len(compressed_select_done_frames)):
-            _select_done_frames = compressed_select_done_frames[i]
-
-            _select_done_frame_number = _select_done_frames[-1]
-            if len(_select_done_frames) > 5:
-                _select_done_frame_number = _select_done_frames[-5]
-
-            _select_done_frame = cv2.imread(
-                filename=f"tmp_images/{self.video_id}_{_select_done_frame_number}.png"
-            )
-
-            _pokemon_select_order = extractor.extract_pokemon_select_numbers(
-                _select_done_frame
-            )
-            pokemon_select_order[_select_done_frame_number] = _pokemon_select_order
-
-        # 6vs6のポケモンを抽出する
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id,
-            new_message="INFO: Extracting pre-battle pokemons...",
-        )
-        logger.info(f"Extracting pre-battle pokemons... {self.video_id}")
-        pre_battle_pokemons: Dict[int, Dict[str, List[str]]] = {}
-        is_exist_unknown_pokemon_list1 = []
-        for i in range(len(compressed_standing_by_frames)):
-            _standing_by_frames = compressed_standing_by_frames[i]
-            if len(_standing_by_frames) == 1:
-                continue
-            _standing_by_frame_number = _standing_by_frames[-1]
-            _standing_by_frame = cv2.imread(
-                filename=f"tmp_images/{self.video_id}_{_standing_by_frame_number}.png"
-            )
-            _standing_by_frame = cast(np.ndarray, _standing_by_frame)
-
-            (
-                your_pokemon_names,
-                opponent_pokemon_names,
-                _is_exist_unknown_pokemon,
-            ) = pokemon_extractor.extract_pre_battle_pokemons(_standing_by_frame)
-            pre_battle_pokemons[_standing_by_frame_number] = {
-                "your_pokemon_names": your_pokemon_names,
-                "opponent_pokemon_names": opponent_pokemon_names,
-            }
-            is_exist_unknown_pokemon_list1.append(_is_exist_unknown_pokemon)
-
-        # 対戦中のポケモンを抽出する
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Extracting in-battle pokemons..."
-        )
-        logger.info(f"Extracting in-battle pokemons... {self.video_id}")
-        battle_pokemons: List[Dict[str, Union[str, int]]] = []
-        is_exist_unknown_pokemon_list2 = []
-        for level_50_frame_numbers in compressed_level_50_frames:
-            _level_50_frame_number = level_50_frame_numbers[-1]
-            _level_50_frame = cv2.imread(
-                filename=f"tmp_images/{self.video_id}_{_level_50_frame_number}.png"
-            )
-
-            (
-                your_pokemon_name,
-                opponent_pokemon_name,
-                _is_exist_unknown_pokemon,
-            ) = extractor.extract_pokemon_name_in_battle(_level_50_frame)
-
-            battle_pokemons.append(
-                {
-                    "frame_number": _level_50_frame_number,
-                    "your_pokemon_name": your_pokemon_name,
-                    "opponent_pokemon_name": opponent_pokemon_name,
-                },
-            )
-            is_exist_unknown_pokemon_list2.append(_is_exist_unknown_pokemon)
-
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
             self.gcs_handler.upload_unknown_pokemon_templates_to_gcs(
                 trainer_id=self.trainer_id_in_DB
@@ -389,51 +369,6 @@ class PokemonBattleExtractor:
             resend.Emails.send(params)
 
             raise Exception("Unknown pokemon exists. Stop processing.")
-
-        # 勝ち負けを検出
-        # 間違いやすいので、周辺最大10フレームを見て判断する。全て unknown の時は弾く
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Extracting win or lost..."
-        )
-        logger.info(f"Extracting win or lost... {self.video_id}")
-        win_or_lost = {}
-        for win_or_lost_frame_numbers in compressed_win_or_lost_frames:
-            if len(win_or_lost_frame_numbers) > 3:
-                _win_or_lost_results = []
-                for _win_or_lost_frame_number in win_or_lost_frame_numbers:
-                    _win_or_lost_frame = cv2.imread(
-                        filename=f"tmp_images/{self.video_id}_{_win_or_lost_frame_number}.png"
-                    )
-                    _win_or_lost_result = extractor.extract_win_or_lost(
-                        _win_or_lost_frame
-                    )
-                    _win_or_lost_results.append(_win_or_lost_result)
-
-                _win_or_lost_results = [
-                    v for v in _win_or_lost_results if v != "unknown"
-                ]
-                win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
-                if len(_win_or_lost_results) == 0:
-                    win_or_lost[win_or_lost_frame_number] = "unknown"
-                    continue
-                win_or_lost_result = Counter(_win_or_lost_results).most_common()[0][0]
-                win_or_lost_frame_number = win_or_lost_frame_numbers[-1]
-                win_or_lost[win_or_lost_frame_number] = win_or_lost_result
-
-        # メッセージの文字認識(OCR)
-        self.firestore_handler.update_log_document(
-            video_id=self.video_id, new_message="INFO: Extracting message..."
-        )
-        logger.info(f"Extracting message... {self.video_id}")
-        messages = {}
-        for message_frame_numbers in compressed_message_window_frames:
-            message_frame_number = message_frame_numbers[-1]
-            _message_frame = cv2.imread(
-                filename=f"tmp_images/{self.video_id}_{message_frame_number}.png"
-            )
-            _message = extractor.extract_message(_message_frame)
-            if _message is not None:
-                messages[message_frame_number] = _message
 
         # build formatted data
         self.firestore_handler.update_log_document(
