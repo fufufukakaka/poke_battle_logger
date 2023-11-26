@@ -2,10 +2,9 @@ import logging
 import os
 from collections import Counter
 from logging import getLogger
-from typing import Dict, List, Tuple, Union, cast
+from typing import List, Tuple
 
 import cv2
-import numpy as np
 import resend
 import yt_dlp
 from rich.logging import RichHandler
@@ -205,7 +204,9 @@ class PokemonBattleExtractor:
 
         first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
         ranking_frame_numbers = [v[-5] for v in compressed_ranking_frames]
-        select_done_frames = [v[-5] if len(v) > 5 else v[-1] for v in compressed_select_done_frames]
+        select_done_frames = [
+            v[-5] if len(v) > 5 else v[-1] for v in compressed_select_done_frames
+        ]
         level_50_frames = [v[-1] for v in compressed_level_50_frames]
 
         standing_by_frames = []
@@ -217,7 +218,7 @@ class PokemonBattleExtractor:
 
         win_or_lost = {}
         pre_win_or_lost = {}
-        win_or_lost_all_frames = sum(compressed_win_or_lost_frames, [])
+        win_or_lost_all_frames: list[int] = sum(compressed_win_or_lost_frames, [])
         messages = {}
         message_window_frames = [v[-1] for v in compressed_message_window_frames]
         video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
@@ -227,16 +228,14 @@ class PokemonBattleExtractor:
             if i == first_ranking_frame_number:
                 logger.info(f"Extracting first ranking... {self.video_id}")
                 _first_ranking_frame = frame
-                rank_numbers[first_ranking_frame_number] = extractor.extract_first_rank_number(
-                    _first_ranking_frame
-                )
+                rank_numbers[
+                    first_ranking_frame_number
+                ] = extractor.extract_first_rank_number(_first_ranking_frame)
 
             # ランクを検出(OCR)
             if i in ranking_frame_numbers:
                 _ranking_frame = frame
-                rank_numbers[i] = extractor.extract_rank_number(
-                    _ranking_frame
-                )
+                rank_numbers[i] = extractor.extract_rank_number(_ranking_frame)
 
             # 選出順の抽出
             if i in select_done_frames:
