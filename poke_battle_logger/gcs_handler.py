@@ -14,7 +14,7 @@ class GCSHandler:
         self.bucket_name = "poke_battle_logger_templates"
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(self.bucket_name)
-        self.mount_bucket_path = f"mnt/disks/{self.bucket_name}"
+        self.mount_bucket_path = f"/mnt/disks/{self.bucket_name}"
 
     def download_pokemon_templates(self, trainer_id: int) -> None:
         source_folder_prefix = (
