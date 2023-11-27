@@ -83,7 +83,7 @@ class PokemonBattleExtractor:
             ydl.download([f"https://www.youtube.com/watch?v={self.video_id}"])
 
         # upload video to GCS
-        self.gcs_handler.mount_ver_upload_video_to_gcs(
+        self.gcs_handler.upload_video_to_gcs(
             trainer_id_in_DB=self.trainer_id_in_DB,
             video_id=self.video_id,
             local_path=f"video/{self.video_id}.mp4",
@@ -348,10 +348,10 @@ class PokemonBattleExtractor:
                 )
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
-            self.gcs_handler.mount_ver_upload_unknown_pokemon_templates_to_gcs(
+            self.gcs_handler.upload_unknown_pokemon_templates_to_gcs(
                 trainer_id=self.trainer_id_in_DB
             )
-            self.gcs_handler.mount_ver_upload_unknown_pokemon_name_window_templates_to_gcs(
+            self.gcs_handler.upload_unknown_pokemon_name_window_templates_to_gcs(
                 trainer_id=self.trainer_id_in_DB
             )
             self.firestore_handler.update_log_document(
