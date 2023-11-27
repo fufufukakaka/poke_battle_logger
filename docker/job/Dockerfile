@@ -36,7 +36,7 @@ COPY scripts ./scripts
 COPY data ./data
 COPY template_images ./template_images
 COPY Makefile poetry.lock pyproject.toml setup.cfg ./
-RUN mkdir video /mnt /mnt/disks
+RUN mkdir video
 
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir poetry

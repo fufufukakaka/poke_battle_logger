@@ -177,6 +177,7 @@ class GCSHandler:
             # move file
             logger.info("move file: %s", path)
             shutil.move(path, f"{self.mount_bucket_path}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/{path.split('/')[-1]}")
+            logger.info("DONE move file: %s", path)
 
     def mount_ver_upload_unknown_pokemon_name_window_templates_to_gcs(
         self, trainer_id: int
