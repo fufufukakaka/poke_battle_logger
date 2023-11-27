@@ -1,5 +1,6 @@
 import glob
 import os
+import shutil
 from typing import List, cast
 
 from google.cloud import storage  # type: ignore
@@ -13,6 +14,7 @@ class GCSHandler:
         self.bucket_name = "poke_battle_logger_templates"
         self.client = storage.Client()
         self.bucket = self.client.get_bucket(self.bucket_name)
+        self.mount_bucket_path = f"mnt/disks/{self.bucket_name}"
 
     def download_pokemon_templates(self, trainer_id: int) -> None:
         source_folder_prefix = (
@@ -146,3 +148,35 @@ class GCSHandler:
         dest_path = f"user_battle_video/{trainer_id_in_DB}/{video_id}.mp4"
         blob = self.bucket.blob(dest_path)
         blob.upload_from_filename(local_path)
+
+    def mount_ver_upload_video_to_gcs(
+        self, trainer_id_in_DB: int, video_id: str, local_path: str
+    ) -> None:
+        dest_path = f"{self.mount_bucket_path}/user_battle_video/{trainer_id_in_DB}/{video_id}.mp4"
+        shutil.move(local_path, dest_path)
+
+    def mount_ver_upload_unknown_pokemon_templates_to_gcs(self, trainer_id: int) -> None:
+        """
+        target_gcs_path -> gcs://{bucket_name}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/*.png
+
+        upload 後、local のファイルを削除する
+
+        この関数は GCP batch で GCS をマウントしている場合に使用する
+        """
+        for path in glob.glob("template_images/unknown_pokemon_templates/*.png"):
+            # move file
+            shutil.move(path, f"{self.mount_bucket_path}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/{path.split('/')[-1]}")
+
+    def mount_ver_upload_unknown_pokemon_name_window_templates_to_gcs(
+        self, trainer_id: int
+    ) -> None:
+        """
+        target_gcs_path -> gcs://{bucket_name}/pokemon_name_window_templates/users/{trainer_id}/unknown_pokemon_name_window_templates/*.png
+
+        この関数は GCP batch で GCS をマウントしている場合に使用する
+        """
+        for path in glob.glob(
+            "template_images/unknown_pokemon_name_window_templates/*.png"
+        ):
+            # move file
+            shutil.move(path, f"{self.mount_bucket_path}/pokemon_name_window_templates/users/{trainer_id}/unknown_pokemon_name_window_templates/{path.split('/')[-1]}")
