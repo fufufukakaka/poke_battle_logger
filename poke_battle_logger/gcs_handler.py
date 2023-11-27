@@ -1,13 +1,23 @@
 import glob
+import logging
 import os
 import shutil
+from logging import getLogger
 from typing import List, cast
 
 from google.cloud import storage  # type: ignore
+from rich.logging import RichHandler
 from tenacity import retry, stop_after_attempt
 
 from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(message)s",
+    datefmt="[%X]",
+    handlers=[RichHandler()],
+)
+logger = getLogger(__name__)
 
 class GCSHandler:
     def __init__(self) -> None:
@@ -165,6 +175,7 @@ class GCSHandler:
         """
         for path in glob.glob("template_images/unknown_pokemon_templates/*.png"):
             # move file
+            logger.info("move file: %s", path)
             shutil.move(path, f"{self.mount_bucket_path}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/{path.split('/')[-1]}")
 
     def mount_ver_upload_unknown_pokemon_name_window_templates_to_gcs(
