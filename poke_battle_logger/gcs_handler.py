@@ -19,6 +19,7 @@ logging.basicConfig(
 )
 logger = getLogger(__name__)
 
+
 class GCSHandler:
     def __init__(self) -> None:
         self.bucket_name = "poke_battle_logger_templates"
@@ -165,7 +166,9 @@ class GCSHandler:
         dest_path = f"{self.mount_bucket_path}/user_battle_video/{trainer_id_in_DB}/{video_id}.mp4"
         shutil.move(local_path, dest_path)
 
-    def mount_ver_upload_unknown_pokemon_templates_to_gcs(self, trainer_id: int) -> None:
+    def mount_ver_upload_unknown_pokemon_templates_to_gcs(
+        self, trainer_id: int
+    ) -> None:
         """
         target_gcs_path -> gcs://{bucket_name}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/*.png
 
@@ -176,7 +179,10 @@ class GCSHandler:
         for path in glob.glob("template_images/unknown_pokemon_templates/*.png"):
             # move file
             logger.info("move file: %s", path)
-            shutil.move(path, f"{self.mount_bucket_path}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/{path.split('/')[-1]}")
+            shutil.move(
+                path,
+                f"{self.mount_bucket_path}/pokemon_templates/users/{trainer_id}/unknown_pokemon_templates/{path.split('/')[-1]}",
+            )
             logger.info("DONE move file: %s", path)
 
     def mount_ver_upload_unknown_pokemon_name_window_templates_to_gcs(
@@ -191,4 +197,7 @@ class GCSHandler:
             "template_images/unknown_pokemon_name_window_templates/*.png"
         ):
             # move file
-            shutil.move(path, f"{self.mount_bucket_path}/pokemon_name_window_templates/users/{trainer_id}/unknown_pokemon_name_window_templates/{path.split('/')[-1]}")
+            shutil.move(
+                path,
+                f"{self.mount_bucket_path}/pokemon_name_window_templates/users/{trainer_id}/unknown_pokemon_name_window_templates/{path.split('/')[-1]}",
+            )
