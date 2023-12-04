@@ -42,7 +42,12 @@ class PokemonBattleExtractor:
     """
 
     def __init__(
-        self, video_id: str, language: str, trainer_id_in_DB: int, email: str, final_result: int | None
+        self,
+        video_id: str,
+        language: str,
+        trainer_id_in_DB: int,
+        email: str,
+        final_result: int | None,
     ) -> None:
         self.video_id = video_id
         self.language = language

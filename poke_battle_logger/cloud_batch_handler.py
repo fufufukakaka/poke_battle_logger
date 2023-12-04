@@ -42,8 +42,8 @@ class CloudBatchHandler:
             email="poke-battle-logger@turing-alcove-157907.iam.gserviceaccount.com",
             scopes=[
                 "https://www.googleapis.com/auth/cloud-platform",
-                "https://www.googleapis.com/auth/devstorage.full_control"
-            ]
+                "https://www.googleapis.com/auth/devstorage.full_control",
+            ],
         )
 
         # 作成するジョブを定義
@@ -91,7 +91,7 @@ class CloudBatchHandler:
                 "--language",
                 language,
                 "--finalResult",
-                finalResult
+                finalResult,  # type: ignore
             ]
 
         # job_name postfix: timestamp

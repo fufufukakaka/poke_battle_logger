@@ -408,7 +408,10 @@ async def get_stats_from_video_via_cloud_batch(
     """
     cloud_batch_handler = CloudBatchHandler()
     cloud_batch_handler.run_extract_stats_from_video_batch(
-        video_id=videoId, trainer_id=trainerId, language=language, finalResult=finalResult
+        video_id=videoId,
+        trainer_id=trainerId,
+        language=language,
+        finalResult=finalResult,
     )
     return "Start extracting stats from video via cloud batch"
 
