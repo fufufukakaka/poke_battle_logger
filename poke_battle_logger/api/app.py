@@ -401,12 +401,14 @@ async def get_battle_video_detail_status_log(
 
 @app.get("/api/v1/extract_stats_from_video")
 async def get_stats_from_video_via_cloud_batch(
-    videoId: str, language: str, trainerId: str
+    videoId: str, language: str, trainerId: str, finalResult: int | None
 ) -> str:
-
+    """
+    finalResult が指定されている場合、動画の最後に順位が表示されていないことを想定する(最終日など)
+    """
     cloud_batch_handler = CloudBatchHandler()
     cloud_batch_handler.run_extract_stats_from_video_batch(
-        video_id=videoId, trainer_id=trainerId, language=language
+        video_id=videoId, trainer_id=trainerId, language=language, finalResult=finalResult
     )
     return "Start extracting stats from video via cloud batch"
 

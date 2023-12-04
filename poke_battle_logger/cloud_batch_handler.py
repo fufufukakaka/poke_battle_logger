@@ -20,7 +20,7 @@ class CloudBatchHandler:
         # https://cloud.google.com/python/docs/reference/batch/latest/google.cloud.batch_v1.types.AllocationPolicy.InstancePolicy
         policy = batch_v1.AllocationPolicy.InstancePolicy()
         policy.machine_type = "e2-standard-4"
-        policy.provisioning_model = batch_v1.AllocationPolicy.ProvisioningModel.SPOT  # type: ignore # TODO: fix
+        policy.provisioning_model = batch_v1.AllocationPolicy.ProvisioningModel.SPOT  # type: ignore
 
         # インスタンスポリシーの利用を宣言
         # https://cloud.google.com/python/docs/reference/batch/latest/google.cloud.batch_v1.types.AllocationPolicy.InstancePolicyOrTemplate
@@ -39,7 +39,11 @@ class CloudBatchHandler:
         )
         allocation_policy.instances = [instances]
         allocation_policy.service_account = batch_v1.ServiceAccount(
-            email="poke-battle-logger@turing-alcove-157907.iam.gserviceaccount.com"
+            email="poke-battle-logger@turing-alcove-157907.iam.gserviceaccount.com",
+            scopes=[
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/devstorage.full_control"
+            ]
         )
 
         # 作成するジョブを定義
@@ -48,7 +52,7 @@ class CloudBatchHandler:
         job.task_groups = task_groups
         job.allocation_policy = allocation_policy
         job.logs_policy = batch_v1.LogsPolicy()
-        job.logs_policy.destination = batch_v1.LogsPolicy.Destination.CLOUD_LOGGING  # type: ignore # TODO: fix
+        job.logs_policy.destination = batch_v1.LogsPolicy.Destination.CLOUD_LOGGING  # type: ignore
 
         # ジョブを実行
         # https://cloud.google.com/python/docs/reference/batch/latest/google.cloud.batch_v1.services.batch_service.BatchServiceClient#google_cloud_batch_v1_services_batch_service_BatchServiceClient_create_job
@@ -59,8 +63,37 @@ class CloudBatchHandler:
         batch_service.create_job(create_request)
 
     def run_extract_stats_from_video_batch(
-        self, video_id: str, trainer_id: str, language: str
+        self, video_id: str, trainer_id: str, language: str, finalResult: int | None
     ) -> None:
+        if finalResult is None:
+            commands = [
+                "poetry",
+                "run",
+                "python",
+                "scripts/run_extractor.py",
+                "--trainer_id",
+                trainer_id,
+                "--video_id",
+                video_id,
+                "--language",
+                language,
+            ]
+        else:
+            commands = [
+                "poetry",
+                "run",
+                "python",
+                "scripts/run_extractor.py",
+                "--trainer_id",
+                trainer_id,
+                "--video_id",
+                video_id,
+                "--language",
+                language,
+                "--finalResult",
+                finalResult
+            ]
+
         # job_name postfix: timestamp
         current_time = datetime.now().strftime("%Y%m%d%H%M%S")
         job_name = f"poke-battle-logger-job-{current_time}"
@@ -91,18 +124,7 @@ class CloudBatchHandler:
                             container=batch_v1.Runnable.Container(
                                 image_uri="asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:3077b915169318b431ab91d14aea8fcad673b3db",
                                 entrypoint="",
-                                commands=[
-                                    "poetry",
-                                    "run",
-                                    "python",
-                                    "scripts/run_extractor.py",
-                                    "--trainer_id",
-                                    trainer_id,
-                                    "--video_id",
-                                    video_id,
-                                    "--language",
-                                    language,
-                                ],
+                                commands=commands,
                                 volumes=[],
                             )
                         )
