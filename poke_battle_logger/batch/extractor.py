@@ -129,7 +129,7 @@ class Extractor:
         テンプレートマッチングを行い、最もスコアが高いものを選出順として返す
         """
 
-        pokemon_select_order_score = []
+        pokemon_select_order_score: list[tuple[int, int, float]] = []
 
         for i, template in enumerate(
             [self.first_template, self.second_template, self.third_template]
@@ -150,7 +150,7 @@ class Extractor:
                 )
                 if self.lang == "ja":
                     _recognized_order_str = pytesseract.image_to_string(
-                        window2, lang="jpn", config="--psm 8" # 8: 1単語のみある想定
+                        window2, lang="jpn", config="--psm 8"  # 8: 1単語のみある想定
                     )
                 elif self.lang == "en":
                     _recognized_order_str = pytesseract.image_to_string(
@@ -175,18 +175,16 @@ class Extractor:
                     )
                 ):
                     if self.lang == "en":
-                        pokemon_select_order_score.append([k, i, score])
+                        pokemon_select_order_score.append((k, i, score))
                     elif self.lang == "ja":
-                        pokemon_select_order_score.append([k, i, 1 - ed_score])
+                        pokemon_select_order_score.append((k, i, 1 - ed_score))
                     else:
                         raise ValueError("lang must be en or ja")
 
         pokemon_select_order: List[int] = []
         for i in range(3):
             sorted_orders = sorted(
-                [
-                    score for score in pokemon_select_order_score if score[1] == i
-                ],
+                [score for score in pokemon_select_order_score if score[1] == i],
                 key=lambda x: x[2],  # type: ignore
                 reverse=True,
             )
