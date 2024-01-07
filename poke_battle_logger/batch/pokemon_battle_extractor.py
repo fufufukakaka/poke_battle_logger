@@ -209,7 +209,7 @@ class PokemonBattleExtractor:
         is_exist_unknown_pokemon_list2 = []
 
         first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
-        ranking_frame_numbers = [v[-2] for v in compressed_ranking_frames]
+        ranking_frame_numbers = [v[-5] for v in compressed_ranking_frames]
         select_done_frames = [
             v[-5] if len(v) > 5 else v[-1] for v in compressed_select_done_frames
         ]

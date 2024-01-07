@@ -1059,7 +1059,14 @@ export const pokemonJapaneseToEnglishDict: PokemonJapaneseToEnglishDict = {
   "ガラルマタドガス": "Weezing Galarian",
   "アローラキュウコン": "Ninetales Alolan",
   "ガチグマ赫月": "Ursaluna Bloodmoon",
-
+  "ブリジュラス": "Archaludon",
+  "カミツオロチ": "Hydrapple",
+  "ウガツホムラ": "Gouging Fire",
+  "タケルライコ": "Raging Bolt",
+  "テツノイワオ": "Iron Boulder",
+  "テツノカシラ": "Iron Crown",
+  "テラパゴス": "Terapagos",
+  "モモワロウ": "Pecharunt",
 }
 
 export const reactSelectOptions = Object.keys(pokemonJapaneseToEnglishDict).map(key => ({
