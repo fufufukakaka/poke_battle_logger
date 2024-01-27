@@ -21,7 +21,6 @@ export LOCAL_TESSDATA_PREFIX=/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_b
 export LOCAL_GOOGLE_APPLICATION_CREDENTIALS=.credentials/google-cloud-credential.json
 export API_HOST_PORT=8001
 export API_CONTAINER_PORT=10000
-export JOB_API_CONTAINER_PORT=11000
 
 ###########################################################################################################
 ## Specific Target "poke_battle_logger"
@@ -45,26 +44,14 @@ run_dashboard:
 run_api:
 	ENV=$(ENV) poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
-run_job_api:
-	ENV=$(ENV) poetry run uvicorn poke_battle_logger.job_api.app:app --host 0.0.0.0 --port $(JOB_API_CONTAINER_PORT)
-
 run_api_in_cloud_run:
 	ENV=production uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
-
-run_job_api_in_cloud_run:
-	ENV=production uvicorn poke_battle_logger.job_api.app:app --host 0.0.0.0 --port $(JOB_API_CONTAINER_PORT)
 
 run_api_local_use_postgres:
 	ENV=production \
 	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) \
 	GOOGLE_APPLICATION_CREDENTIALS=$(LOCAL_GOOGLE_APPLICATION_CREDENTIALS) \
 	poetry run uvicorn poke_battle_logger.api.app:app --reload
-
-run_job_api_local_use_postgres:
-	ENV=production \
-	TESSDATA_PREFIX=$(LOCAL_TESSDATA_PREFIX) \
-	GOOGLE_APPLICATION_CREDENTIALS=$(LOCAL_GOOGLE_APPLICATION_CREDENTIALS) \
-	poetry run uvicorn poke_battle_logger.job_api.app:app --host 0.0.0.0 --port $(JOB_API_CONTAINER_PORT) --reload
 
 ###########################################################################################################
 ## GENERAL TARGETS

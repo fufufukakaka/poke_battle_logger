@@ -129,21 +129,20 @@ class Extractor:
         テンプレートマッチングを行い、最もスコアが高いものを選出順として返す
         """
 
-        pokemon_select_order_score = []
+        pokemon_select_order_score: list[tuple[int, int, float]] = []
 
         for i, template in enumerate(
             [self.first_template, self.second_template, self.third_template]
         ):
-            for k, window in enumerate(
-                [
-                    select1_window,
-                    select2_window,
-                    select3_window,
-                    select4_window,
-                    select5_window,
-                    select6_window,
-                ]
-            ):
+            select_windows = [
+                select1_window,
+                select2_window,
+                select3_window,
+                select4_window,
+                select5_window,
+                select6_window,
+            ]
+            for k, window in enumerate(select_windows):
                 threshold_value = POKEMON_SELECT_WINDOW_THRESHOLD_VALUE
                 max_value = 255
                 _, window2 = cv2.threshold(
@@ -151,7 +150,7 @@ class Extractor:
                 )
                 if self.lang == "ja":
                     _recognized_order_str = pytesseract.image_to_string(
-                        window2, lang="jpn", config="--psm 6"
+                        window2, lang="jpn", config="--psm 8"  # 8: 1単語のみある想定
                     )
                 elif self.lang == "en":
                     _recognized_order_str = pytesseract.image_to_string(
@@ -175,16 +174,24 @@ class Extractor:
                         and ed_score <= EDIT_DISTANCE_THRESHOLD
                     )
                 ):
-                    pokemon_select_order_score.append([k, i, score])
+                    if self.lang == "en":
+                        pokemon_select_order_score.append((k, i, score))
+                    elif self.lang == "ja":
+                        pokemon_select_order_score.append((k, i, 1 - ed_score))
+                    else:
+                        raise ValueError("lang must be en or ja")
 
         pokemon_select_order: List[int] = []
         for i in range(3):
-            pokemon_select_order.append(
-                max(
-                    [score for score in pokemon_select_order_score if score[1] == i],
-                    key=lambda x: x[2],  # type: ignore
-                )[0]
+            sorted_orders = sorted(
+                [score for score in pokemon_select_order_score if score[1] == i],
+                key=lambda x: x[2],  # type: ignore
+                reverse=True,
             )
+            for order in sorted_orders:
+                if order[0] not in pokemon_select_order:
+                    pokemon_select_order.append(order[0])
+                    break
         return pokemon_select_order
 
     def _search_win_or_lost_by_template_matching(self, frame: np.ndarray) -> str:

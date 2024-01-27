@@ -42,12 +42,18 @@ class PokemonBattleExtractor:
     """
 
     def __init__(
-        self, video_id: str, language: str, trainer_id_in_DB: int, email: str
+        self,
+        video_id: str,
+        language: str,
+        trainer_id_in_DB: int,
+        email: str,
+        final_result: int | None,
     ) -> None:
         self.video_id = video_id
         self.language = language
         self.trainer_id_in_DB = trainer_id_in_DB
         self.email = email
+        self.final_result = final_result
         self.gcs_handler = GCSHandler()
         self.firestore_handler = FirestoreHandler()
         self.database_handler = DatabaseHandler()
@@ -289,6 +295,9 @@ class PokemonBattleExtractor:
                     messages[i] = _message
 
         video.release()
+
+        if self.final_result is not None:
+            rank_numbers[total_frames] = self.final_result
 
         # 勝敗検出
         # 間違いやすいので、周辺フレームを全て見て判断する。全て unknown の時は弾く

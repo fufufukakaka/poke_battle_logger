@@ -39,7 +39,8 @@ def get_trainer_id_in_DB_and_email(trainer_id: str) -> Tuple[int, str]:
 @click.option("--trainer_id", required=True, type=str)
 @click.option("--video_id", required=True, type=str)
 @click.option("--language", required=True, type=str)
-def run_extractor(trainer_id: str, video_id: str, language: str):
+@click.option("--final_result", required=False, type=int)
+def run_extractor(trainer_id: str, video_id: str, language: str, final_result: int):
     trainer_id_in_DB, email = get_trainer_id_in_DB_and_email(trainer_id)
 
     gcs_handler = GCSHandler()
@@ -50,6 +51,7 @@ def run_extractor(trainer_id: str, video_id: str, language: str):
         language=language,
         trainer_id_in_DB=trainer_id_in_DB,
         email=email,
+        final_result=final_result,
     )
 
     try:
