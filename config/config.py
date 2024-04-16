@@ -69,3 +69,7 @@ JAPANESE_LOST_TEMPLATE_PATH = "template_images/japanese_general_templates/lost.p
 JAPANESE_SELECT_DONE_TEMPLATE_PATH = (
     "template_images/japanese_general_templates/select_done.png"
 )
+
+MOVE_ANKER_TEMPLATE = "template_images/general_templates/move_anker_template.png"
+MOVE_ANKER_POSITION = (995, 1040, 875, 1105)
+MOVE_WINDOW_FRAME = (580, 1100, 1330, 1900)

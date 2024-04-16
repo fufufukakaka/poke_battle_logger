@@ -28,6 +28,8 @@ from config.config import (
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     WIN_TEMPLATE_PATH,
+    MOVE_ANKER_POSITION,
+    MOVE_ANKER_TEMPLATE,
 )
 
 
@@ -41,11 +43,12 @@ class FrameDetector:
             self.gray_win_template,
             self.gray_lost_template,
             self.gray_done_template,
+            self.gray_move_anker_template,
         ) = self.setup_templates()
 
     def setup_templates(
         self,
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         if self.lang == "en":
             gray_standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH, 0)
             gray_level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH, 0)
@@ -53,6 +56,7 @@ class FrameDetector:
             gray_win_template = cv2.imread(WIN_TEMPLATE_PATH, 0)
             gray_lost_template = cv2.imread(LOST_TEMPLATE_PATH, 0)
             gray_select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH, 0)
+            gray_move_anker_template = cv2.imread(MOVE_ANKER_TEMPLATE, 0)
         elif self.lang == "ja":
             gray_standing_by_template = cv2.imread(
                 JAPANESE_STANDING_BY_TEMPLATE_PATH, 0
@@ -64,6 +68,7 @@ class FrameDetector:
             gray_select_done_template = cv2.imread(
                 JAPANESE_SELECT_DONE_TEMPLATE_PATH, 0
             )
+            gray_move_anker_template = cv2.imread(MOVE_ANKER_TEMPLATE, 0)  # TODO: 日本語のテンプレート
         else:
             raise ValueError("Invalid language")
 
@@ -74,6 +79,7 @@ class FrameDetector:
             gray_win_template,
             gray_lost_template,
             gray_select_done_template,
+            gray_move_anker_template,
         )
 
     def is_standing_by_frame(self, frame: np.ndarray) -> bool:
@@ -192,4 +198,18 @@ class FrameDetector:
         regions, _ = mser.detectRegions(thresh)
         is_exist_text = len(regions) >= 2
         _result = is_message & is_exist_text
+        return bool(_result)
+
+    def is_move_frame(self, frame: np.ndarray) -> bool:
+        gray_move_anker_area = cv2.cvtColor(
+            frame[
+                MOVE_ANKER_POSITION[0] : MOVE_ANKER_POSITION[1],
+                MOVE_ANKER_POSITION[2] : MOVE_ANKER_POSITION[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        result = cv2.matchTemplate(
+            gray_move_anker_area, self.gray_move_anker_template, cv2.TM_CCOEFF_NORMED
+        )
+        _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         return bool(_result)

@@ -211,9 +211,9 @@ class PokemonBattleExtractor:
         first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
         ranking_frame_numbers = [v[-5] for v in compressed_ranking_frames]
         select_done_frames = [
-            v[-5] if len(v) > 5 else v[-1] for v in compressed_select_done_frames
+            v[-3] if len(v) > 5 else v[-1] for v in compressed_select_done_frames
         ]
-        level_50_frames = [v[-1] for v in compressed_level_50_frames]
+        level_50_frames = [v[-2] for v in compressed_level_50_frames]
 
         standing_by_frames = []
         for i in range(len(compressed_standing_by_frames)):
@@ -383,6 +383,9 @@ class PokemonBattleExtractor:
             video_id=self.video_id, new_message="INFO: Building formatted data..."
         )
         logger.info(f"Building formatted data... {self.video_id}")
+        # import pdb;pdb.set_trace()
+        # pokemon_select_order[5491] = [1,5,2]
+        # pokemon_select_order[191533] = [5,2,1]
         data_builder = DataBuilder(
             trainer_id=self.trainer_id_in_DB,
             video_id=self.video_id,
