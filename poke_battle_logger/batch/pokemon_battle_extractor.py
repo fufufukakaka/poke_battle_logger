@@ -320,6 +320,9 @@ class PokemonBattleExtractor:
                 win_or_lost[win_or_lost_frame_number] = win_or_lost_result
 
         # 順位が変動しなかった場合、その値を rank_numbers から削除する
+        # import pdb;pdb.set_trace()
+        # rank_numbers[17000] = 8010
+        # rank_numbers[43000] = 8200
         logger.info(f"Removing unchanged ranking... {self.video_id}")
         rank_frames = list(rank_numbers.keys())
         for i in range(len(rank_numbers) - 1):
