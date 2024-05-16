@@ -42,6 +42,7 @@ class PokemonExtractor:
         self.classifier_pipe = pipeline(
             task="image-classification",
             model=MODEL_NAME,
+            framework="pt",
             use_auth_token=os.getenv("HF_ACCESS_TOKEN"),
         )
 
