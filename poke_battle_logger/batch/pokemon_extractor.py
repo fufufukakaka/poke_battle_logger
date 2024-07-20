@@ -40,10 +40,13 @@ class PokemonExtractor:
         self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
         self.classifier_pipe = pipeline(
+            model_kwargs={
+                "ignore_mismatched_sizes": True,
+                "use_auth_token": os.getenv("HF_ACCESS_TOKEN"),
+            },
             task="image-classification",
             model=MODEL_NAME,
             framework="pt",
-            use_auth_token=os.getenv("HF_ACCESS_TOKEN"),
         )
 
     def _setup_pre_battle_pokemon_templates(self) -> Dict[str, np.ndarray]:
