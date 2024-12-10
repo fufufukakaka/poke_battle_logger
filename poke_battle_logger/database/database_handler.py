@@ -1602,3 +1602,71 @@ class DatabaseHandler:
             list(summary2.to_dict(orient="index").values()),
         )
         return _res
+
+    def search_battles(self, trainer_id: str, season: int, my_pokemons: list[str], opponent_pokemons: list[str]) -> list[dict[str, str | int]]:
+        sql = f"""
+        with target_trainer as (
+            select
+                id
+            from
+                trainer
+            where
+                id = '{trainer_id}'
+        ),
+        target_trainer_battles as (
+            select
+                battle_id
+            from
+                battle
+            where
+                trainer_id in (select id from target_trainer)
+        )
+        select
+            battle_id,
+            created_at,
+            win_or_lose,
+            next_rank,
+            your_team,
+            opponent_team,
+            your_pokemon_1,
+            your_pokemon_2,
+            your_pokemon_3,
+            opponent_pokemon_1,
+            opponent_pokemon_2,
+            opponent_pokemon_3,
+            memo
+        from battlesummary
+        where
+            string_to_array(your_team, ',') @> array['{my_pokemons[0]}', '{my_pokemons[1]}', '{my_pokemons[2]}', '{my_pokemons[3]}', '{my_pokemons[4]}', '{my_pokemons[5]}']
+            and string_to_array(opponent_team, ',') @> array['{opponent_pokemons[0]}', '{opponent_pokemons[1]}', '{opponent_pokemons[2]}', '{opponent_pokemons[3]}', '{opponent_pokemons[4]}', '{opponent_pokemons[5]}']
+            and battle_id in (
+                select
+                    battle_id from target_trainer_battles)
+        """
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "battle_id",
+                "created_at",
+                "win_or_lose",
+                "next_rank",
+                "your_team",
+                "opponent_team",
+                "your_pokemon_1",
+                "your_pokemon_2",
+                "your_pokemon_3",
+                "opponent_pokemon_1",
+                "opponent_pokemon_2",
+                "opponent_pokemon_3",
+                "memo"
+            ],
+        )
+        _res = cast(
+            list[Dict[str, str | int]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res

@@ -30,6 +30,8 @@ from config.config import (
     WIN_TEMPLATE_PATH,
     MOVE_ANKER_POSITION,
     MOVE_ANKER_TEMPLATE,
+    POKEMON_SELECTION_TEMPLATE_PATH,
+    POKEMON_SELECTION_ICON,
 )
 
 
@@ -48,7 +50,7 @@ class FrameDetector:
 
     def setup_templates(
         self,
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         if self.lang == "en":
             gray_standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH, 0)
             gray_level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH, 0)
@@ -57,6 +59,7 @@ class FrameDetector:
             gray_lost_template = cv2.imread(LOST_TEMPLATE_PATH, 0)
             gray_select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH, 0)
             gray_move_anker_template = cv2.imread(MOVE_ANKER_TEMPLATE, 0)
+            gray_pokemon_selection_template = cv2.imread(POKEMON_SELECTION_TEMPLATE_PATH, 0)
         elif self.lang == "ja":
             gray_standing_by_template = cv2.imread(
                 JAPANESE_STANDING_BY_TEMPLATE_PATH, 0
@@ -69,6 +72,9 @@ class FrameDetector:
                 JAPANESE_SELECT_DONE_TEMPLATE_PATH, 0
             )
             gray_move_anker_template = cv2.imread(MOVE_ANKER_TEMPLATE, 0)  # TODO: 日本語のテンプレート
+            gray_pokemon_selection_template = cv2.imread(
+                POKEMON_SELECTION_TEMPLATE_PATH, 0
+            )
         else:
             raise ValueError("Invalid language")
 
@@ -80,6 +86,7 @@ class FrameDetector:
             gray_lost_template,
             gray_select_done_template,
             gray_move_anker_template,
+            gray_pokemon_selection_template,
         )
 
     def is_standing_by_frame(self, frame: np.ndarray) -> bool:
@@ -210,6 +217,22 @@ class FrameDetector:
         )
         result = cv2.matchTemplate(
             gray_move_anker_area, self.gray_move_anker_template, cv2.TM_CCOEFF_NORMED
+        )
+        _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        return bool(_result)
+
+    def is_pokemon_selection_frame(self, frame: np.ndarray) -> bool:
+        gray_pokemon_selection_area = cv2.cvtColor(
+            frame[
+                POKEMON_SELECTION_ICON[0] : POKEMON_SELECTION_ICON[1],
+                POKEMON_SELECTION_ICON[2] : POKEMON_SELECTION_ICON[3],
+            ],
+            cv2.COLOR_BGR2GRAY,
+        )
+        result = cv2.matchTemplate(
+            gray_pokemon_selection_area,
+            self.gray_pokemon_selection_template,
+            cv2.TM_CCOEFF_NORMED,
         )
         _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
         return bool(_result)

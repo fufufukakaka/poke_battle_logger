@@ -48,12 +48,17 @@ POKEMON_NAME_WINDOW_THRESHOLD_VALUE = 200
 POKEMON_NAME_WINDOW_THRESHOLD_VALUE1 = 200
 POKEMON_NAME_WINDOW_THRESHOLD_VALUE2 = 130
 
+POKEMON_SELECTION_ICON = (0, 80, 850, 910)
+
 STANDING_BY_TEMPLATE_PATH = "template_images/general_templates/standing_by.png"
 LEVEL_50_TEMPLATE_PATH = "template_images/general_templates/level_50.png"
 RANKING_TEMPLATE_PATH = "template_images/general_templates/ranking.png"
 WIN_TEMPLATE_PATH = "template_images/general_templates/win.png"
 LOST_TEMPLATE_PATH = "template_images/general_templates/lost.png"
 SELECT_DONE_TEMPLATE_PATH = "template_images/general_templates/select_done.png"
+POKEMON_SELECTION_TEMPLATE_PATH = (
+    "template_images/general_templates/pokemon_selection.png"
+)
 
 JAPANESE_STANDING_BY_TEMPLATE_PATH = (
     "template_images/japanese_general_templates/standing_by.png"

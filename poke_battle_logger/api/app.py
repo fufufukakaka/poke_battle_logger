@@ -3,15 +3,18 @@ import unicodedata
 from logging import getLogger
 from typing import Dict, List, Union
 
+import cv2
+import numpy as np
 import pandas as pd
 import yt_dlp
-from fastapi import FastAPI, HTTPException, Request, status
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from rich.logging import RichHandler
 
+from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.cloud_batch_handler import CloudBatchHandler
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
@@ -48,6 +51,7 @@ pokemon_japanese_to_no_dict: Dict[str, int] = dict(
 pokemon_japanese_to_english_dict: Dict[str, str] = dict(
     zip(pokemon_name_df["Japanese"], pokemon_name_df["English"])
 )
+pokemon_extractor = PokemonExtractor()
 
 
 def get_trainer_id_in_DB(trainer_id: str) -> int:
@@ -420,3 +424,39 @@ async def get_stats_from_video_via_cloud_batch(
 async def get_seasons() -> list[dict[str, int | str]]:
     database_handler: DatabaseHandler = DatabaseHandler()
     return database_handler.get_seasons()
+
+
+@app.post("/api/v1/extract_pokemon_name_from_image")
+async def extract_pokemon_name_from_image(
+    file: UploadFile = File(...),
+) -> Dict[str, List[str]]:
+    # ファイルの内容を読み取り
+    content = await file.read()
+    # bytes から opencv を通じて numpy array に変換
+    nparr = np.frombuffer(content, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    (
+        _,
+        opponent_pokemon_names,
+        _,
+    ) = pokemon_extractor.extract_pre_battle_pokemons(img, is_both_team=False)
+
+    return {"opponent_pokemon_names": opponent_pokemon_names}
+
+
+@app.get("/api/v1/search_battles")
+async def search_battles(
+    trainer_id: str,
+    season: int,
+    my_pokemons: str,
+    opponent_pokemons: str,
+) -> List[Dict[str, Union[str, int]]]:
+    my_pokemons_list = my_pokemons.split(",")
+    opponent_pokemons_list = opponent_pokemons.split(",")
+
+    database_handler: DatabaseHandler = DatabaseHandler()
+    res = database_handler.search_battles(
+        trainer_id, season, my_pokemons_list, opponent_pokemons_list
+    )
+    return res

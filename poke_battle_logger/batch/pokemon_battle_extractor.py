@@ -207,11 +207,13 @@ class PokemonBattleExtractor:
         is_exist_unknown_pokemon_list1 = []
         battle_pokemons: list[dict[str, str | int]] = []
         is_exist_unknown_pokemon_list2 = []
+        # import pdb;pdb.set_trace()
 
         first_ranking_frame_number = compressed_first_ranking_frames[0][-5]
+        # first_ranking_frame_number = 0
         ranking_frame_numbers = [v[-5] for v in compressed_ranking_frames]
         select_done_frames = [
-            v[-3] if len(v) > 5 else v[-1] for v in compressed_select_done_frames
+            v[-10] if len(v) > 5 else v[-1] for v in compressed_select_done_frames
         ]
         level_50_frames = [v[-2] for v in compressed_level_50_frames]
 
@@ -237,6 +239,9 @@ class PokemonBattleExtractor:
                 rank_numbers[
                     first_ranking_frame_number
                 ] = extractor.extract_first_rank_number(_first_ranking_frame)
+                # rank_numbers[
+                #     0
+                # ] = 9171
 
             # ランクを検出(OCR)
             if i in ranking_frame_numbers:
@@ -342,7 +347,7 @@ class PokemonBattleExtractor:
         )
         logger.info(f"Defining battle start and end frame numbers... {self.video_id}")
         battle_start_end_frame_numbers: List[Tuple[int, int]] = []
-        import pdb;pdb.set_trace()
+        # import pdb;pdb.set_trace()
         # rank_numbers[12000] = 41000
         # rank_numbers[50000] = 46000
 
