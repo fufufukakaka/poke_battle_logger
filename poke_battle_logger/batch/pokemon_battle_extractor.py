@@ -236,9 +236,9 @@ class PokemonBattleExtractor:
             if i == first_ranking_frame_number:
                 logger.info(f"Extracting first ranking... {self.video_id}")
                 _first_ranking_frame = frame
-                rank_numbers[
-                    first_ranking_frame_number
-                ] = extractor.extract_first_rank_number(_first_ranking_frame)
+                rank_numbers[first_ranking_frame_number] = (
+                    extractor.extract_first_rank_number(_first_ranking_frame)
+                )
                 # rank_numbers[
                 #     0
                 # ] = 9171

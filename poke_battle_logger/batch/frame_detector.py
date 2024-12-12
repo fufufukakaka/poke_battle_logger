@@ -46,6 +46,7 @@ class FrameDetector:
             self.gray_lost_template,
             self.gray_done_template,
             self.gray_move_anker_template,
+            self.gray_pokemon_selection_template,
         ) = self.setup_templates()
 
     def setup_templates(
