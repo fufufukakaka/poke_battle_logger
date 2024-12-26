@@ -131,6 +131,7 @@ class PokemonBattleExtractor:
         ranking_frames = []
         win_or_lost_frames = []
         message_window_frames = []
+        move_frames = []
 
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Detecting frames..."
@@ -176,6 +177,11 @@ class PokemonBattleExtractor:
                 if frame_detector.is_win_or_lost_frame(frame):
                     win_or_lost_frames.append(i)
                     continue
+
+                # move
+                if frame_detector.is_move_frame(frame):
+                    move_frames.append(i)
+                    continue
             else:
                 continue
         video.release()
@@ -197,6 +203,7 @@ class PokemonBattleExtractor:
         compressed_message_window_frames = message_frame_compress(
             message_window_frames, frame_threshold=3
         )
+        compressed_move_frames = frame_compress(move_frames)
 
         video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
         total_frames = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -217,6 +224,9 @@ class PokemonBattleExtractor:
         ]
         level_50_frames = [v[-2] for v in compressed_level_50_frames]
 
+        move_frame_numbers = [v[-2] for v in compressed_move_frames]
+        move_infos: dict[int, dict[str, str]] = {}
+
         standing_by_frames = []
         for i in range(len(compressed_standing_by_frames)):
             _standing_by_frames = compressed_standing_by_frames[i]
@@ -229,6 +239,7 @@ class PokemonBattleExtractor:
         win_or_lost_all_frames: list[int] = sum(compressed_win_or_lost_frames, [])
         messages = {}
         message_window_frames = [v[-1] for v in compressed_message_window_frames]
+
         video = cv2.VideoCapture(f"video/{self.video_id}.mp4")
         for i in range(total_frames):
             ret, frame = video.read()
@@ -239,9 +250,6 @@ class PokemonBattleExtractor:
                 rank_numbers[first_ranking_frame_number] = (
                     extractor.extract_first_rank_number(_first_ranking_frame)
                 )
-                # rank_numbers[
-                #     0
-                # ] = 9171
 
             # ランクを検出(OCR)
             if i in ranking_frame_numbers:
@@ -298,6 +306,14 @@ class PokemonBattleExtractor:
                 _message = extractor.extract_message(_message_frame)
                 if _message is not None:
                     messages[i] = _message
+
+            # 技選択の文字認識
+            if i in move_frame_numbers:
+                _move_frame = frame
+                _move = extractor.extract_move(_move_frame)
+                if _move is not None:
+                    # your_pokemon_name, opponent_pokemon_name, move_name
+                    move_infos[i] = _move
 
         video.release()
 
@@ -408,6 +424,7 @@ class PokemonBattleExtractor:
             rank_numbers=rank_numbers,
             messages=messages,
             win_or_lost=win_or_lost,
+            move_infos=move_infos,
         )
 
         (
@@ -416,6 +433,7 @@ class PokemonBattleExtractor:
             modified_pre_battle_pokemons,
             modified_in_battle_pokemons,
             modified_messages,
+            modified_selected_moves,
         ) = data_builder.build()
 
         # insert data to database
@@ -429,6 +447,7 @@ class PokemonBattleExtractor:
         self.database_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
         self.database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
         self.database_handler.insert_message_log(modified_messages)
+        self.database_handler.insert_selected_move_log(modified_selected_moves)
 
         # build fainted log
         self.firestore_handler.update_log_document(

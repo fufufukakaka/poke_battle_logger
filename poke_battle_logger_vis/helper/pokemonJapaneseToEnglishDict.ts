@@ -1079,7 +1079,7 @@ export const pokemonJapaneseToEnglishDict: PokemonJapaneseToEnglishDict = {
   "オドリドリ(めらめら)": "Oricorio Baile",
   "オドリドリ(ぱちぱち)": "Oricorio Pom-Pom",
   "オドリドリ(ふらふら)": "Oricorio Sensu",
-  "オドリドリ(ぽかぽか)": "Oricorio Pa'u",
+  "オドリドリ(ぽかぽか)": "Oricorio Pau",
 }
 
 export const reactSelectOptions = Object.keys(pokemonJapaneseToEnglishDict).map(key => ({

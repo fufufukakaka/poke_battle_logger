@@ -32,6 +32,7 @@ from config.config import (
     MOVE_ANKER_TEMPLATE,
     POKEMON_SELECTION_TEMPLATE_PATH,
     POKEMON_SELECTION_ICON,
+    MOVE_ANKER_THRESHOLD,
 )
 
 
@@ -219,7 +220,7 @@ class FrameDetector:
         result = cv2.matchTemplate(
             gray_move_anker_area, self.gray_move_anker_template, cv2.TM_CCOEFF_NORMED
         )
-        _result = cv2.minMaxLoc(result)[1] >= TEMPLATE_MATCHING_THRESHOLD
+        _result = cv2.minMaxLoc(result)[1] >= MOVE_ANKER_THRESHOLD
         return bool(_result)
 
     def is_pokemon_selection_frame(self, frame: np.ndarray) -> bool:

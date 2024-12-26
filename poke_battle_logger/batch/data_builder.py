@@ -12,6 +12,7 @@ from poke_battle_logger.types import (
     InBattlePokemon,
     Message,
     PreBattlePokemon,
+    SelectedMoves,
 )
 
 
@@ -31,6 +32,7 @@ class DataBuilder:
         rank_numbers: Dict[int, int],
         messages: Dict[int, str],
         win_or_lost: Dict[int, str],
+        move_infos: Dict[int, Dict[str, str]]
     ) -> None:
         self.trainer_id = trainer_id
         self.video_id = video_id
@@ -41,6 +43,7 @@ class DataBuilder:
         self.rank_numbers = rank_numbers
         self.messages = messages
         self.win_or_lost = win_or_lost
+        self.move_infos = move_infos
         self.form_change_pokemon_names: dict[str, dict[str, list[str]]] = {
             "ロトム": {"you": [], "opponent": []},
             "ケンタロス": {"you": [], "opponent": []},
@@ -286,12 +289,14 @@ class DataBuilder:
         List[PreBattlePokemon],
         List[InBattlePokemon],
         List[Message],
+        List[SelectedMoves],
     ]:
         battles: List[Battle] = []
         battle_logs: List[BattleLog] = []
         modified_pre_battle_pokemons: List[PreBattlePokemon] = []
         modified_in_battle_pokemons: List[InBattlePokemon] = []
         modified_messages: List[Message] = []
+        modified_selected_moves: List[SelectedMoves] = []
 
         # setup
         self._compress_battle_pokemons()
@@ -328,6 +333,19 @@ class DataBuilder:
                         message=cast(str, _message_log["message"]),
                     )
                 )
+
+            # selected_moves
+            for frame_number, move_info in self.move_infos.items():
+                if start_frame < frame_number and self.battle_start_end_frame_numbers[i][1] > frame_number:
+                    modified_selected_moves.append(
+                        SelectedMoves(
+                            battle_id=battle_id,
+                            frame_number=frame_number,
+                            your_pokemon_name=move_info["your_pokemon_name"],
+                            opponent_pokemon_name=move_info["opponent_pokemon_name"],
+                            selected_move_name=move_info["selected_move_name"],
+                        )
+                    )
 
             # overview
             if (
@@ -451,4 +469,5 @@ class DataBuilder:
             modified_pre_battle_pokemons,
             modified_in_battle_pokemons,
             modified_messages,
+            modified_selected_moves,
         )
