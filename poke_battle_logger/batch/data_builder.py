@@ -32,7 +32,7 @@ class DataBuilder:
         rank_numbers: Dict[int, int],
         messages: Dict[int, str],
         win_or_lost: Dict[int, str],
-        move_infos: Dict[int, Dict[str, str]]
+        move_infos: Dict[int, Dict[str, str]],
     ) -> None:
         self.trainer_id = trainer_id
         self.video_id = video_id
@@ -336,7 +336,10 @@ class DataBuilder:
 
             # selected_moves
             for frame_number, move_info in self.move_infos.items():
-                if start_frame < frame_number and self.battle_start_end_frame_numbers[i][1] > frame_number:
+                if (
+                    start_frame < frame_number
+                    and self.battle_start_end_frame_numbers[i][1] > frame_number
+                ):
                     modified_selected_moves.append(
                         SelectedMoves(
                             battle_id=battle_id,

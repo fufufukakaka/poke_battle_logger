@@ -135,7 +135,7 @@ class PokemonNameWindowExtractor:
         """
         _text = self.non_CJK_patterns.sub(r"", text)
         # 空白を削除
-        _text = ''.join(_text.split())
+        _text = "".join(_text.split())
         if _text == "八八ダクカミ":
             return "ハバタクカミ"
         elif text == "八人タクカミ":

@@ -94,16 +94,20 @@ class BattleStateMachine:
                 old_rank = self.last_rank
                 self.last_rank = rank_data
                 self.current_state = "idle"
-                
+
                 # Calculate rank change only if we have both old and new rank
                 rank_change = 0
-                if old_rank is not None and isinstance(old_rank, (int, float)) and isinstance(rank_data, (int, float)):
+                if (
+                    old_rank is not None
+                    and isinstance(old_rank, (int, float))
+                    and isinstance(rank_data, (int, float))
+                ):
                     rank_change = rank_data - old_rank
-                
+
                 # Reset battle_id for next battle
                 completed_battle_id = self.battle_id
                 self.battle_id = None
-                
+
                 return BattleEvent(
                     event_type="battle_complete",
                     data={
@@ -140,7 +144,9 @@ class LiveStreamProcessor:
 
         self.frame_counter = 0
         self.processing_lock = asyncio.Lock()
-        self.executor = ThreadPoolExecutor(max_workers=2, thread_name_prefix="frame_processor")
+        self.executor = ThreadPoolExecutor(
+            max_workers=2, thread_name_prefix="frame_processor"
+        )
         self.event_handlers = []
         self._should_stop = False
 
@@ -165,7 +171,7 @@ class LiveStreamProcessor:
                 frame_data = FrameData(
                     frame=frame.copy(),  # Copy frame to avoid concurrent access issues
                     timestamp=datetime.now(),
-                    frame_number=self.frame_counter
+                    frame_number=self.frame_counter,
                 )
 
                 # Run frame detection in executor to avoid blocking
@@ -270,7 +276,7 @@ class LiveStreamProcessor:
     async def _cleanup(self):
         """Clean up resources"""
         try:
-            if hasattr(self, 'executor') and self.executor:
+            if hasattr(self, "executor") and self.executor:
                 self.executor.shutdown(wait=True)
                 logger.debug("Thread pool executor shutdown complete")
         except Exception as e:

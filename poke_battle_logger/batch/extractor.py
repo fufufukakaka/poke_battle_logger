@@ -9,6 +9,14 @@ import pytesseract
 from config.config import (
     FIRST_RANKING_NUMBER_WINDOW,
     MESSAGE_WINDOW,
+    MOVE_SELECT_WINDOW1,
+    MOVE_SELECT_WINDOW2,
+    MOVE_SELECT_WINDOW3,
+    MOVE_SELECT_WINDOW4,
+    MOVE_TITLE1,
+    MOVE_TITLE2,
+    MOVE_TITLE3,
+    MOVE_TITLE4,
     OPPONENT_POKEMON_NAME_WINDOW,
     POKEMON_SELECT_NUMBER_WINDOW1,
     POKEMON_SELECT_NUMBER_WINDOW2,
@@ -22,14 +30,6 @@ from config.config import (
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     YOUR_POKEMON_NAME_WINDOW,
-    MOVE_SELECT_WINDOW1,
-    MOVE_SELECT_WINDOW2,
-    MOVE_SELECT_WINDOW3,
-    MOVE_SELECT_WINDOW4,
-    MOVE_TITLE1,
-    MOVE_TITLE2,
-    MOVE_TITLE3,
-    MOVE_TITLE4,
 )
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
     EDIT_DISTANCE_THRESHOLD,
@@ -479,8 +479,14 @@ class Extractor:
 
         gray = cv2.cvtColor(max_brightness_move_title_window, cv2.COLOR_BGR2GRAY)
         move = self._recognize_message(gray)
-        your_pokemon_name, opponent_pokemon_name, _ = self.extract_pokemon_name_in_battle(
-            frame
-        )
+        (
+            your_pokemon_name,
+            opponent_pokemon_name,
+            _,
+        ) = self.extract_pokemon_name_in_battle(frame)
 
-        return {"move": move, "your_pokemon_name": your_pokemon_name, "opponent_pokemon_name": opponent_pokemon_name}
+        return {
+            "move": move,
+            "your_pokemon_name": your_pokemon_name,
+            "opponent_pokemon_name": opponent_pokemon_name,
+        }

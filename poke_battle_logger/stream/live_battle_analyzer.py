@@ -8,7 +8,13 @@ from typing import Any, Callable, Dict, List, Optional
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.stream.frame_capture import FrameCaptureManager
 from poke_battle_logger.stream.live_processor import BattleEvent, LiveStreamProcessor
-from poke_battle_logger.types import Battle, BattleLog, InBattlePokemon, Message, PreBattlePokemon
+from poke_battle_logger.types import (
+    Battle,
+    BattleLog,
+    InBattlePokemon,
+    Message,
+    PreBattlePokemon,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -43,10 +49,10 @@ class LiveBattleAnalyzer:
 
         self.event_callbacks = []
         self.processor.add_event_handler(self._handle_battle_event)
-        
+
         # Initialize temporary storage for pending data
         self._pending_battle_results = {}
-        
+
         # Validate database connection if provided
         if self.db_handler:
             self._validate_database_connection()
@@ -74,18 +80,22 @@ class LiveBattleAnalyzer:
         try:
             # Check if trainer exists in database
             if not self.db_handler.check_trainer_id_exists(self.trainer_id):
-                logger.warning(f"Trainer {self.trainer_id} not found in database. "
-                             "Live events will be logged but not saved to database.")
+                logger.warning(
+                    f"Trainer {self.trainer_id} not found in database. "
+                    "Live events will be logged but not saved to database."
+                )
                 self.db_handler = None
             else:
-                logger.info(f"Database connection validated for trainer {self.trainer_id}")
+                logger.info(
+                    f"Database connection validated for trainer {self.trainer_id}"
+                )
         except Exception as e:
             logger.error(f"Database validation failed: {e}")
             self.db_handler = None
 
     def _update_frame_stats(self):
         """Update frame processing statistics"""
-        if hasattr(self.processor, 'frame_counter'):
+        if hasattr(self.processor, "frame_counter"):
             self.stats["frames_processed"] = self.processor.frame_counter
 
     async def _save_event_to_db(self, event: BattleEvent):
@@ -122,12 +132,12 @@ class LiveBattleAnalyzer:
 
             # Create Battle record
             battles = [Battle(battle_id=battle_id, trainer_id=trainer_id_in_db)]
-            
+
             # Run database operation in executor to avoid blocking
             await asyncio.get_event_loop().run_in_executor(
                 None, self.db_handler.insert_battle_id, battles
             )
-            
+
             logger.info(f"Battle record created: {battle_id}")
 
         except Exception as e:
@@ -143,9 +153,11 @@ class LiveBattleAnalyzer:
 
             battle_id = event.data.get("battle_id")
             pokemon_list = event.data.get("pokemon", [])
-            
+
             if not battle_id or not pokemon_list:
-                logger.error("Missing battle_id or pokemon data in pokemon_selection event")
+                logger.error(
+                    "Missing battle_id or pokemon data in pokemon_selection event"
+                )
                 return
 
             # Create BattlePokemonTeam records for selected pokemon
@@ -158,17 +170,21 @@ class LiveBattleAnalyzer:
                         PreBattlePokemon(
                             battle_id=battle_id,
                             team="your",
-                            pokemon_name=normalized_name
+                            pokemon_name=normalized_name,
                         )
                     )
 
             if battle_pokemon_team:
                 # Run database operation in executor
                 await asyncio.get_event_loop().run_in_executor(
-                    None, self.db_handler.insert_battle_pokemon_team, battle_pokemon_team
+                    None,
+                    self.db_handler.insert_battle_pokemon_team,
+                    battle_pokemon_team,
                 )
-                
-                logger.info(f"Pokemon selection saved: {len(battle_pokemon_team)} pokemon for battle {battle_id}")
+
+                logger.info(
+                    f"Pokemon selection saved: {len(battle_pokemon_team)} pokemon for battle {battle_id}"
+                )
 
         except Exception as e:
             logger.error(f"Error saving pokemon selection to database: {e}")
@@ -179,20 +195,20 @@ class LiveBattleAnalyzer:
         try:
             battle_id = event.data.get("battle_id")
             result = event.data.get("result")
-            
+
             if not battle_id or not result:
                 logger.error("Missing battle_id or result in battle_result event")
                 return
 
             # Store battle result temporarily for battle completion
-            if not hasattr(self, '_pending_battle_results'):
+            if not hasattr(self, "_pending_battle_results"):
                 self._pending_battle_results = {}
-            
+
             self._pending_battle_results[battle_id] = {
                 "result": result,
-                "timestamp": event.timestamp
+                "timestamp": event.timestamp,
             }
-            
+
             logger.debug(f"Battle result stored temporarily: {battle_id} -> {result}")
 
         except Exception as e:
@@ -210,19 +226,24 @@ class LiveBattleAnalyzer:
             final_rank = event.data.get("final_rank")
             starting_rank = event.data.get("starting_rank")
             rank_change = event.data.get("rank_change", 0)
-            
+
             if not battle_id or final_rank is None:
                 logger.error("Missing battle_id or final_rank in battle_complete event")
                 return
 
             # Get stored battle result
             battle_result = None
-            if hasattr(self, '_pending_battle_results') and battle_id in self._pending_battle_results:
+            if (
+                hasattr(self, "_pending_battle_results")
+                and battle_id in self._pending_battle_results
+            ):
                 battle_result = self._pending_battle_results[battle_id]["result"]
                 del self._pending_battle_results[battle_id]
-            
+
             if not battle_result:
-                logger.warning(f"No battle result found for battle {battle_id}, defaulting to 'unknown'")
+                logger.warning(
+                    f"No battle result found for battle {battle_id}, defaulting to 'unknown'"
+                )
                 battle_result = "unknown"
 
             # Create BattleLog record
@@ -241,7 +262,9 @@ class LiveBattleAnalyzer:
                     opponent_pokemon_2="",
                     opponent_pokemon_3="",
                     video=f"live_stream_{battle_id}",  # Mark as live stream
-                    memo=f"Live analysis - Rank change: {rank_change:+d}" if rank_change else "Live analysis"
+                    memo=f"Live analysis - Rank change: {rank_change:+d}"
+                    if rank_change
+                    else "Live analysis",
                 )
             ]
 
@@ -249,9 +272,11 @@ class LiveBattleAnalyzer:
             await asyncio.get_event_loop().run_in_executor(
                 None, self.db_handler.insert_battle_summary, battle_summary
             )
-            
-            logger.info(f"Battle completed and saved: {battle_id}, Result: {battle_result}, "
-                       f"Rank: {starting_rank} -> {final_rank} ({rank_change:+d})")
+
+            logger.info(
+                f"Battle completed and saved: {battle_id}, Result: {battle_result}, "
+                f"Rank: {starting_rank} -> {final_rank} ({rank_change:+d})"
+            )
 
         except Exception as e:
             logger.error(f"Error saving battle completion to database: {e}")
@@ -283,7 +308,9 @@ class LiveBattleAnalyzer:
             logger.info(f"Starting live battle analysis for {self.trainer_id}")
             logger.info(f"Capture source: {self.capture_source_type}")
             logger.info(f"Language: {self.language}")
-            logger.info(f"Database saving: {'enabled' if self.db_handler else 'disabled'}")
+            logger.info(
+                f"Database saving: {'enabled' if self.db_handler else 'disabled'}"
+            )
 
             frame_stream = self.capture_source.start_capture()
 
@@ -330,7 +357,7 @@ class LiveBattleAnalyzer:
 
         try:
             # Stop the processor gracefully
-            if hasattr(self.processor, 'stop_processing'):
+            if hasattr(self.processor, "stop_processing"):
                 await self.processor.stop_processing()
 
             # Stop the capture source
@@ -352,7 +379,7 @@ class LiveBattleAnalyzer:
     def get_stats(self) -> Dict[str, Any]:
         # Update frame processing stats
         self._update_frame_stats()
-        
+
         stats = self.stats.copy()
 
         if stats["start_time"]:

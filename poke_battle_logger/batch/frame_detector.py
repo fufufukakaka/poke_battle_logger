@@ -14,11 +14,16 @@ from config.config import (
     LEVEL_50_TEMPLATE_PATH,
     LEVEL_50_WINDOW,
     LOST_TEMPLATE_PATH,
+    MOVE_ANKER_POSITION,
+    MOVE_ANKER_TEMPLATE,
+    MOVE_ANKER_THRESHOLD,
     POKEMON_MESSAGE_WINDOW,
     POKEMON_MESSAGE_WINDOW_MAX_WHITE_PIXELS,
     POKEMON_MESSAGE_WINDOW_MIN_WHITE_PIXELS,
     POKEMON_MESSAGE_WINDOW_THRESHOLD_VALUE,
     POKEMON_SELECT_DONE_WINDOW,
+    POKEMON_SELECTION_ICON,
+    POKEMON_SELECTION_TEMPLATE_PATH,
     RANKING_TEMPLATE_PATH,
     RANKING_WINDOW,
     SELECT_DONE_TEMPLATE_PATH,
@@ -28,11 +33,6 @@ from config.config import (
     WIN_LOST_WINDOW,
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     WIN_TEMPLATE_PATH,
-    MOVE_ANKER_POSITION,
-    MOVE_ANKER_TEMPLATE,
-    POKEMON_SELECTION_TEMPLATE_PATH,
-    POKEMON_SELECTION_ICON,
-    MOVE_ANKER_THRESHOLD,
 )
 
 
@@ -52,7 +52,16 @@ class FrameDetector:
 
     def setup_templates(
         self,
-    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    ) -> Tuple[
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+        np.ndarray,
+    ]:
         if self.lang == "en":
             gray_standing_by_template = cv2.imread(STANDING_BY_TEMPLATE_PATH, 0)
             gray_level_50_template = cv2.imread(LEVEL_50_TEMPLATE_PATH, 0)
@@ -61,7 +70,9 @@ class FrameDetector:
             gray_lost_template = cv2.imread(LOST_TEMPLATE_PATH, 0)
             gray_select_done_template = cv2.imread(SELECT_DONE_TEMPLATE_PATH, 0)
             gray_move_anker_template = cv2.imread(MOVE_ANKER_TEMPLATE, 0)
-            gray_pokemon_selection_template = cv2.imread(POKEMON_SELECTION_TEMPLATE_PATH, 0)
+            gray_pokemon_selection_template = cv2.imread(
+                POKEMON_SELECTION_TEMPLATE_PATH, 0
+            )
         elif self.lang == "ja":
             gray_standing_by_template = cv2.imread(
                 JAPANESE_STANDING_BY_TEMPLATE_PATH, 0
@@ -73,7 +84,9 @@ class FrameDetector:
             gray_select_done_template = cv2.imread(
                 JAPANESE_SELECT_DONE_TEMPLATE_PATH, 0
             )
-            gray_move_anker_template = cv2.imread(MOVE_ANKER_TEMPLATE, 0)  # TODO: 日本語のテンプレート
+            gray_move_anker_template = cv2.imread(
+                MOVE_ANKER_TEMPLATE, 0
+            )  # TODO: 日本語のテンプレート
             gray_pokemon_selection_template = cv2.imread(
                 POKEMON_SELECTION_TEMPLATE_PATH, 0
             )

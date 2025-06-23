@@ -9,7 +9,16 @@ import cv2
 import numpy as np
 import pandas as pd
 import yt_dlp
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile, WebSocket, WebSocketDisconnect, status
+from fastapi import (
+    FastAPI,
+    File,
+    HTTPException,
+    Request,
+    UploadFile,
+    WebSocket,
+    WebSocketDisconnect,
+    status,
+)
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -21,8 +30,8 @@ from poke_battle_logger.cloud_batch_handler import CloudBatchHandler
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 from poke_battle_logger.stream.live_battle_analyzer import LiveBattleAnalyzer
+from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
 logging.basicConfig(
     level=logging.INFO,
@@ -468,62 +477,74 @@ async def search_battles(
 # Live Stream Analysis endpoints
 live_analyzers: Dict[str, LiveBattleAnalyzer] = {}
 
+
 class LiveAnalysisStartRequest(BaseModel):
     trainer_id: str
     capture_source: str = "obs"
     language: str = "en"
     capture_config: Dict[str, Union[str, int]] = {}
 
+
 class LiveAnalysisStatusResponse(BaseModel):
     is_running: bool
     stats: Dict[str, Union[str, int, float]]
     available_sources: List[str]
+
 
 @app.post("/api/v1/live_analysis/start")
 async def start_live_analysis(request: LiveAnalysisStartRequest) -> Dict[str, str]:
     if request.trainer_id in live_analyzers:
         existing_analyzer = live_analyzers[request.trainer_id]
         if existing_analyzer.is_running:
-            return {"status": "error", "message": "Live analysis already running for this trainer"}
+            return {
+                "status": "error",
+                "message": "Live analysis already running for this trainer",
+            }
         else:
             del live_analyzers[request.trainer_id]
-    
+
     try:
         analyzer = LiveBattleAnalyzer(
             trainer_id=request.trainer_id,
             language=request.language,
             capture_source=request.capture_source,
             capture_config=request.capture_config,
-            db_handler=DatabaseHandler()
+            db_handler=DatabaseHandler(),
         )
-        
+
         live_analyzers[request.trainer_id] = analyzer
-        
+
         # Start analysis in background
         import asyncio
+
         asyncio.create_task(analyzer.start_analysis())
-        
+
         return {"status": "success", "message": "Live analysis started"}
-        
+
     except Exception as e:
         logger.error(f"Error starting live analysis: {e}")
         return {"status": "error", "message": str(e)}
 
+
 @app.post("/api/v1/live_analysis/stop")
 async def stop_live_analysis(trainer_id: str) -> Dict[str, str]:
     if trainer_id not in live_analyzers:
-        return {"status": "error", "message": "No live analysis running for this trainer"}
-    
+        return {
+            "status": "error",
+            "message": "No live analysis running for this trainer",
+        }
+
     try:
         analyzer = live_analyzers[trainer_id]
         await analyzer.stop_analysis()
         del live_analyzers[trainer_id]
-        
+
         return {"status": "success", "message": "Live analysis stopped"}
-        
+
     except Exception as e:
         logger.error(f"Error stopping live analysis: {e}")
         return {"status": "error", "message": str(e)}
+
 
 @app.get("/api/v1/live_analysis/status")
 async def get_live_analysis_status(trainer_id: str) -> LiveAnalysisStatusResponse:
@@ -533,58 +554,50 @@ async def get_live_analysis_status(trainer_id: str) -> LiveAnalysisStatusRespons
         return LiveAnalysisStatusResponse(
             is_running=False,
             stats={},
-            available_sources=dummy_analyzer.get_available_capture_sources()
+            available_sources=dummy_analyzer.get_available_capture_sources(),
         )
-    
+
     analyzer = live_analyzers[trainer_id]
     return LiveAnalysisStatusResponse(
         is_running=analyzer.is_running,
         stats=analyzer.get_stats(),
-        available_sources=analyzer.get_available_capture_sources()
+        available_sources=analyzer.get_available_capture_sources(),
     )
+
 
 @app.get("/api/v1/live_analysis/sources")
 async def get_available_capture_sources() -> Dict[str, List[str]]:
     dummy_analyzer = LiveBattleAnalyzer("dummy", "en", "obs")
-    return {
-        "available_sources": dummy_analyzer.get_available_capture_sources()
-    }
+    return {"available_sources": dummy_analyzer.get_available_capture_sources()}
+
 
 @app.post("/api/v1/live_analysis/test_source")
 async def test_capture_source(
-    source_type: str,
-    config: Dict[str, Union[str, int]] = {}
+    source_type: str, config: Dict[str, Union[str, int]] = {}
 ) -> Dict[str, Union[str, bool]]:
     try:
         dummy_analyzer = LiveBattleAnalyzer("dummy", "en", "obs")
         result = await dummy_analyzer.test_capture_source(source_type, config)
-        
-        return {
-            "status": "success" if result else "failed",
-            "available": result
-        }
-        
+
+        return {"status": "success" if result else "failed", "available": result}
+
     except Exception as e:
         logger.error(f"Error testing capture source: {e}")
-        return {
-            "status": "error",
-            "available": False,
-            "message": str(e)
-        }
+        return {"status": "error", "available": False, "message": str(e)}
 
 
 # WebSocket connection management
 class WebSocketManager:
     def __init__(self):
         self.active_connections: Dict[str, List[WebSocket]] = {}
-    
+
     async def connect(self, websocket: WebSocket, trainer_id: str):
         await websocket.accept()
         if trainer_id not in self.active_connections:
             self.active_connections[trainer_id] = []
         self.active_connections[trainer_id].append(websocket)
         logger.info(f"WebSocket connected for trainer {trainer_id}")
-    
+
     def disconnect(self, websocket: WebSocket, trainer_id: str):
         if trainer_id in self.active_connections:
             if websocket in self.active_connections[trainer_id]:
@@ -592,7 +605,7 @@ class WebSocketManager:
             if not self.active_connections[trainer_id]:
                 del self.active_connections[trainer_id]
         logger.info(f"WebSocket disconnected for trainer {trainer_id}")
-    
+
     async def send_to_trainer(self, trainer_id: str, message: dict):
         if trainer_id in self.active_connections:
             disconnected = []
@@ -601,65 +614,78 @@ class WebSocketManager:
                     await connection.send_text(json.dumps(message))
                 except:
                     disconnected.append(connection)
-            
+
             # Remove disconnected connections
             for conn in disconnected:
                 self.disconnect(conn, trainer_id)
 
+
 websocket_manager = WebSocketManager()
+
 
 @app.websocket("/ws/live_analysis/{trainer_id}")
 async def websocket_endpoint(websocket: WebSocket, trainer_id: str):
     await websocket_manager.connect(websocket, trainer_id)
-    
+
     # Add event handler to the analyzer if it exists
     if trainer_id in live_analyzers:
         analyzer = live_analyzers[trainer_id]
-        
+
         async def websocket_event_handler(event):
-            await websocket_manager.send_to_trainer(trainer_id, {
-                "type": "battle_event",
-                "event_type": event.event_type,
-                "data": event.data,
-                "timestamp": event.timestamp.isoformat(),
-                "confidence": event.confidence
-            })
-        
+            await websocket_manager.send_to_trainer(
+                trainer_id,
+                {
+                    "type": "battle_event",
+                    "event_type": event.event_type,
+                    "data": event.data,
+                    "timestamp": event.timestamp.isoformat(),
+                    "confidence": event.confidence,
+                },
+            )
+
         analyzer.add_event_callback(websocket_event_handler)
-    
+
     try:
         # Send initial status
         if trainer_id in live_analyzers:
             analyzer = live_analyzers[trainer_id]
-            await websocket.send_text(json.dumps({
-                "type": "status",
-                "is_running": analyzer.is_running,
-                "stats": analyzer.get_stats()
-            }))
-        
+            await websocket.send_text(
+                json.dumps(
+                    {
+                        "type": "status",
+                        "is_running": analyzer.is_running,
+                        "stats": analyzer.get_stats(),
+                    }
+                )
+            )
+
         # Keep connection alive and handle incoming messages
         while True:
             try:
                 data = await websocket.receive_text()
                 message = json.loads(data)
-                
+
                 if message.get("type") == "ping":
                     await websocket.send_text(json.dumps({"type": "pong"}))
                 elif message.get("type") == "get_status":
                     if trainer_id in live_analyzers:
                         analyzer = live_analyzers[trainer_id]
-                        await websocket.send_text(json.dumps({
-                            "type": "status",
-                            "is_running": analyzer.is_running,
-                            "stats": analyzer.get_stats()
-                        }))
-                        
+                        await websocket.send_text(
+                            json.dumps(
+                                {
+                                    "type": "status",
+                                    "is_running": analyzer.is_running,
+                                    "stats": analyzer.get_stats(),
+                                }
+                            )
+                        )
+
             except WebSocketDisconnect:
                 break
             except Exception as e:
                 logger.error(f"WebSocket error: {e}")
                 break
-                
+
     except WebSocketDisconnect:
         pass
     finally:

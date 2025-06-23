@@ -1630,7 +1630,13 @@ class DatabaseHandler:
         )
         return _res
 
-    def search_battles(self, trainer_id: str, season: int, my_pokemons: list[str], opponent_pokemons: list[str]) -> list[dict[str, str | int]]:
+    def search_battles(
+        self,
+        trainer_id: str,
+        season: int,
+        my_pokemons: list[str],
+        opponent_pokemons: list[str],
+    ) -> list[dict[str, str | int]]:
         sql = f"""
         with target_trainer as (
             select
@@ -1689,7 +1695,7 @@ class DatabaseHandler:
                 "opponent_pokemon_1",
                 "opponent_pokemon_2",
                 "opponent_pokemon_3",
-                "memo"
+                "memo",
             ],
         )
         _res = cast(

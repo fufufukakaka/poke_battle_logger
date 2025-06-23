@@ -73,4 +73,3 @@ class ImageLabel(BaseModel):
 class NameWindowImageLabel(BaseModel):
     pokemon_name_window_image_file_on_gcs: str
     pokemon_name_window_label: str
-
