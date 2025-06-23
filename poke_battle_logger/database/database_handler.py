@@ -87,7 +87,7 @@ class MessageLog(BaseModel):  # type: ignore
     message = TextField()
 
 
-class SelectedMoves(BaseModel):  # type: ignore
+class SelectedMove(BaseModel):  # type: ignore
     battle_id = ForeignKeyField(Battle, backref="selectedMoves")
     frame_number = IntegerField()
     your_pokemon_name = TextField()
@@ -142,8 +142,8 @@ class DatabaseHandler:
                 self.db.create_tables([InBattlePokemonLog])
             if not MessageLog.table_exists():
                 self.db.create_tables([MessageLog])
-            if not SelectedMoves.table_exists():
-                self.db.create_tables([SelectedMoves])
+            if not SelectedMove.table_exists():
+                self.db.create_tables([SelectedMove])
             if not Season.table_exists():
                 self.db.create_tables([Season])
                 with self.db:
@@ -251,10 +251,10 @@ class DatabaseHandler:
         self.db.close()
 
     @retry(stop=stop_after_attempt(5))
-    def insert_selected_moves(self, selected_moves: List[Dict[str, str]]) -> None:
+    def insert_selected_move_log(self, selected_moves: List[Dict[str, str]]) -> None:
         self.db.connect()
         for _selected_move in selected_moves:
-            SelectedMoves.create(
+            SelectedMove.create(
                 battle_id=_selected_move["battle_id"],
                 frame_number=_selected_move["frame_number"],
                 your_pokemon_name=unicodedata.normalize(

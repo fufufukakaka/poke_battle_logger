@@ -27,6 +27,10 @@ torchvision = "^0.20.1"
 pyarrow-hotfix = "^0.6"
 accelerate = "^1.1.1"
 python-multipart = "^0.0.19"
+websockets = "^12.0"
+obs-websocket-py = "^1.6.3"
+mss = "^9.0.1"
+asyncio-mqtt = "^0.16.2"
 
 [tool.poetry.group.job]
 optional = true
@@ -68,7 +72,7 @@ ipywidgets = "^8.1.1"
 [[tool.poetry.source]]
 name = "default"
 url = "https://pypi.python.org/simple/"
-priority = "default"
+priority = "primary"
 
 [[tool.poetry.source]]
 name = "torch-cpu"
