@@ -1,19 +1,27 @@
-import { Alert, AlertIcon, Spinner, Badge, Box, Button, Container, Progress, Stack, HStack, Heading, Image, Text, InputGroup, InputLeftAddon, Input, Divider, VStack, Radio, RadioGroup, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, OrderedList, ListItem } from "@chakra-ui/react";
+import { Spinner, Badge, Box, Button, Container, Stack, HStack, Heading, Image, Text, InputGroup, InputLeftAddon, Input, Divider, VStack, Radio, RadioGroup, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, OrderedList, ListItem } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from 'axios';
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
-import { ServerHost, ServerHostWebsocket } from "../../util"
+import { ServerHost } from "../../util"
 import useSWR from "swr";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
+} from '@chakra-ui/react'
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Switch,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react'
 
 interface videoFormat {
@@ -39,6 +47,8 @@ const ProcessVideoPage = () => {
   const [videoFormat, setVideoFormat] = useState<videoFormat | undefined>(undefined);
   const [langInVideo, setLangInVideo] = useState('en')
   const [videoStatusLogDetail, setVideoStatusLogDetail] = useState<string[]>([])
+  const [isShowFinalResult, setIsShowFinalResult] = useState<boolean>(false)
+  const [finalResult, setFinalResult] = useState<number | undefined>(undefined)
 
   const { user } = useAuth0();
   const trainerId = user?.sub?.replace("|", "_");
@@ -54,7 +64,8 @@ const ProcessVideoPage = () => {
   };
 
   const handleExtractJob = async () => {
-    await axios.get(`${ServerHost}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`);
+    const requestUrl = finalResult ? `${ServerHost}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}&finalResult=${finalResult}` : `${ServerHost}/api/v1/extract_stats_from_video?videoId=${videoId}&language=${langInVideo}&trainerId=${user?.sub?.replace("|", "_")}`
+    await axios.get(requestUrl);
     dataVideoStatus.push({
       videoId: videoId,
       registeredAt: new Date().toLocaleString(),
@@ -65,6 +76,14 @@ const ProcessVideoPage = () => {
   const processLogDetailFetchHandler = async (targetVideoId: string) => {
     const res = await axios.get(`/api/get_battle_video_detail_status_log?videoId=${targetVideoId}`);
     setVideoStatusLogDetail(res.data);
+  }
+
+  const showFinalResultInput = () => {
+    setIsShowFinalResult(!isShowFinalResult)
+  }
+
+  const handleFinalResultChange = (value: string) => {
+    setFinalResult(parseInt(value))
   }
 
   return (
@@ -106,6 +125,21 @@ const ProcessVideoPage = () => {
                       <Radio value='ja'>Japanese</Radio>
                   </Stack>
               </RadioGroup>
+              <FormControl as='fieldset'>
+                <FormLabel as='legend'>
+                  最後の対戦終了後の順位が動画に記録されていない場合、こちらに入力してください
+                </FormLabel>
+                <Switch onChange={showFinalResultInput} />
+                {isShowFinalResult ? (
+                <NumberInput value={finalResult} onChange={handleFinalResultChange}>
+                  <NumberInputField />
+                  <NumberInputStepper>
+                    <NumberIncrementStepper />
+                    <NumberDecrementStepper />
+                  </NumberInputStepper>
+                </NumberInput>)
+                : null}
+              </FormControl>
               <Button colorScheme='green' onClick={() => handleExtractJob()} marginBottom={"10px"}>Start Process Video</Button>
             </Box>
           </>

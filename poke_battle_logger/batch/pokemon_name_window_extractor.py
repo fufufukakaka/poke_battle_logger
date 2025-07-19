@@ -134,11 +134,15 @@ class PokemonNameWindowExtractor:
         OCRで読み取った日本語の名前から特殊文字を削除する
         """
         _text = self.non_CJK_patterns.sub(r"", text)
+        # 空白を削除
+        _text = "".join(_text.split())
         if _text == "八八ダクカミ":
+            return "ハバタクカミ"
+        elif text == "八人タクカミ":
             return "ハバタクカミ"
         elif _text == "八ツサム":
             return "ハッサム"
-        elif _text == "アク ジム":
+        elif _text == "アクジム":
             return "アグノム"
         else:
             return _text

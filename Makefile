@@ -41,6 +41,13 @@ build-pokemon-multi-name-dict: # build pokemon multi name dict
 run_dashboard:
 	cd poke_battle_logger_vis && yarn run dev
 
+run_live_analysis: # run live stream analysis (requires TRAINER_ID, CAPTURE_SOURCE, LANGUAGE)
+	$(PYTHON) poke_battle_logger/stream/live_battle_analyzer.py \
+	$(TRAINER_ID) $(CAPTURE_SOURCE) $(LANGUAGE)
+
+test_live_capture: # test live capture source (requires CAPTURE_SOURCE)
+	$(PYTHON) -m poke_battle_logger.stream.frame_capture $(CAPTURE_SOURCE)
+
 run_api:
 	ENV=$(ENV) poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 

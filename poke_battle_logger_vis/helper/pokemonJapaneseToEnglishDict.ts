@@ -1067,6 +1067,19 @@ export const pokemonJapaneseToEnglishDict: PokemonJapaneseToEnglishDict = {
   "テツノカシラ": "Iron Crown",
   "テラパゴス": "Terapagos",
   "モモワロウ": "Pecharunt",
+  "バドレックス(黒馬)": "Calyrex Shadow Rider",
+  "バドレックス(白馬)": "Calyrex Ice Rider",
+  "ネクロズマ(日食)": "Necrozma Dusk Mane",
+  "ネクロズマ(月食)": "Necrozma Dawn Wings",
+  "オリジンギラティナ": "Giratina Origin",
+  "オリジンディアルガ": "Dialga Origin",
+  "オリジンパルキア": "Palkia Origin",
+  "ブラックキュレム": "Kyurem Black",
+  "ホワイトキュレム": "Kyurem White",
+  "オドリドリ(めらめら)": "Oricorio Baile",
+  "オドリドリ(ぱちぱち)": "Oricorio Pom-Pom",
+  "オドリドリ(ふらふら)": "Oricorio Sensu",
+  "オドリドリ(ぽかぽか)": "Oricorio Pau",
 }
 
 export const reactSelectOptions = Object.keys(pokemonJapaneseToEnglishDict).map(key => ({

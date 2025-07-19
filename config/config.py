@@ -48,12 +48,17 @@ POKEMON_NAME_WINDOW_THRESHOLD_VALUE = 200
 POKEMON_NAME_WINDOW_THRESHOLD_VALUE1 = 200
 POKEMON_NAME_WINDOW_THRESHOLD_VALUE2 = 130
 
+POKEMON_SELECTION_ICON = (0, 80, 850, 910)
+
 STANDING_BY_TEMPLATE_PATH = "template_images/general_templates/standing_by.png"
 LEVEL_50_TEMPLATE_PATH = "template_images/general_templates/level_50.png"
 RANKING_TEMPLATE_PATH = "template_images/general_templates/ranking.png"
 WIN_TEMPLATE_PATH = "template_images/general_templates/win.png"
 LOST_TEMPLATE_PATH = "template_images/general_templates/lost.png"
 SELECT_DONE_TEMPLATE_PATH = "template_images/general_templates/select_done.png"
+POKEMON_SELECTION_TEMPLATE_PATH = (
+    "template_images/general_templates/pokemon_selection.png"
+)
 
 JAPANESE_STANDING_BY_TEMPLATE_PATH = (
     "template_images/japanese_general_templates/standing_by.png"
@@ -69,3 +74,15 @@ JAPANESE_LOST_TEMPLATE_PATH = "template_images/japanese_general_templates/lost.p
 JAPANESE_SELECT_DONE_TEMPLATE_PATH = (
     "template_images/japanese_general_templates/select_done.png"
 )
+
+MOVE_ANKER_TEMPLATE = "template_images/general_templates/move_info.png"
+MOVE_ANKER_POSITION = (995, 1040, 917, 1057)
+MOVE_SELECT_WINDOW1 = (600, 660, 1740, 1880)
+MOVE_SELECT_WINDOW2 = (710, 770, 1740, 1880)
+MOVE_SELECT_WINDOW3 = (820, 880, 1740, 1880)
+MOVE_SELECT_WINDOW4 = (930, 990, 1740, 1880)
+MOVE_ANKER_THRESHOLD = 0.9
+MOVE_TITLE1 = (600, 660, 1470, 1880)
+MOVE_TITLE2 = (710, 770, 1470, 1880)
+MOVE_TITLE3 = (820, 880, 1470, 1880)
+MOVE_TITLE4 = (930, 990, 1470, 1880)

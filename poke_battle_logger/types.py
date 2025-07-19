@@ -56,6 +56,15 @@ class InBattlePokemon:
     opponent_pokemon_name: str
 
 
+@dataclasses.dataclass
+class SelectedMoves:
+    battle_id: str
+    frame_number: int
+    your_pokemon_name: str
+    opponent_pokemon_name: str
+    selected_move_name: str
+
+
 class ImageLabel(BaseModel):
     pokemon_image_file_on_gcs: str
     pokemon_label: str

@@ -9,6 +9,14 @@ import pytesseract
 from config.config import (
     FIRST_RANKING_NUMBER_WINDOW,
     MESSAGE_WINDOW,
+    MOVE_SELECT_WINDOW1,
+    MOVE_SELECT_WINDOW2,
+    MOVE_SELECT_WINDOW3,
+    MOVE_SELECT_WINDOW4,
+    MOVE_TITLE1,
+    MOVE_TITLE2,
+    MOVE_TITLE3,
+    MOVE_TITLE4,
     OPPONENT_POKEMON_NAME_WINDOW,
     POKEMON_SELECT_NUMBER_WINDOW1,
     POKEMON_SELECT_NUMBER_WINDOW2,
@@ -400,3 +408,85 @@ class Extractor:
 
         message = self._recognize_message(thresh)
         return message
+
+    def extract_move(self, frame: np.ndarray) -> dict[str, str]:
+        """
+        選択した技を OCR で認識する
+
+        1. 技決定フレームについて、技ウィンドウを取り出した後の処理
+            a. 技ウィンドウから 4つの技選択の明るさを計算する
+            b. 最も明るい技のウィンドウを特定して、そこの文字領域を切り取る
+            c. 切り取った文字領域を OCR する
+        2. 技決定フレームについて、どの対面で打ったのかという情報を取り出す
+            a. 自分のポケモン名
+            b. 相手のポケモン名
+        """
+
+        move_select_window1 = frame[
+            MOVE_SELECT_WINDOW1[0] : MOVE_SELECT_WINDOW1[1],
+            MOVE_SELECT_WINDOW1[2] : MOVE_SELECT_WINDOW1[3],
+        ]
+        move_select_window2 = frame[
+            MOVE_SELECT_WINDOW2[0] : MOVE_SELECT_WINDOW2[1],
+            MOVE_SELECT_WINDOW2[2] : MOVE_SELECT_WINDOW2[3],
+        ]
+        move_select_window3 = frame[
+            MOVE_SELECT_WINDOW3[0] : MOVE_SELECT_WINDOW3[1],
+            MOVE_SELECT_WINDOW3[2] : MOVE_SELECT_WINDOW3[3],
+        ]
+        move_select_window4 = frame[
+            MOVE_SELECT_WINDOW4[0] : MOVE_SELECT_WINDOW4[1],
+            MOVE_SELECT_WINDOW4[2] : MOVE_SELECT_WINDOW4[3],
+        ]
+
+        move_select_windows = [
+            move_select_window1,
+            move_select_window2,
+            move_select_window3,
+            move_select_window4,
+        ]
+
+        move_title_window1 = frame[
+            MOVE_TITLE1[0] : MOVE_TITLE1[1],
+            MOVE_TITLE1[2] : MOVE_TITLE1[3],
+        ]
+        move_title_window2 = frame[
+            MOVE_TITLE2[0] : MOVE_TITLE2[1],
+            MOVE_TITLE2[2] : MOVE_TITLE2[3],
+        ]
+        move_title_window3 = frame[
+            MOVE_TITLE3[0] : MOVE_TITLE3[1],
+            MOVE_TITLE3[2] : MOVE_TITLE3[3],
+        ]
+        move_title_window4 = frame[
+            MOVE_TITLE4[0] : MOVE_TITLE4[1],
+            MOVE_TITLE4[2] : MOVE_TITLE4[3],
+        ]
+        move_title_windows = [
+            move_title_window1,
+            move_title_window2,
+            move_title_window3,
+            move_title_window4,
+        ]
+
+        move_select_window_brightness = [
+            np.mean(cv2.cvtColor(window, cv2.COLOR_BGR2GRAY))
+            for window in move_select_windows
+        ]
+
+        max_brightness_index = np.argmax(move_select_window_brightness)
+        max_brightness_move_title_window = move_title_windows[max_brightness_index]
+
+        gray = cv2.cvtColor(max_brightness_move_title_window, cv2.COLOR_BGR2GRAY)
+        move = self._recognize_message(gray)
+        (
+            your_pokemon_name,
+            opponent_pokemon_name,
+            _,
+        ) = self.extract_pokemon_name_in_battle(frame)
+
+        return {
+            "move": move,
+            "your_pokemon_name": your_pokemon_name,
+            "opponent_pokemon_name": opponent_pokemon_name,
+        }

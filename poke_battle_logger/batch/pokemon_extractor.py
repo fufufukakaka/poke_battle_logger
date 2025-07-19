@@ -40,9 +40,13 @@ class PokemonExtractor:
         self.pre_battle_pokemon_templates = self._setup_pre_battle_pokemon_templates()
         self.pokemon_name_window_extractor = PokemonNameWindowExtractor()
         self.classifier_pipe = pipeline(
+            model_kwargs={
+                "ignore_mismatched_sizes": True,
+                "use_auth_token": os.getenv("HF_ACCESS_TOKEN"),
+            },
             task="image-classification",
             model=MODEL_NAME,
-            use_auth_token=os.getenv("HF_ACCESS_TOKEN"),
+            framework="pt",
         )
 
     def _setup_pre_battle_pokemon_templates(self) -> Dict[str, np.ndarray]:
@@ -191,7 +195,7 @@ class PokemonExtractor:
         return your_pokemons, opponent_pokemons
 
     def extract_pre_battle_pokemons(
-        self, frame: np.ndarray
+        self, frame: np.ndarray, is_both_team: bool = True
     ) -> Tuple[List[str], List[str], bool]:
         """
         対戦前のポケモンを抽出する
@@ -200,17 +204,10 @@ class PokemonExtractor:
         your_pokemons, opponent_pokemons = self._get_pokemons(frame)
 
         is_exist_unknown_pokemon_list: List[bool] = []
-        # search by template matching
-        your_pokemon_names: List[str] = []
-        for pokemon_image in your_pokemons:
-            (
-                pokemon_name,
-                _is_exist_unknown_pokemon,
-            ) = self._search_pokemon_by_transformers(pokemon_image)
-            is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
-            your_pokemon_names.append(pokemon_name)
 
         opponent_pokemon_names: List[str] = []
+        your_pokemon_names: List[str] = []
+
         for pokemon_image in opponent_pokemons:
             (
                 pokemon_name,
@@ -218,6 +215,15 @@ class PokemonExtractor:
             ) = self._search_pokemon_by_transformers(pokemon_image)
             is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
             opponent_pokemon_names.append(pokemon_name)
+
+        if is_both_team:
+            for pokemon_image in your_pokemons:
+                (
+                    pokemon_name,
+                    _is_exist_unknown_pokemon,
+                ) = self._search_pokemon_by_transformers(pokemon_image)
+                is_exist_unknown_pokemon_list.append(_is_exist_unknown_pokemon)
+                your_pokemon_names.append(pokemon_name)
 
         # True を一つでも含んでいたら
         if is_exist_unknown_pokemon_list.count(True) > 0:
