@@ -2,7 +2,7 @@ import logging
 import os
 from collections import Counter
 from logging import getLogger
-from typing import List, Tuple
+from typing import List, Tuple, cast
 
 import cv2
 import resend
@@ -99,6 +99,28 @@ class PokemonBattleExtractor:
             trainer_id_in_DB=self.trainer_id_in_DB,
             video_id=self.video_id,
             status="Video downloaded.",
+        )
+
+    def _get_current_teams_and_pokemons(
+        self,
+        pre_battle_pokemons: dict[int, dict[str, list[str]]],
+        battle_pokemons: list[dict[str, str | int]],
+    ) -> tuple[list[str], list[str], str, str]:
+        """
+        対戦中のポケモンのチーム情報と現在のポケモン名を取得する
+        """
+        if not pre_battle_pokemons or not battle_pokemons:
+            return [], [], "", ""
+
+        last_pre_battle = pre_battle_pokemons[max(pre_battle_pokemons.keys())]
+        your_current_pokemon_name = cast(str, battle_pokemons[-1]["your_pokemon_name"])
+        opponent_current_pokemon_name = cast(str, battle_pokemons[-1]["opponent_pokemon_name"])
+
+        return (
+            last_pre_battle["your_pokemon_names"],
+            last_pre_battle["opponent_pokemon_names"],
+            your_current_pokemon_name,
+            opponent_current_pokemon_name,
         )
 
     def run(self) -> Tuple[int, int, int]:
@@ -246,9 +268,9 @@ class PokemonBattleExtractor:
             if i == first_ranking_frame_number:
                 logger.info(f"Extracting first ranking... {self.video_id}")
                 _first_ranking_frame = frame
-                rank_numbers[
-                    first_ranking_frame_number
-                ] = extractor.extract_first_rank_number(_first_ranking_frame)
+                rank_numbers[first_ranking_frame_number] = (
+                    extractor.extract_first_rank_number(_first_ranking_frame)
+                )
 
             # ランクを検出(OCR)
             if i in ranking_frame_numbers:
@@ -302,7 +324,22 @@ class PokemonBattleExtractor:
             # メッセージの文字認識(OCR)
             if i in message_window_frames:
                 _message_frame = frame
-                _message = extractor.extract_message(_message_frame)
+                (
+                    pre_battle_your_teams,
+                    pre_battle_opponent_teams,
+                    your_current_pokemon_name,
+                    opponent_current_pokemon_name,
+                ) = self._get_current_teams_and_pokemons(
+                    pre_battle_pokemons, battle_pokemons
+                )
+
+                _message = extractor.extract_message(
+                    _message_frame,
+                    pre_battle_your_teams=pre_battle_your_teams,
+                    pre_battle_opponent_teams=pre_battle_opponent_teams,
+                    your_current_pokemon_name=your_current_pokemon_name,
+                    opponent_current_pokemon_name=opponent_current_pokemon_name,
+                )
                 if _message is not None:
                     messages[i] = _message
 

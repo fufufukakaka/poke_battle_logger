@@ -8,7 +8,7 @@ with ranked_battle_log as (
 		inbattlepokemonlog
 )
 select
-	rbl.turn,
+	COALESCE(rbl.turn, 0) as turn,
 	ml.frame_number,
 	ml.message
 from

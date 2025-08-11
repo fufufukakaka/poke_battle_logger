@@ -1299,7 +1299,7 @@ class DatabaseHandler:
 
     def get_in_battle_message_log(
         self, battle_id: str
-    ) -> List[Dict[str, Union[str, int]]]:
+    ) -> list[dict[str, Union[str, int]]]:
         sql = (
             open("poke_battle_logger/database/sql/in_battle_message_log.sql")
             .read()
@@ -1317,7 +1317,7 @@ class DatabaseHandler:
             ],
         )
         _res = cast(
-            List[Dict[str, Union[str, int]]],
+            list[dict[str, Union[str, int]]],
             list(summary.to_dict(orient="index").values()),
         )
         return _res

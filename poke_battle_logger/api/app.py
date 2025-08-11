@@ -230,15 +230,16 @@ async def get_battle_log_count(
 
 
 @app.get("/api/v1/in_battle_log")
-async def get_in_battle_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+async def get_in_battle_log(battle_id: str) -> list[dict[str, str | int]]:
     database_handler: DatabaseHandler = DatabaseHandler()
     return database_handler.get_in_battle_log(battle_id)
 
 
 @app.get("/api/v1/in_battle_message_log")
-async def get_in_battle_message_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+async def get_in_battle_message_log(battle_id: str) -> list[dict[str, str | int]]:
     database_handler: DatabaseHandler = DatabaseHandler()
-    return database_handler.get_in_battle_message_log(battle_id)
+    in_battle_message_log = database_handler.get_in_battle_message_log(battle_id)
+    return in_battle_message_log
 
 
 @app.get("/api/v1/pokemon_image_url")
