@@ -242,6 +242,63 @@ async def get_in_battle_message_log(battle_id: str) -> list[dict[str, str | int]
     return in_battle_message_log
 
 
+class BattleLogEntry(BaseModel):
+    turn: int
+    frame_number: int
+    message: str
+    your_pokemon_name: Union[str, None]
+    opponent_pokemon_name: Union[str, None]
+
+
+class BattleMessageFullLogResponse(BaseModel):
+    battle_id: str
+    win_or_lose: str
+    next_rank: int
+    your_team: str
+    opponent_team: str
+    your_pokemon_1: str
+    your_pokemon_2: str
+    your_pokemon_3: str
+    opponent_pokemon_1: str
+    opponent_pokemon_2: str
+    opponent_pokemon_3: str
+    battle_log: List[BattleLogEntry]
+
+
+@app.get(
+    "/api/v1/in_battle_message_full_log", response_model=BattleMessageFullLogResponse
+)
+async def get_in_battle_message_full_log(
+    battle_id: str,
+) -> BattleMessageFullLogResponse:
+    database_handler: DatabaseHandler = DatabaseHandler()
+    in_battle_message_full_log = database_handler.get_in_battle_message_full_log(
+        battle_id
+    )
+    battle_summary = database_handler.get_battle_summary(battle_id)
+
+    # Convert battle log entries to Pydantic models
+    battle_log_entries = [
+        BattleLogEntry(**entry) for entry in in_battle_message_full_log
+    ]
+
+    # Create response model
+    return BattleMessageFullLogResponse(
+        battle_id=str(battle_summary["battle_id"]),
+        win_or_lose=str(battle_summary["win_or_lose"]),
+        next_rank=int(battle_summary["next_rank"]),
+        your_team=str(battle_summary["your_team"]),
+        opponent_team=str(battle_summary["opponent_team"]),
+        your_pokemon_1=str(battle_summary["your_pokemon_1"]),
+        your_pokemon_2=str(battle_summary["your_pokemon_2"]),
+        your_pokemon_3=str(battle_summary["your_pokemon_3"]),
+        opponent_pokemon_1=str(battle_summary["opponent_pokemon_1"]),
+        opponent_pokemon_2=str(battle_summary["opponent_pokemon_2"]),
+        opponent_pokemon_3=str(battle_summary["opponent_pokemon_3"]),
+        battle_log=battle_log_entries,
+    )
+
+
 @app.get("/api/v1/pokemon_image_url")
 async def get_pokemon_image_url(
     pokemon_name: str,

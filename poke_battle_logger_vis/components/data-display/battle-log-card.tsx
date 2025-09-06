@@ -9,11 +9,14 @@ import {
   CardFooter,
   Button,
   Skeleton,
+  useToast,
 } from '@chakra-ui/react';
 import { useDisclosure } from '@chakra-ui/react'
-import { TimeIcon } from '@chakra-ui/icons';
+import { TimeIcon, CopyIcon } from '@chakra-ui/icons';
 import PokemonIcon from '../atoms/pokemon-icon';
 import BattleLogDetailModal from './battle-log-detail-model';
+import { useState, useEffect } from 'react';
+import useSWR from 'swr';
 
 interface BattleLogCardProps {
   battle_id: string;
@@ -53,6 +56,67 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
   isLoading
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const [shouldFetch, setShouldFetch] = useState(false)
+  const toast = useToast()
+
+  const fetcher = (url: string) => fetch(url).then(res => res.json())
+  
+  const { data, error, isLoading: isFetchingLog } = useSWR(
+    shouldFetch ? `/api/get_in_battle_message_full_log?battle_id=${battle_id}` : null,
+    fetcher
+  )
+
+  const copyBattleLog = async () => {
+    if (!shouldFetch) {
+      setShouldFetch(true)
+      return
+    }
+    
+    if (data) {
+      try {
+        // Format the battle log data into a readable string
+        const logText = JSON.stringify(data, null, 2)
+        
+        await navigator.clipboard.writeText(logText)
+        toast({
+          title: '対戦ログをコピーしました',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        })
+        setShouldFetch(false)
+      } catch (error) {
+        toast({
+          title: 'エラーが発生しました',
+          description: 'クリップボードへのコピーに失敗しました',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
+      }
+    }
+  }
+
+  // Handle data fetching and copying
+  useEffect(() => {
+    if (data && shouldFetch) {
+      copyBattleLog()
+    }
+  }, [data, shouldFetch])
+
+  // Handle error
+  useEffect(() => {
+    if (error && shouldFetch) {
+      toast({
+        title: 'エラーが発生しました',
+        description: '対戦ログの取得に失敗しました',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      setShouldFetch(false)
+    }
+  }, [error, shouldFetch, toast])
 
   return (
     <>
@@ -136,9 +200,21 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
         </Text>
       </CardBody>
       <CardFooter>
-        <Button onClick={onOpen} variant='solid' colorScheme='blue'>
-          詳細を確認する
-        </Button>
+        <Flex gap={2}>
+          <Button onClick={onOpen} variant='solid' colorScheme='blue'>
+            詳細を確認する
+          </Button>
+          <Button 
+            onClick={copyBattleLog} 
+            variant='outline' 
+            colorScheme='gray'
+            leftIcon={<CopyIcon />}
+            isLoading={isFetchingLog}
+            loadingText='取得中...'
+          >
+            対戦ログをコピー
+          </Button>
+        </Flex>
       </CardFooter>
       </Skeleton>
     </Card>
