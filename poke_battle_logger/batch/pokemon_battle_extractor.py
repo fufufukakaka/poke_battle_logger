@@ -2,11 +2,12 @@ import logging
 import os
 from collections import Counter
 from logging import getLogger
-from typing import List, Tuple
+from typing import List, Tuple, cast
 
 import cv2
 import resend
 import yt_dlp
+from resend import Emails
 from rich.logging import RichHandler
 
 from poke_battle_logger.batch.data_builder import DataBuilder
@@ -99,6 +100,30 @@ class PokemonBattleExtractor:
             trainer_id_in_DB=self.trainer_id_in_DB,
             video_id=self.video_id,
             status="Video downloaded.",
+        )
+
+    def _get_current_teams_and_pokemons(
+        self,
+        pre_battle_pokemons: dict[int, dict[str, list[str]]],
+        battle_pokemons: list[dict[str, str | int]],
+    ) -> tuple[list[str], list[str], str, str]:
+        """
+        対戦中のポケモンのチーム情報と現在のポケモン名を取得する
+        """
+        if not pre_battle_pokemons or not battle_pokemons:
+            return [], [], "", ""
+
+        last_pre_battle = pre_battle_pokemons[max(pre_battle_pokemons.keys())]
+        your_current_pokemon_name = cast(str, battle_pokemons[-1]["your_pokemon_name"])
+        opponent_current_pokemon_name = cast(
+            str, battle_pokemons[-1]["opponent_pokemon_name"]
+        )
+
+        return (
+            last_pre_battle["your_pokemon_names"],
+            last_pre_battle["opponent_pokemon_names"],
+            your_current_pokemon_name,
+            opponent_current_pokemon_name,
         )
 
     def run(self) -> Tuple[int, int, int]:
@@ -302,7 +327,22 @@ class PokemonBattleExtractor:
             # メッセージの文字認識(OCR)
             if i in message_window_frames:
                 _message_frame = frame
-                _message = extractor.extract_message(_message_frame)
+                (
+                    pre_battle_your_teams,
+                    pre_battle_opponent_teams,
+                    your_current_pokemon_name,
+                    opponent_current_pokemon_name,
+                ) = self._get_current_teams_and_pokemons(
+                    pre_battle_pokemons, battle_pokemons
+                )
+
+                _message = extractor.extract_message(
+                    _message_frame,
+                    pre_battle_your_teams=pre_battle_your_teams,
+                    pre_battle_opponent_teams=pre_battle_opponent_teams,
+                    your_current_pokemon_name=your_current_pokemon_name,
+                    opponent_current_pokemon_name=opponent_current_pokemon_name,
+                )
                 if _message is not None:
                     messages[i] = _message
 
@@ -373,14 +413,14 @@ class PokemonBattleExtractor:
 
             # チーム選択からの場合(最初の順位表示なし)
             if len(compressed_standing_by_frames) == len(rank_numbers):
-                _ranking_frame = rank_frames[i]
+                _ranking_frame_number = rank_frames[i]
             else:
                 # バトルスタジアム入場(最初に表示された順位がある)からの場合
-                _ranking_frame = rank_frames[i + 1]
+                _ranking_frame_number = rank_frames[i + 1]
 
-            if _standing_by_frame_number < _ranking_frame:
+            if _standing_by_frame_number < _ranking_frame_number:
                 battle_start_end_frame_numbers.append(
-                    (_standing_by_frame_number, _ranking_frame)
+                    (_standing_by_frame_number, _ranking_frame_number)
                 )
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
@@ -401,7 +441,7 @@ class PokemonBattleExtractor:
                 "subject": "PokeBattleLogger: Failed to extract stats from video because unknown pokemon exists.",
                 "html": fail_unknown_pokemons_templates.format(video_id=self.video_id),
             }
-            resend.Emails.send(params)
+            Emails.send(params)  # type: ignore
 
             raise Exception("Unknown pokemon exists. Stop processing.")
 
@@ -446,7 +486,18 @@ class PokemonBattleExtractor:
         self.database_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
         self.database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
         self.database_handler.insert_message_log(modified_messages)
-        self.database_handler.insert_selected_move_log(modified_selected_moves)
+        # Convert SelectedMoves objects to dictionaries for database insertion
+        selected_moves_dict = [
+            {
+                "battle_id": move.battle_id,
+                "frame_number": str(move.frame_number),
+                "your_pokemon_name": move.your_pokemon_name,
+                "opponent_pokemon_name": move.opponent_pokemon_name,
+                "selected_move_name": move.selected_move_name,
+            }
+            for move in modified_selected_moves
+        ]
+        self.database_handler.insert_selected_move_log(selected_moves_dict)
 
         # build fainted log
         self.firestore_handler.update_log_document(

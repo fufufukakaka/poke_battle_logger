@@ -1,5 +1,3 @@
-import asyncio
-import json
 import logging
 import unicodedata
 from logging import getLogger
@@ -15,8 +13,6 @@ from fastapi import (
     HTTPException,
     Request,
     UploadFile,
-    WebSocket,
-    WebSocketDisconnect,
     status,
 )
 from fastapi.exceptions import RequestValidationError
@@ -30,7 +26,6 @@ from poke_battle_logger.cloud_batch_handler import CloudBatchHandler
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
-from poke_battle_logger.stream.live_battle_analyzer import LiveBattleAnalyzer
 from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
 
 logging.basicConfig(
@@ -230,15 +225,86 @@ async def get_battle_log_count(
 
 
 @app.get("/api/v1/in_battle_log")
-async def get_in_battle_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+async def get_in_battle_log(battle_id: str) -> list[dict[str, str | int]]:
     database_handler: DatabaseHandler = DatabaseHandler()
     return database_handler.get_in_battle_log(battle_id)
 
 
 @app.get("/api/v1/in_battle_message_log")
-async def get_in_battle_message_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
+async def get_in_battle_message_log(battle_id: str) -> list[dict[str, str | int]]:
     database_handler: DatabaseHandler = DatabaseHandler()
-    return database_handler.get_in_battle_message_log(battle_id)
+    in_battle_message_log = database_handler.get_in_battle_message_log(battle_id)
+    return in_battle_message_log
+
+
+class BattleLogEntry(BaseModel):
+    turn: int
+    frame_number: int
+    message: str
+    your_pokemon_name: Union[str, None]
+    opponent_pokemon_name: Union[str, None]
+
+
+class BattleMessageFullLogResponse(BaseModel):
+    battle_id: str
+    win_or_lose: str
+    next_rank: int
+    your_team: str
+    opponent_team: str
+    your_pokemon_1: str
+    your_pokemon_2: str
+    your_pokemon_3: str
+    opponent_pokemon_1: str
+    opponent_pokemon_2: str
+    opponent_pokemon_3: str
+    battle_log: List[BattleLogEntry]
+
+
+@app.get(
+    "/api/v1/in_battle_message_full_log", response_model=BattleMessageFullLogResponse
+)
+async def get_in_battle_message_full_log(
+    battle_id: str,
+) -> BattleMessageFullLogResponse:
+    database_handler: DatabaseHandler = DatabaseHandler()
+    in_battle_message_full_log = database_handler.get_in_battle_message_full_log(
+        battle_id
+    )
+    battle_summary = database_handler.get_battle_summary(battle_id)
+
+    # Convert battle log entries to Pydantic models
+    battle_log_entries = [
+        BattleLogEntry(
+            turn=int(entry["turn"]),
+            frame_number=int(entry["frame_number"]),
+            message=str(entry["message"]),
+            your_pokemon_name=str(entry["your_pokemon_name"])
+            if entry.get("your_pokemon_name")
+            else None,
+            opponent_pokemon_name=str(entry["opponent_pokemon_name"])
+            if entry.get("opponent_pokemon_name")
+            else None,
+        )
+        for entry in in_battle_message_full_log
+    ]
+
+    # Create response model
+    return BattleMessageFullLogResponse(
+        battle_id=str(battle_summary["battle_id"]),
+        win_or_lose=str(battle_summary["win_or_lose"]),
+        next_rank=int(str(battle_summary["next_rank"]))
+        if battle_summary.get("next_rank") is not None
+        else 0,
+        your_team=str(battle_summary["your_team"]),
+        opponent_team=str(battle_summary["opponent_team"]),
+        your_pokemon_1=str(battle_summary["your_pokemon_1"]),
+        your_pokemon_2=str(battle_summary["your_pokemon_2"]),
+        your_pokemon_3=str(battle_summary["your_pokemon_3"]),
+        opponent_pokemon_1=str(battle_summary["opponent_pokemon_1"]),
+        opponent_pokemon_2=str(battle_summary["opponent_pokemon_2"]),
+        opponent_pokemon_3=str(battle_summary["opponent_pokemon_3"]),
+        battle_log=battle_log_entries,
+    )
 
 
 @app.get("/api/v1/pokemon_image_url")
@@ -472,221 +538,3 @@ async def search_battles(
         trainer_id, season, my_pokemons_list, opponent_pokemons_list
     )
     return res
-
-
-# Live Stream Analysis endpoints
-live_analyzers: Dict[str, LiveBattleAnalyzer] = {}
-
-
-class LiveAnalysisStartRequest(BaseModel):
-    trainer_id: str
-    capture_source: str = "obs"
-    language: str = "en"
-    capture_config: Dict[str, Union[str, int]] = {}
-
-
-class LiveAnalysisStatusResponse(BaseModel):
-    is_running: bool
-    stats: Dict[str, Union[str, int, float]]
-    available_sources: List[str]
-
-
-@app.post("/api/v1/live_analysis/start")
-async def start_live_analysis(request: LiveAnalysisStartRequest) -> Dict[str, str]:
-    if request.trainer_id in live_analyzers:
-        existing_analyzer = live_analyzers[request.trainer_id]
-        if existing_analyzer.is_running:
-            return {
-                "status": "error",
-                "message": "Live analysis already running for this trainer",
-            }
-        else:
-            del live_analyzers[request.trainer_id]
-
-    try:
-        analyzer = LiveBattleAnalyzer(
-            trainer_id=request.trainer_id,
-            language=request.language,
-            capture_source=request.capture_source,
-            capture_config=request.capture_config,
-            db_handler=DatabaseHandler(),
-        )
-
-        live_analyzers[request.trainer_id] = analyzer
-
-        # Start analysis in background
-        import asyncio
-
-        asyncio.create_task(analyzer.start_analysis())
-
-        return {"status": "success", "message": "Live analysis started"}
-
-    except Exception as e:
-        logger.error(f"Error starting live analysis: {e}")
-        return {"status": "error", "message": str(e)}
-
-
-@app.post("/api/v1/live_analysis/stop")
-async def stop_live_analysis(trainer_id: str) -> Dict[str, str]:
-    if trainer_id not in live_analyzers:
-        return {
-            "status": "error",
-            "message": "No live analysis running for this trainer",
-        }
-
-    try:
-        analyzer = live_analyzers[trainer_id]
-        await analyzer.stop_analysis()
-        del live_analyzers[trainer_id]
-
-        return {"status": "success", "message": "Live analysis stopped"}
-
-    except Exception as e:
-        logger.error(f"Error stopping live analysis: {e}")
-        return {"status": "error", "message": str(e)}
-
-
-@app.get("/api/v1/live_analysis/status")
-async def get_live_analysis_status(trainer_id: str) -> LiveAnalysisStatusResponse:
-    if trainer_id not in live_analyzers:
-        # Return available sources even when not running
-        dummy_analyzer = LiveBattleAnalyzer(trainer_id, "en", "obs")
-        return LiveAnalysisStatusResponse(
-            is_running=False,
-            stats={},
-            available_sources=dummy_analyzer.get_available_capture_sources(),
-        )
-
-    analyzer = live_analyzers[trainer_id]
-    return LiveAnalysisStatusResponse(
-        is_running=analyzer.is_running,
-        stats=analyzer.get_stats(),
-        available_sources=analyzer.get_available_capture_sources(),
-    )
-
-
-@app.get("/api/v1/live_analysis/sources")
-async def get_available_capture_sources() -> Dict[str, List[str]]:
-    dummy_analyzer = LiveBattleAnalyzer("dummy", "en", "obs")
-    return {"available_sources": dummy_analyzer.get_available_capture_sources()}
-
-
-@app.post("/api/v1/live_analysis/test_source")
-async def test_capture_source(
-    source_type: str, config: Dict[str, Union[str, int]] = {}
-) -> Dict[str, Union[str, bool]]:
-    try:
-        dummy_analyzer = LiveBattleAnalyzer("dummy", "en", "obs")
-        result = await dummy_analyzer.test_capture_source(source_type, config)
-
-        return {"status": "success" if result else "failed", "available": result}
-
-    except Exception as e:
-        logger.error(f"Error testing capture source: {e}")
-        return {"status": "error", "available": False, "message": str(e)}
-
-
-# WebSocket connection management
-class WebSocketManager:
-    def __init__(self):
-        self.active_connections: Dict[str, List[WebSocket]] = {}
-
-    async def connect(self, websocket: WebSocket, trainer_id: str):
-        await websocket.accept()
-        if trainer_id not in self.active_connections:
-            self.active_connections[trainer_id] = []
-        self.active_connections[trainer_id].append(websocket)
-        logger.info(f"WebSocket connected for trainer {trainer_id}")
-
-    def disconnect(self, websocket: WebSocket, trainer_id: str):
-        if trainer_id in self.active_connections:
-            if websocket in self.active_connections[trainer_id]:
-                self.active_connections[trainer_id].remove(websocket)
-            if not self.active_connections[trainer_id]:
-                del self.active_connections[trainer_id]
-        logger.info(f"WebSocket disconnected for trainer {trainer_id}")
-
-    async def send_to_trainer(self, trainer_id: str, message: dict):
-        if trainer_id in self.active_connections:
-            disconnected = []
-            for connection in self.active_connections[trainer_id]:
-                try:
-                    await connection.send_text(json.dumps(message))
-                except:
-                    disconnected.append(connection)
-
-            # Remove disconnected connections
-            for conn in disconnected:
-                self.disconnect(conn, trainer_id)
-
-
-websocket_manager = WebSocketManager()
-
-
-@app.websocket("/ws/live_analysis/{trainer_id}")
-async def websocket_endpoint(websocket: WebSocket, trainer_id: str):
-    await websocket_manager.connect(websocket, trainer_id)
-
-    # Add event handler to the analyzer if it exists
-    if trainer_id in live_analyzers:
-        analyzer = live_analyzers[trainer_id]
-
-        async def websocket_event_handler(event):
-            await websocket_manager.send_to_trainer(
-                trainer_id,
-                {
-                    "type": "battle_event",
-                    "event_type": event.event_type,
-                    "data": event.data,
-                    "timestamp": event.timestamp.isoformat(),
-                    "confidence": event.confidence,
-                },
-            )
-
-        analyzer.add_event_callback(websocket_event_handler)
-
-    try:
-        # Send initial status
-        if trainer_id in live_analyzers:
-            analyzer = live_analyzers[trainer_id]
-            await websocket.send_text(
-                json.dumps(
-                    {
-                        "type": "status",
-                        "is_running": analyzer.is_running,
-                        "stats": analyzer.get_stats(),
-                    }
-                )
-            )
-
-        # Keep connection alive and handle incoming messages
-        while True:
-            try:
-                data = await websocket.receive_text()
-                message = json.loads(data)
-
-                if message.get("type") == "ping":
-                    await websocket.send_text(json.dumps({"type": "pong"}))
-                elif message.get("type") == "get_status":
-                    if trainer_id in live_analyzers:
-                        analyzer = live_analyzers[trainer_id]
-                        await websocket.send_text(
-                            json.dumps(
-                                {
-                                    "type": "status",
-                                    "is_running": analyzer.is_running,
-                                    "stats": analyzer.get_stats(),
-                                }
-                            )
-                        )
-
-            except WebSocketDisconnect:
-                break
-            except Exception as e:
-                logger.error(f"WebSocket error: {e}")
-                break
-
-    except WebSocketDisconnect:
-        pass
-    finally:
-        websocket_manager.disconnect(websocket, trainer_id)

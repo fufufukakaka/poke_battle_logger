@@ -26,8 +26,7 @@ RUN mkdir video
 
 RUN python3 -m pip install --no-cache-dir --upgrade pip && \
     python3 -m pip install --no-cache-dir poetry awscli
-RUN poetry export --with dev -f requirements.txt --output requirements.txt
-RUN pip install -r requirements.txt
+RUN poetry install --with dev
 
 EXPOSE 10000
 

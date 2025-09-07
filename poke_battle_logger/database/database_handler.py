@@ -1297,9 +1297,41 @@ class DatabaseHandler:
         self.db.close()
         return email
 
+    def get_battle_summary(
+        self, battle_id: str
+    ) -> dict[str, str | int | list[dict[str, str | int]]]:
+        sql = (
+            open("poke_battle_logger/database/sql/battle_summary.sql")
+            .read()
+            .format(battle_id=battle_id)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        battle_summary = pd.DataFrame(
+            stats,
+            columns=[
+                "battle_id",
+                "win_or_lose",
+                "next_rank",
+                "your_team",
+                "opponent_team",
+                "your_pokemon_1",
+                "your_pokemon_2",
+                "your_pokemon_3",
+                "opponent_pokemon_1",
+                "opponent_pokemon_2",
+                "opponent_pokemon_3",
+            ],
+        )
+        battle_summary_json: dict[
+            str, str | int | list[dict[str, str | int]]
+        ] = battle_summary.to_dict(orient="index")[0]
+        self.db.close()
+        return battle_summary_json
+
     def get_in_battle_message_log(
         self, battle_id: str
-    ) -> List[Dict[str, Union[str, int]]]:
+    ) -> list[dict[str, Union[str, int]]]:
         sql = (
             open("poke_battle_logger/database/sql/in_battle_message_log.sql")
             .read()
@@ -1317,7 +1349,34 @@ class DatabaseHandler:
             ],
         )
         _res = cast(
-            List[Dict[str, Union[str, int]]],
+            list[dict[str, Union[str, int]]],
+            list(summary.to_dict(orient="index").values()),
+        )
+        return _res
+
+    def get_in_battle_message_full_log(
+        self, battle_id: str
+    ) -> list[dict[str, str | int]]:
+        sql = (
+            open("poke_battle_logger/database/sql/in_battle_message_full_log.sql")
+            .read()
+            .format(battle_id=battle_id)
+        )
+        self.db.connect()
+        stats = self.db.execute_sql(sql).fetchall()
+        self.db.close()
+        summary = pd.DataFrame(
+            stats,
+            columns=[
+                "turn",
+                "frame_number",
+                "message",
+                "your_pokemon_name",
+                "opponent_pokemon_name",
+            ],
+        )
+        _res = cast(
+            list[dict[str, str | int]],
             list(summary.to_dict(orient="index").values()),
         )
         return _res

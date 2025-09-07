@@ -31,6 +31,7 @@ from config.config import (
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     YOUR_POKEMON_NAME_WINDOW,
 )
+from poke_battle_logger.batch.openai_handler import OpenAIHandler
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
     EDIT_DISTANCE_THRESHOLD,
     PokemonNameWindowExtractor,
@@ -56,6 +57,7 @@ class Extractor:
             self.second_template,
             self.third_template,
         ) = self._setup_pokemon_select_window_templates()
+        self.openai_handler = OpenAIHandler()
 
     def _setup_pokemon_select_window_templates(
         self,
@@ -356,6 +358,30 @@ class Extractor:
 
         return text.replace("\n", "")
 
+    def _fix_message(
+        self,
+        message: str,
+        pre_battle_your_teams: list[str],
+        pre_battle_opponent_teams: list[str],
+        your_current_pokemon_name: str,
+        opponent_current_pokemon_name: str,
+    ) -> str:
+        """
+        OpenAI API(gpt-4.1 nano)を使ってメッセージを修正する
+        自分の6体と相手の6体、戦闘に出ている2体をコンテキストとして与える
+        """
+        if not message:
+            return ""
+
+        fixed_battle_message = self.openai_handler.fix_battle_message(
+            original_message=message,
+            pre_battle_your_teams=pre_battle_your_teams,
+            pre_battle_opponent_teams=pre_battle_opponent_teams,
+            your_current_pokemon_name=your_current_pokemon_name,
+            opponent_current_pokemon_name=opponent_current_pokemon_name,
+        )
+        return fixed_battle_message.fixed_battle_message.strip()
+
     def extract_first_rank_number(self, frame: np.ndarray) -> int:
         """
         (開始時の)ランクをOCRで抽出する
@@ -388,7 +414,14 @@ class Extractor:
         rank_number = self._detect_rank_number(thresh)
         return rank_number
 
-    def extract_message(self, frame: np.ndarray) -> Optional[str]:
+    def extract_message(
+        self,
+        frame: np.ndarray,
+        pre_battle_your_teams: list[str],
+        pre_battle_opponent_teams: list[str],
+        your_current_pokemon_name: str,
+        opponent_current_pokemon_name: str,
+    ) -> Optional[str]:
         """
         メッセージをOCRで認識する
         """
@@ -407,6 +440,14 @@ class Extractor:
             return None
 
         message = self._recognize_message(thresh)
+        # fix message by openai
+        message = self._fix_message(
+            message,
+            pre_battle_your_teams,
+            pre_battle_opponent_teams,
+            your_current_pokemon_name,
+            opponent_current_pokemon_name,
+        )
         return message
 
     def extract_move(self, frame: np.ndarray) -> dict[str, str]:
