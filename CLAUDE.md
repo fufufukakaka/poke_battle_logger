@@ -44,10 +44,6 @@ make format                   # Code formatting with pysen
 make extract-data             # Extract battle data from video (requires VIDEO_ID, TRAINER_ID, LANG)
 make build-pokemon-faiss-index # Build Pokemon image search index
 make build-pokemon-multi-name-dict # Build Pokemon name dictionary
-
-# Live Stream Analysis
-make run_live_analysis        # Run live stream analysis (requires TRAINER_ID, CAPTURE_SOURCE, LANGUAGE)
-make test_live_capture        # Test live capture source (requires CAPTURE_SOURCE)
 ```
 
 ### Frontend Development
@@ -80,22 +76,6 @@ The application supports both batch video processing and real-time live stream a
 4. **Data Storage**: Structured battle data stored in database
 5. **Analytics**: Real-time battle statistics and visualizations
 
-### Live Stream Processing (OBS Integration)
-1. **Stream Capture**: Real-time frame capture from multiple sources
-   - OBS WebSocket integration for direct capture
-   - Screen capture for OBS preview monitoring
-   - RTMP stream ingestion for remote streams
-   - Webcam capture for testing
-2. **Real-time Analysis**: Frame-by-frame processing with minimal latency
-   - Asynchronous frame processing pipeline
-   - Battle state machine for context tracking
-   - Event-driven data extraction
-3. **Live Events**: WebSocket-based real-time event streaming
-   - Battle start/end detection
-   - Pokemon selection tracking
-   - Live rank changes
-   - Real-time battle statistics
-
 ## Key Entry Points
 
 ### API Endpoints (`poke_battle_logger/api/app.py`)
@@ -103,14 +83,6 @@ The application supports both batch video processing and real-time live stream a
 - `/api/v1/extract_stats_from_video` - Video processing endpoint
 - `/api/v1/extract_pokemon_name_from_image` - Pokemon image recognition
 - `/api/v1/recent_battle_summary` - Recent battle data
-
-#### Live Stream Analysis Endpoints
-- `/api/v1/live_analysis/start` - Start live stream analysis
-- `/api/v1/live_analysis/stop` - Stop live stream analysis
-- `/api/v1/live_analysis/status` - Get current analysis status
-- `/api/v1/live_analysis/sources` - List available capture sources
-- `/api/v1/live_analysis/test_source` - Test capture source configuration
-- `/ws/live_analysis/{trainer_id}` - WebSocket for real-time events
 
 ### Batch Processing (`poke_battle_logger/batch/`)
 - `pokemon_battle_extractor.py` - Main video processing pipeline
