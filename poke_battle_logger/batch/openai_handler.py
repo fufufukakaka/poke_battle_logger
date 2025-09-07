@@ -78,12 +78,14 @@ class OpenAIHandler:
 
         chain = prompt | model
 
-        result = chain.invoke({
-            "original_message": original_message,
-            "pre_battle_your_teams": pre_battle_your_teams,
-            "pre_battle_opponent_teams": pre_battle_opponent_teams,
-            "your_current_pokemon_name": your_current_pokemon_name,
-            "opponent_current_pokemon_name": opponent_current_pokemon_name,
-        })
+        result = chain.invoke(
+            {
+                "original_message": original_message,
+                "pre_battle_your_teams": pre_battle_your_teams,
+                "pre_battle_opponent_teams": pre_battle_opponent_teams,
+                "your_current_pokemon_name": your_current_pokemon_name,
+                "opponent_current_pokemon_name": opponent_current_pokemon_name,
+            }
+        )
         typed_result = FixedBattleMessage.model_validate(result)
         return typed_result

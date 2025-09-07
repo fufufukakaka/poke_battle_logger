@@ -114,7 +114,9 @@ class PokemonBattleExtractor:
 
         last_pre_battle = pre_battle_pokemons[max(pre_battle_pokemons.keys())]
         your_current_pokemon_name = cast(str, battle_pokemons[-1]["your_pokemon_name"])
-        opponent_current_pokemon_name = cast(str, battle_pokemons[-1]["opponent_pokemon_name"])
+        opponent_current_pokemon_name = cast(
+            str, battle_pokemons[-1]["opponent_pokemon_name"]
+        )
 
         return (
             last_pre_battle["your_pokemon_names"],
@@ -268,9 +270,9 @@ class PokemonBattleExtractor:
             if i == first_ranking_frame_number:
                 logger.info(f"Extracting first ranking... {self.video_id}")
                 _first_ranking_frame = frame
-                rank_numbers[first_ranking_frame_number] = (
-                    extractor.extract_first_rank_number(_first_ranking_frame)
-                )
+                rank_numbers[
+                    first_ranking_frame_number
+                ] = extractor.extract_first_rank_number(_first_ranking_frame)
 
             # ランクを検出(OCR)
             if i in ranking_frame_numbers:

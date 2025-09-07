@@ -1297,7 +1297,9 @@ class DatabaseHandler:
         self.db.close()
         return email
 
-    def get_battle_summary(self, battle_id: str) -> dict[str, str | int | list[dict[str, str | int]]]:
+    def get_battle_summary(
+        self, battle_id: str
+    ) -> dict[str, str | int | list[dict[str, str | int]]]:
         sql = (
             open("poke_battle_logger/database/sql/battle_summary.sql")
             .read()
@@ -1318,7 +1320,7 @@ class DatabaseHandler:
                 "your_pokemon_3",
                 "opponent_pokemon_1",
                 "opponent_pokemon_2",
-                "opponent_pokemon_3"
+                "opponent_pokemon_3",
             ],
         )
         battle_summary_json = battle_summary.to_dict(orient="index")[0]
@@ -1368,7 +1370,7 @@ class DatabaseHandler:
                 "frame_number",
                 "message",
                 "your_pokemon_name",
-                "opponent_pokemon_name"
+                "opponent_pokemon_name",
             ],
         )
         _res = cast(
