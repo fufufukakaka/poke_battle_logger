@@ -41,13 +41,6 @@ build-pokemon-multi-name-dict: # build pokemon multi name dict
 run_dashboard:
 	cd poke_battle_logger_vis && yarn run dev
 
-run_live_analysis: # run live stream analysis (requires TRAINER_ID, CAPTURE_SOURCE, LANGUAGE)
-	$(PYTHON) poke_battle_logger/stream/live_battle_analyzer.py \
-	$(TRAINER_ID) $(CAPTURE_SOURCE) $(LANGUAGE)
-
-test_live_capture: # test live capture source (requires CAPTURE_SOURCE)
-	$(PYTHON) -m poke_battle_logger.stream.frame_capture $(CAPTURE_SOURCE)
-
 run_api:
 	ENV=$(ENV) poetry run uvicorn poke_battle_logger.api.app:app --host 0.0.0.0 --port $(API_CONTAINER_PORT)
 
@@ -73,23 +66,25 @@ test_local:
 test_in_docker_command:
 	poetry run pytest -vvv
 
-format: ## format style with pysen
-	poetry run pysen run format
+format: ## format style with isort and black
+	poetry run isort .
+	poetry run black .
 
-lint: ## check style with pysen
-	poetry run pysen run lint
+lint: ## check style with mypy and flake8
+	poetry run mypy poke_battle_logger
+	poetry run flake8 poke_battle_logger
 
 test-in-docker: ## run test cases in tests directory in docker
 	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pytest -vvv
 
 lint-in-docker: ## check style with flake8 in docker
-	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) pysen run lint
+	$(DOCKER) run --rm $(SERVER_IMAGE_NAME) make lint
 
 test-in-docker-job: ## run test cases in tests directory in docker
 	$(DOCKER) run --rm $(JOB_IMAGE_NAME) poetry run pytest -vvv
 
 lint-in-docker-job: ## check style with flake8 in docker
-	$(DOCKER) run --rm $(JOB_IMAGE_NAME) poetry run pysen run lint
+	$(DOCKER) run --rm $(JOB_IMAGE_NAME) make lint
 
 jupyter: ## start Jupyter Notebook server
 	poetry run jupyter-notebook --ip=0.0.0.0 --port=${JUPYTER_CONTAINER_PORT}

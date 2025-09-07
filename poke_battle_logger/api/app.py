@@ -1,5 +1,3 @@
-import asyncio
-import json
 import logging
 import unicodedata
 from logging import getLogger
@@ -15,8 +13,6 @@ from fastapi import (
     HTTPException,
     Request,
     UploadFile,
-    WebSocket,
-    WebSocketDisconnect,
     status,
 )
 from fastapi.exceptions import RequestValidationError
@@ -278,14 +274,27 @@ async def get_in_battle_message_full_log(
 
     # Convert battle log entries to Pydantic models
     battle_log_entries = [
-        BattleLogEntry(**entry) for entry in in_battle_message_full_log
+        BattleLogEntry(
+            turn=int(entry["turn"]),
+            frame_number=int(entry["frame_number"]),
+            message=str(entry["message"]),
+            your_pokemon_name=str(entry["your_pokemon_name"])
+            if entry.get("your_pokemon_name")
+            else None,
+            opponent_pokemon_name=str(entry["opponent_pokemon_name"])
+            if entry.get("opponent_pokemon_name")
+            else None,
+        )
+        for entry in in_battle_message_full_log
     ]
 
     # Create response model
     return BattleMessageFullLogResponse(
         battle_id=str(battle_summary["battle_id"]),
         win_or_lose=str(battle_summary["win_or_lose"]),
-        next_rank=int(battle_summary["next_rank"]),
+        next_rank=int(str(battle_summary["next_rank"]))
+        if battle_summary.get("next_rank") is not None
+        else 0,
         your_team=str(battle_summary["your_team"]),
         opponent_team=str(battle_summary["opponent_team"]),
         your_pokemon_1=str(battle_summary["your_pokemon_1"]),

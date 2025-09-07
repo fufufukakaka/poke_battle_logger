@@ -7,6 +7,7 @@ from typing import List, Tuple, cast
 import cv2
 import resend
 import yt_dlp
+from resend import Emails
 from rich.logging import RichHandler
 
 from poke_battle_logger.batch.data_builder import DataBuilder
@@ -412,14 +413,14 @@ class PokemonBattleExtractor:
 
             # チーム選択からの場合(最初の順位表示なし)
             if len(compressed_standing_by_frames) == len(rank_numbers):
-                _ranking_frame = rank_frames[i]
+                _ranking_frame_number = rank_frames[i]
             else:
                 # バトルスタジアム入場(最初に表示された順位がある)からの場合
-                _ranking_frame = rank_frames[i + 1]
+                _ranking_frame_number = rank_frames[i + 1]
 
-            if _standing_by_frame_number < _ranking_frame:
+            if _standing_by_frame_number < _ranking_frame_number:
                 battle_start_end_frame_numbers.append(
-                    (_standing_by_frame_number, _ranking_frame)
+                    (_standing_by_frame_number, _ranking_frame_number)
                 )
 
         if any(is_exist_unknown_pokemon_list1) or any(is_exist_unknown_pokemon_list2):
@@ -440,7 +441,7 @@ class PokemonBattleExtractor:
                 "subject": "PokeBattleLogger: Failed to extract stats from video because unknown pokemon exists.",
                 "html": fail_unknown_pokemons_templates.format(video_id=self.video_id),
             }
-            resend.Emails.send(params)
+            Emails.send(params)  # type: ignore
 
             raise Exception("Unknown pokemon exists. Stop processing.")
 
@@ -485,7 +486,18 @@ class PokemonBattleExtractor:
         self.database_handler.insert_battle_pokemon_team(modified_pre_battle_pokemons)
         self.database_handler.insert_in_battle_pokemon_log(modified_in_battle_pokemons)
         self.database_handler.insert_message_log(modified_messages)
-        self.database_handler.insert_selected_move_log(modified_selected_moves)
+        # Convert SelectedMoves objects to dictionaries for database insertion
+        selected_moves_dict = [
+            {
+                "battle_id": move.battle_id,
+                "frame_number": str(move.frame_number),
+                "your_pokemon_name": move.your_pokemon_name,
+                "opponent_pokemon_name": move.opponent_pokemon_name,
+                "selected_move_name": move.selected_move_name,
+            }
+            for move in modified_selected_moves
+        ]
+        self.database_handler.insert_selected_move_log(selected_moves_dict)
 
         # build fainted log
         self.firestore_handler.update_log_document(
