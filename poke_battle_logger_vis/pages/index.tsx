@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Loader } from 'lucide-react';
 import PokeStatGroup from '../components/data-display/poke-stat-group';
 import useSWR from "swr";
 import axios from "axios"
@@ -94,7 +95,11 @@ const Dashboard: React.FC<DashBoardProps> = ({
   }}, [isAuthenticated, user])
 
 
-  if (isLoading) return <p>loading...</p>
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <Loader className="animate-spin h-8 w-8" />
+    </div>
+  )
   if (error) return <p>error</p>
   if (!data) return <p>no data</p>
 

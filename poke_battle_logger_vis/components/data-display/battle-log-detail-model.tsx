@@ -10,7 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Clock } from 'lucide-react';
+import { Clock, Loader } from 'lucide-react';
 
 interface BattleLogDetailModalProps {
   isOpen: boolean;
@@ -162,7 +162,9 @@ const BattleLogDetailModal: React.FunctionComponent<
                 <h3 className="text-xs font-semibold mb-2">Fainted Log</h3>
                 <div className="space-y-2">
                   {faintedLogDataIsLoading ? (
-                    <p>loading...</p>
+                    <div className="flex items-center justify-center py-4">
+                      <Loader className="animate-spin h-4 w-4" />
+                    </div>
                   ) : faintedLogDataError ? null : faintedLogData ? (
                     faintedLogData.map((log) => (
                       <div key={log.turn} className="space-y-1">

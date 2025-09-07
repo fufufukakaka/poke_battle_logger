@@ -7,6 +7,7 @@ import { reactSelectOptions } from "@/helper/pokemonJapaneseToEnglishDict";
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
+import { Loader } from 'lucide-react';
 
 
 type Image = {
@@ -52,7 +53,11 @@ const AnnotatePokemonImagesPage = () => {
   const { toast } = useToast();
 
   if (error || nameWindowError) return <div>Error loading images</div>;
-  if (!imageDataList || !nameWindowImageDataList) return <div>Loading...</div>;
+  if (!imageDataList || !nameWindowImageDataList) return (
+    <div className="flex items-center justify-center h-64">
+      <Loader className="animate-spin h-8 w-8" />
+    </div>
+  );
 
   const handleSelectChange = (index: number, option: any) => {
     const updatedLabels = [...imageLabels];

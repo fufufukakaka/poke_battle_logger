@@ -3,6 +3,7 @@ import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
+import { Loader } from 'lucide-react';
 import TransitionChart from '../../components/data-display/transition-chart';
 import useSWR from 'swr';
 import axios from 'axios';
@@ -228,7 +229,11 @@ const Analytics: React.FC = () => {
   )
   const [selectedValue, setSelectedValue] = useState('1')
 
-  if (isLoading) return <p>loading...</p>
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <Loader className="animate-spin h-8 w-8" />
+    </div>
+  )
   if (error) return <p>error</p>
   if (!data) return <p>no data</p>
 
