@@ -1323,7 +1323,9 @@ class DatabaseHandler:
                 "opponent_pokemon_3",
             ],
         )
-        battle_summary_json = battle_summary.to_dict(orient="index")[0]
+        battle_summary_json: dict[
+            str, str | int | list[dict[str, str | int]]
+        ] = battle_summary.to_dict(orient="index")[0]
         self.db.close()
         return battle_summary_json
 
