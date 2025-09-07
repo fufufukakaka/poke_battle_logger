@@ -33,6 +33,7 @@ fastapi = "^0.116.1"
 langchain = "^0.3.26"
 langchain-openai = "^0.3.28"
 importlib-metadata = ">=4.6.0,<5.0.0"
+streamlit = "^1.49.1"
 
 [tool.poetry.group.job]
 optional = true
