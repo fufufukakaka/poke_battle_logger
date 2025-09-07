@@ -22,6 +22,7 @@ class OpenAIHandler:
         self,
         original_message: str,
         pre_battle_your_teams: list[str],
+        pre_battle_your_teams_english: list[str],
         pre_battle_opponent_teams: list[str],
         your_current_pokemon_name: str,
         opponent_current_pokemon_name: str,
@@ -39,6 +40,7 @@ class OpenAIHandler:
 
             ## 予備情報
             あなたのチーム: {pre_battle_your_teams}
+            あなたのチーム（英語）: {pre_battle_your_teams_english}
             相手のチーム: {pre_battle_opponent_teams}
             あなたの現在のポケモン: {your_current_pokemon_name}
             相手の現在のポケモン: {opponent_current_pokemon_name}
@@ -92,6 +94,7 @@ class OpenAIHandler:
             {
                 "original_message": original_message,
                 "pre_battle_your_teams": pre_battle_your_teams,
+                "pre_battle_your_teams_english": pre_battle_your_teams_english,
                 "pre_battle_opponent_teams": pre_battle_opponent_teams,
                 "your_current_pokemon_name": your_current_pokemon_name,
                 "opponent_current_pokemon_name": opponent_current_pokemon_name,

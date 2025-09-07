@@ -362,6 +362,7 @@ class Extractor:
         self,
         message: str,
         pre_battle_your_teams: list[str],
+        pre_battle_your_teams_english: list[str],
         pre_battle_opponent_teams: list[str],
         your_current_pokemon_name: str,
         opponent_current_pokemon_name: str,
@@ -376,6 +377,7 @@ class Extractor:
         fixed_battle_message = self.openai_handler.fix_battle_message(
             original_message=message,
             pre_battle_your_teams=pre_battle_your_teams,
+            pre_battle_your_teams_english=pre_battle_your_teams_english,
             pre_battle_opponent_teams=pre_battle_opponent_teams,
             your_current_pokemon_name=your_current_pokemon_name,
             opponent_current_pokemon_name=opponent_current_pokemon_name,
@@ -418,6 +420,7 @@ class Extractor:
         self,
         frame: np.ndarray,
         pre_battle_your_teams: list[str],
+        pre_battle_your_teams_english: list[str],
         pre_battle_opponent_teams: list[str],
         your_current_pokemon_name: str,
         opponent_current_pokemon_name: str,
@@ -444,6 +447,7 @@ class Extractor:
         message = self._fix_message(
             message,
             pre_battle_your_teams,
+            pre_battle_your_teams_english,
             pre_battle_opponent_teams,
             your_current_pokemon_name,
             opponent_current_pokemon_name,
@@ -520,6 +524,8 @@ class Extractor:
 
         gray = cv2.cvtColor(max_brightness_move_title_window, cv2.COLOR_BGR2GRAY)
         move = self._recognize_message(gray)
+        move = move.replace('|', '').strip()
+
         (
             your_pokemon_name,
             opponent_pokemon_name,
@@ -527,7 +533,7 @@ class Extractor:
         ) = self.extract_pokemon_name_in_battle(frame)
 
         return {
-            "move": move,
+            "selected_move_name": move,
             "your_pokemon_name": your_pokemon_name,
             "opponent_pokemon_name": opponent_pokemon_name,
         }

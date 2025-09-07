@@ -1,9 +1,14 @@
 from datetime import datetime
 from typing import Optional
 
+import pandas as pd
 from pytube import YouTube
 from pytube.exceptions import RegexMatchError
 from pytube.helpers import regex_search
+
+# No.,Japanese,English
+pokemon_names = pd.read_csv("data/pokemon_names.csv")
+POKEMON_NAME_JA_EN_DICT = pokemon_names.set_index("Japanese")["English"].to_dict()
 
 
 def publish_date(watch_html: str) -> Optional[datetime]:
@@ -42,3 +47,9 @@ def get_youtube_url_with_timestamp(video_url: str, battle_started_at: datetime) 
     timestamp = battle_started_at - video_started_at
     youtube_url_with_timestamp = f"{video_url}&t={timestamp}"
     return youtube_url_with_timestamp
+
+
+def get_pokemon_english_name_from_japanese(japanese_pokemon_name: str) -> str:
+    if japanese_pokemon_name in POKEMON_NAME_JA_EN_DICT:
+        return POKEMON_NAME_JA_EN_DICT[japanese_pokemon_name]
+    return japanese_pokemon_name
