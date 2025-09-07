@@ -2,7 +2,6 @@ from typing import Tuple
 
 import cv2
 import numpy as np
-
 from config.config import (
     FIRST_RANKING_WINDOW,
     JAPANESE_LEVEL_50_TEMPLATE_PATH,

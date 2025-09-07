@@ -33,6 +33,7 @@ fastapi = "^0.116.1"
 langchain = "^0.3.26"
 langchain-openai = "^0.3.28"
 importlib-metadata = ">=4.6.0,<5.0.0"
+streamlit = "^1.49.1"
 
 [tool.poetry.group.job]
 optional = true
@@ -83,6 +84,8 @@ priority = "explicit"
 [tool.black]
 line-length = 88
 target-version = ["py310"]
+include = '^poke_battle_logger/.*'
+exclude = '^(?!poke_battle_logger/).*'
 
 [tool.isort]
 profile = "black"
@@ -92,6 +95,8 @@ include_trailing_comma = true
 force_grid_wrap = 0
 use_parentheses = true
 ensure_newline_before_comments = true
+src_paths = ["poke_battle_logger"]
+skip_glob = ["!poke_battle_logger/**"]
 
 [tool.mypy]
 python_version = "3.10"

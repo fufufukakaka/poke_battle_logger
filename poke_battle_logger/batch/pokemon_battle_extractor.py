@@ -21,6 +21,7 @@ from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.database.database_handler import DatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
+from poke_battle_logger.utils import get_pokemon_english_name_from_japanese
 
 resend.api_key = os.environ["RESEND_API_KEY"]
 fail_unknown_pokemons_templates = open(
@@ -176,6 +177,12 @@ class PokemonBattleExtractor:
                 # level_50
                 if frame_detector.is_level_50_frame(frame):
                     level_50_frames.append(i)
+
+                    # level_50 と move は同時に検出されるべき
+                    if frame_detector.is_move_frame(frame):
+                        move_frames.append(i)
+                        continue
+
                     continue
 
                 # first ranking
@@ -201,11 +208,6 @@ class PokemonBattleExtractor:
                 # win_or_lost
                 if frame_detector.is_win_or_lost_frame(frame):
                     win_or_lost_frames.append(i)
-                    continue
-
-                # move
-                if frame_detector.is_move_frame(frame):
-                    move_frames.append(i)
                     continue
             else:
                 continue
@@ -325,6 +327,7 @@ class PokemonBattleExtractor:
                 pre_win_or_lost[i] = win_or_lost_result
 
             # メッセージの文字認識(OCR)
+
             if i in message_window_frames:
                 _message_frame = frame
                 (
@@ -335,10 +338,16 @@ class PokemonBattleExtractor:
                 ) = self._get_current_teams_and_pokemons(
                     pre_battle_pokemons, battle_pokemons
                 )
+                # を行う前に、自分のチームのポケモン名に英語を対応させる
+                pre_battle_your_teams_english = [
+                    get_pokemon_english_name_from_japanese(name)
+                    for name in pre_battle_your_teams
+                ]
 
                 _message = extractor.extract_message(
                     _message_frame,
                     pre_battle_your_teams=pre_battle_your_teams,
+                    pre_battle_your_teams_english=pre_battle_your_teams_english,
                     pre_battle_opponent_teams=pre_battle_opponent_teams,
                     your_current_pokemon_name=your_current_pokemon_name,
                     opponent_current_pokemon_name=opponent_current_pokemon_name,
