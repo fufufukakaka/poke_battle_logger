@@ -1,11 +1,12 @@
-import { Box, Container, HStack, Heading, Image, Text, Divider, VStack, SimpleGrid, Button } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import useSWR from "swr";
 import { getImageUrlClient } from "@/helper/getImageURLClient";
 import Select from 'react-select'
 import { reactSelectOptions } from "@/helper/pokemonJapaneseToEnglishDict";
-import { useToast } from "@chakra-ui/react";
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/components/ui/use-toast';
 
 
 type Image = {
@@ -48,7 +49,7 @@ const AnnotatePokemonImagesPage = () => {
   const nameWindowImageDataList = nameWindowData;
   const [nameWindowImageLabels, setNameWindowImageLabels] = useState<{ pokemon_name_window_image_file_on_gcs: string; pokemon_name_window_label: string; }[]>([]);
 
-  const toast = useToast();
+  const { toast } = useToast();
 
   if (error || nameWindowError) return <div>Error loading images</div>;
   if (!imageDataList || !nameWindowImageDataList) return <div>Loading...</div>;
@@ -80,9 +81,6 @@ const AnnotatePokemonImagesPage = () => {
         toast({
           title: "Success",
           description: data.message,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
         });
       } else {
         const data = await response.json();
@@ -93,9 +91,7 @@ const AnnotatePokemonImagesPage = () => {
       toast({
         title: "Error",
         description: typedError.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
+        variant: "destructive",
       });
     }
   };
@@ -127,9 +123,6 @@ const AnnotatePokemonImagesPage = () => {
         toast({
           title: "Success",
           description: data.message,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
         });
       } else {
         const data = await response.json();
@@ -140,72 +133,70 @@ const AnnotatePokemonImagesPage = () => {
       toast({
         title: "Error",
         description: typedError.message,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
+        variant: "destructive",
       });
     }
   };
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      <Container maxW="container.xl" py="8">
-        <HStack spacing={0}>
-          <Heading padding={'5px'}>新しいポケモン画像のラベリング</Heading>
-          <Image src="./n426.gif" alt="フワライド" boxSize="50px" />
-        </HStack>
-        <Box flex="1" p="4" bg="white">
-            <VStack justify={"start"} align={"start"}>
-              <Text>検出ができなかったポケモン画像一覧</Text>
-              <Text>適切な名前を与えて「Submit」してください。以降の対戦データ抽出で利用されます。</Text>
-            </VStack>
-        </Box>
-        <Divider />
-        <Box flex="1" p="4" bg="white">
-          <Heading padding={'5px'} size={'md'}>ポケモン選出画像</Heading>
-            <SimpleGrid columns={4} spacing={10}>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-8">
+        <div className="flex items-center gap-0">
+          <h1 className="text-3xl font-bold p-1">新しいポケモン画像のラベリング</h1>
+          <img src="./n426.gif" alt="フワライド" className="w-12 h-12" />
+        </div>
+        <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
+            <div className="flex flex-col items-start space-y-2">
+              <p>検出ができなかったポケモン画像一覧</p>
+              <p>適切な名前を与えて「Submit」してください。以降の対戦データ抽出で利用されます。</p>
+            </div>
+        </div>
+        <Separator className="my-4" />
+        <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
+          <h2 className="text-xl font-semibold p-1 mb-4">ポケモン選出画像</h2>
+            <div className="grid grid-cols-4 gap-10">
               {imageDataList.imageURLList.map((imageURL, index) => (
-              <VStack key={index}>
-                <Image src={imageURL} alt={`Image ${index}`} />
+              <div key={index} className="flex flex-col items-center space-y-2">
+                <img src={imageURL} alt={`Image ${index}`} className="max-w-full h-auto" />
                 <Select
                   options={reactSelectOptions}
                   onChange={(option) => handleSelectChange(index, option)}
                 />
-              </VStack>
+              </div>
               ))}
-            </SimpleGrid>
-        </Box>
-        <Divider />
-        <Box flex="1" p="4" bg="white">
-            {imageLabels.length === 0 ? <Text>ラベルが付与されていないポケモン画像はありません</Text> : imageLabels.length === imageDataList.imageURLList.length ?
-                <Button colorScheme='blue' onClick={handleSubmit}>Pokemon Image Submit</Button>
-                : <Text>全てのポケモン画像にラベルを付与してください</Text>
+            </div>
+        </div>
+        <Separator className="my-4" />
+        <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
+            {imageLabels.length === 0 ? <p>ラベルが付与されていないポケモン画像はありません</p> : imageLabels.length === imageDataList.imageURLList.length ?
+                <Button onClick={handleSubmit}>Pokemon Image Submit</Button>
+                : <p>全てのポケモン画像にラベルを付与してください</p>
             }
-        </Box>
-        <Divider />
-        <Box flex="1" p="4" bg="white">
-          <Heading padding={'5px'} size={'md'}>ポケモンウィンドウ名画像</Heading>
-          <SimpleGrid columns={4} spacing={10}>
+        </div>
+        <Separator className="my-4" />
+        <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
+          <h2 className="text-xl font-semibold p-1 mb-4">ポケモンウィンドウ名画像</h2>
+          <div className="grid grid-cols-4 gap-10">
               {nameWindowImageDataList.imageURLList.map((imageURL, index) => (
-              <VStack key={index}>
-                <Image src={imageURL} alt={`NameWindowImage ${index}`} />
+              <div key={index} className="flex flex-col items-center space-y-2">
+                <img src={imageURL} alt={`NameWindowImage ${index}`} className="max-w-full h-auto" />
                 <Select
                   options={reactSelectOptions}
                   onChange={(option) => handleNameWindowSelectChange(index, option)}
                 />
-              </VStack>
+              </div>
               ))}
-            </SimpleGrid>
-        </Box>
-        <Divider />
-        <Box flex="1" p="4" bg="white">
-            {nameWindowImageLabels.length == 0 ? <Text>ラベルが付与されていないウィンドウ画像はありません</Text> : nameWindowImageLabels.length === nameWindowImageDataList.imageURLList.length ?
-                <Button colorScheme='blue' onClick={handleNameWindowSubmit}>Pokemon Name Window Image Submit</Button>
-                : <Text>全てのウィンドウ画像にラベルを付与してください</Text>
+            </div>
+        </div>
+        <Separator className="my-4" />
+        <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
+            {nameWindowImageLabels.length == 0 ? <p>ラベルが付与されていないウィンドウ画像はありません</p> : nameWindowImageLabels.length === nameWindowImageDataList.imageURLList.length ?
+                <Button onClick={handleNameWindowSubmit}>Pokemon Name Window Image Submit</Button>
+                : <p>全てのウィンドウ画像にラベルを付与してください</p>
             }
-        </Box>
-      </Container>
-    </Box>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -1,28 +1,18 @@
-import { Spinner, Badge, Box, Button, Container, Stack, HStack, Heading, Image, Text, InputGroup, InputLeftAddon, Input, Divider, VStack, Radio, RadioGroup, Popover, PopoverTrigger, PopoverContent, PopoverArrow, PopoverCloseButton, PopoverHeader, PopoverBody, OrderedList, ListItem } from "@chakra-ui/react";
 import React, { useState } from "react";
 import axios from 'axios';
 import { useAuth0, withAuthenticationRequired } from "@auth0/auth0-react";
 import { ServerHost } from "../../util"
 import useSWR from "swr";
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-} from '@chakra-ui/react'
-import {
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Switch,
-  FormControl,
-  FormLabel,
-} from '@chakra-ui/react'
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Loader2 } from 'lucide-react';
 
 interface videoFormat {
     isValid: boolean;
@@ -87,114 +77,154 @@ const ProcessVideoPage = () => {
   }
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      <Container maxW="container.xl" py="8">
-        <HStack spacing={0}>
-          <Heading padding={'5px'}>対戦データ登録</Heading>
-          <Image src="./n426.gif" alt="フワライド" boxSize="50px" />
-        </HStack>
-        <Box flex="1" p="4" bg="white">
-            <VStack justify={"start"} align={"start"}>
-            <Text>Youtube の動画(1080p: 30fps) のID を入力してください</Text>
-            <InputGroup size='sm'>
-                <InputLeftAddon>{'https://www.youtube.com/watch?v='}</InputLeftAddon>
-                <Input placeholder='videoId' value={videoId} onChange={(e) => handleOnChange(e.target.value)}/>
-            </InputGroup>
-            <Button colorScheme='blue' onClick={() => handleOnClick()}>Check Format</Button>
-            </VStack>
-        </Box>
-        <Divider />
-        <Box flex="1" p="4" bg="white">
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-8">
+        <div className="flex items-center gap-0">
+          <h1 className="text-3xl font-bold p-1">対戦データ登録</h1>
+          <img src="./n426.gif" alt="フワライド" className="w-12 h-12" />
+        </div>
+        <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
+            <div className="flex flex-col items-start space-y-4">
+            <p>Youtube の動画(1080p: 30fps) のID を入力してください</p>
+            <div className="flex w-full max-w-sm">
+                <span className="inline-flex items-center px-3 text-sm text-muted-foreground bg-muted border border-r-0 border-input rounded-l-md">
+                  https://www.youtube.com/watch?v=
+                </span>
+                <Input 
+                  placeholder='videoId' 
+                  value={videoId} 
+                  onChange={(e) => handleOnChange(e.target.value)}
+                  className="rounded-l-none"
+                />
+            </div>
+            <Button onClick={() => handleOnClick()}>Check Format</Button>
+            </div>
+        </div>
+        <Separator className="my-4" />
+        <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
             {videoFormat && (
-                <Text>動画のフォーマット: {videoFormat.isValid ? <Badge colorScheme='green'>OK</Badge> : <Badge colorScheme='red'>NO</Badge>} </Text>
+                <p>動画のフォーマット: {videoFormat.isValid ? <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">OK</Badge> : <Badge variant="destructive">NO</Badge>} </p>
             )}
             {videoFormat && !videoFormat.isValid && (
-                <Text>動画が 1080p かどうか: {videoFormat.is1080p ? <Badge colorScheme='green'>OK</Badge> : <Badge colorScheme='red'>NO</Badge>}</Text>
+                <p>動画が 1080p かどうか: {videoFormat.is1080p ? <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">OK</Badge> : <Badge variant="destructive">NO</Badge>}</p>
             )}
             {videoFormat && !videoFormat.isValid && (
-                <Text>動画が 30fps かどうか: {videoFormat.is30fps ? <Badge colorScheme='green'>OK</Badge> : <Badge colorScheme='red'>NO</Badge>}</Text>
+                <p>動画が 30fps かどうか: {videoFormat.is30fps ? <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">OK</Badge> : <Badge variant="destructive">NO</Badge>}</p>
             )}
-        </Box>
+        </div>
         {videoFormat && videoFormat.isValid ? (
           <>
-          <Divider />
-            <Box flex="1" p="4" bg="white">
-              <RadioGroup onChange={setLangInVideo} value={langInVideo} marginBottom={"10px"}>
-                  <Stack direction='row'>
-                      <Radio value='en'>English</Radio>
-                      <Radio value='ja'>Japanese</Radio>
-                  </Stack>
-              </RadioGroup>
-              <FormControl as='fieldset'>
-                <FormLabel as='legend'>
-                  最後の対戦終了後の順位が動画に記録されていない場合、こちらに入力してください
-                </FormLabel>
-                <Switch onChange={showFinalResultInput} />
-                {isShowFinalResult ? (
-                <NumberInput value={finalResult} onChange={handleFinalResultChange}>
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>)
-                : null}
-              </FormControl>
-              <Button colorScheme='green' onClick={() => handleExtractJob()} marginBottom={"10px"}>Start Process Video</Button>
-            </Box>
+          <Separator className="my-4" />
+            <div className="flex-1 p-4 bg-white rounded-md shadow-sm">
+              <div className="mb-4">
+                <RadioGroup value={langInVideo} onValueChange={setLangInVideo}>
+                  <div className="flex items-center space-x-6">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="en" id="en" />
+                      <Label htmlFor="en">English</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="ja" id="ja" />
+                      <Label htmlFor="ja">Japanese</Label>
+                    </div>
+                  </div>
+                </RadioGroup>
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-sm font-medium">
+                    最後の対戦終了後の順位が動画に記録されていない場合、こちらに入力してください
+                  </Label>
+                  <div className="mt-2">
+                    <Switch checked={isShowFinalResult} onCheckedChange={showFinalResultInput} />
+                  </div>
+                  {isShowFinalResult && (
+                    <div className="mt-2 max-w-xs">
+                      <Input 
+                        type="number"
+                        value={finalResult || ''} 
+                        onChange={(e) => handleFinalResultChange(e.target.value)}
+                        placeholder="順位を入力"
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <Button 
+                className="bg-green-600 hover:bg-green-700 mt-4" 
+                onClick={() => handleExtractJob()}
+              >
+                Start Process Video
+              </Button>
+            </div>
           </>
         ) : null}
-        {dataVideoStatus && dataVideoStatus.length > 0 ? <TableContainer>
-          <Table variant='simple'>
-            <Thead>
-              <Tr>
-                <Th>動画ID</Th>
-                <Th>登録日</Th>
-                <Th>処理状況</Th>
-                <Th>処理状況詳細</Th>
-                <Th>動画を開く</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {dataVideoStatus.map((videoStatus:videoStatus , index: number) => {
-                return (
-                  <Tr key={index}>
-                    <Td>{videoStatus.videoId}</Td>
-                    <Td>{videoStatus.registeredAt}</Td>
-                    <Td><Badge>{videoStatus.status}</Badge></Td>
-                    <Td>
-                      <Popover>
-                        <PopoverTrigger>
-                          <Button colorScheme='blue' onClick={() => processLogDetailFetchHandler(videoStatus.videoId)}>処理詳細</Button>
-                        </PopoverTrigger>
-                        <PopoverContent>
-                          <PopoverArrow />
-                          <PopoverCloseButton />
-                          <PopoverHeader>処理ログ</PopoverHeader>
-                          <PopoverBody>
-                            <OrderedList>
-                            {
-                              videoStatusLogDetail.length > 0 ? videoStatusLogDetail.map((log, index) => {
-                              return (
-                                <ListItem key={index}>{log}</ListItem>
-                              )
-                              }) : <Spinner />}
-                            </OrderedList>
-                          </PopoverBody>
-                        </PopoverContent>
-                      </Popover>
-                    </Td>
-                    <Td>
-                      <Button colorScheme='blue' onClick={() => window.open(`https://www.youtube.com/watch?v=${videoStatus.videoId}`)}>Open Video</Button>
-                    </Td>
-                  </Tr>
-                )
-              })}
-            </Tbody>
-          </Table>
-        </TableContainer> : <p>まだ登録された動画がありません。動画を登録して対戦情報を抽出してみましょう。</p>}
-      </Container>
-    </Box>
+        {dataVideoStatus && dataVideoStatus.length > 0 ? (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>動画ID</TableHead>
+                  <TableHead>登録日</TableHead>
+                  <TableHead>処理状況</TableHead>
+                  <TableHead>処理状況詳細</TableHead>
+                  <TableHead>動画を開く</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {dataVideoStatus.map((videoStatus: videoStatus, index: number) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell>{videoStatus.videoId}</TableCell>
+                      <TableCell>{videoStatus.registeredAt}</TableCell>
+                      <TableCell><Badge variant="secondary">{videoStatus.status}</Badge></TableCell>
+                      <TableCell>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              onClick={() => processLogDetailFetchHandler(videoStatus.videoId)}
+                            >
+                              処理詳細
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-80">
+                            <div className="space-y-2">
+                              <h4 className="font-medium">処理ログ</h4>
+                              <ol className="list-decimal list-inside space-y-1">
+                                {videoStatusLogDetail.length > 0 
+                                  ? videoStatusLogDetail.map((log, index) => (
+                                      <li key={index} className="text-sm">{log}</li>
+                                    ))
+                                  : <div className="flex items-center space-x-2">
+                                      <Loader2 className="h-4 w-4 animate-spin" />
+                                      <span className="text-sm">読み込み中...</span>
+                                    </div>
+                                }
+                              </ol>
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      </TableCell>
+                      <TableCell>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => window.open(`https://www.youtube.com/watch?v=${videoStatus.videoId}`)}
+                        >
+                          Open Video
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <p>まだ登録された動画がありません。動画を登録して対戦情報を抽出してみましょう。</p>
+        )}
+      </div>
+    </div>
   );
 };
 

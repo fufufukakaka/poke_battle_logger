@@ -1,30 +1,34 @@
 import React from 'react'
-import { IconButton, Flex, useColorModeValue, Text, FlexProps } from '@chakra-ui/react'
 import { FiMenu } from 'react-icons/fi'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
-interface MobileProps extends FlexProps {
+interface MobileProps {
   onOpen: () => void
+  className?: string
 }
 
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({ onOpen, className }: MobileProps) => {
   return (
-    <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 24 }}
-      height="20"
-      alignItems="center"
-      bg={useColorModeValue('white', 'gray.900')}
-      borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
-      justifyContent="flex-start"
-      {...rest}
+    <div
+      className={cn(
+        "md:ml-60 px-4 md:px-24 h-20 flex items-center bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 justify-start",
+        className
+      )}
     >
-      <IconButton variant="outline" onClick={onOpen} aria-label="open menu" icon={<FiMenu />} />
+      <Button 
+        variant="outline" 
+        size="icon"
+        onClick={onOpen} 
+        aria-label="open menu"
+      >
+        <FiMenu className="h-4 w-4" />
+      </Button>
 
-      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
+      <span className="text-2xl ml-8 font-mono font-bold">
         Poke Battle Logger
-      </Text>
-    </Flex>
+      </span>
+    </div>
   )
 }
 

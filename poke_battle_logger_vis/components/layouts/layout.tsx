@@ -1,20 +1,12 @@
-import React, { DispatchWithoutAction, ReactNode } from 'react';
-import {
-  Box,
-  useColorModeValue,
-  Drawer,
-  DrawerContent,
-  useDisclosure,
-} from '@chakra-ui/react';
+import React, { ReactNode, useState } from 'react';
 import SideBar from './sidebar';
 import MobileNav from '../atoms/MobileNav';
-
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 interface seasonType {
   season: number;
   seasonStartEnd: string;
 }
-
 
 export default function Layout({
   seasonList,
@@ -29,41 +21,42 @@ export default function Layout({
   hideSidebar: boolean;
   children: ReactNode;
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       {hideSidebar ? (
-        <Box p="4">
+        <div className="p-4">
           {children}
-        </Box>
+        </div>
       ) : (
         <>
           <SideBar
-            onClose={() => onClose}
-            display={{ base: 'none', md: 'block' }}
+            onClose={() => setIsOpen(false)}
+            className="hidden md:block"
             seasonList={seasonList}
             setSeason={setSeason}
             season={season}
           />
-          <Drawer
-            autoFocus={false}
-            isOpen={isOpen}
-            placement="left"
-            onClose={onClose}
-            returnFocusOnClose={false}
-            onOverlayClick={onClose}
-            size="full"
-          >
-            <DrawerContent>
-              <SideBar seasonList={seasonList} season={season} onClose={onClose} setSeason={setSeason} />
-            </DrawerContent>
-          </Drawer>
-          <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-          <Box ml={{ base: 0, md: 60 }} p="4">
+          <Sheet open={isOpen} onOpenChange={setIsOpen}>
+            <SheetContent side="left" className="w-full p-0">
+              <SideBar 
+                seasonList={seasonList} 
+                season={season} 
+                onClose={() => setIsOpen(false)} 
+                setSeason={setSeason} 
+              />
+            </SheetContent>
+          </Sheet>
+          <MobileNav 
+            className="md:hidden flex" 
+            onOpen={() => setIsOpen(true)} 
+          />
+          <div className="ml-0 md:ml-60 p-4">
             {children}
-          </Box>
+          </div>
         </>
       )}
-    </Box>
+    </div>
   );
 }

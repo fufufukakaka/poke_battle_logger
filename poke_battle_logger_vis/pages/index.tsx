@@ -1,17 +1,7 @@
-import {
-  Box,
-  Container,
-  Heading,
-  Stack,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-  Divider,
-  Badge,
-} from '@chakra-ui/react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import PokeStatGroup from '../components/data-display/poke-stat-group';
 import useSWR from "swr";
 import axios from "axios"
@@ -109,79 +99,83 @@ const Dashboard: React.FC<DashBoardProps> = ({
   if (!data) return <p>no data</p>
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      <Container maxW="container.xl" py="8">
-        <Heading padding={'5px'}>ダッシュボード</Heading>
-        <Box flex="1" p="4" bg="white">
-          <Stack spacing={4}>
-            <PokeStatGroup
-              latest_lose_pokemon={data.latest_lose_pokemon}
-              latest_rank={data.latest_rank}
-              latest_win_pokemon={data.latest_win_pokemon}
-              win_rate={Number(data.win_rate.toFixed(4))}
-            />
-            <Divider />
-            <Heading size="md" padding={'5px'}>活動履歴</Heading>
-            <Box>
-            <CalendarHeatmap
-              startDate={oneYearAgo}
-              endDate={new Date()}
-              values={data.battle_counts}
-              showWeekdayLabels={true}
-              showMonthLabels={true}
-              classForValue={(value) => {
-                if (!value) {
-                  return 'color-empty';
-                } else if (value.count < 2) {
-                  return `color-github-1`;
-                } else if (value.count < 4) {
-                  return `color-github-2`;
-                } else if (value.count < 6) {
-                  return `color-github-3`;
-                } else {
-                  return `color-github-4`;
-                }
-              }}
-            />
-            </Box>
-            <Divider />
-            <Heading size="md" padding={'5px'}>
-              最近の対戦履歴
-            </Heading>
-            <Table>
-              <Thead>
-                <Tr>
-                  <Th>対戦ID</Th>
-                  <Th>対戦日時</Th>
-                  <Th>勝敗</Th>
-                  <Th>順位</Th>
-                  <Th>自分の初手</Th>
-                  <Th>相手の初手</Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {data.recent_battle_history.map((battle) => (
-                  <Tr key={battle.battle_id}>
-                    <Td>{battle.battle_id}</Td>
-                    <Td>{battle.created_at}</Td>
-                    <Td>
-                      {battle.win_or_lose === 'win' ? (
-                        <Badge colorScheme="green">勝利！</Badge>
-                      ) : (
-                        <Badge colorScheme="red">負け</Badge>
-                      )}
-                    </Td>
-                    <Td>{battle.next_rank}</Td>
-                    <Td>{battle.your_pokemon_1}</Td>
-                    <Td>{battle.opponent_pokemon_1}</Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </Stack>
-        </Box>
-      </Container>
-    </Box>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-8">
+        <h1 className="text-3xl font-bold p-2 mb-4">ダッシュボード</h1>
+        <Card>
+          <CardContent className="p-6">
+            <div className="space-y-6">
+              <PokeStatGroup
+                latest_lose_pokemon={data.latest_lose_pokemon}
+                latest_rank={data.latest_rank}
+                latest_win_pokemon={data.latest_win_pokemon}
+                win_rate={Number(data.win_rate.toFixed(4))}
+              />
+              <Separator />
+              <h2 className="text-xl font-semibold p-2">活動履歴</h2>
+              <div className="overflow-x-auto">
+                <CalendarHeatmap
+                  startDate={oneYearAgo}
+                  endDate={new Date()}
+                  values={data.battle_counts}
+                  showWeekdayLabels={true}
+                  showMonthLabels={true}
+                  classForValue={(value) => {
+                    if (!value) {
+                      return 'color-empty';
+                    } else if (value.count < 2) {
+                      return `color-github-1`;
+                    } else if (value.count < 4) {
+                      return `color-github-2`;
+                    } else if (value.count < 6) {
+                      return `color-github-3`;
+                    } else {
+                      return `color-github-4`;
+                    }
+                  }}
+                />
+              </div>
+              <Separator />
+              <h2 className="text-xl font-semibold p-2">
+                最近の対戦履歴
+              </h2>
+              <div className="rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>対戦ID</TableHead>
+                      <TableHead>対戦日時</TableHead>
+                      <TableHead>勝敗</TableHead>
+                      <TableHead>順位</TableHead>
+                      <TableHead>自分の初手</TableHead>
+                      <TableHead>相手の初手</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {data.recent_battle_history.map((battle) => (
+                      <TableRow key={battle.battle_id}>
+                        <TableCell>{battle.battle_id}</TableCell>
+                        <TableCell>{battle.created_at}</TableCell>
+                        <TableCell>
+                          {battle.win_or_lose === 'win' ? (
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-100">勝利！</Badge>
+                          ) : (
+                            <Badge className="bg-red-100 text-red-800 hover:bg-red-100">負け</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>{battle.next_rank}</TableCell>
+                        <TableCell>{battle.your_pokemon_1}</TableCell>
+                        <TableCell>{battle.opponent_pokemon_1}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
 

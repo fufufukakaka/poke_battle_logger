@@ -1,11 +1,12 @@
 import React, { createContext, useState } from 'react';
 import type { AppProps } from 'next/app';
-import { ChakraProvider } from '@chakra-ui/react';
 import Layout from '../components/layouts/layout';
 import Login from '../pages/login/index';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { Auth0Domain, Auto0ClientId, Auth0CallbackURL } from '../util'
 import useSWR from 'swr';
+import '../styles/globals.css';
+import { Toaster } from '@/components/ui/toaster';
 
 // get season from local storage
 let initialSeason = 0
@@ -41,13 +42,12 @@ export default function App({ Component, pageProps }: AppProps) {
         redirect_uri: Auth0CallbackURL,
       }}
     >
-      <ChakraProvider>
-        <SeasonContext.Provider value={season}>
-          <Layout seasonList={seasonList} season={season} setSeason={setSeasonHandler} hideSidebar={hideSidebar}>
-            <Component {...pageProps} />
-          </Layout>
-        </SeasonContext.Provider>
-      </ChakraProvider>
+      <SeasonContext.Provider value={season}>
+        <Layout seasonList={seasonList} season={season} setSeason={setSeasonHandler} hideSidebar={hideSidebar}>
+          <Component {...pageProps} />
+        </Layout>
+        <Toaster />
+      </SeasonContext.Provider>
     </Auth0Provider>
   );
 }

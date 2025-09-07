@@ -1,14 +1,9 @@
 import { Chrono } from "react-chrono";
 import PokemonIcon from "../atoms/pokemon-icon";
-import { Box, Flex, Spinner } from "@chakra-ui/react";
-import {
-  Badge,
-  ListItem,
-  OrderedList,
-  Switch,
-  FormControl,
-  FormLabel,
-} from '@chakra-ui/react'
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Loader2 } from 'lucide-react';
 import { useEffect, useState } from "react";
 
 interface InBattleTimelineProps {
@@ -44,14 +39,17 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log, mess
 
   return (
     <>
-      <FormControl display='flex' alignItems='center'>
-        <FormLabel htmlFor='show-message' mb='0'>
-          <Badge colorScheme='purple'>BETA</Badge> Show Battle Log Message
-        </FormLabel>
-        <Switch id='show-message' onChange={toggleShowMessage} />
-      </FormControl>
+      <div className="flex items-center space-x-4 mb-4">
+        <Label htmlFor='show-message' className="flex items-center space-x-2 text-sm font-medium">
+          <Badge variant="secondary" className="bg-purple-100 text-purple-800">BETA</Badge>
+          <span>Show Battle Log Message</span>
+        </Label>
+        <Switch id='show-message' onCheckedChange={toggleShowMessage} />
+      </div>
       {loading ? (
-        <Spinner /> // Display the spinner when loading
+        <div className="flex items-center justify-center p-4">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
       ) : (
       <Chrono
         key={renderKey}
@@ -60,27 +58,27 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log, mess
         allowDynamicUpdate={true}
       >
         {in_battle_log.map((log) => (
-          <Box key={log.turn}>
-            <h3>Turn: {log.turn}</h3>
-            <Flex alignItems={"flex-end"}>
+          <div key={log.turn} className="space-y-2">
+            <h3 className="text-lg font-semibold">Turn: {log.turn}</h3>
+            <div className="flex items-end space-x-2">
               <PokemonIcon
                 pokemon_name={log.your_pokemon_name}
                 boxSize={'50px'}
               />
-              <p>VS</p>
+              <p className="text-sm font-medium">VS</p>
               <PokemonIcon
                 pokemon_name={log.opponent_pokemon_name}
                 boxSize={'50px'}
               />
-            </Flex>
-            {showMessage ? (<OrderedList>
-              {
-                (message_log.filter((message) => Number(message.turn) === Number(log.turn)).map((message) => (
-                  <ListItem key={message.frame_number}>{message.message}</ListItem>
-                )))
-              }
-            </OrderedList>) : null}
-          </Box>
+            </div>
+            {showMessage ? (
+              <ol className="list-decimal list-inside space-y-1 text-sm">
+                {message_log.filter((message) => Number(message.turn) === Number(log.turn)).map((message) => (
+                  <li key={message.frame_number}>{message.message}</li>
+                ))}
+              </ol>
+            ) : null}
+          </div>
         ))}
       </Chrono>
       )}

@@ -1,24 +1,6 @@
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { Line } from 'react-chartjs-2';
+"use client"
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
-);
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface TransitionChartProps {
   data: number[];
@@ -31,42 +13,56 @@ interface TransitionChartProps {
 const TransitionChart: React.FunctionComponent<TransitionChartProps> = ({
   data,
   chartTitle,
-  dataLabel,
-  dataColor,
-  dataBackGroundColor,
+  dataLabel = 'Value',
+  dataColor = '#8884d8',
 }) => {
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: true,
-        text: chartTitle,
-      },
-    },
-    maintainAspectRatio: true,
-    aspectRatio: 2
-  };
-
-  // label is index of win_rates(0,1,2,...)
-  const labels = data.map((_, index) => index);
-  const chartData = {
-    labels,
-    datasets: [
-      {
-        label: dataLabel,
-        data: data,
-        borderColor: dataColor,
-        backgroundColor: dataBackGroundColor,
-      },
-    ],
-  };
+  // Transform data to work with Recharts
+  const chartData = data.map((value, index) => ({
+    index: index,
+    value: value,
+  }));
 
   return (
-    <div style={{ position: "relative", height: "auto", width: "35vw" }}>
-      <Line options={options} data={chartData} />
+    <div className="space-y-4">
+      {chartTitle && (
+        <h3 className="text-lg font-semibold text-center">{chartTitle}</h3>
+      )}
+      <div className="w-full h-[200px] bg-white rounded-lg border p-4">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="index" />
+            <YAxis />
+            <Tooltip 
+              formatter={(value) => [value, dataLabel]}
+              labelFormatter={(label) => `Point ${label}`}
+            />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke={dataColor}
+              strokeWidth={2}
+              dot={{
+                fill: dataColor,
+                strokeWidth: 2,
+                r: 4
+              }}
+              activeDot={{
+                r: 6,
+                fill: dataColor
+              }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
