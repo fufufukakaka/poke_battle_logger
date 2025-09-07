@@ -1083,6 +1083,8 @@ export const pokemonJapaneseToEnglishDict: PokemonJapaneseToEnglishDict = {
   "デオキシス(アタックフォルム)": "Deoxys Attack",
   "デオキシス(ディフェンスフォルム)": "Deoxys Defense",
   "デオキシス(スピードフォルム)": "Deoxys Speed",
+  "シェイミ(ランドフォルム)": "Shaymin Land",
+  "シェイミ(スカイフォルム)": "Shaymin Sky",
 }
 
 export const reactSelectOptions = Object.keys(pokemonJapaneseToEnglishDict).map(key => ({
