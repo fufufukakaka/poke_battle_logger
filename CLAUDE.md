@@ -37,8 +37,8 @@ make run_dashboard             # Start Next.js dev server (cd poke_battle_logger
 # Testing and Quality
 make test                      # Run pytest suite
 make test_local               # Run tests with local Tesseract
-make lint                     # Code linting with pysen
-make format                   # Code formatting with pysen
+make lint                     # Code linting with mypy and flake8
+make format                   # Code formatting with isort and black
 
 # Data Processing
 make extract-data             # Extract battle data from video (requires VIDEO_ID, TRAINER_ID, LANG)
@@ -63,8 +63,6 @@ make create-container-mount   # Development container with volume mount
 
 ## Data Extraction Pipeline
 
-The application supports both batch video processing and real-time live stream analysis:
-
 ### Batch Processing (YouTube Videos)
 1. **Video Input**: YouTube video URL submitted via frontend
 2. **Download & Processing**: Video downloaded using yt-dlp, processed with OpenCV
@@ -88,12 +86,6 @@ The application supports both batch video processing and real-time live stream a
 - `pokemon_battle_extractor.py` - Main video processing pipeline
 - `pokemon_extractor.py` - Pokemon detection and recognition
 - `frame_detector.py` - Battle state detection
-- `extract_data.py` - Command-line data extraction script
-
-### Live Stream Processing (`poke_battle_logger/stream/`)
-- `live_battle_analyzer.py` - Main live analysis orchestrator
-- `live_processor.py` - Real-time frame processing and state machine
-- `frame_capture.py` - Multi-source frame capture (OBS, screen, RTMP, webcam)
 
 ### Frontend Pages (`poke_battle_logger_vis/pages/`)
 - `index.tsx` - Main dashboard
