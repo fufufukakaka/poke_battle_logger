@@ -176,6 +176,12 @@ class PokemonBattleExtractor:
                 # level_50
                 if frame_detector.is_level_50_frame(frame):
                     level_50_frames.append(i)
+
+                    # level_50 と move は同時に検出されるべき
+                    if frame_detector.is_move_frame(frame):
+                        move_frames.append(i)
+                        continue
+
                     continue
 
                 # first ranking
@@ -201,11 +207,6 @@ class PokemonBattleExtractor:
                 # win_or_lost
                 if frame_detector.is_win_or_lost_frame(frame):
                     win_or_lost_frames.append(i)
-                    continue
-
-                # move
-                if frame_detector.is_move_frame(frame):
-                    move_frames.append(i)
                     continue
             else:
                 continue
@@ -474,6 +475,7 @@ class PokemonBattleExtractor:
             modified_messages,
             modified_selected_moves,
         ) = data_builder.build()
+        import pdb; pdb.set_trace()
 
         # insert data to database
         self.firestore_handler.update_log_document(

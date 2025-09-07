@@ -336,19 +336,15 @@ class DataBuilder:
 
             # selected_moves
             for frame_number, move_info in self.move_infos.items():
-                if (
-                    start_frame < frame_number
-                    and self.battle_start_end_frame_numbers[i][1] > frame_number
-                ):
-                    modified_selected_moves.append(
-                        SelectedMoves(
-                            battle_id=battle_id,
-                            frame_number=frame_number,
-                            your_pokemon_name=move_info["your_pokemon_name"],
-                            opponent_pokemon_name=move_info["opponent_pokemon_name"],
-                            selected_move_name=move_info["selected_move_name"],
-                        )
+                modified_selected_moves.append(
+                    SelectedMoves(
+                        battle_id=battle_id,
+                        frame_number=frame_number,
+                        your_pokemon_name=move_info["your_pokemon_name"],
+                        opponent_pokemon_name=move_info["opponent_pokemon_name"],
+                        selected_move_name=move_info["selected_move_name"],
                     )
+                )
 
             # overview
             if (
