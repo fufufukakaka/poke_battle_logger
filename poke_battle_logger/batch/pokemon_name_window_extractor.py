@@ -9,7 +9,6 @@ import editdistance
 import numpy as np
 import pandas as pd
 import pytesseract
-
 from config.config import (
     POKEMON_NAME_WINDOW_THRESHOLD_VALUE1,
     POKEMON_NAME_WINDOW_THRESHOLD_VALUE2,

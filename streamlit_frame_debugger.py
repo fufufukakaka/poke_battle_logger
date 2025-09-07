@@ -130,7 +130,7 @@ def draw_detection_regions(frame):
 def debug_is_move_frame(frame, frame_detector):
     """Debug is_move_frame method step by step."""
     from config.config import MOVE_ANKER_POSITION, MOVE_ANKER_THRESHOLD
-    
+
     # Extract the move anchor area
     gray_move_anker_area = cv2.cvtColor(
         frame[

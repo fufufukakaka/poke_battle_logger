@@ -7,14 +7,7 @@ import cv2
 import numpy as np
 import pandas as pd
 import yt_dlp
-from fastapi import (
-    FastAPI,
-    File,
-    HTTPException,
-    Request,
-    UploadFile,
-    status,
-)
+from fastapi import FastAPI, File, HTTPException, Request, UploadFile, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse

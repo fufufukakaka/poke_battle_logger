@@ -6,16 +6,16 @@ from typing import Dict, List, Tuple, Union, cast
 
 import cv2
 import numpy as np
-from dotenv import load_dotenv
-from PIL import Image
-from transformers import pipeline
-
 from config.config import (
     OPPONENT_PRE_POKEMON_POSITION,
     POKEMON_POSITIONS,
     POKEMON_TEMPLATE_MATCHING_THRESHOLD,
     YOUR_PRE_POKEMON_POSITION,
 )
+from dotenv import load_dotenv
+from PIL import Image
+from transformers import pipeline
+
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
     PokemonNameWindowExtractor,
 )

@@ -5,7 +5,6 @@ import cv2
 import editdistance
 import numpy as np
 import pytesseract
-
 from config.config import (
     FIRST_RANKING_NUMBER_WINDOW,
     MESSAGE_WINDOW,
@@ -31,6 +30,7 @@ from config.config import (
     WIN_OR_LOST_TEMPLATE_MATCHING_THRESHOLD,
     YOUR_POKEMON_NAME_WINDOW,
 )
+
 from poke_battle_logger.batch.openai_handler import OpenAIHandler
 from poke_battle_logger.batch.pokemon_name_window_extractor import (
     EDIT_DISTANCE_THRESHOLD,
