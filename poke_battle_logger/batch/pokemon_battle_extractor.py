@@ -483,7 +483,7 @@ class PokemonBattleExtractor:
             modified_messages,
             modified_selected_moves,
         ) = data_builder.build()
-        import pdb; pdb.set_trace()
+
         # insert data to database
         self.firestore_handler.update_log_document(
             video_id=self.video_id, new_message="INFO: Inserting data to database..."

@@ -8,7 +8,7 @@ from pytube.helpers import regex_search
 
 # No.,Japanese,English
 pokemon_names = pd.read_csv("data/pokemon_names.csv")
-POKEMON_NAME_JA_EN_DICT = pokemon_names.set_index("Japanese")["English"].to_dict()
+POKEMON_NAME_JA_EN_DICT: dict[str, str] = pokemon_names.set_index("Japanese")["English"].to_dict()
 
 
 def publish_date(watch_html: str) -> Optional[datetime]:
