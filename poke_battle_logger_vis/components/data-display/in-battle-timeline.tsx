@@ -1,4 +1,3 @@
-import { Chrono } from "react-chrono";
 import PokemonIcon from "../atoms/pokemon-icon";
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
@@ -51,14 +50,9 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log, mess
           <Loader2 className="h-6 w-6 animate-spin" />
         </div>
       ) : (
-      <Chrono
-        key={renderKey}
-        mode="VERTICAL"
-        cardHeight={100}
-        allowDynamicUpdate={true}
-      >
+      <div key={renderKey} className="space-y-4">
         {in_battle_log.map((log) => (
-          <div key={log.turn} className="space-y-2">
+          <div key={log.turn} className="border rounded-lg p-4 space-y-2">
             <h3 className="text-lg font-semibold">Turn: {log.turn}</h3>
             <div className="flex items-end space-x-2">
               <PokemonIcon
@@ -80,7 +74,7 @@ const InBattleTimeline: React.FC<InBattleTimelineProps> = ({ in_battle_log, mess
             ) : null}
           </div>
         ))}
-      </Chrono>
+      </div>
       )}
     </>
   );

@@ -323,4 +323,12 @@ const Analytics: React.FC = () => {
   );
 };
 
+// このページは認証が必要なため、SSGではなくSSRを使用
+export async function getServerSideProps() {
+  // 認証が必要なページなので、常に動的レンダリング
+  return {
+    props: {}
+  };
+}
+
 export default withAuthenticationRequired(Analytics);

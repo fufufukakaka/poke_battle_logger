@@ -147,7 +147,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
             <div className="flex justify-center gap-1 mb-2">
               {
                 your_pokemon_team.split(',').map((pokemon_name) => (
-                  <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'51px'} />
+                  <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'50px'} />
                 ))
               }
             </div>
@@ -155,7 +155,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
             <div className="flex justify-center gap-1 mb-3">
               {
                 opponent_pokemon_team.split(',').map((pokemon_name) => (
-                  <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'51px'} />
+                  <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'50px'} />
                 ))
               }
             </div>

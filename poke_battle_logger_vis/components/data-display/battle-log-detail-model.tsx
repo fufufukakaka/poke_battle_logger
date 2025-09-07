@@ -122,7 +122,7 @@ const BattleLogDetailModal: React.FunctionComponent<
                     <PokemonIcon
                       key={pokemon_name}
                       pokemon_name={pokemon_name}
-                      boxSize={'40px'}
+                      boxSize={'50px'}
                     />
                   ))}
                 </div>
@@ -132,7 +132,7 @@ const BattleLogDetailModal: React.FunctionComponent<
                     <PokemonIcon
                       key={pokemon_name}
                       pokemon_name={pokemon_name}
-                      boxSize={'40px'}
+                      boxSize={'50px'}
                     />
                   ))}
                 </div>

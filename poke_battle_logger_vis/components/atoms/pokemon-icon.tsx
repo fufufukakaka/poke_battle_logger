@@ -21,7 +21,7 @@ const getPokemonImageUrl = (pokemon_name: string) => {
 
 const PokemonIcon: React.FC<PokemonIconProps> = ({ pokemon_name, boxSize, className }) => {
   const sizeClasses = boxSize === "150px" ? "w-[150px] h-[150px]" : 
-                     boxSize === "50px" ? "w-10 h-10" :
+                     boxSize === "50px" ? "w-12 h-12" :
                      boxSize === "40px" ? "w-8 h-8" :
                      `w-[${boxSize}] h-[${boxSize}]`;
   
