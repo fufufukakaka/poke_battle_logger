@@ -17,6 +17,9 @@ import {
   SidebarContent,
   SidebarHeader,
   SidebarFooter,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarGroupContent,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -31,12 +34,13 @@ interface SidebarProps {
   className?: string;
 }
 
-const menuItems = [
-  {
-    title: 'ダッシュボード',
-    href: '/',
-    icon: MdCatchingPokemon,
-  },
+const dashboardItem = {
+  title: 'ダッシュボード',
+  href: '/',
+  icon: MdCatchingPokemon,
+};
+
+const analyticsItems = [
   {
     title: 'ログ分析',
     href: '/analytics',
@@ -47,6 +51,9 @@ const menuItems = [
     href: '/battle_log',
     icon: RiDatabaseFill,
   },
+];
+
+const dataManagementItems = [
   {
     title: '対戦データの登録',
     href: '/process_video',
@@ -65,9 +72,9 @@ const SideBar = ({ onClose, setSeason, seasonList, season, className }: SidebarP
 
   return (
     <Sidebar className={className}>
-      <SidebarHeader>
-        <div className="flex items-center justify-between px-2">
-          <Link href="/" className="text-2xl font-mono font-bold text-sidebar-foreground">
+      <SidebarHeader className="py-3 px-4 space-y-2">
+        <div className="flex items-center justify-between">
+          <Link href="/" className="text-xl font-mono font-bold text-sidebar-foreground">
             Poke Battle Logger
           </Link>
           <div className="md:hidden">
@@ -75,9 +82,9 @@ const SideBar = ({ onClose, setSeason, seasonList, season, className }: SidebarP
           </div>
         </div>
         
-        <div className="px-2">
+        <div>
           <Select value={season.toString()} onValueChange={(value) => setSeason(Number(value))}>
-            <SelectTrigger className="text-sidebar-foreground bg-transparent border-sidebar-border">
+            <SelectTrigger className="text-sidebar-foreground bg-transparent border-sidebar-border h-8">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -92,28 +99,71 @@ const SideBar = ({ onClose, setSeason, seasonList, season, className }: SidebarP
       </SidebarHeader>
       
       <SidebarContent>
-        <SidebarMenu>
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const isActive = router.pathname === item.href;
-            
-            return (
-              <SidebarMenuItem key={item.href}>
-                <SidebarMenuButton asChild isActive={isActive}>
-                  <Link href={item.href}>
-                    <Icon className="mr-2 h-4 w-4" />
-                    <span>{item.title}</span>
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={router.pathname === dashboardItem.href}>
+                  <Link href={dashboardItem.href}>
+                    <MdCatchingPokemon className="mr-2 h-4 w-4" />
+                    <span>{dashboardItem.title}</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            );
-          })}
-        </SidebarMenu>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>分析</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {analyticsItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = router.pathname === item.href;
+                
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <Link href={item.href}>
+                        <Icon className="mr-2 h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>データ管理</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {dataManagementItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = router.pathname === item.href;
+                
+                return (
+                  <SidebarMenuItem key={item.href}>
+                    <SidebarMenuButton asChild isActive={isActive}>
+                      <Link href={item.href}>
+                        <Icon className="mr-2 h-4 w-4" />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       
-      <SidebarFooter>
+      <SidebarFooter className="p-4">
         {isAuthenticated && user && (
-          <div className="flex flex-col items-center p-4 space-y-3">
+          <div className="flex flex-col items-center space-y-2">
             <Avatar className="h-12 w-12">
               <AvatarImage src={user.picture} alt={user.name} />
               <AvatarFallback>{user.name?.charAt(0)}</AvatarFallback>
