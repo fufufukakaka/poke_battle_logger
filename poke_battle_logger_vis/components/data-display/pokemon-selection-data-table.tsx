@@ -1,17 +1,5 @@
 import * as React from 'react';
-import {
-  HStack,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  chakra,
-  Input,
-  VStack,
-} from '@chakra-ui/react';
-import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import {
   useReactTable,
   flexRender,
@@ -20,6 +8,8 @@ import {
   SortingState,
   getSortedRowModel,
 } from '@tanstack/react-table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
 import PokemonIcon from '../atoms/pokemon-icon';
 
 type PokemonStat = {
@@ -70,77 +60,76 @@ export function PokemonSelectionDataTable<Data extends object & PokemonStat>({
   });
 
   return (
-    <VStack>
+    <div className="space-y-4">
       <Input
         placeholder="ポケモン名を入力して検索"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
+        className="max-w-sm"
       />
-      <Table>
-      <Thead>
-        {table.getHeaderGroups().map((headerGroup) => (
-          <Tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = header.column.columnDef.meta;
-              return (
-                <Th
-                  key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
-                  isNumeric={meta?.isNumeric}
-                >
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-
-                  <chakra.span pl="4">
-                    {header.column.getIsSorted() ? (
-                      header.column.getIsSorted() === 'desc' ? (
-                        <TriangleDownIcon aria-label="sorted descending" />
-                      ) : (
-                        <TriangleUpIcon aria-label="sorted ascending" />
-                      )
-                    ) : null}
-                  </chakra.span>
-                </Th>
-              );
-            })}
-          </Tr>
-        ))}
-      </Thead>
-      <Tbody>
-        {table.getRowModel().rows.map((row) => (
-          <Tr key={row.id}>
-            {row.getVisibleCells().map((cell) => {
-              // see https://tanstack.com/table/v8/docs/api/core/column-def#meta to type this correctly
-              const meta: any = cell.column.columnDef.meta;
-              // slice column name ex. 74_pokemon_name
-              const columnName =
-                cell.id.split('_')[1] + '_' + cell.id.split('_')[2];
-              return (
-                <Td key={cell.id} isNumeric={meta?.isNumeric}>
-                  {columnName === 'pokemon_name' ? (
-                    <HStack spacing={0} align="center">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      <div>
-                        <PokemonIcon
-                          key={cell.getValue() as string}
-                          pokemon_name={cell.getValue() as string}
-                          boxSize={'60px'}
-                        />
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const meta: any = header.column.columnDef.meta;
+                  return (
+                    <TableHead
+                      key={header.id}
+                      className={`cursor-pointer select-none ${meta?.isNumeric ? 'text-right' : ''}`}
+                      onClick={header.column.getToggleSortingHandler()}
+                    >
+                      <div className="flex items-center gap-2">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                        <span className="ml-2">
+                          {header.column.getIsSorted() ? (
+                            header.column.getIsSorted() === 'desc' ? (
+                              <ChevronDown className="h-4 w-4" />
+                            ) : (
+                              <ChevronUp className="h-4 w-4" />
+                            )
+                          ) : null}
+                        </span>
                       </div>
-                    </HStack>
-                  ) : (
-                    flexRender(cell.column.columnDef.cell, cell.getContext())
-                  )}
-                </Td>
-              );
-            })}
-          </Tr>
-        ))}
-      </Tbody>
-    </Table>
-    </VStack>
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => {
+                  const meta: any = cell.column.columnDef.meta;
+                  const columnName =
+                    cell.id.split('_')[1] + '_' + cell.id.split('_')[2];
+                  return (
+                    <TableCell key={cell.id} className={meta?.isNumeric ? 'text-right' : ''}>
+                      {columnName === 'pokemon_name' ? (
+                        <div className="flex items-center gap-2">
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          <PokemonIcon
+                            key={cell.getValue() as string}
+                            pokemon_name={cell.getValue() as string}
+                            boxSize={'60px'}
+                          />
+                        </div>
+                      ) : (
+                        flexRender(cell.column.columnDef.cell, cell.getContext())
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
 }

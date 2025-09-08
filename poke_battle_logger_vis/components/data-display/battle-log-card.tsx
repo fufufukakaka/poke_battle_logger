@@ -1,18 +1,10 @@
-import {
-  Card,
-  Heading,
-  CardBody,
-  Flex,
-  Text,
-  Badge,
-  Divider,
-  CardFooter,
-  Button,
-  Skeleton,
-  useToast,
-} from '@chakra-ui/react';
-import { useDisclosure } from '@chakra-ui/react'
-import { TimeIcon, CopyIcon } from '@chakra-ui/icons';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
+import { Clock, Copy } from 'lucide-react';
 import PokemonIcon from '../atoms/pokemon-icon';
 import BattleLogDetailModal from './battle-log-detail-model';
 import { useState, useEffect } from 'react';
@@ -55,9 +47,9 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
   saveMemo,
   isLoading
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const [isOpen, setIsOpen] = useState(false)
   const [shouldFetch, setShouldFetch] = useState(false)
-  const toast = useToast()
+  const { toast } = useToast()
 
   const fetcher = (url: string) => fetch(url).then(res => res.json())
   
@@ -80,18 +72,13 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
         await navigator.clipboard.writeText(logText)
         toast({
           title: '対戦ログをコピーしました',
-          status: 'success',
-          duration: 2000,
-          isClosable: true,
         })
         setShouldFetch(false)
       } catch (error) {
         toast({
           title: 'エラーが発生しました',
           description: 'クリップボードへのコピーに失敗しました',
-          status: 'error',
-          duration: 3000,
-          isClosable: true,
+          variant: 'destructive',
         })
       }
     }
@@ -110,9 +97,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
       toast({
         title: 'エラーが発生しました',
         description: '対戦ログの取得に失敗しました',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
+        variant: 'destructive',
       })
       setShouldFetch(false)
     }
@@ -122,7 +107,7 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
     <>
     <BattleLogDetailModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={() => setIsOpen(false)}
       battle_id={battle_id}
       battle_created_at={battle_created_at}
       win_or_lose={win_or_lose}
@@ -140,83 +125,89 @@ const BattleLogCard: React.FunctionComponent<BattleLogCardProps> = ({
       saveMemo={saveMemo}
     />
     <Card>
-      <Skeleton isLoaded={!isLoading}>
-      <CardBody>
-        <Text>
-          <TimeIcon boxSize={4} margin={'5px'} />
-          {battle_created_at}
-        </Text>
-        <Text>
-          {win_or_lose === 'win' ? (
-            <Badge colorScheme="green">勝利！</Badge>
-          ) : (
-            <Badge colorScheme="red">負け</Badge>
-          )}{' '}
-          → 👑 {next_rank}
-        </Text>
-        <Divider margin={'5px'} />
-        <Heading size={"xs"}>MatchUp</Heading>
-        <Flex>
-          {
-            your_pokemon_team.split(',').map((pokemon_name) => (
-              <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'40px'} />
-            ))
-          }
-        </Flex>
-        <Text>VS</Text>
-        <Flex>
-          {
-            opponent_pokemon_team.split(',').map((pokemon_name) => (
-              <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'40px'} />
-            ))
-          }
-        </Flex>
-        <Divider margin={'5px'} />
-        <Heading size={"xs"}>Selection</Heading>
-        <Flex>
-          <PokemonIcon pokemon_name={your_pokemon_select1} boxSize={'50px'} />
-          <PokemonIcon pokemon_name={your_pokemon_select2} boxSize={'50px'} />
-          <PokemonIcon pokemon_name={your_pokemon_select3} boxSize={'50px'} />
-        </Flex>
-        <Text>VS</Text>
-        <Flex>
-          <PokemonIcon
-            pokemon_name={opponent_pokemon_select1}
-            boxSize={'50px'}
-          />
-          <PokemonIcon
-            pokemon_name={opponent_pokemon_select2}
-            boxSize={'50px'}
-          />
-          <PokemonIcon
-            pokemon_name={opponent_pokemon_select3}
-            boxSize={'50px'}
-          />
-        </Flex>
-        <Divider margin={'5px'} />
-        <Heading size={"xs"}>📝 Memo</Heading>
-        <Text>
-          {memo}
-        </Text>
-      </CardBody>
-      <CardFooter>
-        <Flex gap={2}>
-          <Button onClick={onOpen} variant='solid' colorScheme='blue'>
-            詳細を確認する
-          </Button>
-          <Button 
-            onClick={copyBattleLog} 
-            variant='outline' 
-            colorScheme='gray'
-            leftIcon={<CopyIcon />}
-            isLoading={isFetchingLog}
-            loadingText='取得中...'
-          >
-            対戦ログをコピー
-          </Button>
-        </Flex>
-      </CardFooter>
-      </Skeleton>
+      {isLoading ? (
+        <Skeleton className="h-[400px] w-full" />
+      ) : (
+        <>
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="h-4 w-4" />
+              <span className="text-sm">{battle_created_at}</span>
+            </div>
+            <div className="flex items-center gap-2 mb-4">
+              {win_or_lose === 'win' ? (
+                <Badge className="bg-green-100 text-green-800 hover:bg-green-100">勝利！</Badge>
+              ) : (
+                <Badge className="bg-red-100 text-red-800 hover:bg-red-100">負け</Badge>
+              )}
+              <span>→ 👑 {next_rank}</span>
+            </div>
+            <Separator className="my-3" />
+            <h3 className="text-sm font-semibold mb-2">MatchUp</h3>
+            <div className="flex justify-center gap-1 mb-2">
+              {
+                your_pokemon_team.split(',').map((pokemon_name) => (
+                  <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'50px'} />
+                ))
+              }
+            </div>
+            <p className="text-xs text-center text-gray-500">VS</p>
+            <div className="flex justify-center gap-1 mb-3">
+              {
+                opponent_pokemon_team.split(',').map((pokemon_name) => (
+                  <PokemonIcon key={pokemon_name} pokemon_name={pokemon_name} boxSize={'50px'} />
+                ))
+              }
+            </div>
+            <Separator className="my-3" />
+            <h3 className="text-sm font-semibold mb-2">Selection</h3>
+            <div className="flex justify-center gap-2 mb-2">
+              <PokemonIcon pokemon_name={your_pokemon_select1} boxSize={'50px'} />
+              <PokemonIcon pokemon_name={your_pokemon_select2} boxSize={'50px'} />
+              <PokemonIcon pokemon_name={your_pokemon_select3} boxSize={'50px'} />
+            </div>
+            <p className="text-xs text-center text-gray-500">VS</p>
+            <div className="flex justify-center gap-2 mb-3">
+              <PokemonIcon
+                pokemon_name={opponent_pokemon_select1}
+                boxSize={'50px'}
+              />
+              <PokemonIcon
+                pokemon_name={opponent_pokemon_select2}
+                boxSize={'50px'}
+              />
+              <PokemonIcon
+                pokemon_name={opponent_pokemon_select3}
+                boxSize={'50px'}
+              />
+            </div>
+            <Separator className="my-2" />
+            <h3 className="text-sm font-semibold mb-2">📝 Memo</h3>
+            <p className="text-sm text-gray-600">
+              {memo || '（メモなし）'}
+            </p>
+          </CardContent>
+          <CardFooter className="flex gap-2">
+            <Button onClick={() => setIsOpen(true)}>
+              詳細を確認する
+            </Button>
+            <Button 
+              onClick={copyBattleLog} 
+              variant="outline"
+              disabled={isFetchingLog}
+            >
+              {isFetchingLog ? (
+                <>取得中...</>
+              ) : (
+                <>
+                  <Copy className="mr-2 h-4 w-4" />
+                  対戦ログをコピー
+                </>
+              )}
+            </Button>
+          </CardFooter>
+        </>
+      )}
     </Card>
     </>
   );

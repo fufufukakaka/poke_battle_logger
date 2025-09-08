@@ -1,20 +1,11 @@
-import React, { DispatchWithoutAction, ReactNode } from 'react';
-import {
-  Box,
-  useColorModeValue,
-  Drawer,
-  DrawerContent,
-  useDisclosure,
-} from '@chakra-ui/react';
+import React, { ReactNode } from 'react';
 import SideBar from './sidebar';
-import MobileNav from '../atoms/MobileNav';
-
+import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/sidebar';
 
 interface seasonType {
   season: number;
   seasonStartEnd: string;
 }
-
 
 export default function Layout({
   seasonList,
@@ -29,41 +20,30 @@ export default function Layout({
   hideSidebar: boolean;
   children: ReactNode;
 }) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  if (hideSidebar) {
+    return (
+      <div className="min-h-screen bg-background p-4">
+        {children}
+      </div>
+    );
+  }
+
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
-      {hideSidebar ? (
-        <Box p="4">
+    <SidebarProvider>
+      <SideBar
+        onClose={() => {}}
+        seasonList={seasonList}
+        setSeason={setSeason}
+        season={season}
+      />
+      <SidebarInset>
+        <header className="sticky top-0 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4">
+          <SidebarTrigger className="md:hidden" />
+        </header>
+        <div className="p-4">
           {children}
-        </Box>
-      ) : (
-        <>
-          <SideBar
-            onClose={() => onClose}
-            display={{ base: 'none', md: 'block' }}
-            seasonList={seasonList}
-            setSeason={setSeason}
-            season={season}
-          />
-          <Drawer
-            autoFocus={false}
-            isOpen={isOpen}
-            placement="left"
-            onClose={onClose}
-            returnFocusOnClose={false}
-            onOverlayClick={onClose}
-            size="full"
-          >
-            <DrawerContent>
-              <SideBar seasonList={seasonList} season={season} onClose={onClose} setSeason={setSeason} />
-            </DrawerContent>
-          </Drawer>
-          <MobileNav display={{ base: 'flex', md: 'none' }} onOpen={onOpen} />
-          <Box ml={{ base: 0, md: 60 }} p="4">
-            {children}
-          </Box>
-        </>
-      )}
-    </Box>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

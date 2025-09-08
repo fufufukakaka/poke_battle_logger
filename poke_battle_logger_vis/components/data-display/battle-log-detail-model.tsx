@@ -1,39 +1,16 @@
-import {
-  Heading,
-  Flex,
-  Text,
-  Badge,
-  Divider,
-  Editable,
-  EditableTextarea,
-  EditablePreview,
-  VStack,
-  HStack,
-} from '@chakra-ui/react';
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalCloseButton,
-} from '@chakra-ui/react';
-import { TimeIcon } from '@chakra-ui/icons';
 import PokemonIcon from '../atoms/pokemon-icon';
 import ReactPlayer from 'react-player/youtube'
-import { Tabs, TabList, TabPanels, Tab, TabPanel, TabIndicator } from '@chakra-ui/react'
-import {
-  Accordion,
-  AccordionItem,
-  AccordionButton,
-  AccordionPanel,
-  AccordionIcon,
-  Box,
-} from '@chakra-ui/react'
 import InBattleTimeline from '../data-display/in-battle-timeline'
 import useSWR from 'swr';
 import axios from 'axios';
 import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Clock, Loader } from 'lucide-react';
 
 interface BattleLogDetailModalProps {
   isOpen: boolean;
@@ -106,82 +83,68 @@ const BattleLogDetailModal: React.FunctionComponent<
   const [inputText, setInputText] = useState<string>(memo ? memo : 'input memo here')
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size={"xl"}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>対戦詳細</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <Accordion allowToggle>
-            <AccordionItem>
-              <h2>
-                <AccordionButton>
-                  <Box as="span" flex='1' textAlign='left'>
-                    Movie
-                  </Box>
-                  <AccordionIcon />
-                </AccordionButton>
-              </h2>
-              <AccordionPanel pb={4}>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>対戦詳細</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <Accordion type="single" collapsible>
+            <AccordionItem value="movie">
+              <AccordionTrigger>Movie</AccordionTrigger>
+              <AccordionContent>
                 <ReactPlayer url={video} controls={true} width={"100%"}/>
-              </AccordionPanel>
+              </AccordionContent>
             </AccordionItem>
           </Accordion>
-          <Text>
-            <TimeIcon boxSize={4} margin={'5px'} />
-            {battle_created_at}
-          </Text>
-          <Text>
+          <p className="flex items-center space-x-2">
+            <Clock className="h-4 w-4" />
+            <span>{battle_created_at}</span>
+          </p>
+          <p className="flex items-center space-x-2">
             {win_or_lose === 'win' ? (
-              <Badge colorScheme="green">勝利！</Badge>
+              <Badge variant="default" className="bg-green-100 text-green-800 hover:bg-green-100">勝利！</Badge>
             ) : (
-              <Badge colorScheme="red">負け</Badge>
-            )}{' '}
-            → 👑 {next_rank}
-          </Text>
-          <Divider margin={'5px'} />
-          <Tabs position="relative" variant="unstyled">
-            <TabList>
-              <Tab>Selection</Tab>
-              <Tab>In-Battle</Tab>
-            </TabList>
-            <TabIndicator
-              mt="-1.5px"
-              height="2px"
-              bg="blue.500"
-              borderRadius="1px"
-            />
-            <TabPanels>
-              <TabPanel>
-              <Heading size={'xs'}>ShowDown</Heading>
-                <Flex>
+              <Badge variant="destructive">負け</Badge>
+            )}
+            <span>→ 👑 {next_rank}</span>
+          </p>
+          <Separator />
+          <Tabs defaultValue="selection" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="selection">Selection</TabsTrigger>
+              <TabsTrigger value="in-battle">In-Battle</TabsTrigger>
+            </TabsList>
+            <TabsContent value="selection" className="space-y-4">
+              <h3 className="text-xs font-semibold mb-2">ShowDown</h3>
+                <div className="flex space-x-1 mb-2">
                   {your_pokemon_team.split(',').map((pokemon_name) => (
                     <PokemonIcon
                       key={pokemon_name}
                       pokemon_name={pokemon_name}
-                      boxSize={'40px'}
+                      boxSize={'50px'}
                     />
                   ))}
-                </Flex>
-                <Text>VS</Text>
-                <Flex>
+                </div>
+                <p className="text-center font-medium mb-2">VS</p>
+                <div className="flex space-x-1 mb-4">
                   {opponent_pokemon_team.split(',').map((pokemon_name) => (
                     <PokemonIcon
                       key={pokemon_name}
                       pokemon_name={pokemon_name}
-                      boxSize={'40px'}
+                      boxSize={'50px'}
                     />
                   ))}
-                </Flex>
-                <Divider margin={'5px'} />
-                <Heading size={'xs'}>Selection</Heading>
-                <Flex>
+                </div>
+                <Separator className="mb-4" />
+                <h3 className="text-xs font-semibold mb-2">Selection</h3>
+                <div className="flex space-x-1 mb-2">
                   <PokemonIcon pokemon_name={your_pokemon_select1} boxSize={'50px'} />
                   <PokemonIcon pokemon_name={your_pokemon_select2} boxSize={'50px'} />
                   <PokemonIcon pokemon_name={your_pokemon_select3} boxSize={'50px'} />
-                </Flex>
-                <Text>VS</Text>
-                <Flex>
+                </div>
+                <p className="text-center font-medium mb-2">VS</p>
+                <div className="flex space-x-1 mb-4">
                   <PokemonIcon
                     pokemon_name={opponent_pokemon_select1}
                     boxSize={'50px'}
@@ -194,49 +157,56 @@ const BattleLogDetailModal: React.FunctionComponent<
                     pokemon_name={opponent_pokemon_select3}
                     boxSize={'50px'}
                   />
-                </Flex>
-                <Divider margin={'5px'} />
-                <Heading size={'xs'}>Fainted Log</Heading>
-                <VStack alignItems={'baseline'}>
+                </div>
+                <Separator className="mb-4" />
+                <h3 className="text-xs font-semibold mb-2">Fainted Log</h3>
+                <div className="space-y-2">
                   {faintedLogDataIsLoading ? (
-                    <Text>loading...</Text>
-                  // if not error
+                    <div className="flex items-center justify-center py-4">
+                      <Loader className="animate-spin h-4 w-4" />
+                    </div>
                   ) : faintedLogDataError ? null : faintedLogData ? (
                     faintedLogData.map((log) => (
-                      <Box key={log.turn}>
-                        <HStack>
+                      <div key={log.turn} className="space-y-1">
+                        <div className="flex items-center space-x-2">
                           <PokemonIcon
                             key={log.turn}
                             pokemon_name={log.your_pokemon_name}
                             boxSize={'50px'}
                           />
-                          {log.fainted_pokemon_side === 'Your Pokemon Win' ? <Text>🏆:🥲</Text> : <Text>🥲:🏆</Text>}
+                          <span className="text-sm">
+                            {log.fainted_pokemon_side === 'Your Pokemon Win' ? '🏆:🥲' : '🥲:🏆'}
+                          </span>
                           <PokemonIcon
                             key={log.turn}
                             pokemon_name={log.opponent_pokemon_name}
                             boxSize={'50px'}
                           />
-                        </HStack>
-                        <Text>Turn: {log.turn}</Text>
-                      </Box>
+                        </div>
+                        <p className="text-sm">Turn: {log.turn}</p>
+                      </div>
                     ))
                   ) : null}
-                </VStack>
-                <Divider margin={'5px'} />
-                <Heading size={'xs'}>📝 Memo</Heading>
-                <Editable defaultValue={memo} onChange={value => (setInputText(value))} value={inputText} onSubmit={value => saveMemo(battle_id, value)}>
-                  <EditablePreview />
-                  <EditableTextarea />
-                </Editable>
-              </TabPanel>
-              <TabPanel>
-                {!error && !isLoading && data && messageData ? <InBattleTimeline in_battle_log={data} message_log={messageData}/> : null}
-              </TabPanel>
-            </TabPanels>
+                </div>
+                <Separator className="mb-4" />
+                <h3 className="text-xs font-semibold mb-2">📝 Memo</h3>
+                <Textarea 
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onBlur={() => saveMemo(battle_id, inputText)}
+                  placeholder="input memo here"
+                  className="min-h-[80px]"
+                />
+            </TabsContent>
+            <TabsContent value="in-battle">
+              {!error && !isLoading && data && messageData ? (
+                <InBattleTimeline in_battle_log={data} message_log={messageData}/>
+              ) : null}
+            </TabsContent>
           </Tabs>
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

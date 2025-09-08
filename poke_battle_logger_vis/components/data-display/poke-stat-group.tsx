@@ -1,11 +1,4 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  SimpleGrid,
-  Heading,
-  Text,
-} from '@chakra-ui/react';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import PokemonIcon from '@/components/atoms/pokemon-icon';
 
 interface PokeStatGroupProps {
@@ -22,45 +15,45 @@ const PokeStatGroup: React.FunctionComponent<PokeStatGroupProps> = ({
   win_rate,
 }) => {
   return (
-    <SimpleGrid
-      spacing={10}
-      templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
-    >
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card>
         <CardHeader>
-          <Heading size="md">{'勝率 👊'}</Heading>
+          <CardTitle className="text-lg">勝率 👊</CardTitle>
         </CardHeader>
-        <CardBody>
-          <Text fontSize="2xl">{win_rate * 100}%</Text>
-        </CardBody>
+        <CardContent>
+          <p className="text-2xl font-bold">{(win_rate * 100).toFixed(1)}%</p>
+        </CardContent>
       </Card>
+      
       <Card>
         <CardHeader>
-          <Heading size="md">{'順位 👑'}</Heading>
+          <CardTitle className="text-lg">順位 👑</CardTitle>
         </CardHeader>
-        <CardBody>
-          <Text fontSize="2xl">{latest_rank}</Text>
-        </CardBody>
+        <CardContent>
+          <p className="text-2xl font-bold">{latest_rank}</p>
+        </CardContent>
       </Card>
+      
       <Card>
         <CardHeader>
-          <Heading size="md">{'最近勝ったポケモン ⭕'}</Heading>
+          <CardTitle className="text-lg">最近勝ったポケモン ⭕</CardTitle>
         </CardHeader>
-        <CardBody>
-          <Text fontSize="2xl">{latest_win_pokemon}</Text>
-          <PokemonIcon pokemon_name={latest_win_pokemon} boxSize={"150px"}/>
-        </CardBody>
+        <CardContent>
+          <p className="text-2xl font-bold mb-2">{latest_win_pokemon}</p>
+          <PokemonIcon pokemon_name={latest_win_pokemon} boxSize={"150px"} />
+        </CardContent>
       </Card>
+      
       <Card>
         <CardHeader>
-          <Heading size="md">{'最近負けたポケモン ❎'}</Heading>
+          <CardTitle className="text-lg">最近負けたポケモン ❎</CardTitle>
         </CardHeader>
-        <CardBody>
-          <Text fontSize="2xl">{latest_lose_pokemon}</Text>
-          <PokemonIcon pokemon_name={latest_lose_pokemon} boxSize={"150px"}/>
-        </CardBody>
+        <CardContent>
+          <p className="text-2xl font-bold mb-2">{latest_lose_pokemon}</p>
+          <PokemonIcon pokemon_name={latest_lose_pokemon} boxSize={"150px"} />
+        </CardContent>
       </Card>
-    </SimpleGrid>
+    </div>
   );
 };
 

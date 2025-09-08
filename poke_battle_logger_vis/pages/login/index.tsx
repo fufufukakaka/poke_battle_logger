@@ -1,42 +1,24 @@
 import * as React from 'react';
-import {
-  Box,
-  Center,
-  Heading,
-  Button,
-  VStack,
-  useColorModeValue,
-} from '@chakra-ui/react';
 import { useAuth0 } from "@auth0/auth0-react";
-
+import { Button } from '@/components/ui/button';
 
 export const Login = () => {
-  const buttonBgColor = useColorModeValue('blue.600', 'blue.200');
-  const buttonHoverBgColor = useColorModeValue('blue.500', 'blue.300');
   const { loginWithRedirect } = useAuth0();
 
   return (
-    <Box
-      height="100vh"
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-    >
-      <Center flexGrow={1}>
-        <VStack spacing={8}>
-          <Heading fontSize="6xl">PokeBattleLogger</Heading>
-            <Button
-              size="lg"
-              colorScheme="blue"
-              backgroundColor={buttonBgColor}
-              _hover={{ backgroundColor: buttonHoverBgColor }}
-              onClick={() => loginWithRedirect()}
-            >
-              ログイン
-            </Button>
-        </VStack>
-      </Center>
-    </Box>
+    <div className="h-screen flex flex-col justify-center">
+      <div className="flex-grow flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-8">
+          <h1 className="text-6xl font-bold">PokeBattleLogger</h1>
+          <Button
+            size="lg"
+            onClick={() => loginWithRedirect()}
+          >
+            ログイン
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 };
 

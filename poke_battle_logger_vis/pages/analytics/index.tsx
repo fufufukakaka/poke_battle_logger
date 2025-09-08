@@ -1,16 +1,9 @@
-import {
-  HStack,
-  Image,
-  Box,
-  Container,
-  Divider,
-  SimpleGrid,
-  Heading,
-  Radio,
-  RadioGroup,
-  Stack,
-} from '@chakra-ui/react';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { Loader } from 'lucide-react';
 import TransitionChart from '../../components/data-display/transition-chart';
 import useSWR from 'swr';
 import axios from 'axios';
@@ -236,20 +229,25 @@ const Analytics: React.FC = () => {
   )
   const [selectedValue, setSelectedValue] = useState('1')
 
-  if (isLoading) return <p>loading...</p>
+  if (isLoading) return (
+    <div className="flex items-center justify-center h-64">
+      <Loader className="animate-spin h-8 w-8" />
+    </div>
+  )
   if (error) return <p>error</p>
   if (!data) return <p>no data</p>
 
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      <Container maxW="container.xl" py="8">
-        <HStack spacing={0}>
-          <Heading padding={'5px'}>ログ分析</Heading>
-          <Image src="./goodra.png" alt="goodra" boxSize="50px" />
-        </HStack>
-        <Box flex="1" p="4" bg="white">
-          <SimpleGrid columns={2} spacing={10}>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-8">
+        <div className="flex items-center gap-4 mb-6">
+          <h1 className="text-3xl font-bold">ログ分析</h1>
+          <img src="./goodra.png" alt="goodra" className="w-12 h-12" />
+        </div>
+        <Card>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <TransitionChart
               data={data.winRates}
               chartTitle={season === 0 ? `勝率推移(通算)` : `勝率推移(シーズン${season})`}
@@ -264,58 +262,73 @@ const Analytics: React.FC = () => {
               dataColor={'rgb(53, 162, 235)'}
               dataBackGroundColor={'rgba(53, 162, 235, 0.5)'}
             />
-          </SimpleGrid>
-          <Divider marginY={'10px'} />
-          <RadioGroup onChange={setSelectedValue} value={selectedValue}>
-            <Stack direction='row'>
-              <Radio value='1'>Selection Count</Radio>
-              <Radio value='2'>KnockOut Count</Radio>
-            </Stack>
-          </RadioGroup>
-          {selectedValue === '1' ? (
-            <Heading size="md" padding={'10px'}>
-              選出ログサマリー
-            </Heading>)
-            : selectedValue === '2' ? (
-              <Heading size="md" padding={'10px'}>
+            </div>
+            <Separator className="my-6" />
+            <div className="mb-6">
+              <RadioGroup value={selectedValue} onValueChange={setSelectedValue}>
+                <div className="flex items-center space-x-6">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="1" id="selection" />
+                    <Label htmlFor="selection">Selection Count</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="2" id="knockout" />
+                    <Label htmlFor="knockout">KnockOut Count</Label>
+                  </div>
+                </div>
+              </RadioGroup>
+            </div>
+            {selectedValue === '1' && (
+              <h2 className="text-xl font-semibold mb-4">
+                選出ログサマリー
+              </h2>
+            )}
+            {selectedValue === '2' && (
+              <h2 className="text-xl font-semibold mb-4">
                 ノックアウトログサマリー
-              </Heading>
-            ) : null
-          }
-          {selectedValue === '1' ? (
-          <Tabs>
-            <TabList>
-              <Tab>自分のポケモン</Tab>
-              <Tab>相手のポケモン</Tab>
-            </TabList>
-            <TabPanels>
-              <TabPanel>
-                <PokemonSelectionDataTable columns={yourPokemonStatsColumns} data={data.yourPokemonStatsSummary} />
-              </TabPanel>
-              <TabPanel>
-                <PokemonSelectionDataTable columns={opponentPokemonStatsColumns} data={data.opponentPokemonStatsSummary} />
-              </TabPanel>
-            </TabPanels>
-          </Tabs> ) : selectedValue === '2' ? (
-            <Tabs>
-              <TabList>
-                <Tab>自分のポケモン</Tab>
-                <Tab>相手のポケモン</Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
+              </h2>
+            )}
+            {selectedValue === '1' && (
+              <Tabs defaultValue="your-pokemon" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="your-pokemon">自分のポケモン</TabsTrigger>
+                  <TabsTrigger value="opponent-pokemon">相手のポケモン</TabsTrigger>
+                </TabsList>
+                <TabsContent value="your-pokemon">
+                  <PokemonSelectionDataTable columns={yourPokemonStatsColumns} data={data.yourPokemonStatsSummary} />
+                </TabsContent>
+                <TabsContent value="opponent-pokemon">
+                  <PokemonSelectionDataTable columns={opponentPokemonStatsColumns} data={data.opponentPokemonStatsSummary} />
+                </TabsContent>
+              </Tabs>
+            )}
+            {selectedValue === '2' && (
+              <Tabs defaultValue="your-pokemon" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="your-pokemon">自分のポケモン</TabsTrigger>
+                  <TabsTrigger value="opponent-pokemon">相手のポケモン</TabsTrigger>
+                </TabsList>
+                <TabsContent value="your-pokemon">
                   <PokemonKnockOutDataTable columns={yourPokemonKnockOutStatsColumns} data={data.yourPokemonKnockOutSummary} />
-                </TabPanel>
-                <TabPanel>
+                </TabsContent>
+                <TabsContent value="opponent-pokemon">
                   <PokemonKnockOutDataTable columns={opponentPokemonKnockOutStatsColumns} data={data.opponentPokemonKnockOutSummary} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>) : null
-          }
-        </Box>
-      </Container>
-    </Box>
+                </TabsContent>
+              </Tabs>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
+
+// このページは認証が必要なため、SSGではなくSSRを使用
+export async function getServerSideProps() {
+  // 認証が必要なページなので、常に動的レンダリング
+  return {
+    props: {}
+  };
+}
 
 export default withAuthenticationRequired(Analytics);

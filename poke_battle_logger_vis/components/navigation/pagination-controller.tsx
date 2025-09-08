@@ -1,20 +1,13 @@
-import React, { useState } from 'react';
-import {
-  Box,
-  Button,
-  ButtonGroup,
-  IconButton,
-  Text,
-  Spacer,
-} from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface PaginationControllerProps {
     maxPage: number;
     currentPage: number;
     setCurrentPage: (page: number) => void;
 }
-
 
 const PaginationController: React.FC<PaginationControllerProps> = ({
     maxPage,
@@ -43,8 +36,11 @@ const PaginationController: React.FC<PaginationControllerProps> = ({
         <Button
           key={i}
           onClick={() => setCurrentPage(i)}
-          variant={i === currentPage ? 'solid' : 'outline'}
-          colorScheme="blackAlpha"
+          variant={i === currentPage ? 'default' : 'outline'}
+          className={cn(
+            "h-9 w-9 p-0",
+            i === currentPage && "pointer-events-none"
+          )}
         >
           {i}
         </Button>,
@@ -53,16 +49,16 @@ const PaginationController: React.FC<PaginationControllerProps> = ({
 
     if (startPage > 1) {
       pageNumbers.unshift(
-        <Text key="start-ellipsis" mx={2} color="black">
+        <span key="start-ellipsis" className="mx-2 text-gray-500">
           ...
-        </Text>,
+        </span>,
       );
     }
     if (endPage < maxPage) {
       pageNumbers.push(
-        <Text key="end-ellipsis" mx={2} color="black">
+        <span key="end-ellipsis" className="mx-2 text-gray-500">
           ...
-        </Text>,
+        </span>,
       );
     }
 
@@ -70,33 +66,29 @@ const PaginationController: React.FC<PaginationControllerProps> = ({
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      backgroundColor="white"
-      borderRadius="md"
-      boxShadow="sm"
-      p={4}
-    >
-      <ButtonGroup spacing={4}>
-        <IconButton
+    <div className="flex justify-center items-center bg-white rounded-md shadow-sm p-4">
+      <div className="flex items-center gap-2">
+        <Button
           onClick={prevPage}
           disabled={currentPage === 1}
-          icon={<ChevronLeftIcon />}
-          aria-label="Previous"
-          color="black"
-        />
+          variant="outline"
+          size="icon"
+          className="h-9 w-9"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
         {renderPageNumbers()}
-        <IconButton
+        <Button
           onClick={nextPage}
           disabled={currentPage === maxPage}
-          icon={<ChevronRightIcon />}
-          aria-label="Next"
-          color="black"
-        />
-      </ButtonGroup>
-    </Box>
+          variant="outline"
+          size="icon"
+          className="h-9 w-9"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+    </div>
   );
 };
 

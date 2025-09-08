@@ -1,46 +1,33 @@
 import React from 'react'
-import { Flex, Icon, FlexProps } from '@chakra-ui/react'
 import { IconType } from 'react-icons'
-import { ReactText } from 'react'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
-interface NavItemProps extends FlexProps {
+interface NavItemProps {
   icon: IconType
   href: string
   iconSize?: string
-  children: ReactText
+  children: React.ReactNode
+  className?: string
 }
 
-const NavItem = ({ icon, children, href, iconSize, ...rest }: NavItemProps) => {
+const NavItem = ({ icon: Icon, children, href, iconSize, className }: NavItemProps) => {
   return (
     <Link href={href}>
-      <Flex
-        align="center"
-        p="4"
-        mx="4"
-        borderRadius="lg"
-        role="group"
-        cursor="pointer"
-        _hover={{
-          bg: 'cyan.400',
-          color: 'white'
-        }}
-        color="white"
-        overflowWrap="anywhere"
-        {...rest}
+      <div
+        className={cn(
+          "flex items-center p-4 mx-4 rounded-lg cursor-pointer hover:bg-cyan-400 hover:text-white text-white break-all group",
+          className
+        )}
       >
-        {icon && (
-          <Icon
-            mr="4"
-            fontSize={iconSize ? iconSize : '16'}
-            _groupHover={{
-              color: 'white'
-            }}
-            as={icon}
+        {Icon && (
+          <Icon 
+            className="mr-4 group-hover:text-white" 
+            size={iconSize ? iconSize : 16}
           />
         )}
         {children}
-      </Flex>
+      </div>
     </Link>
   )
 }

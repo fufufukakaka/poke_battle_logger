@@ -1,18 +1,11 @@
-import {
-  HStack,
-  Image,
-  Box,
-  Container,
-  SimpleGrid,
-  Heading,
-} from '@chakra-ui/react';
 import useSWR from 'swr';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { SeasonContext } from '../_app';
 import BattleLogCard from '@/components/data-display/battle-log-card';
 import { useAuth0, withAuthenticationRequired } from '@auth0/auth0-react';
 import PaginationController from '@/components/navigation/pagination-controller';
-import axiosInstance from '../../helper/axios'
+import axiosInstance from '../../helper/axios';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface BattleLogProps {
   battle_id: string;
@@ -77,45 +70,57 @@ const BattleLogs: React.FC = () => {
   let maxPage = battleCountData ? Math.ceil(battleCountData / pageSize) : 10;
 
   return (
-    <Box bg="gray.50" minH="100vh">
-      <Container maxW="container.xl" py="8">
-        <HStack spacing={0}>
-          <Heading padding={'5px'}>対戦一覧</Heading>
-          <Image src="./n426.gif" alt="フワライド" boxSize="50px" />
-          <PaginationController
-            maxPage={maxPage}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        </HStack>
-        <Box flex="1" p="4" bg="white">
-          <SimpleGrid columns={3} spacing={10}>
-            {data ? data.map((battle: BattleLogProps) => (
-              <BattleLogCard
-                key={battle.battle_id}
-                battle_id={battle.battle_id}
-                battle_created_at={battle.battle_created_at}
-                win_or_lose={battle.win_or_lose}
-                next_rank={battle.next_rank}
-                your_pokemon_team={battle.your_pokemon_team}
-                opponent_pokemon_team={battle.opponent_pokemon_team}
-                your_pokemon_select1={battle.your_pokemon_select1}
-                your_pokemon_select2={battle.your_pokemon_select2}
-                your_pokemon_select3={battle.your_pokemon_select3}
-                opponent_pokemon_select1={battle.opponent_pokemon_select1}
-                opponent_pokemon_select2={battle.opponent_pokemon_select2}
-                opponent_pokemon_select3={battle.opponent_pokemon_select3}
-                memo={battle.memo}
-                video={battle.video}
-                saveMemo={saveMemo}
-                isLoading={isLoading}
-              />
-            )) : null }
-          </SimpleGrid>
-        </Box>
-      </Container>
-    </Box>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto py-8">
+        <div className="flex items-center gap-4 mb-6">
+          <h1 className="text-3xl font-bold">対戦一覧</h1>
+          <img src="./n426.gif" alt="フワライド" className="w-12 h-12" />
+          <div className="ml-auto">
+            <PaginationController
+              maxPage={maxPage}
+              currentPage={currentPage}
+              setCurrentPage={setCurrentPage}
+            />
+          </div>
+        </div>
+        <Card>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {data ? data.map((battle: BattleLogProps) => (
+                <BattleLogCard
+                  key={battle.battle_id}
+                  battle_id={battle.battle_id}
+                  battle_created_at={battle.battle_created_at}
+                  win_or_lose={battle.win_or_lose}
+                  next_rank={battle.next_rank}
+                  your_pokemon_team={battle.your_pokemon_team}
+                  opponent_pokemon_team={battle.opponent_pokemon_team}
+                  your_pokemon_select1={battle.your_pokemon_select1}
+                  your_pokemon_select2={battle.your_pokemon_select2}
+                  your_pokemon_select3={battle.your_pokemon_select3}
+                  opponent_pokemon_select1={battle.opponent_pokemon_select1}
+                  opponent_pokemon_select2={battle.opponent_pokemon_select2}
+                  opponent_pokemon_select3={battle.opponent_pokemon_select3}
+                  memo={battle.memo}
+                  video={battle.video}
+                  saveMemo={saveMemo}
+                  isLoading={isLoading}
+                />
+              )) : null }
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
+
+// このページは認証が必要なため、SSGではなくSSRを使用
+export async function getServerSideProps() {
+  // 認証が必要なページなので、常に動的レンダリング
+  return {
+    props: {}
+  };
+}
 
 export default withAuthenticationRequired(BattleLogs);
