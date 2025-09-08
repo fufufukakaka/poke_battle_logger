@@ -50,15 +50,7 @@ const TransitionChart: React.FunctionComponent<TransitionChartProps> = ({
               dataKey="value"
               stroke={dataColor}
               strokeWidth={2}
-              dot={{
-                fill: dataColor,
-                strokeWidth: 2,
-                r: 4
-              }}
-              activeDot={{
-                r: 6,
-                fill: dataColor
-              }}
+              dot={false}
             />
           </LineChart>
         </ResponsiveContainer>
