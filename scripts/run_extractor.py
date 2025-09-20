@@ -8,7 +8,7 @@ import resend
 from rich.logging import RichHandler
 
 from poke_battle_logger.batch.pokemon_battle_extractor import PokemonBattleExtractor
-from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.database.sqlmodel_handler import SQLModelDatabaseHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 
 resend.api_key = os.environ["RESEND_API_KEY"]
@@ -29,7 +29,7 @@ logger = getLogger(__name__)
 
 
 def get_trainer_id_in_DB_and_email(trainer_id: str) -> Tuple[int, str]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     trainer_id_in_DB = database_handler.get_trainer_id_in_DB(trainer_id)
     email = database_handler.get_user_email(trainer_id)
     return trainer_id_in_DB, email

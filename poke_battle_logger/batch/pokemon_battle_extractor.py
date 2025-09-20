@@ -18,7 +18,7 @@ from poke_battle_logger.batch.frame_compressor import (
 )
 from poke_battle_logger.batch.frame_detector import FrameDetector
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
-from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.database.sqlmodel_handler import SQLModelDatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 from poke_battle_logger.utils import get_pokemon_english_name_from_japanese
@@ -58,7 +58,7 @@ class PokemonBattleExtractor:
         self.final_result = final_result
         self.gcs_handler = GCSHandler()
         self.firestore_handler = FirestoreHandler()
-        self.database_handler = DatabaseHandler()
+        self.database_handler = SQLModelDatabaseHandler()
 
     def _download_video(
         self,

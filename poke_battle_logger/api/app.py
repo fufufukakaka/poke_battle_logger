@@ -14,9 +14,11 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from rich.logging import RichHandler
 
+# Import SQLModel router
+from poke_battle_logger.api.sqlmodel_example import router as sqlmodel_router
 from poke_battle_logger.batch.pokemon_extractor import PokemonExtractor
 from poke_battle_logger.cloud_batch_handler import CloudBatchHandler
-from poke_battle_logger.database.database_handler import DatabaseHandler
+from poke_battle_logger.database.sqlmodel_handler import SQLModelDatabaseHandler
 from poke_battle_logger.firestore_handler import FirestoreHandler
 from poke_battle_logger.gcs_handler import GCSHandler
 from poke_battle_logger.types import ImageLabel, NameWindowImageLabel
@@ -30,6 +32,10 @@ logging.basicConfig(
 logger = getLogger(__name__)
 
 app = FastAPI()
+
+# Include SQLModel router
+app.include_router(sqlmodel_router)
+
 origins = [
     "http://127.0.0.1:3000",
     "http://localhost:3000",
@@ -55,7 +61,7 @@ pokemon_extractor = PokemonExtractor()
 
 
 def get_trainer_id_in_DB(trainer_id: str) -> int:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     trainer_id_in_DB = database_handler.get_trainer_id_in_DB(trainer_id)
     return trainer_id_in_DB
 
@@ -85,7 +91,7 @@ async def get_pokemon_name_to_no(pokemon_name: str) -> int:
 async def get_recent_battle_summary(
     trainer_id: str,
 ) -> Dict[str, Union[float, int, str, List[Dict[str, Union[str, int]]]]]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     is_exist = database_handler.check_trainer_id_exists(trainer_id)
     if not is_exist:
         return {
@@ -126,7 +132,7 @@ async def get_analytics(
         List[Dict[str, Union[str, int]]],
     ],
 ]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     if season == 0:
         win_rate_transition = database_handler.get_win_rate_transitions_all(trainer_id)
         next_rank_transition = database_handler.get_next_rank_transitions_all(
@@ -188,7 +194,7 @@ async def get_battle_log(
     page: int,
     size: int,
 ) -> List[Dict[str, Union[str, int]]]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     if season == 0:
         battle_log = database_handler.get_battle_log_all(trainer_id, page, size)
     elif season > 0:
@@ -205,12 +211,12 @@ async def get_battle_log_count(
     trainer_id: str,
     season: int,
 ) -> int:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     if season == 0:
         battle_log_count = database_handler.get_battle_log_all_count(trainer_id)
     elif season > 0:
         battle_log_count = database_handler.get_battle_log_season_count(
-            trainer_id, season
+            season, trainer_id
         )
     else:
         raise ValueError("season must be 0 or positive")
@@ -219,13 +225,13 @@ async def get_battle_log_count(
 
 @app.get("/api/v1/in_battle_log")
 async def get_in_battle_log(battle_id: str) -> list[dict[str, str | int]]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     return database_handler.get_in_battle_log(battle_id)
 
 
 @app.get("/api/v1/in_battle_message_log")
 async def get_in_battle_message_log(battle_id: str) -> list[dict[str, str | int]]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     in_battle_message_log = database_handler.get_in_battle_message_log(battle_id)
     return in_battle_message_log
 
@@ -259,7 +265,7 @@ class BattleMessageFullLogResponse(BaseModel):
 async def get_in_battle_message_full_log(
     battle_id: str,
 ) -> BattleMessageFullLogResponse:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     in_battle_message_full_log = database_handler.get_in_battle_message_full_log(
         battle_id
     )
@@ -271,12 +277,16 @@ async def get_in_battle_message_full_log(
             turn=int(entry["turn"]),
             frame_number=int(entry["frame_number"]),
             message=str(entry["message"]),
-            your_pokemon_name=str(entry["your_pokemon_name"])
-            if entry.get("your_pokemon_name")
-            else None,
-            opponent_pokemon_name=str(entry["opponent_pokemon_name"])
-            if entry.get("opponent_pokemon_name")
-            else None,
+            your_pokemon_name=(
+                str(entry["your_pokemon_name"])
+                if entry.get("your_pokemon_name")
+                else None
+            ),
+            opponent_pokemon_name=(
+                str(entry["opponent_pokemon_name"])
+                if entry.get("opponent_pokemon_name")
+                else None
+            ),
         )
         for entry in in_battle_message_full_log
     ]
@@ -285,9 +295,11 @@ async def get_in_battle_message_full_log(
     return BattleMessageFullLogResponse(
         battle_id=str(battle_summary["battle_id"]),
         win_or_lose=str(battle_summary["win_or_lose"]),
-        next_rank=int(str(battle_summary["next_rank"]))
-        if battle_summary.get("next_rank") is not None
-        else 0,
+        next_rank=(
+            int(str(battle_summary["next_rank"]))
+            if battle_summary.get("next_rank") is not None
+            else 0
+        ),
         your_team=str(battle_summary["your_team"]),
         opponent_team=str(battle_summary["opponent_team"]),
         your_pokemon_1=str(battle_summary["your_pokemon_1"]),
@@ -335,7 +347,7 @@ async def save_new_trainer(
     - trainer_id が存在する場合は何もしない
     """
     # check if trainer_id exists
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     if database_handler.check_trainer_id_exists(user.trainer_id):
         logger.info("trainer_id already exists")
         return "trainer_id already exists"
@@ -352,7 +364,7 @@ class MemoModel(BaseModel):
 
 @app.post("/api/v1/update_memo")
 async def update_memo(request: MemoModel) -> str:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     database_handler.update_memo(request.battle_id, request.memo)
     return "update memo"
 
@@ -454,7 +466,7 @@ async def set_label_to_unknown_pokemon_name_window_images(
 
 @app.get("/api/v1/fainted_pokemon_log")
 async def get_fainted_pokemon_log(battle_id: str) -> List[Dict[str, Union[str, int]]]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     return database_handler.get_fainted_pokemon_log(battle_id)
 
 
@@ -462,7 +474,7 @@ async def get_fainted_pokemon_log(battle_id: str) -> List[Dict[str, Union[str, i
 async def get_battle_video_status_list(
     trainer_id: str,
 ) -> list[dict[str, str]]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     return database_handler.get_battle_video_status_list(trainer_id)
 
 
@@ -493,7 +505,7 @@ async def get_stats_from_video_via_cloud_batch(
 
 @app.get("/api/v1/get_seasons")
 async def get_seasons() -> list[dict[str, int | str]]:
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     return database_handler.get_seasons()
 
 
@@ -526,7 +538,7 @@ async def search_battles(
     my_pokemons_list = my_pokemons.split(",")
     opponent_pokemons_list = opponent_pokemons.split(",")
 
-    database_handler: DatabaseHandler = DatabaseHandler()
+    database_handler = SQLModelDatabaseHandler()
     res = database_handler.search_battles(
         trainer_id, season, my_pokemons_list, opponent_pokemons_list
     )
