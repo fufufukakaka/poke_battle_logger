@@ -4,141 +4,164 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Pokemon Battle Logger is a sophisticated application that extracts and analyzes battle data from Pokemon Scarlet/Violet ranked match YouTube videos. It combines computer vision, OCR, machine learning, and web technologies to provide comprehensive battle analytics.
+Pokemon Battle Logger extracts and analyzes battle data from Pokemon Scarlet/Violet ranked match YouTube videos. It uses computer vision, OCR, and machine learning to provide comprehensive battle analytics through a web dashboard.
 
 ## Architecture
 
-### Core Components
-- **Backend API** (`poke_battle_logger/`) - FastAPI server with video processing capabilities
-- **Frontend Dashboard** (`poke_battle_logger_vis/`) - Next.js React application with analytics
-- **Batch Processing** (`poke_battle_logger/batch/`) - Video analysis and data extraction pipeline
-- **Database Layer** (`poke_battle_logger/database/`) - PostgreSQL/SQLite with Peewee ORM
-- **Cloud Integration** - Google Cloud Storage, Firestore, and Cloud Batch for scalable processing
+### Core Pipeline Flow
+1. **Video Input** → Frontend submits YouTube URL via [process_video/index.tsx](poke_battle_logger_vis/pages/process_video/index.tsx)
+2. **Download & Extract** → [pokemon_battle_extractor.py](poke_battle_logger/batch/pokemon_battle_extractor.py) downloads video using yt-dlp
+3. **Frame Analysis** → [frame_detector.py](poke_battle_logger/batch/frame_detector.py) detects battle states via template matching
+4. **Pokemon Recognition** → [pokemon_extractor.py](poke_battle_logger/batch/pokemon_extractor.py) uses FAISS similarity search
+5. **OCR Processing** → Multi-language Tesseract OCR extracts text (supports 8 languages)
+6. **Data Storage** → [sqlmodel_handler.py](poke_battle_logger/database/sqlmodel_handler.py) persists to database
+7. **Analytics Display** → Frontend dashboard displays battle statistics
 
 ### Technology Stack
-- **Backend**: Python 3.10+, FastAPI, Peewee ORM, OpenCV, Tesseract OCR, TensorFlow/PyTorch
-- **Frontend**: Next.js 13, React 18, TypeScript, Chakra UI, Auth0
-- **Database**: PostgreSQL (production), SQLite (local development)
+- **Backend**: Python 3.10+, FastAPI, SQLModel (migrated from Peewee), OpenCV, Tesseract OCR
+- **Frontend**: Next.js 15, React 19, TypeScript, Radix UI components
+- **Database**: PostgreSQL (production), SQLite (local), Alembic for migrations
 - **Cloud**: Google Cloud Platform (Storage, Firestore, Cloud Batch)
 - **Package Management**: Poetry (backend), Yarn (frontend)
 
+### Key Directories
+- `poke_battle_logger/` - Backend API and batch processing
+  - `api/app.py` - FastAPI endpoints for analytics and video processing
+  - `batch/` - Video processing pipeline (extractor, frame detector, Pokemon recognition)
+  - `database/sqlmodel_handler.py` - Database layer using SQLModel
+  - `models/` - SQLModel data models (Battle, Pokemon, Trainer, etc.)
+- `poke_battle_logger_vis/` - Next.js frontend dashboard
+  - `pages/` - Main UI pages (index, analytics, battle_log, process_video)
+  - `components/` - Reusable React components (UI primitives, data tables, charts)
+- `template_images/` - Pokemon and UI template images for computer vision
+- `alembic/` - Database migration scripts
+
 ## Development Commands
 
-### Backend Development
+### Backend
 ```bash
 # API Server
-make run_api                    # Local development with SQLite
-make run_api_local_use_postgres # Local with PostgreSQL
-make run_api_in_cloud_run      # Production environment
-
-# Frontend Dashboard
-make run_dashboard             # Start Next.js dev server (cd poke_battle_logger_vis && yarn dev)
+make run_api                           # Local with SQLite (ENV=local)
+make run_api_local_use_postgres        # Local with PostgreSQL
+make run_api_in_cloud_run             # Production (ENV=production)
 
 # Testing and Quality
-make test                      # Run pytest suite
-make test_local               # Run tests with local Tesseract
-make lint                     # Code linting with mypy and flake8
-make format                   # Code formatting with isort and black
+make test                              # Run pytest
+make test_local                        # Run tests with local Tesseract
+make lint                             # mypy + flake8
+make format                           # isort + black
 
 # Data Processing
-make extract-data             # Extract battle data from video (requires VIDEO_ID, TRAINER_ID, LANG)
-make build-pokemon-faiss-index # Build Pokemon image search index
-make build-pokemon-multi-name-dict # Build Pokemon name dictionary
+make extract-data VIDEO_ID=<id> TRAINER_ID=<id> LANG=<lang>  # Extract battle data
+make build-pokemon-faiss-index                                 # Build Pokemon image index
+make build-pokemon-multi-name-dict                            # Build Pokemon name dictionary
 ```
 
-### Frontend Development
+### Frontend
 ```bash
-cd poke_battle_logger_vis
-yarn dev                      # Development server
-yarn build                    # Production build
-yarn lint                     # ESLint
+make run_dashboard                     # Start Next.js dev server (port 3000)
+cd poke_battle_logger_vis && yarn dev  # Alternative
+cd poke_battle_logger_vis && yarn build && yarn start  # Production build
 ```
 
-### Docker Workflows
+### Database Migrations (Alembic)
 ```bash
-make init-docker-server       # Build server Docker image
-make init-docker-job         # Build job processing Docker image
-make create-container-mount   # Development container with volume mount
+# Create new migration after model changes
+alembic revision --autogenerate -m "description"
+
+# Apply migrations
+alembic upgrade head                   # Apply all pending migrations
+ENV=production alembic upgrade head    # Apply to production database
+
+# Check current version
+alembic current
+
+# Rollback
+alembic downgrade -1                   # Rollback one version
 ```
 
-## Data Extraction Pipeline
+### Docker
+```bash
+make init-docker-server                # Build server image
+make init-docker-job                   # Build job processing image
+make create-container-mount            # Dev container with volume mount
+```
 
-### Batch Processing (YouTube Videos)
-1. **Video Input**: YouTube video URL submitted via frontend
-2. **Download & Processing**: Video downloaded using yt-dlp, processed with OpenCV
-3. **Computer Vision Pipeline**:
-   - Frame extraction and template matching for game states
-   - Multi-language OCR (English, Japanese, Chinese, Korean, French, Spanish, Italian, German)
-   - Pokemon recognition using FAISS similarity search
-   - Battle state detection (win/lose, ranking, team composition)
-4. **Data Storage**: Structured battle data stored in database
-5. **Analytics**: Real-time battle statistics and visualizations
+## Database Layer
 
-## Key Entry Points
+**Recently migrated from Peewee to SQLModel** (ongoing as of Sept 2025). The codebase uses:
+- **SQLModel** for ORM (SQLAlchemy-based with Pydantic validation)
+- **Alembic** for schema migrations (config in [alembic.ini](alembic.ini))
+- Environment-based connection: SQLite (ENV=local) or PostgreSQL (ENV=production)
+- Database engine factory in [models/base.py](poke_battle_logger/models/base.py):get_engine()
 
-### API Endpoints (`poke_battle_logger/api/app.py`)
-- `/api/v1/analytics` - Battle analytics and statistics
-- `/api/v1/extract_stats_from_video` - Video processing endpoint
-- `/api/v1/extract_pokemon_name_from_image` - Pokemon image recognition
-- `/api/v1/recent_battle_summary` - Recent battle data
-
-### Batch Processing (`poke_battle_logger/batch/`)
-- `pokemon_battle_extractor.py` - Main video processing pipeline
-- `pokemon_extractor.py` - Pokemon detection and recognition
-- `frame_detector.py` - Battle state detection
-
-### Frontend Pages (`poke_battle_logger_vis/pages/`)
-- `index.tsx` - Main dashboard
-- `analytics/index.tsx` - Battle analytics
-- `battle_log/index.tsx` - Battle history
-- `process_video/index.tsx` - Video processing interface
+### Data Models
+Core entities in `poke_battle_logger/models/`:
+- **Battle** - Core battle information and metadata
+- **BattleSummary** - Match results and ranking changes
+- **BattleVideo** - YouTube video references
+- **BattlePokemonTeam** - Team compositions before battle
+- **InBattlePokemonLog** - Active Pokemon during battle
+- **SelectedMove** - Move usage tracking
+- **MessageLog** - In-battle message logging
+- **FaintedLog** - Pokemon fainting events
+- **Trainer** - Player information
+- **Season** - Game season information
 
 ## Template Recognition System
 
-The application uses extensive template matching for game state detection:
-- **Pokemon Templates**: Individual Pokemon recognition images in `template_images/`
-- **UI Templates**: Game state detection (win/lose, ranking screens)
-- **Multi-language Support**: Separate template sets for different game languages
-- **Unknown Pokemon Handling**: Failed detections saved to `template_images/unknown_pokemon_templates/` for manual labeling
+The application uses extensive template matching via OpenCV for game state detection:
+- **Pokemon Templates**: `template_images/labeled_pokemon_templates/` - Labeled Pokemon images
+- **Unknown Templates**: `template_images/unknown_pokemon_templates/` - Failed detections for manual labeling
+- **UI Templates**: Game state detection (win/lose, ranking screens, battle UI)
+- **Multi-language Support**: Separate template sets for 8 game languages
+- **Annotation Workflow**: Failed Pokemon detections → manual labeling → rebuild FAISS index
+
+When Pokemon detection fails, images are saved to `unknown_pokemon_templates/`. To fix:
+1. Rename image to `{correct_pokemon_name}.png` (or `{name}_{number}.png` if duplicate)
+2. Move to `labeled_pokemon_templates/`
+3. Run `make build-pokemon-faiss-index` to rebuild search index
 
 ## Environment Setup
 
 ### Required Dependencies
-- **Tesseract OCR**: Multi-language support required (English, Japanese, Chinese, Korean, French, Spanish, Italian, German)
-- **Poetry**: Python package management
-- **Node.js/Yarn**: Frontend development
-- **PostgreSQL**: Production database (SQLite for local development)
+- **Tesseract OCR**: Must have language data for English, Japanese, Chinese (simplified/traditional), Korean, French, Spanish, Italian, German
+  - Set `TESSDATA_PREFIX` to tessdata_best location (e.g., `/opt/brew/Cellar/tesseract/5.3.0_1/share/tessdata_best/`)
+- **Poetry**: Python package management (`poetry install`)
+- **Node.js/Yarn**: Frontend development (Node 19.9.0 per Volta config)
+- **PostgreSQL**: Production database (optional for local development)
 
 ### Environment Variables
-- `ENV`: `local` or `production`
+- `ENV`: `local` (SQLite) or `production` (PostgreSQL)
 - `TESSDATA_PREFIX`: Path to Tesseract language data
-- `GOOGLE_APPLICATION_CREDENTIALS`: Path to GCP service account JSON
-- Database connection variables for PostgreSQL
+- `GOOGLE_APPLICATION_CREDENTIALS`: Path to `.credentials/google-cloud-credential.json`
+- `RESEND_API_KEY`: Email notification service
+- PostgreSQL connection vars (when ENV=production):
+  - `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`
 
 ### Credentials Setup
-- Auth0 configuration in `poke_battle_logger_vis/.env.local`
-- GCP service account JSON at `.credentials/google-cloud-credential.json`
-
-## Data Models
-
-Key database entities:
-- **Battle**: Core battle information and metadata
-- **BattleLog**: Match results and ranking changes
-- **PreBattlePokemon**: Team compositions before battle
-- **InBattlePokemon**: Active Pokemon during battle
-- **SelectedMoves**: Move usage tracking
-- **Message**: In-battle message logging
+- Auth0: `poke_battle_logger_vis/.env.local` needs `NEXT_PUBLIC_AUTH0_DOMAIN` and `NEXT_PUBLIC_AUTH0_CLIENT_ID`
+- GCP: Service account JSON at `.credentials/google-cloud-credential.json`
 
 ## Video Processing Requirements
 
 - **Format**: 1080p (1920x1080), 30fps YouTube videos
 - **Content**: Pokemon Scarlet/Violet ranked matches (Master Ball tier and above)
-- **Language**: Supports multiple game languages
-- **Recording**: OBS-compatible, must show complete battle flow from team selection to results
+- **Language**: Supports 8 game languages (English, Japanese, Chinese, Korean, French, Spanish, Italian, German)
+- **Recording**: Must show complete battle flow from team selection → battle → results screen
+- **Ranking**: Only extracts battles where rank changed (skips no-change battles)
 
 ## Machine Learning Components
 
 - **FAISS Index**: Fast similarity search for Pokemon image recognition
-- **Hugging Face Models**: Text processing and classification
-- **TensorFlow/Keras**: Neural networks for image classification
-- **Continuous Learning**: User annotations improve model accuracy over time
+- **Tesseract OCR**: Multi-language text extraction from battle frames
+- **OpenCV Template Matching**: Game state detection and UI element recognition
+- **Continuous Learning**: User annotations improve Pokemon detection accuracy
+
+## Important Notes
+
+- Always prefer editing existing files over creating new ones
+- Do not create documentation files unless explicitly requested
+- When making database schema changes, create Alembic migrations
+- Test locally with `make test_local` before running full test suite
+- Pokemon name mappings are in `data/pokemon_names.csv` (No., Japanese, English, etc.)
