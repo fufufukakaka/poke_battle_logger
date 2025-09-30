@@ -390,7 +390,7 @@ class SQLModelDatabaseHandler:
             return result if result else 0
 
     def get_latest_win_pokemon(self, trainer_id: str) -> str:
-        """Get latest winning Pokemon for trainer."""
+        """Get latest winning Pokemon for trainer (returns random opponent pokemon - matches Peewee behavior)."""
         with get_session() as session:
             # Get trainer
             trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
@@ -404,12 +404,12 @@ class SQLModelDatabaseHandler:
             )
             battle_ids = session.exec(battle_statement).all()
 
-            # Get latest win battle
+            # Get latest win battle - NOTE: returns OPPONENT pokemon (matches database_handler)
             statement = (
                 select(
-                    BattleSummary.your_pokemon_1,
-                    BattleSummary.your_pokemon_2,
-                    BattleSummary.your_pokemon_3,
+                    BattleSummary.opponent_pokemon_1,
+                    BattleSummary.opponent_pokemon_2,
+                    BattleSummary.opponent_pokemon_3,
                 )
                 .where(
                     and_(
@@ -423,11 +423,12 @@ class SQLModelDatabaseHandler:
             result = session.exec(statement).first()
 
             if result:
-                return f"{result[0]}, {result[1]}, {result[2]}"
+                # Return random pokemon (matches database_handler behavior)
+                return random.choice([result[0], result[1], result[2]])
             return ""
 
     def get_latest_lose_pokemon(self, trainer_id: str) -> str:
-        """Get latest losing Pokemon for trainer."""
+        """Get latest losing Pokemon for trainer (returns random opponent pokemon excluding Unseen - matches Peewee behavior)."""
         with get_session() as session:
             # Get trainer
             trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
@@ -441,12 +442,12 @@ class SQLModelDatabaseHandler:
             )
             battle_ids = session.exec(battle_statement).all()
 
-            # Get latest lose battle
+            # Get latest lose battle - NOTE: returns OPPONENT pokemon (matches database_handler)
             statement = (
                 select(
-                    BattleSummary.your_pokemon_1,
-                    BattleSummary.your_pokemon_2,
-                    BattleSummary.your_pokemon_3,
+                    BattleSummary.opponent_pokemon_1,
+                    BattleSummary.opponent_pokemon_2,
+                    BattleSummary.opponent_pokemon_3,
                 )
                 .where(
                     and_(
@@ -460,11 +461,13 @@ class SQLModelDatabaseHandler:
             result = session.exec(statement).first()
 
             if result:
-                return f"{result[0]}, {result[1]}, {result[2]}"
+                # Exclude "Unseen" and return random pokemon (matches database_handler behavior)
+                candidates = [p for p in [result[0], result[1], result[2]] if p != "Unseen"]
+                return random.choice(candidates) if candidates else ""
             return ""
 
     def get_battle_counts(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
-        """Get battle counts for trainer."""
+        """Get battle counts grouped by date."""
         with get_session() as session:
             # Get trainer
             trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
@@ -472,11 +475,32 @@ class SQLModelDatabaseHandler:
             if trainer is None:
                 return []
 
-            # Get battles count
-            battle_statement = select(Battle).where(Battle.trainer_id == trainer.id)
-            battles = session.exec(battle_statement).all()
+            # Get battles for this trainer
+            battle_statement = select(Battle.battle_id).where(
+                Battle.trainer_id == trainer.id
+            )
+            battle_ids = session.exec(battle_statement).all()
 
-            return [{"battle_count": len(battles)}]
+            # Get battle summaries with dates
+            statement = select(BattleSummary).where(
+                BattleSummary.battle_id.in_(battle_ids)
+            )
+            results = session.exec(statement).all()
+
+            # Group by date
+            from collections import defaultdict
+
+            date_counts: defaultdict[str, int] = defaultdict(int)
+            for result in results:
+                # Extract date from created_at (YYYY-MM-DD)
+                if result.created_at:
+                    battle_date = result.created_at[:10]  # Extract YYYY-MM-DD
+                    date_counts[battle_date] += 1
+
+            return [
+                {"battle_date": date, "battle_count": count}
+                for date, count in sorted(date_counts.items())
+            ]
 
     def get_win_rate_transitions_all(self, trainer_id: str) -> List[float]:
         """Get win rate transitions for all seasons."""
@@ -1069,14 +1093,69 @@ class SQLModelDatabaseHandler:
                 for result in results
             ]
 
-    def get_in_battle_message_full_log(self, battle_id: str) -> Tuple[
-        List[Dict[str, Union[str, int]]],
-        List[Dict[str, Union[str, int]]],
-    ]:
-        """Get full in-battle message log."""
-        in_battle_log = self.get_in_battle_log(battle_id)
-        message_log = self.get_in_battle_message_log(battle_id)
-        return in_battle_log, message_log
+    def get_in_battle_message_full_log(
+        self, battle_id: str
+    ) -> List[Dict[str, Union[str, int, None]]]:
+        """Get full in-battle message log with joined pokemon information."""
+        with get_session() as session:
+            # Get in-battle pokemon logs
+            pokemon_statement = (
+                select(InBattlePokemonLog)
+                .where(InBattlePokemonLog.battle_id == battle_id)
+                .order_by(InBattlePokemonLog.turn, InBattlePokemonLog.frame_number)
+            )
+            pokemon_logs = session.exec(pokemon_statement).all()
+
+            # Get message logs
+            message_statement = (
+                select(MessageLog)
+                .where(MessageLog.battle_id == battle_id)
+                .order_by(MessageLog.frame_number)
+            )
+            message_logs = session.exec(message_statement).all()
+
+            # Build a mapping of frame ranges to pokemon info
+            pokemon_map = []
+            for i, plog in enumerate(pokemon_logs):
+                next_frame = (
+                    pokemon_logs[i + 1].frame_number if i + 1 < len(pokemon_logs) else None
+                )
+                pokemon_map.append(
+                    {
+                        "turn": plog.turn,
+                        "frame_start": plog.frame_number,
+                        "frame_end": next_frame,
+                        "your_pokemon_name": plog.your_pokemon_name,
+                        "opponent_pokemon_name": plog.opponent_pokemon_name,
+                    }
+                )
+
+            # Join messages with pokemon info
+            result = []
+            for msg in message_logs:
+                # Find matching pokemon info for this frame
+                pokemon_info = None
+                for pinfo in pokemon_map:
+                    if msg.frame_number >= pinfo["frame_start"]:
+                        if pinfo["frame_end"] is None or msg.frame_number < pinfo["frame_end"]:
+                            pokemon_info = pinfo
+                            break
+
+                result.append(
+                    {
+                        "turn": pokemon_info["turn"] if pokemon_info else 0,
+                        "frame_number": msg.frame_number,
+                        "message": msg.message,
+                        "your_pokemon_name": (
+                            pokemon_info["your_pokemon_name"] if pokemon_info else None
+                        ),
+                        "opponent_pokemon_name": (
+                            pokemon_info["opponent_pokemon_name"] if pokemon_info else None
+                        ),
+                    }
+                )
+
+            return result
 
     def get_fainted_pokemon_log(
         self, battle_id: str
@@ -1103,30 +1182,198 @@ class SQLModelDatabaseHandler:
     def get_your_pokemon_defeat_summary(
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int]]]:
-        """Get your pokemon defeat summary."""
-        # Simplified implementation
-        return []
+        """Get your pokemon defeat summary (倒されたポケモンの統計)."""
+        with get_session() as session:
+            # Get trainer
+            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
+            trainer = session.exec(trainer_statement).first()
+            if trainer is None:
+                return []
+
+            # Get battles for this trainer
+            battle_statement = select(Battle.battle_id).where(
+                Battle.trainer_id == trainer.id
+            )
+            battle_ids = session.exec(battle_statement).all()
+
+            # Get fainted logs where your pokemon was defeated
+            statement = select(FaintedLog).where(
+                and_(
+                    FaintedLog.battle_id.in_(battle_ids),
+                    FaintedLog.fainted_pokemon_side == "Opponent Pokemon Win",
+                )
+            )
+            results = session.exec(statement).all()
+
+            # Aggregate by pokemon name combination
+            defeat_combinations: Dict[Tuple[str, str], int] = {}
+            for result in results:
+                key = (result.your_pokemon_name, result.opponent_pokemon_name)
+                defeat_combinations[key] = defeat_combinations.get(key, 0) + 1
+
+            return [
+                {
+                    "your_pokemon_name": your_poke,
+                    "opponent_pokemon_name": opp_poke,
+                    "knock_out_count": count,
+                }
+                for (your_poke, opp_poke), count in defeat_combinations.items()
+            ]
 
     def get_your_pokemon_defeat_summary_in_season(
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int]]]:
-        """Get your pokemon defeat summary in season."""
-        # Simplified implementation
-        return []
+        """Get your pokemon defeat summary in season (シーズン内で倒されたポケモンの統計)."""
+        with get_session() as session:
+            # Get trainer
+            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
+            trainer = session.exec(trainer_statement).first()
+            if trainer is None:
+                return []
+
+            # Get season
+            season_statement = select(Season).where(Season.season == season)
+            target_season = session.exec(season_statement).first()
+            if target_season is None:
+                return []
+
+            # Get battles for this trainer
+            battle_statement = select(Battle.battle_id).where(
+                Battle.trainer_id == trainer.id
+            )
+            battle_ids = session.exec(battle_statement).all()
+
+            # Get battle summaries in season to filter by date
+            summary_statement = select(BattleSummary.battle_id).where(
+                and_(
+                    BattleSummary.battle_id.in_(battle_ids),
+                    BattleSummary.created_at >= target_season.start_datetime,
+                    BattleSummary.created_at <= target_season.end_datetime,
+                )
+            )
+            season_battle_ids = session.exec(summary_statement).all()
+
+            # Get fainted logs where your pokemon was defeated in this season
+            statement = select(FaintedLog).where(
+                and_(
+                    FaintedLog.battle_id.in_(season_battle_ids),
+                    FaintedLog.fainted_pokemon_side == "Opponent Pokemon Win",
+                )
+            )
+            results = session.exec(statement).all()
+
+            # Aggregate by pokemon name combination
+            defeat_combinations: Dict[Tuple[str, str], int] = {}
+            for result in results:
+                key = (result.your_pokemon_name, result.opponent_pokemon_name)
+                defeat_combinations[key] = defeat_combinations.get(key, 0) + 1
+
+            return [
+                {
+                    "your_pokemon_name": your_poke,
+                    "opponent_pokemon_name": opp_poke,
+                    "knock_out_count": count,
+                }
+                for (your_poke, opp_poke), count in defeat_combinations.items()
+            ]
 
     def get_opponent_pokemon_defeat_summary(
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int]]]:
-        """Get opponent pokemon defeat summary."""
-        # Simplified implementation
-        return []
+        """Get opponent pokemon defeat summary (倒した相手ポケモンの統計)."""
+        with get_session() as session:
+            # Get trainer
+            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
+            trainer = session.exec(trainer_statement).first()
+            if trainer is None:
+                return []
+
+            # Get battles for this trainer
+            battle_statement = select(Battle.battle_id).where(
+                Battle.trainer_id == trainer.id
+            )
+            battle_ids = session.exec(battle_statement).all()
+
+            # Get fainted logs where opponent pokemon was defeated
+            statement = select(FaintedLog).where(
+                and_(
+                    FaintedLog.battle_id.in_(battle_ids),
+                    FaintedLog.fainted_pokemon_side == "Your Pokemon Win",
+                )
+            )
+            results = session.exec(statement).all()
+
+            # Aggregate by pokemon name combination
+            defeat_combinations: Dict[Tuple[str, str], int] = {}
+            for result in results:
+                key = (result.your_pokemon_name, result.opponent_pokemon_name)
+                defeat_combinations[key] = defeat_combinations.get(key, 0) + 1
+
+            return [
+                {
+                    "your_pokemon_name": your_poke,
+                    "opponent_pokemon_name": opp_poke,
+                    "knock_out_count": count,
+                }
+                for (your_poke, opp_poke), count in defeat_combinations.items()
+            ]
 
     def get_opponent_pokemon_defeat_summary_in_season(
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int]]]:
-        """Get opponent pokemon defeat summary in season."""
-        # Simplified implementation
-        return []
+        """Get opponent pokemon defeat summary in season (シーズン内で倒した相手ポケモンの統計)."""
+        with get_session() as session:
+            # Get trainer
+            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
+            trainer = session.exec(trainer_statement).first()
+            if trainer is None:
+                return []
+
+            # Get season
+            season_statement = select(Season).where(Season.season == season)
+            target_season = session.exec(season_statement).first()
+            if target_season is None:
+                return []
+
+            # Get battles for this trainer
+            battle_statement = select(Battle.battle_id).where(
+                Battle.trainer_id == trainer.id
+            )
+            battle_ids = session.exec(battle_statement).all()
+
+            # Get battle summaries in season to filter by date
+            summary_statement = select(BattleSummary.battle_id).where(
+                and_(
+                    BattleSummary.battle_id.in_(battle_ids),
+                    BattleSummary.created_at >= target_season.start_datetime,
+                    BattleSummary.created_at <= target_season.end_datetime,
+                )
+            )
+            season_battle_ids = session.exec(summary_statement).all()
+
+            # Get fainted logs where opponent pokemon was defeated in this season
+            statement = select(FaintedLog).where(
+                and_(
+                    FaintedLog.battle_id.in_(season_battle_ids),
+                    FaintedLog.fainted_pokemon_side == "Your Pokemon Win",
+                )
+            )
+            results = session.exec(statement).all()
+
+            # Aggregate by pokemon name combination
+            defeat_combinations: Dict[Tuple[str, str], int] = {}
+            for result in results:
+                key = (result.your_pokemon_name, result.opponent_pokemon_name)
+                defeat_combinations[key] = defeat_combinations.get(key, 0) + 1
+
+            return [
+                {
+                    "your_pokemon_name": your_poke,
+                    "opponent_pokemon_name": opp_poke,
+                    "knock_out_count": count,
+                }
+                for (your_poke, opp_poke), count in defeat_combinations.items()
+            ]
 
     def get_battle_video_status_list(self, trainer_id: str) -> List[Dict[str, str]]:
         """Get battle video status list."""
@@ -1162,53 +1409,41 @@ class SQLModelDatabaseHandler:
             ]
 
     def search_battles(
-        self, trainer_id: str, search_text: str = "", season: int = 0
+        self,
+        trainer_id: str,
+        season: int,
+        my_pokemons: List[str],
+        opponent_pokemons: List[str],
     ) -> List[Dict[str, Union[str, int]]]:
-        """Search battles with filters."""
+        """Search battles by pokemon team composition."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
             # Get battles for this trainer
             battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
+                Battle.trainer_id == trainer_id
             )
             battle_ids = session.exec(battle_statement).all()
 
-            # Build query
+            # Get all battle summaries for this trainer
             statement = select(BattleSummary).where(
                 BattleSummary.battle_id.in_(battle_ids)
             )
-
-            # Apply season filter if specified
-            if season > 0:
-                season_statement = select(Season).where(Season.season == season)
-                target_season = session.exec(season_statement).first()
-                if target_season:
-                    statement = statement.where(
-                        and_(
-                            BattleSummary.created_at >= target_season.start_datetime,
-                            BattleSummary.created_at <= target_season.end_datetime,
-                        )
-                    )
-
-            # Apply text search if specified
-            if search_text:
-                from sqlmodel import or_
-
-                statement = statement.where(
-                    or_(
-                        BattleSummary.your_team.contains(search_text),
-                        BattleSummary.opponent_team.contains(search_text),
-                        BattleSummary.memo.contains(search_text),
-                    )
-                )
-
-            statement = statement.order_by(BattleSummary.created_at.desc())
             results = session.exec(statement).all()
+
+            # Filter by pokemon teams (client-side filtering for array containment)
+            filtered_results = []
+            for result in results:
+                # Parse your_team and opponent_team (comma-separated strings)
+                your_team_set = set(result.your_team.split(","))
+                opponent_team_set = set(result.opponent_team.split(","))
+
+                # Check if all requested pokemon are in the teams
+                my_pokemons_set = set(my_pokemons)
+                opponent_pokemons_set = set(opponent_pokemons)
+
+                if my_pokemons_set.issubset(your_team_set) and opponent_pokemons_set.issubset(
+                    opponent_team_set
+                ):
+                    filtered_results.append(result)
 
             return [
                 {
@@ -1218,9 +1453,15 @@ class SQLModelDatabaseHandler:
                     "next_rank": result.next_rank,
                     "your_team": result.your_team,
                     "opponent_team": result.opponent_team,
+                    "your_pokemon_1": result.your_pokemon_1,
+                    "your_pokemon_2": result.your_pokemon_2,
+                    "your_pokemon_3": result.your_pokemon_3,
+                    "opponent_pokemon_1": result.opponent_pokemon_1,
+                    "opponent_pokemon_2": result.opponent_pokemon_2,
+                    "opponent_pokemon_3": result.opponent_pokemon_3,
                     "memo": result.memo,
                 }
-                for result in results
+                for result in filtered_results
             ]
 
     def build_and_insert_fainted_log(
