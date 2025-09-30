@@ -1,24 +1,26 @@
-from typing import Optional, List, TYPE_CHECKING
-from sqlmodel import Field, SQLModel, Relationship
+from typing import TYPE_CHECKING, List, Optional
+
+from sqlmodel import Field, Relationship, SQLModel
 
 if TYPE_CHECKING:
-    from .trainer import Trainer
-    from .pokemon import BattlePokemonTeam, InBattlePokemonLog, FaintedLog
     from .game import MessageLog, SelectedMove
+    from .pokemon import BattlePokemonTeam, FaintedLog, InBattlePokemonLog
+    from .trainer import Trainer
 
 
 class Battle(SQLModel, table=True):
     """Battle model."""
+
     __tablename__ = "battle"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
     battle_id: str = Field(unique=True, index=True)
     trainer_id: int = Field(foreign_key="trainer.id")
-    
+
     # Relationships
     trainer: Optional["Trainer"] = Relationship(back_populates="battles")
     battle_summary: Optional["BattleSummary"] = Relationship(back_populates="battle")
-    pokemon_teams: List["BattlePokemonTeam"] = Relationship(back_populates="battle") 
+    pokemon_teams: List["BattlePokemonTeam"] = Relationship(back_populates="battle")
     in_battle_logs: List["InBattlePokemonLog"] = Relationship(back_populates="battle")
     fainted_logs: List["FaintedLog"] = Relationship(back_populates="battle")
     message_logs: List["MessageLog"] = Relationship(back_populates="battle")
@@ -27,8 +29,9 @@ class Battle(SQLModel, table=True):
 
 class BattleSummary(SQLModel, table=True):
     """Battle summary model."""
+
     __tablename__ = "battlesummary"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
     battle_id: str = Field(foreign_key="battle.battle_id")
     created_at: str
@@ -44,15 +47,16 @@ class BattleSummary(SQLModel, table=True):
     opponent_pokemon_3: str
     video: str
     memo: str = ""
-    
+
     # Relationships
     battle: Optional["Battle"] = Relationship(back_populates="battle_summary")
 
 
 class BattleVideo(SQLModel, table=True):
     """Battle video processing status model."""
+
     __tablename__ = "battlevideo"
-    
+
     id: Optional[int] = Field(default=None, primary_key=True)
     trainer_id: int = Field(foreign_key="trainer.id")
     video_id: str

@@ -374,15 +374,19 @@ class Extractor:
         if not message:
             return ""
 
-        fixed_battle_message = self.openai_handler.fix_battle_message(
-            original_message=message,
-            pre_battle_your_teams=pre_battle_your_teams,
-            pre_battle_your_teams_english=pre_battle_your_teams_english,
-            pre_battle_opponent_teams=pre_battle_opponent_teams,
-            your_current_pokemon_name=your_current_pokemon_name,
-            opponent_current_pokemon_name=opponent_current_pokemon_name,
-        )
-        return fixed_battle_message.fixed_battle_message.strip()
+        try:
+            fixed_battle_message = self.openai_handler.fix_battle_message(
+                original_message=message,
+                pre_battle_your_teams=pre_battle_your_teams,
+                pre_battle_your_teams_english=pre_battle_your_teams_english,
+                pre_battle_opponent_teams=pre_battle_opponent_teams,
+                your_current_pokemon_name=your_current_pokemon_name,
+                opponent_current_pokemon_name=opponent_current_pokemon_name,
+            )
+            return fixed_battle_message.fixed_battle_message.strip()
+        except Exception as e:
+            print(f"Error in fix_message: {e}")
+            return message
 
     def extract_first_rank_number(self, frame: np.ndarray) -> int:
         """

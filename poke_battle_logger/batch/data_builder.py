@@ -78,6 +78,10 @@ class DataBuilder:
             "ギラティナ": {"you": [], "opponent": []},
             "キュレム": {"you": [], "opponent": []},
             "ネクロズマ": {"you": [], "opponent": []},
+            "デオキシス": {"you": [], "opponent": []},
+            "シェイミ": {"you": [], "opponent": []},
+            "フーパ": {"you": [], "opponent": []},
+            "マギアナ": {"you": [], "opponent": []},
         }
 
     def _publish_date(self, watch_html: str) -> Optional[datetime]:
@@ -156,6 +160,20 @@ class DataBuilder:
                     }
                     _messages.append(message_dict)
             self.compressed_messages.append(_messages)
+
+        self.compressed_moves = []
+        for start_frame, end_frame in self.battle_start_end_frame_numbers:
+            _moves = []
+            for frame, move in self.move_infos.items():
+                if start_frame < frame and end_frame > frame:
+                    move_dict = {
+                        "frame_number": frame,
+                        "selected_move_name": move["selected_move_name"],
+                        "your_pokemon_name": move["your_pokemon_name"],
+                        "opponent_pokemon_name": move["opponent_pokemon_name"],
+                    }
+                    _moves.append(move_dict)
+            self.compressed_moves.append(_moves)
 
     def _identify_form_change_pokemon(
         self, battle_index: int, pokemon_name: str
@@ -335,14 +353,26 @@ class DataBuilder:
                 )
 
             # selected_moves
-            for frame_number, move_info in self.move_infos.items():
+            move_log = self.compressed_moves[i]
+            for _move_log in move_log:
+                in_battle_your_pokemon_name = cast(
+                    str, _move_log["your_pokemon_name"]
+                )
+                # フォルムチェンジを考慮する
+                if in_battle_your_pokemon_name in self.form_change_pokemon_names:
+                    _your_pokemon_name = self.form_change_pokemon_names[
+                        in_battle_your_pokemon_name
+                    ]["you"][i]
+                else:
+                    _your_pokemon_name = in_battle_your_pokemon_name
+
                 modified_selected_moves.append(
                     SelectedMoves(
                         battle_id=battle_id,
-                        frame_number=frame_number,
-                        your_pokemon_name=move_info["your_pokemon_name"],
-                        opponent_pokemon_name=move_info["opponent_pokemon_name"],
-                        selected_move_name=move_info["selected_move_name"],
+                        frame_number=cast(int, _move_log["frame_number"]),
+                        selected_move_name=cast(str, _move_log["selected_move_name"]),
+                        your_pokemon_name=_your_pokemon_name,
+                        opponent_pokemon_name=cast(str, _move_log["opponent_pokemon_name"]),
                     )
                 )
 

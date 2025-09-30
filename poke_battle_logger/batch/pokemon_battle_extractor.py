@@ -250,7 +250,7 @@ class PokemonBattleExtractor:
         ]
         level_50_frames = [v[-2] for v in compressed_level_50_frames]
 
-        move_frame_numbers = [v[-2] for v in compressed_move_frames]
+        move_frame_numbers = [v[-1] for v in compressed_move_frames]
         move_infos: dict[int, dict[str, str]] = {}
 
         standing_by_frames = []
@@ -502,7 +502,7 @@ class PokemonBattleExtractor:
                 "frame_number": str(move.frame_number),
                 "your_pokemon_name": move.your_pokemon_name,
                 "opponent_pokemon_name": move.opponent_pokemon_name,
-                "selected_move_name": move.selected_move_name,
+                "move": move.selected_move_name,
             }
             for move in modified_selected_moves
         ]
