@@ -8,6 +8,9 @@ interface PokemonIconProps {
 }
 
 const getPokemonImageUrl = (pokemon_name: string) => {
+  if (!pokemon_name) {
+    return "https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg";
+  }
   pokemon_name = pokemon_name.normalize("NFC");
   if (pokemon_name === "Unseen") {
     return "https://upload.wikimedia.org/wikipedia/commons/5/53/Pok%C3%A9_Ball_icon.svg";

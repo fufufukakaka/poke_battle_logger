@@ -97,8 +97,8 @@ async def get_recent_battle_summary(
         return {
             "win_rate": 0.0,
             "latest_rank": 0,
-            "latest_win_pokemon": [],
-            "latest_lose_pokemon": [],
+            "latest_win_pokemon": "",
+            "latest_lose_pokemon": "",
             "recent_battle_history": [],
         }
 
@@ -195,11 +195,13 @@ async def get_battle_log(
     size: int,
 ) -> List[Dict[str, Union[str, int]]]:
     database_handler = SQLModelDatabaseHandler()
+    # Calculate offset from page number (page starts from 1)
+    offset = size * (page - 1)
     if season == 0:
-        battle_log = database_handler.get_battle_log_all(trainer_id, page, size)
+        battle_log = database_handler.get_battle_log_all(trainer_id, offset, size)
     elif season > 0:
         battle_log = database_handler.get_battle_log_season(
-            trainer_id, season, page, size
+            trainer_id, season, offset, size
         )
     else:
         raise ValueError("season must be 0 or positive")

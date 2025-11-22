@@ -242,22 +242,12 @@ class SQLModelDatabaseHandler:
     ) -> List[Dict[str, Union[str, int]]]:
         """Get recent battle history."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries
+            # Optimized: Use JOIN
             statement = (
                 select(BattleSummary)
-                .where(BattleSummary.battle_id.in_(battle_ids))
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(Trainer.identity == trainer_id)
                 .order_by(BattleSummary.created_at.desc())
                 .limit(5)
             )
@@ -317,30 +307,23 @@ class SQLModelDatabaseHandler:
     def get_latest_season_win_rate(self, trainer_id: str) -> float:
         """Get latest season win rate for trainer."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return 0.0
-
             # Get latest season
             season_statement = select(Season).order_by(Season.season.desc()).limit(1)
             latest_season = session.exec(season_statement).first()
             if latest_season is None:
                 return 0.0
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries for the latest season
-            statement = select(BattleSummary.win_or_lose).where(
-                and_(
-                    BattleSummary.battle_id.in_(battle_ids),
-                    BattleSummary.created_at >= latest_season.start_datetime,
-                    BattleSummary.created_at <= latest_season.end_datetime,
+            # Optimized: Use JOIN
+            statement = (
+                select(BattleSummary.win_or_lose)
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(
+                    and_(
+                        Trainer.identity == trainer_id,
+                        BattleSummary.created_at >= latest_season.start_datetime,
+                        BattleSummary.created_at <= latest_season.end_datetime,
+                    )
                 )
             )
             results = session.exec(statement).all()
@@ -354,30 +337,20 @@ class SQLModelDatabaseHandler:
     def get_latest_season_rank(self, trainer_id: str) -> int:
         """Get latest rank for trainer."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return 0
-
             # Get latest season
             season_statement = select(Season).order_by(Season.season.desc()).limit(1)
             latest_season = session.exec(season_statement).first()
             if latest_season is None:
                 return 0
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get latest battle summary for the latest season
+            # Optimized: Use JOIN
             statement = (
                 select(BattleSummary.next_rank)
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
                 .where(
                     and_(
-                        BattleSummary.battle_id.in_(battle_ids),
+                        Trainer.identity == trainer_id,
                         BattleSummary.created_at >= latest_season.start_datetime,
                         BattleSummary.created_at <= latest_season.end_datetime,
                     )
@@ -392,28 +365,18 @@ class SQLModelDatabaseHandler:
     def get_latest_win_pokemon(self, trainer_id: str) -> str:
         """Get latest winning Pokemon for trainer (returns random opponent pokemon - matches Peewee behavior)."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return ""
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get latest win battle - NOTE: returns OPPONENT pokemon (matches database_handler)
+            # Optimized: Use JOIN
             statement = (
                 select(
                     BattleSummary.opponent_pokemon_1,
                     BattleSummary.opponent_pokemon_2,
                     BattleSummary.opponent_pokemon_3,
                 )
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
                 .where(
                     and_(
-                        BattleSummary.battle_id.in_(battle_ids),
+                        Trainer.identity == trainer_id,
                         BattleSummary.win_or_lose == "win",
                     )
                 )
@@ -430,28 +393,18 @@ class SQLModelDatabaseHandler:
     def get_latest_lose_pokemon(self, trainer_id: str) -> str:
         """Get latest losing Pokemon for trainer (returns random opponent pokemon excluding Unseen - matches Peewee behavior)."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return ""
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get latest lose battle - NOTE: returns OPPONENT pokemon (matches database_handler)
+            # Optimized: Use JOIN
             statement = (
                 select(
                     BattleSummary.opponent_pokemon_1,
                     BattleSummary.opponent_pokemon_2,
                     BattleSummary.opponent_pokemon_3,
                 )
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
                 .where(
                     and_(
-                        BattleSummary.battle_id.in_(battle_ids),
+                        Trainer.identity == trainer_id,
                         BattleSummary.win_or_lose == "lose",
                     )
                 )
@@ -469,21 +422,12 @@ class SQLModelDatabaseHandler:
     def get_battle_counts(self, trainer_id: str) -> List[Dict[str, Union[str, int]]]:
         """Get battle counts grouped by date."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries with dates
-            statement = select(BattleSummary).where(
-                BattleSummary.battle_id.in_(battle_ids)
+            # Optimized: Use JOIN
+            statement = (
+                select(BattleSummary)
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(Trainer.identity == trainer_id)
             )
             results = session.exec(statement).all()
 
@@ -505,22 +449,12 @@ class SQLModelDatabaseHandler:
     def get_win_rate_transitions_all(self, trainer_id: str) -> List[float]:
         """Get win rate transitions for all seasons."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get all battle summaries
+            # Optimized: Use JOIN
             statement = (
                 select(BattleSummary.win_or_lose)
-                .where(BattleSummary.battle_id.in_(battle_ids))
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(Trainer.identity == trainer_id)
                 .order_by(BattleSummary.created_at)
             )
             results = session.exec(statement).all()
@@ -542,30 +476,20 @@ class SQLModelDatabaseHandler:
     ) -> List[float]:
         """Get win rate transitions for a specific season."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
             # Get season
             season_statement = select(Season).where(Season.season == season)
             target_season = session.exec(season_statement).first()
             if target_season is None:
                 return []
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries for the season
+            # Optimized: Use JOIN
             statement = (
                 select(BattleSummary.win_or_lose)
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
                 .where(
                     and_(
-                        BattleSummary.battle_id.in_(battle_ids),
+                        Trainer.identity == trainer_id,
                         BattleSummary.created_at >= target_season.start_datetime,
                         BattleSummary.created_at <= target_season.end_datetime,
                     )
@@ -589,22 +513,12 @@ class SQLModelDatabaseHandler:
     def get_next_rank_transitions_all(self, trainer_id: str) -> List[int]:
         """Get rank transitions for all seasons."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get all battle summaries
+            # Optimized: Use JOIN
             statement = (
                 select(BattleSummary.next_rank)
-                .where(BattleSummary.battle_id.in_(battle_ids))
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(Trainer.identity == trainer_id)
                 .order_by(BattleSummary.created_at)
             )
             results = session.exec(statement).all()
@@ -616,30 +530,20 @@ class SQLModelDatabaseHandler:
     ) -> List[int]:
         """Get rank transitions for a specific season."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
             # Get season
             season_statement = select(Season).where(Season.season == season)
             target_season = session.exec(season_statement).first()
             if target_season is None:
                 return []
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries for the season
+            # Optimized: Use JOIN
             statement = (
                 select(BattleSummary.next_rank)
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
                 .where(
                     and_(
-                        BattleSummary.battle_id.in_(battle_ids),
+                        Trainer.identity == trainer_id,
                         BattleSummary.created_at >= target_season.start_datetime,
                         BattleSummary.created_at <= target_season.end_datetime,
                     )
@@ -654,243 +558,141 @@ class SQLModelDatabaseHandler:
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         """Get your pokemon stats summary for all seasons."""
+        from sqlalchemy import text
+
+        sql = (
+            open("poke_battle_logger/database/sql/your_pokemon_stats_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
+
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
+            result = session.execute(text(sql)).fetchall()
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
+            summary = pd.DataFrame(
+                result,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_win_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count",
+                ],
             )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get all battle summaries
-            statement = select(BattleSummary).where(
-                BattleSummary.battle_id.in_(battle_ids)
-            )
-            results = session.exec(statement).all()
-
-            # Aggregate pokemon stats
-            pokemon_stats = {}
-            for result in results:
-                for pokemon in [
-                    result.your_pokemon_1,
-                    result.your_pokemon_2,
-                    result.your_pokemon_3,
-                ]:
-                    if pokemon not in pokemon_stats:
-                        pokemon_stats[pokemon] = {"battles": 0, "wins": 0}
-                    pokemon_stats[pokemon]["battles"] += 1
-                    if result.win_or_lose == "win":
-                        pokemon_stats[pokemon]["wins"] += 1
-
-            return [
-                {
-                    "pokemon": pokemon,
-                    "battles": stats["battles"],
-                    "wins": stats["wins"],
-                    "win_rate": (
-                        stats["wins"] / stats["battles"] if stats["battles"] > 0 else 0
-                    ),
-                }
-                for pokemon, stats in pokemon_stats.items()
-            ]
+            return list(summary.to_dict(orient="index").values())
 
     def get_your_pokemon_stats_summary_season(
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         """Get your pokemon stats summary for a specific season."""
+        from sqlalchemy import text
+
+        sql = (
+            open(
+                "poke_battle_logger/database/sql/your_pokemon_stats_summary_in_season.sql"
+            )
+            .read()
+            .format(trainer_id=trainer_id, season=season)
+        )
+
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
+            result = session.execute(text(sql)).fetchall()
 
-            # Get season
-            season_statement = select(Season).where(Season.season == season)
-            target_season = session.exec(season_statement).first()
-            if target_season is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
+            summary = pd.DataFrame(
+                result,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_win_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count",
+                ],
             )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries for the season
-            statement = select(BattleSummary).where(
-                and_(
-                    BattleSummary.battle_id.in_(battle_ids),
-                    BattleSummary.created_at >= target_season.start_datetime,
-                    BattleSummary.created_at <= target_season.end_datetime,
-                )
-            )
-            results = session.exec(statement).all()
-
-            # Aggregate pokemon stats
-            pokemon_stats = {}
-            for result in results:
-                for pokemon in [
-                    result.your_pokemon_1,
-                    result.your_pokemon_2,
-                    result.your_pokemon_3,
-                ]:
-                    if pokemon not in pokemon_stats:
-                        pokemon_stats[pokemon] = {"battles": 0, "wins": 0}
-                    pokemon_stats[pokemon]["battles"] += 1
-                    if result.win_or_lose == "win":
-                        pokemon_stats[pokemon]["wins"] += 1
-
-            return [
-                {
-                    "pokemon": pokemon,
-                    "battles": stats["battles"],
-                    "wins": stats["wins"],
-                    "win_rate": (
-                        stats["wins"] / stats["battles"] if stats["battles"] > 0 else 0
-                    ),
-                }
-                for pokemon, stats in pokemon_stats.items()
-            ]
+            return list(summary.to_dict(orient="index").values())
 
     def get_opponent_pokemon_stats_summary_all(
         self, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         """Get opponent pokemon stats summary for all seasons."""
+        from sqlalchemy import text
+
+        sql = (
+            open("poke_battle_logger/database/sql/opponent_pokemon_stats_summary.sql")
+            .read()
+            .format(trainer_id=trainer_id)
+        )
+
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
+            result = session.execute(text(sql)).fetchall()
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
+            summary = pd.DataFrame(
+                result,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_lose_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count",
+                ],
             )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get all battle summaries
-            statement = select(BattleSummary).where(
-                BattleSummary.battle_id.in_(battle_ids)
-            )
-            results = session.exec(statement).all()
-
-            # Aggregate pokemon stats
-            pokemon_stats = {}
-            for result in results:
-                for pokemon in [
-                    result.opponent_pokemon_1,
-                    result.opponent_pokemon_2,
-                    result.opponent_pokemon_3,
-                ]:
-                    if pokemon not in pokemon_stats:
-                        pokemon_stats[pokemon] = {"battles": 0, "losses": 0}
-                    pokemon_stats[pokemon]["battles"] += 1
-                    if result.win_or_lose == "win":
-                        pokemon_stats[pokemon]["losses"] += 1
-
-            return [
-                {
-                    "pokemon": pokemon,
-                    "battles": stats["battles"],
-                    "losses": stats["losses"],
-                    "loss_rate": (
-                        stats["losses"] / stats["battles"]
-                        if stats["battles"] > 0
-                        else 0
-                    ),
-                }
-                for pokemon, stats in pokemon_stats.items()
-            ]
+            return list(summary.to_dict(orient="index").values())
 
     def get_opponent_pokemon_stats_summary_season(
         self, season: int, trainer_id: str
     ) -> List[Dict[str, Union[str, int, float]]]:
         """Get opponent pokemon stats summary for a specific season."""
+        from sqlalchemy import text
+
+        sql = (
+            open(
+                "poke_battle_logger/database/sql/opponent_pokemon_stats_summary_in_season.sql"
+            )
+            .read()
+            .format(trainer_id=trainer_id, season=season)
+        )
+
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
+            result = session.execute(text(sql)).fetchall()
 
-            # Get season
-            season_statement = select(Season).where(Season.season == season)
-            target_season = session.exec(season_statement).first()
-            if target_season is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
+            summary = pd.DataFrame(
+                result,
+                columns=[
+                    "pokemon_name",
+                    "in_team_rate",
+                    "in_battle_rate",
+                    "in_battle_lose_rate",
+                    "head_battle_rate",
+                    "in_team_count",
+                    "in_battle_count",
+                    "in_battle_win_count",
+                    "head_battle_count",
+                ],
             )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries for the season
-            statement = select(BattleSummary).where(
-                and_(
-                    BattleSummary.battle_id.in_(battle_ids),
-                    BattleSummary.created_at >= target_season.start_datetime,
-                    BattleSummary.created_at <= target_season.end_datetime,
-                )
-            )
-            results = session.exec(statement).all()
-
-            # Aggregate pokemon stats
-            pokemon_stats = {}
-            for result in results:
-                for pokemon in [
-                    result.opponent_pokemon_1,
-                    result.opponent_pokemon_2,
-                    result.opponent_pokemon_3,
-                ]:
-                    if pokemon not in pokemon_stats:
-                        pokemon_stats[pokemon] = {"battles": 0, "losses": 0}
-                    pokemon_stats[pokemon]["battles"] += 1
-                    if result.win_or_lose == "win":
-                        pokemon_stats[pokemon]["losses"] += 1
-
-            return [
-                {
-                    "pokemon": pokemon,
-                    "battles": stats["battles"],
-                    "losses": stats["losses"],
-                    "loss_rate": (
-                        stats["losses"] / stats["battles"]
-                        if stats["battles"] > 0
-                        else 0
-                    ),
-                }
-                for pokemon, stats in pokemon_stats.items()
-            ]
+            return list(summary.to_dict(orient="index").values())
 
     def get_battle_log_all(
         self, trainer_id: str, offset: int = 0, limit: int = 20
     ) -> List[Dict[str, Union[str, int]]]:
         """Get all battle logs."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries
+            # Optimized: Use JOIN instead of multiple queries
             statement = (
                 select(BattleSummary)
-                .where(BattleSummary.battle_id.in_(battle_ids))
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(Trainer.identity == trainer_id)
                 .order_by(BattleSummary.created_at.desc())
                 .offset(offset)
                 .limit(limit)
@@ -900,12 +702,19 @@ class SQLModelDatabaseHandler:
             return [
                 {
                     "battle_id": result.battle_id,
-                    "created_at": result.created_at,
+                    "battle_created_at": result.created_at,
                     "win_or_lose": result.win_or_lose,
                     "next_rank": result.next_rank,
-                    "your_team": result.your_team,
-                    "opponent_team": result.opponent_team,
+                    "your_pokemon_team": result.your_team,
+                    "opponent_pokemon_team": result.opponent_team,
+                    "your_pokemon_select1": result.your_pokemon_1,
+                    "your_pokemon_select2": result.your_pokemon_2,
+                    "your_pokemon_select3": result.your_pokemon_3,
+                    "opponent_pokemon_select1": result.opponent_pokemon_1,
+                    "opponent_pokemon_select2": result.opponent_pokemon_2,
+                    "opponent_pokemon_select3": result.opponent_pokemon_3,
                     "memo": result.memo,
+                    "video": result.video,
                 }
                 for result in results
             ]
@@ -915,30 +724,20 @@ class SQLModelDatabaseHandler:
     ) -> List[Dict[str, Union[str, int]]]:
         """Get battle logs for a specific season."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
-            # Get season
+            # Get season first
             season_statement = select(Season).where(Season.season == season)
             target_season = session.exec(season_statement).first()
             if target_season is None:
                 return []
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get battle summaries for the season
+            # Optimized: Use JOIN instead of multiple queries
             statement = (
                 select(BattleSummary)
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
                 .where(
                     and_(
-                        BattleSummary.battle_id.in_(battle_ids),
+                        Trainer.identity == trainer_id,
                         BattleSummary.created_at >= target_season.start_datetime,
                         BattleSummary.created_at <= target_season.end_datetime,
                     )
@@ -952,38 +751,35 @@ class SQLModelDatabaseHandler:
             return [
                 {
                     "battle_id": result.battle_id,
-                    "created_at": result.created_at,
+                    "battle_created_at": result.created_at,
                     "win_or_lose": result.win_or_lose,
                     "next_rank": result.next_rank,
-                    "your_team": result.your_team,
-                    "opponent_team": result.opponent_team,
+                    "your_pokemon_team": result.your_team,
+                    "opponent_pokemon_team": result.opponent_team,
+                    "your_pokemon_select1": result.your_pokemon_1,
+                    "your_pokemon_select2": result.your_pokemon_2,
+                    "your_pokemon_select3": result.your_pokemon_3,
+                    "opponent_pokemon_select1": result.opponent_pokemon_1,
+                    "opponent_pokemon_select2": result.opponent_pokemon_2,
+                    "opponent_pokemon_select3": result.opponent_pokemon_3,
                     "memo": result.memo,
+                    "video": result.video,
                 }
                 for result in results
             ]
 
     def get_battle_log_all_count(self, trainer_id: str) -> int:
         """Get total count of battle logs."""
+        from sqlmodel import func
+
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return 0
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Count battle summaries
-            from sqlmodel import func
-
+            # Optimized: Use JOIN for counting
             statement = (
-                select(func.count())
+                select(func.count(BattleSummary.battle_id))
                 .select_from(BattleSummary)
-                .where(BattleSummary.battle_id.in_(battle_ids))
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(Trainer.identity == trainer_id)
             )
             result = session.exec(statement).first()
 
@@ -991,34 +787,24 @@ class SQLModelDatabaseHandler:
 
     def get_battle_log_season_count(self, season: int, trainer_id: str) -> int:
         """Get count of battle logs for a specific season."""
-        with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return 0
+        from sqlmodel import func
 
-            # Get season
+        with get_session() as session:
+            # Get season first
             season_statement = select(Season).where(Season.season == season)
             target_season = session.exec(season_statement).first()
             if target_season is None:
                 return 0
 
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Count battle summaries for the season
-            from sqlmodel import func
-
+            # Optimized: Use JOIN for counting
             statement = (
-                select(func.count())
+                select(func.count(BattleSummary.battle_id))
                 .select_from(BattleSummary)
+                .join(Battle, BattleSummary.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
                 .where(
                     and_(
-                        BattleSummary.battle_id.in_(battle_ids),
+                        Trainer.identity == trainer_id,
                         BattleSummary.created_at >= target_season.start_datetime,
                         BattleSummary.created_at <= target_season.end_datetime,
                     )
@@ -1080,18 +866,26 @@ class SQLModelDatabaseHandler:
         self, battle_id: str
     ) -> List[Dict[str, Union[str, int]]]:
         """Get in-battle message log."""
-        with get_session() as session:
-            statement = (
-                select(MessageLog)
-                .where(MessageLog.battle_id == battle_id)
-                .order_by(MessageLog.frame_number)
-            )
-            results = session.exec(statement).all()
+        from sqlalchemy import text
 
-            return [
-                {"frame_number": result.frame_number, "message": result.message}
-                for result in results
-            ]
+        sql = (
+            open("poke_battle_logger/database/sql/in_battle_message_log.sql")
+            .read()
+            .format(battle_id=battle_id)
+        )
+
+        with get_session() as session:
+            result = session.execute(text(sql)).fetchall()
+
+            summary = pd.DataFrame(
+                result,
+                columns=[
+                    "turn",
+                    "frame_number",
+                    "message",
+                ],
+            )
+            return list(summary.to_dict(orient="index").values())
 
     def get_in_battle_message_full_log(
         self, battle_id: str
@@ -1184,23 +978,16 @@ class SQLModelDatabaseHandler:
     ) -> List[Dict[str, Union[str, int]]]:
         """Get your pokemon defeat summary (倒されたポケモンの統計)."""
         with get_session() as session:
-            # Get trainer
-            trainer_statement = select(Trainer).where(Trainer.identity == trainer_id)
-            trainer = session.exec(trainer_statement).first()
-            if trainer is None:
-                return []
-
-            # Get battles for this trainer
-            battle_statement = select(Battle.battle_id).where(
-                Battle.trainer_id == trainer.id
-            )
-            battle_ids = session.exec(battle_statement).all()
-
-            # Get fainted logs where your pokemon was defeated
-            statement = select(FaintedLog).where(
-                and_(
-                    FaintedLog.battle_id.in_(battle_ids),
-                    FaintedLog.fainted_pokemon_side == "Opponent Pokemon Win",
+            # Optimized: Use JOIN
+            statement = (
+                select(FaintedLog)
+                .join(Battle, FaintedLog.battle_id == Battle.battle_id)
+                .join(Trainer, Battle.trainer_id == Trainer.id)
+                .where(
+                    and_(
+                        Trainer.identity == trainer_id,
+                        FaintedLog.fainted_pokemon_side == "Opponent Pokemon Win",
+                    )
                 )
             )
             results = session.exec(statement).all()
@@ -1395,18 +1182,21 @@ class SQLModelDatabaseHandler:
     def get_seasons(self) -> List[Dict[str, Union[int, str]]]:
         """Get all seasons."""
         with get_session() as session:
-            statement = select(Season).order_by(Season.season)
+            statement = select(Season).order_by(Season.season.desc())
             results = session.exec(statement).all()
 
-            return [
-                {
-                    "id": result.id,
+            output = []
+            for result in results:
+                # Parse datetime strings (format: "YYYY-MM-DD HH:MM:SS")
+                start_date = pd.to_datetime(result.start_datetime).strftime('%Y/%m/%d')
+                end_date = pd.to_datetime(result.end_datetime).strftime('%Y/%m/%d')
+
+                output.append({
                     "season": result.season,
-                    "start_datetime": result.start_datetime,
-                    "end_datetime": result.end_datetime,
-                }
-                for result in results
-            ]
+                    "seasonStartEnd": f"シーズン{result.season} {start_date} - {end_date}",
+                })
+
+            return output
 
     def search_battles(
         self,
