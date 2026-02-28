@@ -1,0 +1,274 @@
+﻿category,image,ground_truth,matched_variant,engine,ocr_output,exact_match,edit_distance,norm_edit_distance,elapsed_sec
+name_windows,20230930154324.png,アグノム,アグノム,Tesseract,アク ジム,False,2,0.5,1.1399
+name_windows,20230930154324.png,アグノム,アグノム,EasyOCR,アグノム,True,0,0.0,0.0841
+name_windows,20230930154324.png,アグノム,아그놈,RapidOCR,么,False,3,1.0,0.5766
+name_windows,20230930154329.png,アグノム,アグノム,Tesseract,アク ソム,False,2,0.5,1.1039
+name_windows,20230930154329.png,アグノム,アグノム,EasyOCR,アグノム,True,0,0.0,0.0837
+name_windows,20230930154329.png,アグノム,아그놈,RapidOCR,,False,3,1.0,0.5633
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,Tesseract,アシ レー ヌ,True,0,0.0,1.12
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,EasyOCR,アシレーヌ,True,0,0.0,0.0973
+name_windows,20240423214752.png,アシレーヌ,누리레느,RapidOCR,-又,False,4,1.0,0.6662
+name_windows,20251010093835.png,アルセウス,アルセウス,Tesseract,アル セ ウ ス,True,0,0.0,1.1918
+name_windows,20251010093835.png,アルセウス,アルセウス,EasyOCR,アルセウス,True,0,0.0,0.1038
+name_windows,20251010093835.png,アルセウス,阿爾宙斯,RapidOCR,,False,4,1.0,0.624
+name_windows,20231028204811.png,イーユイ,イーユイ,Tesseract,ニー ゴイ,False,2,0.5,1.1229
+name_windows,20231028204811.png,イーユイ,イーユイ,EasyOCR,イーフイ,False,1,0.25,0.091
+name_windows,20231028204811.png,イーユイ,위유이,RapidOCR,7=,False,3,1.0,0.5976
+name_windows,20241028212254.png,ウインディ,윈디,Tesseract,|名 [,False,2,1.0,0.9923
+name_windows,20241028212254.png,ウインディ,윈디,EasyOCR,?[,False,2,1.0,0.0907
+name_windows,20241028212254.png,ウインディ,윈디,RapidOCR,口,False,2,1.0,0.5581
+name_windows,20241028212305.png,ウインディ,윈디,Tesseract,|害し,False,2,1.0,1.0131
+name_windows,20241028212305.png,ウインディ,윈디,EasyOCR,?[,False,2,1.0,0.089
+name_windows,20241028212305.png,ウインディ,윈디,RapidOCR,口,False,2,1.0,0.5647
+name_windows,20241028212315.png,ウインディ,윈디,Tesseract,|鐘 [,False,2,1.0,0.9879
+name_windows,20241028212315.png,ウインディ,윈디,EasyOCR,?[,False,2,1.0,0.0891
+name_windows,20241028212315.png,ウインディ,윈디,RapidOCR,口,False,2,1.0,0.564
+name_windows,20241028212322.png,ウインディ,윈디,Tesseract,|名 [,False,2,1.0,0.9774
+name_windows,20241028212322.png,ウインディ,윈디,EasyOCR,@[,False,2,1.0,0.0913
+name_windows,20241028212322.png,ウインディ,윈디,RapidOCR,口,False,2,1.0,0.5641
+name_windows,20241028212333.png,ウインディ,윈디,Tesseract,|由 [,False,2,1.0,0.9932
+name_windows,20241028212333.png,ウインディ,윈디,EasyOCR,?[,False,2,1.0,0.091
+name_windows,20241028212333.png,ウインディ,윈디,RapidOCR,,False,2,1.0,0.5602
+name_windows,20230930230927.png,ウーラオス,ウーラオス,Tesseract,ウー ラオ ス,True,0,0.0,1.1062
+name_windows,20230930230927.png,ウーラオス,ウーラオス,EasyOCR,ウーラオス,True,0,0.0,0.0951
+name_windows,20230930230927.png,ウーラオス,우라오스,RapidOCR,,False,4,1.0,0.6558
+name_windows,20231015172540.png,オーガポン,厄詭椪,Tesseract,厄 鬼 欄,False,2,0.667,1.0624
+name_windows,20231015172540.png,オーガポン,오거폰,EasyOCR,尼鬼楢,False,3,1.0,0.0996
+name_windows,20231015172540.png,オーガポン,厄詭椪,RapidOCR,厄鬼,False,2,0.667,0.5592
+name_windows,20231015172544.png,オーガポン,厄詭椪,Tesseract,厄 鬼 欄,False,2,0.667,1.1029
+name_windows,20231015172544.png,オーガポン,오거폰,EasyOCR,尼鬼楢,False,3,1.0,0.0985
+name_windows,20231015172544.png,オーガポン,厄詭椪,RapidOCR,厄鬼,False,2,0.667,0.5537
+name_windows,20231206175521.png,オーガポン,厄詭椪,Tesseract,厄 鬼 欄,False,2,0.667,1.1073
+name_windows,20231206175521.png,オーガポン,오거폰,EasyOCR,尼鬼越,False,3,1.0,0.1026
+name_windows,20231206175521.png,オーガポン,厄詭椪,RapidOCR,厄鬼,False,2,0.667,0.5729
+name_windows,20240107093843.png,オーガポン,オーガポン,Tesseract,オ 且 ガボン,False,2,0.4,1.2934
+name_windows,20240107093843.png,オーガポン,オーガポン,EasyOCR,オーカポン,False,1,0.2,0.1016
+name_windows,20240107093843.png,オーガポン,오거폰,RapidOCR,&=_,False,3,1.0,0.61
+name_windows,20240107110324.png,オーガポン,オーガポン,Tesseract,オ 且 ガボン,False,2,0.4,1.3233
+name_windows,20240107110324.png,オーガポン,オーガポン,EasyOCR,オーカポン,False,1,0.2,0.1001
+name_windows,20240107110324.png,オーガポン,오거폰,RapidOCR,&=_,False,3,1.0,0.6087
+name_windows,20240407095808.png,オーガポン,厄詭椪,Tesseract,厄 鬼 欄,False,2,0.667,1.1383
+name_windows,20240407095808.png,オーガポン,오거폰,EasyOCR,尼鬼楢,False,3,1.0,0.0943
+name_windows,20240407095808.png,オーガポン,厄詭椪,RapidOCR,厄鬼,False,2,0.667,0.5677
+name_windows,20240407095818.png,オーガポン,厄詭椪,Tesseract,厄 転 要,False,2,0.667,1.1337
+name_windows,20240407095818.png,オーガポン,오거폰,EasyOCR,尼鬼楢,False,3,1.0,0.0936
+name_windows,20240407095818.png,オーガポン,厄詭椪,RapidOCR,厄鬼,False,2,0.667,0.5636
+name_windows,20240407095829.png,オーガポン,厄詭椪,Tesseract,厄 鬼 欄,False,2,0.667,1.0874
+name_windows,20240407095829.png,オーガポン,오거폰,EasyOCR,尼鬼楢,False,3,1.0,0.0985
+name_windows,20240407095829.png,オーガポン,厄詭椪,RapidOCR,厄鬼,False,2,0.667,0.5627
+name_windows,20231223144400.png,カイリュー,カイリュー,Tesseract,ュ イ リュ ー,False,1,0.2,1.1368
+name_windows,20231223144400.png,カイリュー,快龍,EasyOCR,力,False,2,1.0,0.0803
+name_windows,20231223144400.png,カイリュー,망나뇽,RapidOCR,力:4,False,3,1.0,0.5905
+name_windows,20231223164353.png,カイリュー,カイリュー,Tesseract,ュ イ リュ ー,False,1,0.2,1.1368
+name_windows,20231223164353.png,カイリュー,快龍,EasyOCR,力,False,2,1.0,0.084
+name_windows,20231223164353.png,カイリュー,망나뇽,RapidOCR,力:4,False,3,1.0,0.5944
+name_windows,20240224105406.png,カイリュー,快龍,Tesseract,5 龍,False,1,0.5,0.9522
+name_windows,20240224105406.png,カイリュー,快龍,EasyOCR,快龍,True,0,0.0,0.0685
+name_windows,20240224105406.png,カイリュー,快龍,RapidOCR,快龍,True,0,0.0,0.5636
+name_windows,20240224170706.png,カイリュー,快龍,Tesseract,5 龍,False,1,0.5,0.958
+name_windows,20240224170706.png,カイリュー,快龍,EasyOCR,快龍,True,0,0.0,0.0708
+name_windows,20240224170706.png,カイリュー,快龍,RapidOCR,快龍,True,0,0.0,0.5627
+name_windows,20250211221325.png,カイリュー,快龍,Tesseract,,False,2,1.0,0.8861
+name_windows,20250211221325.png,カイリュー,Dragonite,EasyOCR,Dragonile,False,1,0.111,0.0765
+name_windows,20250211221325.png,カイリュー,快龍,RapidOCR,,False,2,1.0,0.5811
+name_windows,20250212100456.png,カイリュー,快龍,Tesseract,,False,2,1.0,0.9056
+name_windows,20250212100456.png,カイリュー,Dragonite,EasyOCR,Dragonile,False,1,0.111,0.078
+name_windows,20250212100456.png,カイリュー,快龍,RapidOCR,,False,2,1.0,0.5709
+name_windows,20241121221240.png,クレッフィ,クレッフィ,Tesseract,グレ ツ ッ フ イィ,False,3,0.429,1.2255
+name_windows,20241121221240.png,クレッフィ,クレッフィ,EasyOCR,クッフィ,False,1,0.2,0.0844
+name_windows,20241121221240.png,クレッフィ,클레피,RapidOCR,y,False,3,1.0,0.561
+name_windows,20241121221258.png,クレッフィ,クレッフィ,Tesseract,グレ ツ ッ フ イィ,False,3,0.429,1.2049
+name_windows,20241121221258.png,クレッフィ,クレッフィ,EasyOCR,クッフィ,False,1,0.2,0.0851
+name_windows,20241121221258.png,クレッフィ,클레피,RapidOCR,y,False,3,1.0,0.5556
+name_windows,20240107111513.png,サンダー,썬더,Tesseract,出名,False,2,1.0,1.1098
+name_windows,20240107111513.png,サンダー,썬더,EasyOCR,内申g,False,3,1.0,0.1021
+name_windows,20240107111513.png,サンダー,闪电鸟,RapidOCR,闪电鸟,True,0,0.0,0.5551
+name_windows,20240327223801.png,サーフゴー,褰富豪,Tesseract,鶴 富 豪隷,False,2,0.5,1.3248
+name_windows,20240327223801.png,サーフゴー,褰富豪,EasyOCR,裏富豪,False,1,0.333,0.0858
+name_windows,20240327223801.png,サーフゴー,褰富豪,RapidOCR,赛富豪,False,1,0.333,0.5532
+name_windows,20240327223920.png,サーフゴー,褰富豪,Tesseract,|即 若,False,3,1.0,1.4417
+name_windows,20240327223920.png,サーフゴー,褰富豪,EasyOCR,審富豪,False,1,0.333,0.0943
+name_windows,20240327223920.png,サーフゴー,褰富豪,RapidOCR,赛富豪,False,1,0.333,0.5575
+name_windows,20241013074104.png,サーフゴー,褰富豪,Tesseract,賽 富豪,False,1,0.333,1.2575
+name_windows,20241013074104.png,サーフゴー,褰富豪,EasyOCR,審富豪,False,1,0.333,0.0811
+name_windows,20241013074104.png,サーフゴー,褰富豪,RapidOCR,赛富豪,False,1,0.333,0.5617
+name_windows,20241013074114.png,サーフゴー,褰富豪,Tesseract,費 富豪団,False,2,0.5,1.2146
+name_windows,20241013074114.png,サーフゴー,褰富豪,EasyOCR,薄富豪,False,1,0.333,0.0856
+name_windows,20241013074114.png,サーフゴー,褰富豪,RapidOCR,富豪,False,1,0.333,0.5737
+name_windows,20241013074120.png,サーフゴー,褰富豪,Tesseract,費 富 豪削,False,2,0.5,1.1998
+name_windows,20241013074120.png,サーフゴー,褰富豪,EasyOCR,薄富豪,False,1,0.333,0.0804
+name_windows,20241013074120.png,サーフゴー,褰富豪,RapidOCR,骞富豪,False,1,0.333,0.562
+name_windows,20241013074130.png,サーフゴー,褰富豪,Tesseract,費 富 豪所,False,2,0.5,1.2075
+name_windows,20241013074130.png,サーフゴー,褰富豪,EasyOCR,暮富豪,False,1,0.333,0.0933
+name_windows,20241013074130.png,サーフゴー,褰富豪,RapidOCR,富豪,False,1,0.333,0.5675
+name_windows,20251008180429.png,ザシアン,蒼響,Tesseract,蒼 弘,False,1,0.5,1.1013
+name_windows,20251008180429.png,ザシアン,蒼響,EasyOCR,蒼響,True,0,0.0,0.0754
+name_windows,20251008180429.png,ザシアン,蒼響,RapidOCR,響,False,1,0.5,0.5779
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,Tesseract,テッ ソイ サ 八,False,3,0.5,1.2384
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,EasyOCR,テツノイサハ,True,0,0.0,0.0861
+name_windows,20240108104902.png,テツノイサハ,鐵斑葉,RapidOCR,,False,3,1.0,0.5588
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,Tesseract,テツ ノ ツ ツ ミ,True,0,0.0,1.1927
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,EasyOCR,テツノツツミ,True,0,0.0,0.0884
+name_windows,20240108104811.png,テツノツツミ,鐵包袱,RapidOCR,y三,False,3,1.0,0.5605
+name_windows,20240108222712.png,ディンルー,딩루,Tesseract,所 | 己局 了,False,4,1.0,1.279
+name_windows,20240108222712.png,ディンルー,딩루,EasyOCR,早翠,False,2,1.0,0.0785
+name_windows,20240108222712.png,ディンルー,딩루,RapidOCR,早,False,2,1.0,0.5884
+name_windows,20240108222723.png,ディンルー,딩루,Tesseract,所 ]六,False,3,1.0,1.3015
+name_windows,20240108222723.png,ディンルー,딩루,EasyOCR,ぎ早,False,2,1.0,0.0865
+name_windows,20240108222723.png,ディンルー,딩루,RapidOCR,早2,False,2,1.0,0.593
+name_windows,20251010094325.png,ディンルー,딩루,Tesseract,所 | 己0 |,False,3,1.0,1.3078
+name_windows,20251010094325.png,ディンルー,딩루,EasyOCR,g,False,2,1.0,0.0911
+name_windows,20251010094325.png,ディンルー,딩루,RapidOCR,早,False,2,1.0,0.5842
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,Tesseract,ドド ロク ウツ キュ,False,3,0.375,1.245
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,EasyOCR,トドロクツキ,True,0,0.0,0.1002
+name_windows,20240204234541.png,トドロクツキ,轟鳴月,RapidOCR,:4xC,False,4,1.0,0.5964
+name_windows,20250206203134.png,ドレディア,드레디어,Tesseract,己 可 習 呈,False,4,1.0,1.1646
+name_windows,20250206203134.png,ドレディア,드레디어,EasyOCR,ヒヱ晋長,False,4,1.0,0.1087
+name_windows,20250206203134.png,ドレディア,드레디어,RapidOCR,三三,False,4,1.0,0.5785
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,Tesseract,八 バ タク カ ミ,False,1,0.167,1.2308
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,EasyOCR,ハバタクカ三,False,1,0.167,0.0906
+name_windows,20240120153945.png,ハバタクカミ,振翼發,RapidOCR,,False,3,1.0,0.5556
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,Tesseract,記 バ タン カミ,False,2,0.333,1.2408
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,EasyOCR,ハバタクワカミ,False,1,0.143,0.0891
+name_windows,20240120154545.png,ハバタクカミ,振翼發,RapidOCR,八K9力三,False,5,1.0,0.581
+name_windows,20240321094604.png,ハバタクカミ,振翼發,Tesseract,に いい,False,3,1.0,1.2309
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,EasyOCR,ハバタクカミ,True,0,0.0,0.1045
+name_windows,20240321094604.png,ハバタクカミ,振翼發,RapidOCR,力三,False,3,1.0,0.6423
+name_windows,20240324084751.png,ハバタクカミ,振翼發,Tesseract,に いい,False,3,1.0,1.2422
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,EasyOCR,ハバタクカミ,True,0,0.0,0.1037
+name_windows,20240324084751.png,ハバタクカミ,振翼發,RapidOCR,力三,False,3,1.0,0.6366
+name_windows,20240324103355.png,ハバタクカミ,振翼發,Tesseract,に いい,False,3,1.0,1.2358
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,EasyOCR,ハバタクカミ,True,0,0.0,0.106
+name_windows,20240324103355.png,ハバタクカミ,振翼發,RapidOCR,力三,False,3,1.0,0.6314
+name_windows,20240324162730.png,ハバタクカミ,振翼發,Tesseract,に いい,False,3,1.0,1.2319
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,EasyOCR,ハバタクカミ,True,0,0.0,0.1024
+name_windows,20240324162730.png,ハバタクカミ,振翼發,RapidOCR,力三,False,3,1.0,0.6386
+name_windows,20240531133339.png,ハバタクカミ,振翼發,Tesseract,州 え に,False,3,1.0,1.2041
+name_windows,20240531133339.png,ハバタクカミ,振翼發,EasyOCR,と町_,False,3,1.0,0.1133
+name_windows,20240531133339.png,ハバタクカミ,振翼發,RapidOCR,#大2二,False,4,1.0,0.6606
+name_windows,20240531172636.png,ハバタクカミ,振翼發,Tesseract,州 え に,False,3,1.0,1.2064
+name_windows,20240531172636.png,ハバタクカミ,振翼發,EasyOCR,と町_,False,3,1.0,0.1139
+name_windows,20240531172636.png,ハバタクカミ,振翼發,RapidOCR,#大2二,False,4,1.0,0.6321
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,Tesseract,八 人 タク カミ,False,2,0.333,1.2312
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,EasyOCR,ルタクカミ,False,2,0.333,0.1033
+name_windows,20240719180846.png,ハバタクカミ,振翼發,RapidOCR,八,False,3,1.0,0.6335
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,Tesseract,八 人 タク カミ,False,2,0.333,1.2457
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,EasyOCR,ルタクカミ,False,2,0.333,0.102
+name_windows,20240719202136.png,ハバタクカミ,振翼發,RapidOCR,八,False,3,1.0,0.6187
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,Tesseract,八 人 タク カミ,False,2,0.333,1.2437
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,EasyOCR,ルタクカミ,False,2,0.333,0.0978
+name_windows,20240720072454.png,ハバタクカミ,振翼發,RapidOCR,八,False,3,1.0,0.6214
+name_windows,image.png,ハバタクカミ,ハバタクカミ,Tesseract,八 人 タク カミ,False,2,0.333,1.2477
+name_windows,image.png,ハバタクカミ,ハバタクカミ,EasyOCR,ルタクカミ,False,2,0.333,0.0994
+name_windows,image.png,ハバタクカミ,振翼發,RapidOCR,八,False,3,1.0,0.6323
+name_windows,20240119172013.png,ハピナス,ハピナス,Tesseract,八 ビ ナス,False,2,0.5,1.1542
+name_windows,20240119172013.png,ハピナス,ハピナス,EasyOCR,ハピナス,True,0,0.0,0.0842
+name_windows,20240119172013.png,ハピナス,幸福蛋,RapidOCR,八,False,3,1.0,0.566
+name_windows,20240119172100.png,ハピナス,ハピナス,Tesseract,八 ビ ナス,False,2,0.5,1.1539
+name_windows,20240119172100.png,ハピナス,ハピナス,EasyOCR,ハピナス,True,0,0.0,0.0821
+name_windows,20240119172100.png,ハピナス,幸福蛋,RapidOCR,八,False,3,1.0,0.5646
+name_windows,20240119172521.png,ハピナス,ハピナス,Tesseract,八 ビ ナス,False,2,0.5,1.157
+name_windows,20240119172521.png,ハピナス,ハピナス,EasyOCR,ハピナス,True,0,0.0,0.0819
+name_windows,20240119172521.png,ハピナス,幸福蛋,RapidOCR,八,False,3,1.0,0.5714
+name_windows,20240224225921.png,バサギリ,バサギリ,Tesseract,人 サギ リ,False,1,0.25,1.1854
+name_windows,20240224225921.png,バサギリ,バサギリ,EasyOCR,バサギリ,True,0,0.0,0.0739
+name_windows,20240224225921.png,バサギリ,バサギリ,RapidOCR,"P,T",False,4,1.0,0.5931
+name_windows,20250205183008.png,バドレックス,バドレックス,Tesseract,人 バド レッ ジス,False,2,0.286,1.251
+name_windows,20250205183008.png,バドレックス,バドレックス,EasyOCR,バドレックス,True,0,0.0,0.1042
+name_windows,20250205183008.png,バドレックス,버드렉스,RapidOCR,JFLy,False,4,1.0,0.6309
+name_windows,20250211221327.png,パオジアン,파오젠,Tesseract,中,False,3,1.0,1.2273
+name_windows,20250211221327.png,パオジアン,파오젠,EasyOCR,"ラ""",False,3,1.0,0.0683
+name_windows,20250211221327.png,パオジアン,파오젠,RapidOCR,,False,3,1.0,0.5284
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,Tesseract,ハイ ラウ シヤ,False,3,0.5,1.2972
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,EasyOCR,ヘイラッシヤ,False,1,0.167,0.0919
+name_windows,20230526235247.png,ヘイラッシャ,吃吼霸,RapidOCR,,False,3,1.0,0.5514
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,Tesseract,ハイ ラッ シヤ,False,2,0.333,1.247
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,EasyOCR,ヘイラツシヤ,False,2,0.333,0.0896
+name_windows,20230526235254.png,ヘイラッシャ,吃吼霸,RapidOCR,,False,3,1.0,0.5652
+name_windows,20240212223756.png,ユクシー,ユクシー,Tesseract,ユ ク グ シ ー,False,1,0.2,1.1779
+name_windows,20240212223756.png,ユクシー,ユクシー,EasyOCR,ユクシー,True,0,0.0,0.0848
+name_windows,20240212223756.png,ユクシー,유크시,RapidOCR,,False,3,1.0,0.5655
+name_windows,20250212210127.png,リククラゲ,リククラゲ,Tesseract,に いい MV,False,5,1.0,1.2059
+name_windows,20250212210127.png,リククラゲ,リククラゲ,EasyOCR,リククラゲ,True,0,0.0,0.0851
+name_windows,20250212210127.png,リククラゲ,육파리,RapidOCR,,False,3,1.0,0.56
+name_windows,20250212210137.png,リククラゲ,リククラゲ,Tesseract,リク クラ グ ゲ グ,False,2,0.286,1.2001
+name_windows,20250212210137.png,リククラゲ,リククラゲ,EasyOCR,リククラゲ,True,0,0.0,0.0852
+name_windows,20250212210137.png,リククラゲ,육파리,RapidOCR,I,False,3,1.0,0.5855
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,Tesseract,Flare Blitz,True,0,0.0,0.1863
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,EasyOCR,Flare Blitz,True,0,0.0,0.0455
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,RapidOCR,FlaBlitzlare,False,6,0.5,0.2155
+move_names,Low Kick.png,Low Kick,Low Kick,Tesseract,Low Kick,True,0,0.0,0.1874
+move_names,Low Kick.png,Low Kick,Low Kick,EasyOCR,Low Kidk,False,1,0.143,0.0507
+move_names,Low Kick.png,Low Kick,Low Kick,RapidOCR,KickL.ow,False,7,0.875,0.216
+move_names,Scale Shot.png,Scale Shot,Scale Shot,Tesseract,Scale Shot,True,0,0.0,0.2211
+move_names,Scale Shot.png,Scale Shot,Scale Shot,EasyOCR,Scale Shot,True,0,0.0,0.0476
+move_names,Scale Shot.png,Scale Shot,Scale Shot,RapidOCR,ScaleShote,False,1,0.1,0.2201
+move_names,Spirit Break.png,Spirit Break,Spirit Break,Tesseract,Spirit Break,True,0,0.0,0.1891
+move_names,Spirit Break.png,Spirit Break,Spirit Break,EasyOCR,Spiiit Break,False,1,0.091,0.052
+move_names,Spirit Break.png,Spirit Break,Spirit Break,RapidOCR,Spirit BtBreak,False,2,0.154,0.2268
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,Tesseract,Sucker Punch,True,0,0.0,0.1867
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,EasyOCR,SuckerPunch,True,0,0.0,0.0592
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,RapidOCR,SuckerPunch,True,0,0.0,0.2611
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,Tesseract,Thunder Wave,True,0,0.0,0.2007
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,EasyOCR,Thunder Wave,True,0,0.0,0.0587
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,RapidOCR,ThunderWave,True,0,0.0,0.2579
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,Tesseract,| ここ える か ぜ,False,1,0.167,0.2418
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,EasyOCR,こごえるかぜ,True,0,0.0,0.0306
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,RapidOCR,,False,6,1.0,0.2214
+move_names,シャドーボール.png,シャドーボール,シャドーボール,Tesseract,シヤ ドー ボー ル,False,1,0.143,0.2295
+move_names,シャドーボール.png,シャドーボール,シャドーボール,EasyOCR,シャドーボール,True,0,0.0,0.0331
+move_names,シャドーボール.png,シャドーボール,シャドーボール,RapidOCR,-一术一儿,False,7,1.0,0.2693
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,Tesseract,ハーン フォ ー ス,False,1,0.143,0.2439
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,EasyOCR,ムーンフォース,True,0,0.0,0.0295
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,RapidOCR,L又,False,7,1.0,0.2359
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,Tesseract,ワイ ド フ ォ ー ス,True,0,0.0,0.228
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,EasyOCR,ワイドフォース,True,0,0.0,0.0315
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,RapidOCR,->又,False,7,1.0,0.202
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,Tesseract,Grimmsnarl used Thunder Wave!,True,0,0.0,0.408
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,EasyOCR,Grimmsnarlused Thunder Vave!,False,1,0.038,0.8069
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,RapidOCR,Grimmsnarlused Thunder r Wave!,False,1,0.037,0.4455
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,Tesseract,—It's super effective!,False,1,0.05,0.2914
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,EasyOCR,Itssuper effectivel,False,2,0.105,0.4258
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,RapidOCR,It's super effective!,True,0,0.0,0.4687
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,Tesseract,Koraidon’s Defense fell!,False,2,0.091,0.3545
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,EasyOCR,Koraidon's Defense felll,False,2,0.091,0.4052
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,RapidOCR,Koraidon's Defense fell!,False,1,0.045,0.4955
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,Tesseract,The opposing デイ ン ル ー used Tera Blast!,False,1,0.033,0.3351
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,EasyOCR,The opposing デインルー used Tera Blastl,False,2,0.067,0.8134
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,RapidOCR,The opposing used Tera Blast!,False,5,0.167,0.532
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,Tesseract,ゆけ っ 7 コラ イド ビン /,False,3,0.273,0.3354
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,EasyOCR,ゆけつ!コライドンノ,False,3,0.3,0.6286
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,RapidOCR,pt!!,False,10,1.0,0.4138
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,Tesseract,バ パオ ジア ン のつら ら お と し /,False,2,0.143,0.3983
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,EasyOCR,バオジアンのつららおとし!,False,2,0.154,0.6568
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,RapidOCR,の55u!,False,12,0.923,0.3002
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,Tesseract,味方 の 周り にと が っ た 岩 が _ た だ よい 始め た /,False,2,0.095,0.4429
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,EasyOCR,あかだるわ味方の周りにいりはじとがつた岩がただよい始めたり,False,11,0.379,1.055
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,RapidOCR,味方の周3L岩始！,False,13,0.65,0.6091
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,Tesseract,相手 の _ バド レッ クス の攻撃 が 上 が っ た /,False,2,0.105,0.4074
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,EasyOCR,あいて相手のバドレックスのこうけこ攻撃が上がったり,False,8,0.32,0.9328
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,RapidOCR,相手のの攻擎力上！,False,11,0.611,0.446
+first_selection,1番目.png,1番目,1番目,Tesseract,_ 1 番目,False,1,0.25,0.1712
+first_selection,1番目.png,1番目,1番目,EasyOCR,12目,False,1,0.333,0.0338
+first_selection,1番目.png,1番目,1番目,RapidOCR,番目,False,1,0.333,0.2226
+first_selection,2番目.png,2番目,2番目,Tesseract,_ 2 番目,False,1,0.25,0.1697
+first_selection,2番目.png,2番目,2番目,EasyOCR,2番目,True,0,0.0,0.0272
+first_selection,2番目.png,2番目,2番目,RapidOCR,2番自自,False,2,0.5,0.2265
+first_selection,3番目.png,3番目,3番目,Tesseract,_ 3 番目,False,1,0.25,0.1709
+first_selection,3番目.png,3番目,3番目,EasyOCR,s覇目,False,2,0.667,0.0331
+first_selection,3番目.png,3番目,3番目,RapidOCR,33番目目,False,2,0.4,0.2223
+first_selection,First.png,First,First,Tesseract,First,True,0,0.0,0.0713
+first_selection,First.png,First,First,EasyOCR,First,True,0,0.0,0.0267
+first_selection,First.png,First,First,RapidOCR,First,True,0,0.0,0.2114
+first_selection,Second.png,Second,Second,Tesseract,Second,True,0,0.0,0.0758
+first_selection,Second.png,Second,Second,EasyOCR,Second,True,0,0.0,0.0275
+first_selection,Second.png,Second,Second,RapidOCR,Second,True,0,0.0,0.2035
+first_selection,Third.png,Third,Third,Tesseract,Third,True,0,0.0,0.0719
+first_selection,Third.png,Third,Third,EasyOCR,Thind,False,1,0.2,0.0264
+first_selection,Third.png,Third,Third,RapidOCR,Third,True,0,0.0,0.2293
+rank_numbers,629位.png,629位,629位,Tesseract,62911,False,2,0.4,0.0779
+rank_numbers,629位.png,629位,629位,EasyOCR,629位,True,0,0.0,0.0695
+rank_numbers,629位.png,629位,629位,RapidOCR,629位,True,0,0.0,0.1295
+rank_numbers,No.3961.png,No.3961,No.3961,Tesseract,No. 3961,True,0,0.0,0.0838
+rank_numbers,No.3961.png,No.3961,No.3961,EasyOCR,No.3961,True,0,0.0,0.0861
+rank_numbers,No.3961.png,No.3961,No.3961,RapidOCR,No.3961,True,0,0.0,0.1734

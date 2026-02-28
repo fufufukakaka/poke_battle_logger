@@ -1,0 +1,737 @@
+﻿category,image,ground_truth,matched_variant,engine,ocr_output,exact_match,edit_distance,norm_edit_distance,elapsed_sec
+name_windows,20230930154324.png,アグノム,アグノム,baseline,アグノム,True,0,0.0,0.118
+name_windows,20230930154324.png,アグノム,アグノム,+ch_tra,アグノム,True,0,0.0,0.4196
+name_windows,20230930154324.png,アグノム,アグノム,upscale2x,アグノム,True,0,0.0,0.2318
+name_windows,20230930154324.png,アグノム,アグノム,CLAHE,アグノム,True,0,0.0,0.0762
+name_windows,20230930154324.png,アグノム,アグノム,white_ext,アグノム,True,0,0.0,0.0744
+name_windows,20230930154324.png,アグノム,アグノム,low_contrast,アグノム,True,0,0.0,0.0764
+name_windows,20230930154324.png,アグノム,アグノム,up2x+CLAHE,アグノム,True,0,0.0,0.2225
+name_windows,20230930154324.png,アグノム,アグノム,up2x+ch_tra,アグノム,True,0,0.0,0.715
+name_windows,20230930154329.png,アグノム,アグノム,baseline,アグノム,True,0,0.0,0.0778
+name_windows,20230930154329.png,アグノム,アグノム,+ch_tra,アグノム,True,0,0.0,0.4572
+name_windows,20230930154329.png,アグノム,アグノム,upscale2x,アグノム,True,0,0.0,0.2258
+name_windows,20230930154329.png,アグノム,アグノム,CLAHE,アグノム,True,0,0.0,0.0766
+name_windows,20230930154329.png,アグノム,アグノム,white_ext,アグノム,True,0,0.0,0.0763
+name_windows,20230930154329.png,アグノム,アグノム,low_contrast,アグノム,True,0,0.0,0.0761
+name_windows,20230930154329.png,アグノム,アグノム,up2x+CLAHE,アグノム,True,0,0.0,0.2303
+name_windows,20230930154329.png,アグノム,アグノム,up2x+ch_tra,アグノム,True,0,0.0,0.7486
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,baseline,アシレーヌ,True,0,0.0,0.0942
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,+ch_tra,アシレーヌ,True,0,0.0,0.4849
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,upscale2x,アシレーヌ,True,0,0.0,0.2529
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,CLAHE,アシレーヌ,True,0,0.0,0.0939
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,white_ext,アシレーヌ,True,0,0.0,0.0903
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,low_contrast,アシレーヌ,True,0,0.0,0.0917
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,up2x+CLAHE,アシレーヌ,True,0,0.0,0.2431
+name_windows,20240423214752.png,アシレーヌ,アシレーヌ,up2x+ch_tra,アシレーヌ,True,0,0.0,0.8592
+name_windows,20251010093835.png,アルセウス,アルセウス,baseline,アルセウス,True,0,0.0,0.0993
+name_windows,20251010093835.png,アルセウス,アルセウス,+ch_tra,アルセウス,True,0,0.0,0.5627
+name_windows,20251010093835.png,アルセウス,アルセウス,upscale2x,アルセウス,True,0,0.0,0.251
+name_windows,20251010093835.png,アルセウス,アルセウス,CLAHE,アルセウス,True,0,0.0,0.1017
+name_windows,20251010093835.png,アルセウス,アルセウス,white_ext,アルセウス,True,0,0.0,0.0898
+name_windows,20251010093835.png,アルセウス,アルセウス,low_contrast,アルセウス,True,0,0.0,0.0989
+name_windows,20251010093835.png,アルセウス,アルセウス,up2x+CLAHE,アルセウス,True,0,0.0,0.2554
+name_windows,20251010093835.png,アルセウス,アルセウス,up2x+ch_tra,アルセウス,True,0,0.0,0.8663
+name_windows,20231028204811.png,イーユイ,イーユイ,baseline,イーフイ,False,1,0.25,0.0864
+name_windows,20231028204811.png,イーユイ,イーユイ,+ch_tra,イーフイ,False,1,0.25,0.3704
+name_windows,20231028204811.png,イーユイ,イーユイ,upscale2x,イーユイ,True,0,0.0,0.2215
+name_windows,20231028204811.png,イーユイ,위유이,CLAHE,‥7,False,3,1.0,0.0654
+name_windows,20231028204811.png,イーユイ,イーユイ,white_ext,1 ユイ,False,2,0.5,0.0735
+name_windows,20231028204811.png,イーユイ,イーユイ,low_contrast,イーフイ,False,1,0.25,0.0813
+name_windows,20231028204811.png,イーユイ,위유이,up2x+CLAHE,'フ,False,3,1.0,0.2129
+name_windows,20231028204811.png,イーユイ,イーユイ,up2x+ch_tra,イーユイ,True,0,0.0,0.521
+name_windows,20241028212254.png,ウインディ,윈디,baseline,?[,False,2,1.0,0.083
+name_windows,20241028212254.png,ウインディ,윈디,+ch_tra,?[,False,2,1.0,0.3469
+name_windows,20241028212254.png,ウインディ,윈디,upscale2x,@ワ,False,2,1.0,0.2613
+name_windows,20241028212254.png,ウインディ,윈디,CLAHE,?[,False,2,1.0,0.0861
+name_windows,20241028212254.png,ウインディ,윈디,white_ext,?ワ,False,2,1.0,0.0838
+name_windows,20241028212254.png,ウインディ,윈디,low_contrast,?[,False,2,1.0,0.0846
+name_windows,20241028212254.png,ウインディ,윈디,up2x+CLAHE,@ワ,False,2,1.0,0.2333
+name_windows,20241028212254.png,ウインディ,윈디,up2x+ch_tra,@ワ,False,2,1.0,0.7249
+name_windows,20241028212305.png,ウインディ,윈디,baseline,?[,False,2,1.0,0.0843
+name_windows,20241028212305.png,ウインディ,윈디,+ch_tra,?[,False,2,1.0,0.3488
+name_windows,20241028212305.png,ウインディ,윈디,upscale2x,@ワ,False,2,1.0,0.229
+name_windows,20241028212305.png,ウインディ,윈디,CLAHE,?[,False,2,1.0,0.0871
+name_windows,20241028212305.png,ウインディ,윈디,white_ext,?ワ,False,2,1.0,0.0858
+name_windows,20241028212305.png,ウインディ,윈디,low_contrast,?[,False,2,1.0,0.0854
+name_windows,20241028212305.png,ウインディ,윈디,up2x+CLAHE,@ワ,False,2,1.0,0.2334
+name_windows,20241028212305.png,ウインディ,윈디,up2x+ch_tra,@ワ,False,2,1.0,0.6431
+name_windows,20241028212315.png,ウインディ,윈디,baseline,?[,False,2,1.0,0.0858
+name_windows,20241028212315.png,ウインディ,윈디,+ch_tra,?[,False,2,1.0,0.3502
+name_windows,20241028212315.png,ウインディ,윈디,upscale2x,@ワ,False,2,1.0,0.2301
+name_windows,20241028212315.png,ウインディ,윈디,CLAHE,?[,False,2,1.0,0.0853
+name_windows,20241028212315.png,ウインディ,윈디,white_ext,?ワ,False,2,1.0,0.0843
+name_windows,20241028212315.png,ウインディ,윈디,low_contrast,?[,False,2,1.0,0.0839
+name_windows,20241028212315.png,ウインディ,윈디,up2x+CLAHE,@ワ,False,2,1.0,0.2297
+name_windows,20241028212315.png,ウインディ,윈디,up2x+ch_tra,@ワ,False,2,1.0,0.6415
+name_windows,20241028212322.png,ウインディ,윈디,baseline,@[,False,2,1.0,0.0847
+name_windows,20241028212322.png,ウインディ,윈디,+ch_tra,@[,False,2,1.0,0.3485
+name_windows,20241028212322.png,ウインディ,윈디,upscale2x,@ワ,False,2,1.0,0.2417
+name_windows,20241028212322.png,ウインディ,윈디,CLAHE,@[,False,2,1.0,0.0848
+name_windows,20241028212322.png,ウインディ,윈디,white_ext,?ワ,False,2,1.0,0.0837
+name_windows,20241028212322.png,ウインディ,윈디,low_contrast,@[,False,2,1.0,0.0848
+name_windows,20241028212322.png,ウインディ,윈디,up2x+CLAHE,@ワ,False,2,1.0,0.2389
+name_windows,20241028212322.png,ウインディ,윈디,up2x+ch_tra,@ワ,False,2,1.0,0.7186
+name_windows,20241028212333.png,ウインディ,윈디,baseline,?[,False,2,1.0,0.0833
+name_windows,20241028212333.png,ウインディ,윈디,+ch_tra,?[,False,2,1.0,0.3466
+name_windows,20241028212333.png,ウインディ,윈디,upscale2x,@ワ,False,2,1.0,0.2326
+name_windows,20241028212333.png,ウインディ,윈디,CLAHE,?[,False,2,1.0,0.0858
+name_windows,20241028212333.png,ウインディ,윈디,white_ext,@ワ,False,2,1.0,0.0839
+name_windows,20241028212333.png,ウインディ,윈디,low_contrast,?[,False,2,1.0,0.0835
+name_windows,20241028212333.png,ウインディ,윈디,up2x+CLAHE,@ワ,False,2,1.0,0.2314
+name_windows,20241028212333.png,ウインディ,윈디,up2x+ch_tra,@ワ,False,2,1.0,0.6443
+name_windows,20230930230927.png,ウーラオス,ウーラオス,baseline,ウーラオス,True,0,0.0,0.0912
+name_windows,20230930230927.png,ウーラオス,ウーラオス,+ch_tra,ウーラオス,True,0,0.0,0.4553
+name_windows,20230930230927.png,ウーラオス,ウーラオス,upscale2x,ウーラオス,True,0,0.0,0.2624
+name_windows,20230930230927.png,ウーラオス,ウーラオス,CLAHE,ウーラオス,True,0,0.0,0.0926
+name_windows,20230930230927.png,ウーラオス,ウーラオス,white_ext,ウーラオス,True,0,0.0,0.1079
+name_windows,20230930230927.png,ウーラオス,ウーラオス,low_contrast,ウーラオス,True,0,0.0,0.1019
+name_windows,20230930230927.png,ウーラオス,ウーラオス,up2x+CLAHE,ウーラオス,True,0,0.0,0.2762
+name_windows,20230930230927.png,ウーラオス,ウーラオス,up2x+ch_tra,ウーラオス,True,0,0.0,0.9465
+name_windows,20231015172540.png,オーガポン,오거폰,baseline,尼鬼楢,False,3,1.0,0.0993
+name_windows,20231015172540.png,オーガポン,厄詭椪,+ch_tra,厄鬼柱,False,2,0.667,0.4789
+name_windows,20231015172540.png,オーガポン,오거폰,upscale2x,尼鬼柚,False,3,1.0,0.2549
+name_windows,20231015172540.png,オーガポン,오거폰,CLAHE,尼鬼楢,False,3,1.0,0.1045
+name_windows,20231015172540.png,オーガポン,오거폰,white_ext,尼鬼柚,False,3,1.0,0.1452
+name_windows,20231015172540.png,オーガポン,오거폰,low_contrast,尼鬼楢,False,3,1.0,0.1028
+name_windows,20231015172540.png,オーガポン,오거폰,up2x+CLAHE,尼鬼柚,False,3,1.0,0.2696
+name_windows,20231015172540.png,オーガポン,厄詭椪,up2x+ch_tra,厄鬼樺,False,2,0.667,0.8015
+name_windows,20231015172544.png,オーガポン,오거폰,baseline,尼鬼楢,False,3,1.0,0.1162
+name_windows,20231015172544.png,オーガポン,厄詭椪,+ch_tra,厄鬼柱,False,2,0.667,0.471
+name_windows,20231015172544.png,オーガポン,오거폰,upscale2x,尼鬼楢,False,3,1.0,0.2464
+name_windows,20231015172544.png,オーガポン,오거폰,CLAHE,尼鬼楢,False,3,1.0,0.0989
+name_windows,20231015172544.png,オーガポン,오거폰,white_ext,尼鬼柚,False,3,1.0,0.0798
+name_windows,20231015172544.png,オーガポン,오거폰,low_contrast,尼鬼楢,False,3,1.0,0.0884
+name_windows,20231015172544.png,オーガポン,오거폰,up2x+CLAHE,尼鬼楢,False,3,1.0,0.2495
+name_windows,20231015172544.png,オーガポン,厄詭椪,up2x+ch_tra,厄鬼樺,False,2,0.667,0.6526
+name_windows,20231206175521.png,オーガポン,오거폰,baseline,尼鬼越,False,3,1.0,0.0974
+name_windows,20231206175521.png,オーガポン,厄詭椪,+ch_tra,厄鬼樁,False,2,0.667,0.4007
+name_windows,20231206175521.png,オーガポン,오거폰,upscale2x,尼鬼楢,False,3,1.0,0.2485
+name_windows,20231206175521.png,オーガポン,오거폰,CLAHE,尼鬼楢,False,3,1.0,0.0993
+name_windows,20231206175521.png,オーガポン,오거폰,white_ext,尼鬼越,False,3,1.0,0.0969
+name_windows,20231206175521.png,オーガポン,오거폰,low_contrast,尼鬼越,False,3,1.0,0.0956
+name_windows,20231206175521.png,オーガポン,오거폰,up2x+CLAHE,尼鬼越,False,3,1.0,0.2459
+name_windows,20231206175521.png,オーガポン,厄詭椪,up2x+ch_tra,厄鬼樁,False,2,0.667,0.7514
+name_windows,20240107093843.png,オーガポン,オーガポン,baseline,オーカポン,False,1,0.2,0.1009
+name_windows,20240107093843.png,オーガポン,オーガポン,+ch_tra,オーカポン,False,1,0.2,0.4949
+name_windows,20240107093843.png,オーガポン,オーガポン,upscale2x,オーカポン,False,1,0.2,0.2467
+name_windows,20240107093843.png,オーガポン,オーガポン,CLAHE,オーカポラ,False,2,0.4,0.0999
+name_windows,20240107093843.png,オーガポン,オーガポン,white_ext,オーガポン,True,0,0.0,0.0806
+name_windows,20240107093843.png,オーガポン,オーガポン,low_contrast,オーカポン,False,1,0.2,0.0978
+name_windows,20240107093843.png,オーガポン,オーガポン,up2x+CLAHE,オー獅ン,False,2,0.4,0.244
+name_windows,20240107093843.png,オーガポン,オーガポン,up2x+ch_tra,オーカポン,False,1,0.2,0.7162
+name_windows,20240107110324.png,オーガポン,オーガポン,baseline,オーカポン,False,1,0.2,0.0964
+name_windows,20240107110324.png,オーガポン,オーガポン,+ch_tra,オーカポン,False,1,0.2,0.4907
+name_windows,20240107110324.png,オーガポン,オーガポン,upscale2x,オーカポン,False,1,0.2,0.2459
+name_windows,20240107110324.png,オーガポン,オーガポン,CLAHE,オーカポラ,False,2,0.4,0.0978
+name_windows,20240107110324.png,オーガポン,オーガポン,white_ext,オーガポン,True,0,0.0,0.0804
+name_windows,20240107110324.png,オーガポン,オーガポン,low_contrast,オーカポン,False,1,0.2,0.0999
+name_windows,20240107110324.png,オーガポン,オーガポン,up2x+CLAHE,オー獅ン,False,2,0.4,0.2497
+name_windows,20240107110324.png,オーガポン,オーガポン,up2x+ch_tra,オーカポン,False,1,0.2,0.7116
+name_windows,20240407095808.png,オーガポン,오거폰,baseline,尼鬼楢,False,3,1.0,0.0878
+name_windows,20240407095808.png,オーガポン,厄詭椪,+ch_tra,厄鬼柱,False,2,0.667,0.3906
+name_windows,20240407095808.png,オーガポン,오거폰,upscale2x,尼鬼楢,False,3,1.0,0.2459
+name_windows,20240407095808.png,オーガポン,오거폰,CLAHE,尼鬼楢,False,3,1.0,0.0984
+name_windows,20240407095808.png,オーガポン,오거폰,white_ext,尼鬼柚,False,3,1.0,0.0992
+name_windows,20240407095808.png,オーガポン,오거폰,low_contrast,尼鬼楢,False,3,1.0,0.0882
+name_windows,20240407095808.png,オーガポン,오거폰,up2x+CLAHE,尼鬼楢,False,3,1.0,0.2454
+name_windows,20240407095808.png,オーガポン,厄詭椪,up2x+ch_tra,厄鬼樺,False,2,0.667,0.7015
+name_windows,20240407095818.png,オーガポン,오거폰,baseline,尼鬼楢,False,3,1.0,0.092
+name_windows,20240407095818.png,オーガポン,厄詭椪,+ch_tra,厄鬼柱,False,2,0.667,0.3913
+name_windows,20240407095818.png,オーガポン,오거폰,upscale2x,尼鬼楢,False,3,1.0,0.2512
+name_windows,20240407095818.png,オーガポン,오거폰,CLAHE,尼鬼楢,False,3,1.0,0.0972
+name_windows,20240407095818.png,オーガポン,오거폰,white_ext,-鬼枕,False,3,1.0,0.0993
+name_windows,20240407095818.png,オーガポン,오거폰,low_contrast,尼鬼楢,False,3,1.0,0.0821
+name_windows,20240407095818.png,オーガポン,오거폰,up2x+CLAHE,尼鬼楢,False,3,1.0,0.2455
+name_windows,20240407095818.png,オーガポン,厄詭椪,up2x+ch_tra,厄鬼樺,False,2,0.667,0.7773
+name_windows,20240407095829.png,オーガポン,오거폰,baseline,尼鬼楢,False,3,1.0,0.0961
+name_windows,20240407095829.png,オーガポン,厄詭椪,+ch_tra,厄鬼柱,False,2,0.667,0.4026
+name_windows,20240407095829.png,オーガポン,오거폰,upscale2x,尼鬼楢,False,3,1.0,0.2484
+name_windows,20240407095829.png,オーガポン,오거폰,CLAHE,尼鬼楢,False,3,1.0,0.0975
+name_windows,20240407095829.png,オーガポン,오거폰,white_ext,尼鬼椎,False,3,1.0,0.097
+name_windows,20240407095829.png,オーガポン,오거폰,low_contrast,尼鬼楢,False,3,1.0,0.0972
+name_windows,20240407095829.png,オーガポン,오거폰,up2x+CLAHE,尼鬼楢,False,3,1.0,0.2454
+name_windows,20240407095829.png,オーガポン,厄詭椪,up2x+ch_tra,厄鬼樺,False,2,0.667,0.7487
+name_windows,20231223144400.png,カイリュー,快龍,baseline,力,False,2,1.0,0.0781
+name_windows,20231223144400.png,カイリュー,快龍,+ch_tra,力,False,2,1.0,0.3699
+name_windows,20231223144400.png,カイリュー,カイリュー,upscale2x,1イリュー,False,1,0.2,0.2359
+name_windows,20231223144400.png,カイリュー,カイリュー,CLAHE,イリこー,False,2,0.4,0.0781
+name_windows,20231223144400.png,カイリュー,カイリュー,white_ext,イリjユ一,False,4,0.8,0.0768
+name_windows,20231223144400.png,カイリュー,快龍,low_contrast,力,False,2,1.0,0.0777
+name_windows,20231223144400.png,カイリュー,カイリュー,up2x+CLAHE,1リュー,False,2,0.4,0.2466
+name_windows,20231223144400.png,カイリュー,カイリュー,up2x+ch_tra,1イリュー,False,1,0.2,0.7787
+name_windows,20231223164353.png,カイリュー,快龍,baseline,力,False,2,1.0,0.0776
+name_windows,20231223164353.png,カイリュー,快龍,+ch_tra,力,False,2,1.0,0.3684
+name_windows,20231223164353.png,カイリュー,カイリュー,upscale2x,1イリュー,False,1,0.2,0.2411
+name_windows,20231223164353.png,カイリュー,カイリュー,CLAHE,イリこー,False,2,0.4,0.0811
+name_windows,20231223164353.png,カイリュー,カイリュー,white_ext,イリjユ一,False,4,0.8,0.077
+name_windows,20231223164353.png,カイリュー,快龍,low_contrast,力,False,2,1.0,0.077
+name_windows,20231223164353.png,カイリュー,カイリュー,up2x+CLAHE,1リュー,False,2,0.4,0.2511
+name_windows,20231223164353.png,カイリュー,カイリュー,up2x+ch_tra,1イリュー,False,1,0.2,0.7768
+name_windows,20240224105406.png,カイリュー,快龍,baseline,快龍,True,0,0.0,0.066
+name_windows,20240224105406.png,カイリュー,快龍,+ch_tra,快龍,True,0,0.0,0.1956
+name_windows,20240224105406.png,カイリュー,快龍,upscale2x,快龍,True,0,0.0,0.2324
+name_windows,20240224105406.png,カイリュー,快龍,CLAHE,快龍,True,0,0.0,0.0672
+name_windows,20240224105406.png,カイリュー,快龍,white_ext,記,False,2,1.0,0.0871
+name_windows,20240224105406.png,カイリュー,快龍,low_contrast,快龍,True,0,0.0,0.0662
+name_windows,20240224105406.png,カイリュー,快龍,up2x+CLAHE,快龍,True,0,0.0,0.2212
+name_windows,20240224105406.png,カイリュー,快龍,up2x+ch_tra,快龍,True,0,0.0,0.5332
+name_windows,20240224170706.png,カイリュー,快龍,baseline,快龍,True,0,0.0,0.0661
+name_windows,20240224170706.png,カイリュー,快龍,+ch_tra,快龍,True,0,0.0,0.2185
+name_windows,20240224170706.png,カイリュー,快龍,upscale2x,快龍,True,0,0.0,0.2238
+name_windows,20240224170706.png,カイリュー,快龍,CLAHE,快龍,True,0,0.0,0.0661
+name_windows,20240224170706.png,カイリュー,快龍,white_ext,記,False,2,1.0,0.0851
+name_windows,20240224170706.png,カイリュー,快龍,low_contrast,快龍,True,0,0.0,0.0664
+name_windows,20240224170706.png,カイリュー,快龍,up2x+CLAHE,快龍,True,0,0.0,0.2211
+name_windows,20240224170706.png,カイリュー,快龍,up2x+ch_tra,快龍,True,0,0.0,0.5342
+name_windows,20250211221325.png,カイリュー,Dragonite,baseline,Dragonile,False,1,0.111,0.0737
+name_windows,20250211221325.png,カイリュー,Dragonite,+ch_tra,Dragonite,True,0,0.0,0.2095
+name_windows,20250211221325.png,カイリュー,Dragonite,upscale2x,Dragonile,False,1,0.111,0.2348
+name_windows,20250211221325.png,カイリュー,Dragonite,CLAHE,Dragonile,False,1,0.111,0.0735
+name_windows,20250211221325.png,カイリュー,快龍,white_ext,,False,2,1.0,0.0654
+name_windows,20250211221325.png,カイリュー,Dragonite,low_contrast,Dragonile,False,1,0.111,0.0739
+name_windows,20250211221325.png,カイリュー,Dragonite,up2x+CLAHE,Dragonile,False,1,0.111,0.2498
+name_windows,20250211221325.png,カイリュー,Dragonite,up2x+ch_tra,Dragonite,True,0,0.0,0.5212
+name_windows,20250212100456.png,カイリュー,Dragonite,baseline,Dragonile,False,1,0.111,0.0729
+name_windows,20250212100456.png,カイリュー,Dragonite,+ch_tra,Dragonite,True,0,0.0,0.2064
+name_windows,20250212100456.png,カイリュー,Dragonite,upscale2x,Dragonile,False,1,0.111,0.2358
+name_windows,20250212100456.png,カイリュー,Dragonite,CLAHE,Dragonile,False,1,0.111,0.0737
+name_windows,20250212100456.png,カイリュー,快龍,white_ext,,False,2,1.0,0.0668
+name_windows,20250212100456.png,カイリュー,Dragonite,low_contrast,Dragonile,False,1,0.111,0.0742
+name_windows,20250212100456.png,カイリュー,Dragonite,up2x+CLAHE,Dragonile,False,1,0.111,0.2341
+name_windows,20250212100456.png,カイリュー,Dragonite,up2x+ch_tra,Dragonite,True,0,0.0,0.5498
+name_windows,20241121221240.png,クレッフィ,クレッフィ,baseline,クッフィ,False,1,0.2,0.0815
+name_windows,20241121221240.png,クレッフィ,クレッフィ,+ch_tra,クッフィ,False,1,0.2,0.5336
+name_windows,20241121221240.png,クレッフィ,クレッフィ,upscale2x,クレッフィ,True,0,0.0,0.2319
+name_windows,20241121221240.png,クレッフィ,クレッフィ,CLAHE,クッフィ,False,1,0.2,0.0831
+name_windows,20241121221240.png,クレッフィ,クレッフィ,white_ext,クッフィ,False,1,0.2,0.0798
+name_windows,20241121221240.png,クレッフィ,クレッフィ,low_contrast,クッフィ,False,1,0.2,0.0813
+name_windows,20241121221240.png,クレッフィ,クレッフィ,up2x+CLAHE,クレッフィ,True,0,0.0,0.2317
+name_windows,20241121221240.png,クレッフィ,クレッフィ,up2x+ch_tra,クレッフィ,True,0,0.0,0.8636
+name_windows,20241121221258.png,クレッフィ,クレッフィ,baseline,クッフィ,False,1,0.2,0.0806
+name_windows,20241121221258.png,クレッフィ,クレッフィ,+ch_tra,クッフィ,False,1,0.2,0.5404
+name_windows,20241121221258.png,クレッフィ,クレッフィ,upscale2x,クッフィ,False,1,0.2,0.2314
+name_windows,20241121221258.png,クレッフィ,クレッフィ,CLAHE,クッフィ,False,1,0.2,0.0806
+name_windows,20241121221258.png,クレッフィ,クレッフィ,white_ext,クッフィ,False,1,0.2,0.0842
+name_windows,20241121221258.png,クレッフィ,クレッフィ,low_contrast,クッフィ,False,1,0.2,0.0804
+name_windows,20241121221258.png,クレッフィ,クレッフィ,up2x+CLAHE,クッフィ,False,1,0.2,0.2333
+name_windows,20241121221258.png,クレッフィ,クレッフィ,up2x+ch_tra,クッフィ,False,1,0.2,0.8127
+name_windows,20240107111513.png,サンダー,썬더,baseline,内申g,False,3,1.0,0.0965
+name_windows,20240107111513.png,サンダー,閃電鳥,+ch_tra,閃電鳥,True,0,0.0,0.3957
+name_windows,20240107111513.png,サンダー,썬더,upscale2x,内申,False,2,1.0,0.2391
+name_windows,20240107111513.png,サンダー,썬더,CLAHE,内里,False,2,1.0,0.0973
+name_windows,20240107111513.png,サンダー,썬더,white_ext,内曳ウ,False,3,1.0,0.0956
+name_windows,20240107111513.png,サンダー,썬더,low_contrast,内申g,False,3,1.0,0.0985
+name_windows,20240107111513.png,サンダー,썬더,up2x+CLAHE,内申,False,2,1.0,0.2481
+name_windows,20240107111513.png,サンダー,閃電鳥,up2x+ch_tra,閃電身,False,1,0.333,0.7143
+name_windows,20240327223801.png,サーフゴー,褰富豪,baseline,裏富豪,False,1,0.333,0.0813
+name_windows,20240327223801.png,サーフゴー,褰富豪,+ch_tra,裏富豪,False,1,0.333,0.3387
+name_windows,20240327223801.png,サーフゴー,褰富豪,upscale2x,憲富豪,False,1,0.333,0.2489
+name_windows,20240327223801.png,サーフゴー,褰富豪,CLAHE,裏富豪,False,1,0.333,0.0832
+name_windows,20240327223801.png,サーフゴー,褰富豪,white_ext,寒富豪,False,1,0.333,0.0769
+name_windows,20240327223801.png,サーフゴー,褰富豪,low_contrast,裏富豪,False,1,0.333,0.0753
+name_windows,20240327223801.png,サーフゴー,褰富豪,up2x+CLAHE,憲富豪,False,1,0.333,0.2407
+name_windows,20240327223801.png,サーフゴー,褰富豪,up2x+ch_tra,憲富豪,False,1,0.333,0.7191
+name_windows,20240327223920.png,サーフゴー,褰富豪,baseline,審富豪,False,1,0.333,0.1136
+name_windows,20240327223920.png,サーフゴー,褰富豪,+ch_tra,審富豪,False,1,0.333,0.3439
+name_windows,20240327223920.png,サーフゴー,褰富豪,upscale2x,墨富豪,False,1,0.333,0.2315
+name_windows,20240327223920.png,サーフゴー,褰富豪,CLAHE,審富豪,False,1,0.333,0.0907
+name_windows,20240327223920.png,サーフゴー,褰富豪,white_ext,憲富豪,False,1,0.333,0.0754
+name_windows,20240327223920.png,サーフゴー,褰富豪,low_contrast,審富豪,False,1,0.333,0.0784
+name_windows,20240327223920.png,サーフゴー,褰富豪,up2x+CLAHE,墨富豪,False,1,0.333,0.2366
+name_windows,20240327223920.png,サーフゴー,褰富豪,up2x+ch_tra,墨富豪,False,1,0.333,0.6367
+name_windows,20241013074104.png,サーフゴー,褰富豪,baseline,審富豪,False,1,0.333,0.0765
+name_windows,20241013074104.png,サーフゴー,褰富豪,+ch_tra,審富豪,False,1,0.333,0.2823
+name_windows,20241013074104.png,サーフゴー,褰富豪,upscale2x,鷺富豪,False,1,0.333,0.2317
+name_windows,20241013074104.png,サーフゴー,褰富豪,CLAHE,審富豪,False,1,0.333,0.0844
+name_windows,20241013074104.png,サーフゴー,褰富豪,white_ext,費富豪,False,1,0.333,0.0978
+name_windows,20241013074104.png,サーフゴー,褰富豪,low_contrast,審富豪,False,1,0.333,0.0761
+name_windows,20241013074104.png,サーフゴー,褰富豪,up2x+CLAHE,鷺富豪,False,1,0.333,0.231
+name_windows,20241013074104.png,サーフゴー,褰富豪,up2x+ch_tra,鷺富豪,False,1,0.333,0.6426
+name_windows,20241013074114.png,サーフゴー,褰富豪,baseline,薄富豪,False,1,0.333,0.0854
+name_windows,20241013074114.png,サーフゴー,褰富豪,+ch_tra,薄富豪,False,1,0.333,0.2933
+name_windows,20241013074114.png,サーフゴー,褰富豪,upscale2x,薄富豪,False,1,0.333,0.2304
+name_windows,20241013074114.png,サーフゴー,褰富豪,CLAHE,薄富豪,False,1,0.333,0.1246
+name_windows,20241013074114.png,サーフゴー,褰富豪,white_ext,鷺富豪,False,1,0.333,0.0901
+name_windows,20241013074114.png,サーフゴー,褰富豪,low_contrast,薄富豪,False,1,0.333,0.0901
+name_windows,20241013074114.png,サーフゴー,褰富豪,up2x+CLAHE,薄富豪,False,1,0.333,0.2557
+name_windows,20241013074114.png,サーフゴー,褰富豪,up2x+ch_tra,薄富豪,False,1,0.333,0.6314
+name_windows,20241013074120.png,サーフゴー,褰富豪,baseline,薄富豪,False,1,0.333,0.088
+name_windows,20241013074120.png,サーフゴー,褰富豪,+ch_tra,薄富豪,False,1,0.333,0.4263
+name_windows,20241013074120.png,サーフゴー,褰富豪,upscale2x,薄富豪,False,1,0.333,0.2397
+name_windows,20241013074120.png,サーフゴー,褰富豪,CLAHE,薄富豪,False,1,0.333,0.0785
+name_windows,20241013074120.png,サーフゴー,褰富豪,white_ext,薄富豪,False,1,0.333,0.0762
+name_windows,20241013074120.png,サーフゴー,褰富豪,low_contrast,薄富豪,False,1,0.333,0.0865
+name_windows,20241013074120.png,サーフゴー,褰富豪,up2x+CLAHE,薄富豪,False,1,0.333,0.2476
+name_windows,20241013074120.png,サーフゴー,褰富豪,up2x+ch_tra,薄富豪,False,1,0.333,0.6315
+name_windows,20241013074130.png,サーフゴー,褰富豪,baseline,暮富豪,False,1,0.333,0.0949
+name_windows,20241013074130.png,サーフゴー,褰富豪,+ch_tra,暮富豪,False,1,0.333,0.4038
+name_windows,20241013074130.png,サーフゴー,褰富豪,upscale2x,鷺富豪,False,1,0.333,0.2572
+name_windows,20241013074130.png,サーフゴー,褰富豪,CLAHE,暮富豪,False,1,0.333,0.0952
+name_windows,20241013074130.png,サーフゴー,褰富豪,white_ext,鷺富豪,False,1,0.333,0.0775
+name_windows,20241013074130.png,サーフゴー,褰富豪,low_contrast,暮富豪,False,1,0.333,0.076
+name_windows,20241013074130.png,サーフゴー,褰富豪,up2x+CLAHE,鷺富豪,False,1,0.333,0.2319
+name_windows,20241013074130.png,サーフゴー,褰富豪,up2x+ch_tra,鷺富豪,False,1,0.333,0.5859
+name_windows,20251008180429.png,ザシアン,蒼響,baseline,蒼響,True,0,0.0,0.07
+name_windows,20251008180429.png,ザシアン,蒼響,+ch_tra,蒼響,True,0,0.0,0.2868
+name_windows,20251008180429.png,ザシアン,蒼響,upscale2x,蒼響,True,0,0.0,0.2299
+name_windows,20251008180429.png,ザシアン,蒼響,CLAHE,蒼響,True,0,0.0,0.072
+name_windows,20251008180429.png,ザシアン,蒼響,white_ext,蒼響,True,0,0.0,0.0709
+name_windows,20251008180429.png,ザシアン,蒼響,low_contrast,蒼響,True,0,0.0,0.071
+name_windows,20251008180429.png,ザシアン,蒼響,up2x+CLAHE,蒼響,True,0,0.0,0.2266
+name_windows,20251008180429.png,ザシアン,蒼響,up2x+ch_tra,蒼響,True,0,0.0,0.5865
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,baseline,テツノイサハ,True,0,0.0,0.0838
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,+ch_tra,テツノイサハ,True,0,0.0,0.5632
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,upscale2x,テツノイサハ,True,0,0.0,0.2358
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,CLAHE,テツノイサハ,True,0,0.0,0.0845
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,white_ext,テツノイサハ,True,0,0.0,0.0859
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,low_contrast,テツノイサハ,True,0,0.0,0.0844
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,up2x+CLAHE,テツノイサハ,True,0,0.0,0.2332
+name_windows,20240108104902.png,テツノイサハ,テツノイサハ,up2x+ch_tra,テツノイサハ,True,0,0.0,0.8949
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,baseline,テツノツツミ,True,0,0.0,0.0857
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,+ch_tra,テツノツツミ,True,0,0.0,0.512
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,upscale2x,テツノツツミ,True,0,0.0,0.2365
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,CLAHE,テツノツツミ,True,0,0.0,0.0823
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,white_ext,テツノツツミ,True,0,0.0,0.0825
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,low_contrast,テツノツツミ,True,0,0.0,0.0859
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,up2x+CLAHE,テツノツツミ,True,0,0.0,0.2322
+name_windows,20240108104811.png,テツノツツミ,テツノツツミ,up2x+ch_tra,テツノツツミ,True,0,0.0,0.9552
+name_windows,20240108222712.png,ディンルー,딩루,baseline,早翠,False,2,1.0,0.0765
+name_windows,20240108222712.png,ディンルー,딩루,+ch_tra,早翠,False,2,1.0,0.2745
+name_windows,20240108222712.png,ディンルー,딩루,upscale2x,三m,False,2,1.0,0.2507
+name_windows,20240108222712.png,ディンルー,딩루,CLAHE,早翠,False,2,1.0,0.0872
+name_windows,20240108222712.png,ディンルー,딩루,white_ext,g早,False,2,1.0,0.0913
+name_windows,20240108222712.png,ディンルー,딩루,low_contrast,早翠,False,2,1.0,0.0766
+name_windows,20240108222712.png,ディンルー,딩루,up2x+CLAHE,三m,False,2,1.0,0.2332
+name_windows,20240108222712.png,ディンルー,딩루,up2x+ch_tra,三m,False,2,1.0,0.5997
+name_windows,20240108222723.png,ディンルー,딩루,baseline,ぎ早,False,2,1.0,0.0888
+name_windows,20240108222723.png,ディンルー,딩루,+ch_tra,ぎ早,False,2,1.0,0.3671
+name_windows,20240108222723.png,ディンルー,딩루,upscale2x,目早,False,2,1.0,0.2486
+name_windows,20240108222723.png,ディンルー,딩루,CLAHE,ぎ早,False,2,1.0,0.0897
+name_windows,20240108222723.png,ディンルー,딩루,white_ext,g早,False,2,1.0,0.1015
+name_windows,20240108222723.png,ディンルー,딩루,low_contrast,ぎ早,False,2,1.0,0.0864
+name_windows,20240108222723.png,ディンルー,딩루,up2x+CLAHE,目早,False,2,1.0,0.2508
+name_windows,20240108222723.png,ディンルー,딩루,up2x+ch_tra,目早,False,2,1.0,0.5941
+name_windows,20251010094325.png,ディンルー,딩루,baseline,g,False,2,1.0,0.0872
+name_windows,20251010094325.png,ディンルー,딩루,+ch_tra,g,False,2,1.0,0.2835
+name_windows,20251010094325.png,ディンルー,딩루,upscale2x,〔,False,2,1.0,0.2348
+name_windows,20251010094325.png,ディンルー,딩루,CLAHE,g,False,2,1.0,0.089
+name_windows,20251010094325.png,ディンルー,딩루,white_ext,〔早,False,2,1.0,0.0853
+name_windows,20251010094325.png,ディンルー,딩루,low_contrast,g,False,2,1.0,0.0803
+name_windows,20251010094325.png,ディンルー,딩루,up2x+CLAHE,〔,False,2,1.0,0.2348
+name_windows,20251010094325.png,ディンルー,딩루,up2x+ch_tra,〔,False,2,1.0,0.6209
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,baseline,トドロクツキ,True,0,0.0,0.0957
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,+ch_tra,トドロクツキ,True,0,0.0,0.6031
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,upscale2x,トドロクツキ,True,0,0.0,0.2515
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,CLAHE,トドロクツキ,True,0,0.0,0.1036
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,white_ext,トドフクツキ,False,1,0.167,0.0873
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,low_contrast,トドロクツキ,True,0,0.0,0.0946
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,up2x+CLAHE,トロクツキ,False,1,0.167,0.2516
+name_windows,20240204234541.png,トドロクツキ,トドロクツキ,up2x+ch_tra,トドロクツキ,True,0,0.0,1.0246
+name_windows,20250206203134.png,ドレディア,드레디어,baseline,ヒヱ晋長,False,4,1.0,0.1027
+name_windows,20250206203134.png,ドレディア,드레디어,+ch_tra,ヒヱ晋長,False,4,1.0,0.5275
+name_windows,20250206203134.png,ドレディア,드레디어,upscale2x,三弘望巨,False,4,1.0,0.2558
+name_windows,20250206203134.png,ドレディア,드레디어,CLAHE,E州望巨,False,4,1.0,0.0983
+name_windows,20250206203134.png,ドレディア,드레디어,white_ext,E引晋巨,False,4,1.0,0.095
+name_windows,20250206203134.png,ドレディア,드레디어,low_contrast,ヒヱ晋長,False,4,1.0,0.1021
+name_windows,20250206203134.png,ドレディア,드레디어,up2x+CLAHE,三弘望巨,False,4,1.0,0.2547
+name_windows,20250206203134.png,ドレディア,드레디어,up2x+ch_tra,三弘望巨,False,4,1.0,0.8574
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,baseline,ハバタクカ三,False,1,0.167,0.0868
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,+ch_tra,ハバタクカ三,False,1,0.167,0.3639
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,upscale2x,ハバタクカ三,False,1,0.167,0.2346
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,CLAHE,ハバタクカ三,False,1,0.167,0.085
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,white_ext,ハバタクカ三,False,1,0.167,0.0865
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,low_contrast,ハバタクカ三,False,1,0.167,0.0857
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ハバタクカ三,False,1,0.167,0.2367
+name_windows,20240120153945.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハバタクカ三,False,1,0.167,0.7071
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,baseline,ハバタクワカミ,False,1,0.143,0.0852
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,+ch_tra,ハバタクワカミ,False,1,0.143,0.3662
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,upscale2x,ハバタクカミ,True,0,0.0,0.2485
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,CLAHE,ハバターカ三,False,2,0.333,0.0836
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,white_ext,ハバタクカ三,False,1,0.167,0.0861
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,low_contrast,ハバタクワカミ,False,1,0.143,0.0847
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ハバタンカ三,False,2,0.333,0.2356
+name_windows,20240120154545.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハバタクカミ,True,0,0.0,0.6866
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,baseline,ハバタクカミ,True,0,0.0,0.0996
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,+ch_tra,ハバタクカミ,True,0,0.0,0.4922
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,upscale2x,ハバタクカミ,True,0,0.0,0.2467
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,CLAHE,ハバタクカミ,True,0,0.0,0.1031
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,white_ext,ル ヲクカミ,False,3,0.5,0.0879
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,low_contrast,ハバタクカミ,True,0,0.0,0.1005
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ハバタフカミ,False,1,0.167,0.243
+name_windows,20240321094604.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハバタクカミ,True,0,0.0,0.8196
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,baseline,ハバタクカミ,True,0,0.0,0.103
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,+ch_tra,ハバタクカミ,True,0,0.0,0.4918
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,upscale2x,ハバタクカミ,True,0,0.0,0.2432
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,CLAHE,ハバタクカミ,True,0,0.0,0.1005
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,white_ext,ル ヲクカミ,False,3,0.5,0.0868
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,low_contrast,ハバタクカミ,True,0,0.0,0.0993
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ハバタフカミ,False,1,0.167,0.2449
+name_windows,20240324084751.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハバタクカミ,True,0,0.0,0.8205
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,baseline,ハバタクカミ,True,0,0.0,0.1009
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,+ch_tra,ハバタクカミ,True,0,0.0,0.553
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,upscale2x,ハバタクカミ,True,0,0.0,0.2696
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,CLAHE,ハバタクカミ,True,0,0.0,0.1142
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,white_ext,ル ヲクカミ,False,3,0.5,0.0926
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,low_contrast,ハバタクカミ,True,0,0.0,0.1019
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ハバタフカミ,False,1,0.167,0.2484
+name_windows,20240324103355.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハバタクカミ,True,0,0.0,0.8308
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,baseline,ハバタクカミ,True,0,0.0,0.101
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,+ch_tra,ハバタクカミ,True,0,0.0,0.4924
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,upscale2x,ハバタクカミ,True,0,0.0,0.2438
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,CLAHE,ハバタクカミ,True,0,0.0,0.1056
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,white_ext,ル ヲクカミ,False,3,0.5,0.0901
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,low_contrast,ハバタクカミ,True,0,0.0,0.1011
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ハバタフカミ,False,1,0.167,0.2846
+name_windows,20240324162730.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハバタクカミ,True,0,0.0,0.8381
+name_windows,20240531133339.png,ハバタクカミ,振翼發,baseline,と町_,False,3,1.0,0.1107
+name_windows,20240531133339.png,ハバタクカミ,振翼發,+ch_tra,と町_,False,3,1.0,0.5988
+name_windows,20240531133339.png,ハバタクカミ,振翼發,upscale2x,き町己,False,3,1.0,0.2682
+name_windows,20240531133339.png,ハバタクカミ,振翼發,CLAHE,と町_,False,3,1.0,0.111
+name_windows,20240531133339.png,ハバタクカミ,振翼發,white_ext,き州才叶己,False,5,1.0,0.1048
+name_windows,20240531133339.png,ハバタクカミ,振翼發,low_contrast,と町_,False,3,1.0,0.1128
+name_windows,20240531133339.png,ハバタクカミ,振翼發,up2x+CLAHE,と町己,False,3,1.0,0.2741
+name_windows,20240531133339.png,ハバタクカミ,振翼發,up2x+ch_tra,き町己,False,3,1.0,0.906
+name_windows,20240531172636.png,ハバタクカミ,振翼發,baseline,と町_,False,3,1.0,0.1156
+name_windows,20240531172636.png,ハバタクカミ,振翼發,+ch_tra,と町_,False,3,1.0,0.6661
+name_windows,20240531172636.png,ハバタクカミ,振翼發,upscale2x,き町己,False,3,1.0,0.2849
+name_windows,20240531172636.png,ハバタクカミ,振翼發,CLAHE,と町_,False,3,1.0,0.1112
+name_windows,20240531172636.png,ハバタクカミ,振翼發,white_ext,き州才叶己,False,5,1.0,0.1067
+name_windows,20240531172636.png,ハバタクカミ,振翼發,low_contrast,と町_,False,3,1.0,0.1093
+name_windows,20240531172636.png,ハバタクカミ,振翼發,up2x+CLAHE,と町己,False,3,1.0,0.2666
+name_windows,20240531172636.png,ハバタクカミ,振翼發,up2x+ch_tra,き町己,False,3,1.0,0.8591
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,baseline,ルタクカミ,False,2,0.333,0.0918
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,+ch_tra,ルタクカミ,False,2,0.333,0.3823
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,upscale2x,ハタクカミ,False,1,0.167,0.2543
+name_windows,20240719180846.png,ハバタクカミ,振翼發,CLAHE,ハバダ,False,3,1.0,0.0927
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,white_ext,ハバタクカ三,False,1,0.167,0.0955
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,low_contrast,ルタクカミ,False,2,0.333,0.0916
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ルタクカミ,False,2,0.333,0.25
+name_windows,20240719180846.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハタクカミ,False,1,0.167,0.7726
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,baseline,ルタクカミ,False,2,0.333,0.0916
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,+ch_tra,ルタクカミ,False,2,0.333,0.3803
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,upscale2x,ハタクカミ,False,1,0.167,0.2474
+name_windows,20240719202136.png,ハバタクカミ,振翼發,CLAHE,ハバダ,False,3,1.0,0.0919
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,white_ext,ハバタクカ三,False,1,0.167,0.0948
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,low_contrast,ルタクカミ,False,2,0.333,0.0933
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ルタクカミ,False,2,0.333,0.2475
+name_windows,20240719202136.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハタクカミ,False,1,0.167,0.7701
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,baseline,ルタクカミ,False,2,0.333,0.0908
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,+ch_tra,ルタクカミ,False,2,0.333,0.3798
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,upscale2x,ハタクカミ,False,1,0.167,0.2543
+name_windows,20240720072454.png,ハバタクカミ,振翼發,CLAHE,ハバダ,False,3,1.0,0.0951
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,white_ext,ハバタクカ三,False,1,0.167,0.0935
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,low_contrast,ルタクカミ,False,2,0.333,0.0917
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ルタクカミ,False,2,0.333,0.2487
+name_windows,20240720072454.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハタクカミ,False,1,0.167,0.7974
+name_windows,image.png,ハバタクカミ,ハバタクカミ,baseline,ルタクカミ,False,2,0.333,0.0908
+name_windows,image.png,ハバタクカミ,ハバタクカミ,+ch_tra,ルタクカミ,False,2,0.333,0.3825
+name_windows,image.png,ハバタクカミ,ハバタクカミ,upscale2x,ハタクカミ,False,1,0.167,0.2489
+name_windows,image.png,ハバタクカミ,振翼發,CLAHE,ハバダ,False,3,1.0,0.094
+name_windows,image.png,ハバタクカミ,ハバタクカミ,white_ext,ハバタクカ三,False,1,0.167,0.0919
+name_windows,image.png,ハバタクカミ,ハバタクカミ,low_contrast,ルタクカミ,False,2,0.333,0.0929
+name_windows,image.png,ハバタクカミ,ハバタクカミ,up2x+CLAHE,ルタクカミ,False,2,0.333,0.2486
+name_windows,image.png,ハバタクカミ,ハバタクカミ,up2x+ch_tra,ハタクカミ,False,1,0.167,0.7684
+name_windows,20240119172013.png,ハピナス,ハピナス,baseline,ハピナス,True,0,0.0,0.0773
+name_windows,20240119172013.png,ハピナス,ハピナス,+ch_tra,ハピナス,True,0,0.0,0.3927
+name_windows,20240119172013.png,ハピナス,ハピナス,upscale2x,ハピナス,True,0,0.0,0.2286
+name_windows,20240119172013.png,ハピナス,ハピナス,CLAHE,ハピナス,True,0,0.0,0.0781
+name_windows,20240119172013.png,ハピナス,ハピナス,white_ext,ハピナス,True,0,0.0,0.0747
+name_windows,20240119172013.png,ハピナス,ハピナス,low_contrast,ハピナス,True,0,0.0,0.0755
+name_windows,20240119172013.png,ハピナス,ハピナス,up2x+CLAHE,ハピナス,True,0,0.0,0.2309
+name_windows,20240119172013.png,ハピナス,ハピナス,up2x+ch_tra,ハピナス,True,0,0.0,0.7637
+name_windows,20240119172100.png,ハピナス,ハピナス,baseline,ハピナス,True,0,0.0,0.0786
+name_windows,20240119172100.png,ハピナス,ハピナス,+ch_tra,ハピナス,True,0,0.0,0.4183
+name_windows,20240119172100.png,ハピナス,ハピナス,upscale2x,ハピナス,True,0,0.0,0.2302
+name_windows,20240119172100.png,ハピナス,ハピナス,CLAHE,ハピナス,True,0,0.0,0.0763
+name_windows,20240119172100.png,ハピナス,ハピナス,white_ext,ハピナス,True,0,0.0,0.0757
+name_windows,20240119172100.png,ハピナス,ハピナス,low_contrast,ハピナス,True,0,0.0,0.075
+name_windows,20240119172100.png,ハピナス,ハピナス,up2x+CLAHE,ハピナス,True,0,0.0,0.2316
+name_windows,20240119172100.png,ハピナス,ハピナス,up2x+ch_tra,ハピナス,True,0,0.0,0.7639
+name_windows,20240119172521.png,ハピナス,ハピナス,baseline,ハピナス,True,0,0.0,0.0788
+name_windows,20240119172521.png,ハピナス,ハピナス,+ch_tra,ハピナス,True,0,0.0,0.4546
+name_windows,20240119172521.png,ハピナス,ハピナス,upscale2x,ハピナス,True,0,0.0,0.2307
+name_windows,20240119172521.png,ハピナス,ハピナス,CLAHE,ハピナス,True,0,0.0,0.0803
+name_windows,20240119172521.png,ハピナス,ハピナス,white_ext,ハピナス,True,0,0.0,0.0744
+name_windows,20240119172521.png,ハピナス,ハピナス,low_contrast,ハピナス,True,0,0.0,0.0763
+name_windows,20240119172521.png,ハピナス,ハピナス,up2x+CLAHE,ハピナス,True,0,0.0,0.2315
+name_windows,20240119172521.png,ハピナス,ハピナス,up2x+ch_tra,ハピナス,True,0,0.0,0.7568
+name_windows,20240224225921.png,バサギリ,バサギリ,baseline,バサギリ,True,0,0.0,0.0711
+name_windows,20240224225921.png,バサギリ,バサギリ,+ch_tra,バサギリ,True,0,0.0,0.3542
+name_windows,20240224225921.png,バサギリ,バサギリ,upscale2x,バサギリ,True,0,0.0,0.229
+name_windows,20240224225921.png,バサギリ,バサギリ,CLAHE,バサギリ,True,0,0.0,0.0715
+name_windows,20240224225921.png,バサギリ,バサギリ,white_ext,バサギリ,True,0,0.0,0.08
+name_windows,20240224225921.png,バサギリ,バサギリ,low_contrast,バサギリ,True,0,0.0,0.07
+name_windows,20240224225921.png,バサギリ,バサギリ,up2x+CLAHE,バサギリ,True,0,0.0,0.2284
+name_windows,20240224225921.png,バサギリ,バサギリ,up2x+ch_tra,バサギリ,True,0,0.0,0.7698
+name_windows,20250205183008.png,バドレックス,バドレックス,baseline,バドレックス,True,0,0.0,0.0937
+name_windows,20250205183008.png,バドレックス,バドレックス,+ch_tra,バドレックス,True,0,0.0,0.6318
+name_windows,20250205183008.png,バドレックス,バドレックス,upscale2x,バドレックス,True,0,0.0,0.2541
+name_windows,20250205183008.png,バドレックス,バドレックス,CLAHE,バドレックス,True,0,0.0,0.0944
+name_windows,20250205183008.png,バドレックス,バドレックス,white_ext,バドレックス,True,0,0.0,0.0951
+name_windows,20250205183008.png,バドレックス,バドレックス,low_contrast,バドレックス,True,0,0.0,0.0955
+name_windows,20250205183008.png,バドレックス,バドレックス,up2x+CLAHE,バドレックス,True,0,0.0,0.2492
+name_windows,20250205183008.png,バドレックス,バドレックス,up2x+ch_tra,バドレックス,True,0,0.0,0.9419
+name_windows,20250211221327.png,パオジアン,파오젠,baseline,"ラ""",False,3,1.0,0.0654
+name_windows,20250211221327.png,パオジアン,파오젠,+ch_tra,"ラ""",False,3,1.0,0.1898
+name_windows,20250211221327.png,パオジアン,파오젠,upscale2x,,False,3,1.0,0.2038
+name_windows,20250211221327.png,パオジアン,파오젠,CLAHE,,False,3,1.0,0.0539
+name_windows,20250211221327.png,パオジアン,파오젠,white_ext,,False,3,1.0,0.0544
+name_windows,20250211221327.png,パオジアン,파오젠,low_contrast,"ラ""",False,3,1.0,0.06
+name_windows,20250211221327.png,パオジアン,파오젠,up2x+CLAHE,,False,3,1.0,0.2015
+name_windows,20250211221327.png,パオジアン,파오젠,up2x+ch_tra,,False,3,1.0,0.4013
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,baseline,ヘイラッシヤ,False,1,0.167,0.0844
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,+ch_tra,ヘイラッシヤ,False,1,0.167,0.6171
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,upscale2x,ヘイラッシヤ,False,1,0.167,0.2318
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,CLAHE,ヘイラッシヤ,False,1,0.167,0.0863
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,white_ext,ヘイラッシヤ,False,1,0.167,0.0871
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,low_contrast,ヘイラッシヤ,False,1,0.167,0.0857
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,up2x+CLAHE,ヘイラッシヤ,False,1,0.167,0.2344
+name_windows,20230526235247.png,ヘイラッシャ,ヘイラッシャ,up2x+ch_tra,ヘイラッシヤ,False,1,0.167,0.9124
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,baseline,ヘイラツシヤ,False,2,0.333,0.0876
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,+ch_tra,ヘイラツシヤ,False,2,0.333,0.617
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,upscale2x,ヘイラツシヤ,False,2,0.333,0.2329
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,CLAHE,ヘイラツシヤ,False,2,0.333,0.0849
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,white_ext,ヘイラツシヤ,False,2,0.333,0.0861
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,low_contrast,ヘイラツシヤ,False,2,0.333,0.0852
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,up2x+CLAHE,ヘイラツシヤ,False,2,0.333,0.2333
+name_windows,20230526235254.png,ヘイラッシャ,ヘイラッシャ,up2x+ch_tra,ヘイラツシヤ,False,2,0.333,0.9105
+name_windows,20240212223756.png,ユクシー,ユクシー,baseline,ユクシー,True,0,0.0,0.0791
+name_windows,20240212223756.png,ユクシー,ユクシー,+ch_tra,ユクシー,True,0,0.0,0.3852
+name_windows,20240212223756.png,ユクシー,ユクシー,upscale2x,ユクシー,True,0,0.0,0.2273
+name_windows,20240212223756.png,ユクシー,ユクシー,CLAHE,ユクシー,True,0,0.0,0.0782
+name_windows,20240212223756.png,ユクシー,ユクシー,white_ext,ユクシー,True,0,0.0,0.0766
+name_windows,20240212223756.png,ユクシー,ユクシー,low_contrast,ユクシー,True,0,0.0,0.0776
+name_windows,20240212223756.png,ユクシー,ユクシー,up2x+CLAHE,ユクシー,True,0,0.0,0.2298
+name_windows,20240212223756.png,ユクシー,ユクシー,up2x+ch_tra,ユクシー,True,0,0.0,0.7614
+name_windows,20250212210127.png,リククラゲ,リククラゲ,baseline,リククラゲ,True,0,0.0,0.0805
+name_windows,20250212210127.png,リククラゲ,リククラゲ,+ch_tra,リククラゲ,True,0,0.0,0.5321
+name_windows,20250212210127.png,リククラゲ,リククラゲ,upscale2x,リククラゲ,True,0,0.0,0.2278
+name_windows,20250212210127.png,リククラゲ,リククラゲ,CLAHE,リククラゲ,True,0,0.0,0.0809
+name_windows,20250212210127.png,リククラゲ,リククラゲ,white_ext,リククラグ,False,1,0.2,0.08
+name_windows,20250212210127.png,リククラゲ,リククラゲ,low_contrast,リククラゲ,True,0,0.0,0.0802
+name_windows,20250212210127.png,リククラゲ,リククラゲ,up2x+CLAHE,リククラゲ,True,0,0.0,0.2353
+name_windows,20250212210127.png,リククラゲ,リククラゲ,up2x+ch_tra,リククラゲ,True,0,0.0,0.8295
+name_windows,20250212210137.png,リククラゲ,リククラゲ,baseline,リククラゲ,True,0,0.0,0.0804
+name_windows,20250212210137.png,リククラゲ,リククラゲ,+ch_tra,リククラゲ,True,0,0.0,0.4674
+name_windows,20250212210137.png,リククラゲ,リククラゲ,upscale2x,リククラグ,False,1,0.2,0.228
+name_windows,20250212210137.png,リククラゲ,リククラゲ,CLAHE,リククラゲ,True,0,0.0,0.0811
+name_windows,20250212210137.png,リククラゲ,リククラゲ,white_ext,リククラグ,False,1,0.2,0.0801
+name_windows,20250212210137.png,リククラゲ,リククラゲ,low_contrast,リククラゲ,True,0,0.0,0.0802
+name_windows,20250212210137.png,リククラゲ,リククラゲ,up2x+CLAHE,リククラゲ,True,0,0.0,0.2316
+name_windows,20250212210137.png,リククラゲ,リククラゲ,up2x+ch_tra,リククラグ,False,1,0.2,0.8267
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,baseline,Flare Blitz,True,0,0.0,0.0404
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,+ch_tra,Flare Blitz,True,0,0.0,0.1372
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,upscale2x,Flare Blitz,True,0,0.0,0.1159
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,CLAHE,Flare Blitz,True,0,0.0,0.0398
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,white_ext,Flare Bliiz,False,1,0.1,0.0392
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,low_contrast,Flare Blitz,True,0,0.0,0.0402
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,up2x+CLAHE,Flare Blitz,True,0,0.0,0.112
+move_names,Flare Blitz.png,Flare Blitz,Flare Blitz,up2x+ch_tra,Flare Blitz,True,0,0.0,0.2815
+move_names,Low Kick.png,Low Kick,Low Kick,baseline,Low Kidk,False,1,0.143,0.0423
+move_names,Low Kick.png,Low Kick,Low Kick,+ch_tra,Low Kick,True,0,0.0,0.1432
+move_names,Low Kick.png,Low Kick,Low Kick,upscale2x,Low Kidk,False,1,0.143,0.1497
+move_names,Low Kick.png,Low Kick,Low Kick,CLAHE,Low Kidk,False,1,0.143,0.0422
+move_names,Low Kick.png,Low Kick,Low Kick,white_ext,Low Kick,True,0,0.0,0.0417
+move_names,Low Kick.png,Low Kick,Low Kick,low_contrast,Low Kidk,False,1,0.143,0.0422
+move_names,Low Kick.png,Low Kick,Low Kick,up2x+CLAHE,Low Kidk,False,1,0.143,0.1398
+move_names,Low Kick.png,Low Kick,Low Kick,up2x+ch_tra,Low Kick,True,0,0.0,0.3357
+move_names,Scale Shot.png,Scale Shot,Scale Shot,baseline,Scale Shot,True,0,0.0,0.044
+move_names,Scale Shot.png,Scale Shot,Scale Shot,+ch_tra,Scale Shot,True,0,0.0,0.1449
+move_names,Scale Shot.png,Scale Shot,Scale Shot,upscale2x,Scale Shot,True,0,0.0,0.1104
+move_names,Scale Shot.png,Scale Shot,Scale Shot,CLAHE,Scale Shot,True,0,0.0,0.0428
+move_names,Scale Shot.png,Scale Shot,Scale Shot,white_ext,,False,9,1.0,0.0326
+move_names,Scale Shot.png,Scale Shot,Scale Shot,low_contrast,Scale Shot,True,0,0.0,0.0408
+move_names,Scale Shot.png,Scale Shot,Scale Shot,up2x+CLAHE,Scale Shot,True,0,0.0,0.1068
+move_names,Scale Shot.png,Scale Shot,Scale Shot,up2x+ch_tra,Scale Shot,True,0,0.0,0.275
+move_names,Spirit Break.png,Spirit Break,Spirit Break,baseline,Spiiit Break,False,1,0.091,0.0468
+move_names,Spirit Break.png,Spirit Break,Spirit Break,+ch_tra,Spirit Break,True,0,0.0,0.1492
+move_names,Spirit Break.png,Spirit Break,Spirit Break,upscale2x,Spinit Break,False,1,0.091,0.1515
+move_names,Spirit Break.png,Spirit Break,Spirit Break,CLAHE,spiiitBreak,False,2,0.182,0.0455
+move_names,Spirit Break.png,Spirit Break,Spirit Break,white_ext,SpiritBreak,True,0,0.0,0.0446
+move_names,Spirit Break.png,Spirit Break,Spirit Break,low_contrast,Spiiit Break,False,1,0.091,0.0436
+move_names,Spirit Break.png,Spirit Break,Spirit Break,up2x+CLAHE,SpititBreak,False,1,0.091,0.1434
+move_names,Spirit Break.png,Spirit Break,Spirit Break,up2x+ch_tra,Spirit Break,True,0,0.0,0.3422
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,baseline,SuckerPunch,True,0,0.0,0.049
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,+ch_tra,SuckerPunch,True,0,0.0,0.1681
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,upscale2x,SuckerPunch,True,0,0.0,0.1336
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,CLAHE,SuckerPunch,True,0,0.0,0.0486
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,white_ext,,False,11,1.0,0.0384
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,low_contrast,SuckerPunch,True,0,0.0,0.0508
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,up2x+CLAHE,SuckerPunch,True,0,0.0,0.1343
+move_names,Sucker Punch.png,Sucker Punch,Sucker Punch,up2x+ch_tra,SuckerPunch,True,0,0.0,0.3339
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,baseline,Thunder Wave,True,0,0.0,0.0498
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,+ch_tra,Thunder Wave,True,0,0.0,0.1681
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,upscale2x,Thunder Wave,True,0,0.0,0.1388
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,CLAHE,Thunder Wave,True,0,0.0,0.0491
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,white_ext,Thunder Wave,True,0,0.0,0.0513
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,low_contrast,Thunder Wave,True,0,0.0,0.0491
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,up2x+CLAHE,Thunder WNave,False,1,0.083,0.1393
+move_names,Thunder Wave.png,Thunder Wave,Thunder Wave,up2x+ch_tra,Thunder Wave,True,0,0.0,0.3606
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,baseline,こごえるかぜ,True,0,0.0,0.0276
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,+ch_tra,こごえるかぜ,True,0,0.0,0.2028
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,upscale2x,こごえるかぜ,True,0,0.0,0.0498
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,CLAHE,ここえるかぜ,False,1,0.167,0.0275
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,white_ext,こごえるかぜ,True,0,0.0,0.027
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,low_contrast,こごえるかぜ,True,0,0.0,0.0268
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,up2x+CLAHE,こごえるかぜ,True,0,0.0,0.0494
+move_names,こごえるかぜ.png,こごえるかぜ,こごえるかぜ,up2x+ch_tra,こごえるかぜ,True,0,0.0,0.2471
+move_names,シャドーボール.png,シャドーボール,シャドーボール,baseline,シャドーボール,True,0,0.0,0.028
+move_names,シャドーボール.png,シャドーボール,シャドーボール,+ch_tra,シャドーボール,True,0,0.0,0.2387
+move_names,シャドーボール.png,シャドーボール,シャドーボール,upscale2x,シャドーボール,True,0,0.0,0.0534
+move_names,シャドーボール.png,シャドーボール,シャドーボール,CLAHE,シャドーボール,True,0,0.0,0.029
+move_names,シャドーボール.png,シャドーボール,シャドーボール,white_ext,シャドーホール,False,1,0.143,0.0287
+move_names,シャドーボール.png,シャドーボール,シャドーボール,low_contrast,シャドーボール,True,0,0.0,0.0282
+move_names,シャドーボール.png,シャドーボール,シャドーボール,up2x+CLAHE,シャドーボール,True,0,0.0,0.0526
+move_names,シャドーボール.png,シャドーボール,シャドーボール,up2x+ch_tra,シャドーボール,True,0,0.0,0.2806
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,baseline,ムーンフォース,True,0,0.0,0.0272
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,+ch_tra,ムーンフォース,True,0,0.0,0.1364
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,upscale2x,ムーンフオース,False,1,0.143,0.0473
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,CLAHE,ムーンフォース,True,0,0.0,0.0259
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,white_ext,ムーンフォース,True,0,0.0,0.0264
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,low_contrast,ムーンフォース,True,0,0.0,0.0262
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,up2x+CLAHE,ムーンフオース,False,1,0.143,0.0465
+move_names,ムーンフォース.png,ムーンフォース,ムーンフォース,up2x+ch_tra,ムーンフオース,False,1,0.143,0.1805
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,baseline,ワイドフォース,True,0,0.0,0.0266
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,+ch_tra,ワイドフォース,True,0,0.0,0.2347
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,upscale2x,ワイドフォース,True,0,0.0,0.0595
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,CLAHE,ワイドフォース,True,0,0.0,0.0262
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,white_ext,ワイドフォース,True,0,0.0,0.0262
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,low_contrast,ワイドフォース,True,0,0.0,0.0259
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,up2x+CLAHE,ワイドフォース,True,0,0.0,0.0611
+move_names,ワイドフォース.png,ワイドフォース,ワイドフォース,up2x+ch_tra,ワイドフォース,True,0,0.0,0.3005
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,baseline,Grimmsnarlused Thunder Vave!,False,1,0.038,0.7617
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,+ch_tra,Grimmsnarlused Thunder Vave!,False,1,0.038,1.82
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,upscale2x,Giimmsnarlused Thunder WNavel,False,3,0.111,3.0273
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,CLAHE,Grimmsnarlused Thunder Vave!,False,1,0.038,0.7331
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,white_ext,Grimmsnarlused Thunder Wavel,False,1,0.038,0.7275
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,low_contrast,Grimmsnarlused Thunder Vave!,False,1,0.038,0.7367
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,up2x+CLAHE,Giimmsnarlused Thunder VNavel,False,4,0.148,2.5702
+battle_messages,Grimmsnarl used Thunder Wave!.png,Grimmsnarl used Thunder Wave!,Grimmsnarl used Thunder Wave!,up2x+ch_tra,Grimmsnarl used Thunder Wave!,True,0,0.0,5.4662
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,baseline,Itssuper effectivel,False,2,0.105,0.4043
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,+ch_tra,Itssuper effectivel,False,2,0.105,0.972
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,upscale2x,IEssuper effectivel,False,3,0.158,1.5358
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,CLAHE,IEssuper effectivel,False,3,0.158,0.4089
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,white_ext,Issuperelfectivel,False,4,0.211,0.4002
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,low_contrast,Itssuper effectivel,False,2,0.105,0.4003
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,up2x+CLAHE,IEssuper effectivel,False,3,0.158,1.5491
+battle_messages,It's super effective!.png,It's super effective!,It's super effective!,up2x+ch_tra,Its super effective!,False,1,0.053,3.2199
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,baseline,Koraidon's Defense felll,False,2,0.091,0.385
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,+ch_tra,Koraidon's Defense felll,False,2,0.091,1.0222
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,upscale2x,7Koraidon's Defense felll,False,3,0.13,1.3236
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,CLAHE,Koraidon's Defense felll,False,2,0.091,0.3952
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,white_ext,Koraidon's Defense felll,False,2,0.091,0.3837
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,low_contrast,Koraidon's Defense felll,False,2,0.091,0.3819
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,up2x+CLAHE,Koraidon's Defense fell:,False,2,0.091,1.2912
+battle_messages,Kodaidon's Defense fell!.png,Kodaidon's Defense fell!,Kodaidon's Defense fell!,up2x+ch_tra,Koraidon's Defense fell!,False,1,0.045,2.951
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,baseline,The opposing デインルー used Tera Blastl,False,2,0.067,0.7726
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,+ch_tra,The opposing デインルー used Tera Blastl,False,2,0.067,1.8658
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,upscale2x,The opposing デインルー used Tera Blast!,False,1,0.033,3.2196
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,CLAHE,The opposing デインルー used Tera Blastl,False,2,0.067,0.7615
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,white_ext,Theopposing デインルー used Tera Blast,False,2,0.067,0.7624
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,low_contrast,The opposing デインルー used Tera Blastl,False,2,0.067,0.7695
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,up2x+CLAHE,The opposing デインルー used Tera Blast!,False,1,0.033,3.0709
+battle_messages,The opposing ディンルー used Tera Blast!.png,The opposing ディンルー used Tera Blast!,The opposing ディンルー used Tera Blast!,up2x+ch_tra,The opposing デインルー used Tera Blast!,False,1,0.033,6.4104
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,baseline,ゆけつ!コライドンノ,False,3,0.3,0.6642
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,+ch_tra,ゆけつ!コライドンノ,False,3,0.3,1.6179
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,upscale2x,ゆけつ!コライドンノ,False,3,0.3,2.3261
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,CLAHE,ゆけつ!コライドンノ,False,3,0.3,0.6016
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,white_ext,ゆけつ!コライドンノ,False,3,0.3,0.5962
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,low_contrast,ゆけつ!コライドンノ,False,3,0.3,0.594
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,up2x+CLAHE,ゆけつ!コライドンノ,False,3,0.3,2.3138
+battle_messages,ゆけっ！コライドン！.png,ゆけっ！コライドン！,ゆけっ！コライドン！,up2x+ch_tra,ゆけつ!コライドンノ,False,3,0.3,4.9303
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,baseline,バオジアンのつららおとし!,False,2,0.154,0.6279
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,+ch_tra,バオジアンのつららおとし!,False,2,0.154,1.7249
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,upscale2x,パオジアンのつららおとし」,False,1,0.077,2.7469
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,CLAHE,バオジアンのつららおとし!,False,2,0.154,0.6249
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,white_ext,パオジアンのつららおとし」,False,1,0.077,0.6263
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,low_contrast,バオジアンのつららおとし!,False,2,0.154,0.6214
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,up2x+CLAHE,パオジアンのつららおとし」,False,1,0.077,2.5436
+battle_messages,パオジアンのつららおとし！.png,パオジアンのつららおとし！,パオジアンのつららおとし！,up2x+ch_tra,パオジアンのつららおとし」,False,1,0.077,5.7181
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,baseline,あかだるわ味方の周りにいりはじとがつた岩がただよい始めたり,False,11,0.379,1.0165
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,+ch_tra,あかだるわ味方の周りにいりはじとがつた岩がただよい始めたり,False,11,0.379,3.5142
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,upscale2x,みか たまわ味方の周りにい‥;Lとがった岩がただよい始めた」,False,10,0.345,3.9059
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,CLAHE,砂か信な布味方の周ゆに川和はしとがつた岩がただよい始めた」,False,12,0.414,0.9905
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,white_ext,みか危味方の周りにとかった碧かただよい始めた!,False,7,0.304,0.9407
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,low_contrast,み刀たるわ味方の周りにりはじとがつた岩がただよい始めたり,False,10,0.357,0.9708
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,up2x+CLAHE,みか たまわ味方の周りにい‥;Lとがった岩がただよい始めたり,False,10,0.345,3.9153
+battle_messages,味方の周りにとがった岩がただよい始めた！.png,味方の周りにとがった岩がただよい始めた！,味方の周りにとがった岩がただよい始めた！,up2x+ch_tra,みか たまわ味方の周りにい‥;Lとがった岩がただよい始めた」,False,10,0.345,9.3129
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,baseline,あいて相手のバドレックスのこうけこ攻撃が上がったり,False,8,0.32,0.9274
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,+ch_tra,あいて相手のバドレックスのこうけこ攻撃が上がったり,False,8,0.32,2.7922
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,upscale2x,あいて相手のバドレックスのこうけこ攻撃が上がったり,False,8,0.32,3.667
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,CLAHE,ありて相手のバドレックスのこうけこ攻撃が上がったり,False,8,0.32,0.9242
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,white_ext,い て相手のバドレックスのこうに攻撃が上がったり,False,6,0.261,0.9934
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,low_contrast,あいて相手のバドレックスのこうけこ攻撃が上がったり,False,8,0.32,0.9208
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,up2x+CLAHE,ありて相手のバドレックスのこうけこ攻撃ガ上がった」,False,9,0.36,3.6715
+battle_messages,相手のバドレックスの攻撃が上がった！.png,相手のバドレックスの攻撃が上がった！,相手のバドレックスの攻撃が上がった！,up2x+ch_tra,あいて相手のバドレックスのこうけこ攻撃が上がったり,False,8,0.32,8.1097
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,baseline,GolGarchomp and Milotic!,False,1,0.045,1.2551
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,+ch_tra,Go! Garchomp and Milotic!,True,0,0.0,2.7034
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,upscale2x,Gol Garchomp and Milotic!,False,1,0.045,2.6736
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,CLAHE,GolGarchomp and Milotic!,False,1,0.045,1.2816
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,white_ext,GolGarchomp and Milotic!,False,1,0.045,1.2485
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,low_contrast,GolGarchomp and Milotic!,False,1,0.045,1.2795
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,up2x+CLAHE,Gol Garchomp and Milotic!,False,1,0.045,2.6705
+battle_messages,Go!Garchomp and Milotic!.png,Go!Garchomp and Milotic!,Go!Garchomp and Milotic!,up2x+ch_tra,Go! Garchomp and Milotic!,True,0,0.0,5.5725
+first_selection,1番目.png,1番目,1番目,baseline,12目,False,1,0.333,0.0305
+first_selection,1番目.png,1番目,1番目,+ch_tra,12目,False,1,0.333,0.1445
+first_selection,1番目.png,1番目,1番目,upscale2x,1雅目,False,1,0.333,0.0713
+first_selection,1番目.png,1番目,1番目,CLAHE,12目,False,1,0.333,0.0295
+first_selection,1番目.png,1番目,1番目,white_ext,1だ目,False,1,0.333,0.0292
+first_selection,1番目.png,1番目,1番目,low_contrast,12目,False,1,0.333,0.0247
+first_selection,1番目.png,1番目,1番目,up2x+CLAHE,1雅目,False,1,0.333,0.0726
+first_selection,1番目.png,1番目,1番目,up2x+ch_tra,1雅目,False,1,0.333,0.2262
+first_selection,2番目.png,2番目,2番目,baseline,2番目,True,0,0.0,0.0235
+first_selection,2番目.png,2番目,2番目,+ch_tra,2番目,True,0,0.0,0.0876
+first_selection,2番目.png,2番目,2番目,upscale2x,2番目,True,0,0.0,0.0646
+first_selection,2番目.png,2番目,2番目,CLAHE,2番目,True,0,0.0,0.024
+first_selection,2番目.png,2番目,2番目,white_ext,2'目,False,1,0.333,0.0295
+first_selection,2番目.png,2番目,2番目,low_contrast,2番目,True,0,0.0,0.0232
+first_selection,2番目.png,2番目,2番目,up2x+CLAHE,2.目,False,1,0.333,0.0664
+first_selection,2番目.png,2番目,2番目,up2x+ch_tra,2番目,True,0,0.0,0.2228
+first_selection,3番目.png,3番目,3番目,baseline,s覇目,False,2,0.667,0.0307
+first_selection,3番目.png,3番目,3番目,+ch_tra,3H目,False,1,0.333,0.1484
+first_selection,3番目.png,3番目,3番目,upscale2x,弓覇目,False,2,0.667,0.0733
+first_selection,3番目.png,3番目,3番目,CLAHE,s覇目,False,2,0.667,0.0295
+first_selection,3番目.png,3番目,3番目,white_ext,3覇目,False,1,0.333,0.0244
+first_selection,3番目.png,3番目,3番目,low_contrast,s覇目,False,2,0.667,0.0295
+first_selection,3番目.png,3番目,3番目,up2x+CLAHE,弓覇目,False,2,0.667,0.0722
+first_selection,3番目.png,3番目,3番目,up2x+ch_tra,3G目,False,1,0.333,0.2298
+first_selection,First.png,First,First,baseline,First,True,0,0.0,0.0219
+first_selection,First.png,First,First,+ch_tra,First,True,0,0.0,0.0748
+first_selection,First.png,First,First,upscale2x,First,True,0,0.0,0.0655
+first_selection,First.png,First,First,CLAHE,First,True,0,0.0,0.0218
+first_selection,First.png,First,First,white_ext,Firt,False,1,0.2,0.0217
+first_selection,First.png,First,First,low_contrast,First,True,0,0.0,0.0224
+first_selection,First.png,First,First,up2x+CLAHE,First,True,0,0.0,0.0639
+first_selection,First.png,First,First,up2x+ch_tra,First,True,0,0.0,0.159
+first_selection,Second.png,Second,Second,baseline,Second,True,0,0.0,0.0235
+first_selection,Second.png,Second,Second,+ch_tra,Second,True,0,0.0,0.0888
+first_selection,Second.png,Second,Second,upscale2x,Second,True,0,0.0,0.0669
+first_selection,Second.png,Second,Second,CLAHE,Second,True,0,0.0,0.0232
+first_selection,Second.png,Second,Second,white_ext,Second,True,0,0.0,0.0233
+first_selection,Second.png,Second,Second,low_contrast,Second,True,0,0.0,0.0246
+first_selection,Second.png,Second,Second,up2x+CLAHE,Second,True,0,0.0,0.0663
+first_selection,Second.png,Second,Second,up2x+ch_tra,Second,True,0,0.0,0.1742
+first_selection,Third.png,Third,Third,baseline,Thind,False,1,0.2,0.0222
+first_selection,Third.png,Third,Third,+ch_tra,Third,True,0,0.0,0.0734
+first_selection,Third.png,Third,Third,upscale2x,Thind,False,1,0.2,0.0641
+first_selection,Third.png,Third,Third,CLAHE,Thind,False,1,0.2,0.0215
+first_selection,Third.png,Third,Third,white_ext,Thid,False,1,0.2,0.022
+first_selection,Third.png,Third,Third,low_contrast,Thind,False,1,0.2,0.0215
+first_selection,Third.png,Third,Third,up2x+CLAHE,Thind,False,1,0.2,0.0665
+first_selection,Third.png,Third,Third,up2x+ch_tra,Third,True,0,0.0,0.1598
+rank_numbers,629位.png,629位,629位,baseline,629位,True,0,0.0,0.06
+rank_numbers,629位.png,629位,629位,+ch_tra,629位,True,0,0.0,0.1638
+rank_numbers,629位.png,629位,629位,upscale2x,629位,True,0,0.0,0.2077
+rank_numbers,629位.png,629位,629位,CLAHE,629位,True,0,0.0,0.0609
+rank_numbers,629位.png,629位,629位,white_ext,629位,True,0,0.0,0.0595
+rank_numbers,629位.png,629位,629位,low_contrast,629位,True,0,0.0,0.06
+rank_numbers,629位.png,629位,629位,up2x+CLAHE,629位,True,0,0.0,0.2268
+rank_numbers,629位.png,629位,629位,up2x+ch_tra,629位,True,0,0.0,0.4378
+rank_numbers,No.3961.png,No.3961,No.3961,baseline,No.3961,True,0,0.0,0.0748
+rank_numbers,No.3961.png,No.3961,No.3961,+ch_tra,No.3961,True,0,0.0,0.2043
+rank_numbers,No.3961.png,No.3961,No.3961,upscale2x,No.3961,True,0,0.0,0.2361
+rank_numbers,No.3961.png,No.3961,No.3961,CLAHE,No.3961,True,0,0.0,0.0742
+rank_numbers,No.3961.png,No.3961,No.3961,white_ext,No.3961,True,0,0.0,0.0751
+rank_numbers,No.3961.png,No.3961,No.3961,low_contrast,No.3961,True,0,0.0,0.0724
+rank_numbers,No.3961.png,No.3961,No.3961,up2x+CLAHE,No.3961,True,0,0.0,0.237
+rank_numbers,No.3961.png,No.3961,No.3961,up2x+ch_tra,No.3961,True,0,0.0,0.5322

@@ -1,0 +1,132 @@
+name_00000.png	ガブリアス
+name_00001.png	ガブリアス
+name_00002.png	ガブリアス
+name_00003.png	ミロカロス
+name_00004.png	ミロカロス
+name_00005.png	ミロカロス
+name_00006.png	サーナイト
+name_00007.png	サーナイト
+name_00008.png	サーナイト
+name_00009.png	サザンドラ
+name_00010.png	サザンドラ
+name_00011.png	サザンドラ
+name_00012.png	ヤドラン
+name_00013.png	ヤドラン
+name_00014.png	ヤドラン
+name_00015.png	ハバタクカミ
+name_00016.png	ハバタクカミ
+name_00017.png	ハバタクカミ
+name_00018.png	テツノツツミ
+name_00019.png	テツノツツミ
+name_00020.png	テツノツツミ
+name_00021.png	カイリュー
+name_00022.png	カイリュー
+name_00023.png	カイリュー
+name_00024.png	ウーラオス
+name_00025.png	ウーラオス
+name_00026.png	ウーラオス
+name_00027.png	オーガポン
+name_00028.png	オーガポン
+name_00029.png	オーガポン
+name_00030.png	パオジアン
+name_00031.png	パオジアン
+name_00032.png	パオジアン
+name_00033.png	ランドロス
+name_00034.png	ランドロス
+name_00035.png	ランドロス
+name_00036.png	Garchomp
+name_00037.png	Garchomp
+name_00038.png	Garchomp
+name_00039.png	Milotic
+name_00040.png	Milotic
+name_00041.png	Milotic
+name_00042.png	Gardevoir
+name_00043.png	Gardevoir
+name_00044.png	Gardevoir
+name_00045.png	Hydreigon
+name_00046.png	Hydreigon
+name_00047.png	Hydreigon
+name_00048.png	Slowbro
+name_00049.png	Slowbro
+name_00050.png	Slowbro
+name_00051.png	Oranguru
+name_00052.png	Oranguru
+name_00053.png	Oranguru
+name_00054.png	Ursaluna
+name_00055.png	Ursaluna
+name_00056.png	Ursaluna
+name_00057.png	Dragonite
+name_00058.png	Dragonite
+name_00059.png	Dragonite
+name_00060.png	Urshifu
+name_00061.png	Urshifu
+name_00062.png	Urshifu
+name_00063.png	Ogerpon
+name_00064.png	Ogerpon
+name_00065.png	Ogerpon
+name_00066.png	Chien-Pao
+name_00067.png	Chien-Pao
+name_00068.png	Chien-Pao
+name_00069.png	Landorus
+name_00070.png	Landorus
+name_00071.png	Landorus
+move_00072.png	シャドーボール
+move_00073.png	シャドーボール
+move_00074.png	シャドーボール
+move_00075.png	ムーンフォース
+move_00076.png	ムーンフォース
+move_00077.png	ムーンフォース
+move_00078.png	こごえるかぜ
+move_00079.png	こごえるかぜ
+move_00080.png	こごえるかぜ
+move_00081.png	ワイドフォース
+move_00082.png	ワイドフォース
+move_00083.png	ワイドフォース
+move_00084.png	りゅうせいぐん
+move_00085.png	りゅうせいぐん
+move_00086.png	りゅうせいぐん
+move_00087.png	あくのはどう
+move_00088.png	あくのはどう
+move_00089.png	あくのはどう
+move_00090.png	じしん
+move_00091.png	じしん
+move_00092.png	じしん
+move_00093.png	かえんほうしゃ
+move_00094.png	かえんほうしゃ
+move_00095.png	かえんほうしゃ
+move_00096.png	れいとうビーム
+move_00097.png	れいとうビーム
+move_00098.png	れいとうビーム
+move_00099.png	10まんボルト
+move_00100.png	10まんボルト
+move_00101.png	10まんボルト
+move_00102.png	サイコキネシス
+move_00103.png	サイコキネシス
+move_00104.png	サイコキネシス
+move_00105.png	エナジーボール
+move_00106.png	エナジーボール
+move_00107.png	エナジーボール
+msg_00108.png	Garchomp used Rock Slide!
+msg_00109.png	Garchomp used Rock Slide!
+msg_00110.png	Garchomp used Rock Slide!
+msg_00111.png	Go! Garchomp and Milotic!
+msg_00112.png	Go! Garchomp and Milotic!
+msg_00113.png	Go! Garchomp and Milotic!
+msg_00114.png	It's super effective!
+msg_00115.png	It's super effective!
+msg_00116.png	It's super effective!
+msg_00117.png	The opposing Hydreigon fainted!
+msg_00118.png	The opposing Hydreigon fainted!
+msg_00119.png	The opposing Hydreigon fainted!
+msg_00120.png	Gardevoir used Moonblast!
+msg_00121.png	Gardevoir used Moonblast!
+msg_00122.png	Gardevoir used Moonblast!
+msg_00123.png	ガブリアスのいわなだれ！
+msg_00124.png	ガブリアスのいわなだれ！
+msg_00125.png	ガブリアスのいわなだれ！
+msg_00126.png	相手のサザンドラは倒れた！
+msg_00127.png	相手のサザンドラは倒れた！
+msg_00128.png	相手のサザンドラは倒れた！
+msg_00129.png	サーナイトのムーンフォース！
+msg_00130.png	サーナイトのムーンフォース！
+msg_00131.png	サーナイトのムーンフォース！
