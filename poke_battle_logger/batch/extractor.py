@@ -4,6 +4,7 @@ from typing import List, Optional, Tuple, cast
 import cv2
 import editdistance
 import numpy as np
+import pandas as pd
 import pytesseract
 from config.config import (
     FIRST_RANKING_NUMBER_WINDOW,
@@ -58,6 +59,11 @@ class Extractor:
             self.third_template,
         ) = self._setup_pokemon_select_window_templates()
         self.openai_handler = OpenAIHandler()
+        self.move_dataframe = self._read_move_dataframe()
+
+    def _read_move_dataframe(self) -> pd.DataFrame:
+        df = pd.read_csv("data/pokemon_moves.csv")
+        return df
 
     def _setup_pokemon_select_window_templates(
         self,
@@ -541,3 +547,27 @@ class Extractor:
             "your_pokemon_name": your_pokemon_name,
             "opponent_pokemon_name": opponent_pokemon_name,
         }
+
+    def correct_move_name(self, move_name: str) -> str:
+        """
+        OCRで認識した技名を技データベースと照合して補正する
+        """
+
+        if move_name in self.move_dataframe["name"].values:
+            return move_name
+
+        # 編集距離で最も近い技名を探す
+        min_distance = float("inf")
+        corrected_move_name = move_name
+
+        for db_move_name in self.move_dataframe["name"].values:
+            distance = editdistance.eval(move_name, db_move_name)
+            if distance < min_distance:
+                min_distance = distance
+                corrected_move_name = db_move_name
+
+        # 編集距離が一定以下の場合のみ補正を適用
+        if min_distance <= 2:
+            return corrected_move_name
+        else:
+            return move_name
