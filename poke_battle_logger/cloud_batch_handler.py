@@ -7,7 +7,7 @@ from google.cloud import batch_v1
 class CloudBatchHandler:
     def __init__(self) -> None:
         # プロジェクト ID とロケーションを設定します。
-        self.project_id = "turing-alcove-157907"
+        self.project_id = "your-gcp-project-id"
         self.location = "asia-northeast1"
 
     def submit_batch_job(
@@ -39,7 +39,7 @@ class CloudBatchHandler:
         )
         allocation_policy.instances = [instances]
         allocation_policy.service_account = batch_v1.ServiceAccount(
-            email="poke-battle-logger@turing-alcove-157907.iam.gserviceaccount.com",
+            email="poke-battle-logger@your-gcp-project-id.iam.gserviceaccount.com",
             scopes=[
                 "https://www.googleapis.com/auth/cloud-platform",
                 "https://www.googleapis.com/auth/devstorage.full_control",
@@ -122,7 +122,7 @@ class CloudBatchHandler:
                     runnables=[
                         batch_v1.Runnable(
                             container=batch_v1.Runnable.Container(
-                                image_uri="asia-northeast1-docker.pkg.dev/turing-alcove-157907/poke-battle-logger-job-api/production-image:3077b915169318b431ab91d14aea8fcad673b3db",
+                                image_uri="asia-northeast1-docker.pkg.dev/your-gcp-project-id/poke-battle-logger-job-api/production-image:3077b915169318b431ab91d14aea8fcad673b3db",
                                 entrypoint="",
                                 commands=commands,
                                 volumes=[],

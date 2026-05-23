@@ -20,7 +20,7 @@ import {
         <Container style={container}>
           <Section style={box}>
             <Img
-              src="https://storage.googleapis.com/turing-alcove-157907-sandbox/poke_battle_logger_logo.png"
+              src="https://storage.googleapis.com/your-gcp-project-id-sandbox/poke_battle_logger_logo.png"
               width="260"
               height="50"
               alt="Stripe"
